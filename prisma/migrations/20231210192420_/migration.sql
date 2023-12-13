@@ -1,0 +1,8 @@
+-- AlterTable
+ALTER TABLE "properties" ALTER COLUMN "bedrooms" SET DEFAULT '0',
+ALTER COLUMN "bathrooms" SET DEFAULT '0',
+ALTER COLUMN "parkingSpots" SET DEFAULT '0',
+ALTER COLUMN "suites" SET DEFAULT '0',
+ALTER COLUMN "totalArea" SET DEFAULT '0',
+ALTER COLUMN "privateArea" SET DEFAULT '0',
+ALTER COLUMN "numberAddress" DROP NOT NULL;

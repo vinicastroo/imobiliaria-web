@@ -6,6 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "vercel-build": "prisma generate && prisma migrate deploy && next build",
+    "prisma:generate": "prisma generate",
     "lint": "next lint"
   },
   "dependencies": {
@@ -36,6 +38,7 @@
     "next": "13.1.6",
     "next-auth": "^4.24.5",
     "phosphor-react": "^1.4.1",
+    "prisma": "^5.7.0",
     "query-string": "^8.1.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",

@@ -1,0 +1,77 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "rhel-openssl-1.0.x", "debian-openssl-1.1.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_PRISMA_URL")
+}
+
+model Properties {
+  id           String   @id() @default(uuid())
+  name         String
+  summary      String
+  description  String
+  value        String
+  bedrooms     String   @default("0")
+  bathrooms    String   @default("0")
+  parkingSpots String   @default("0")
+  suites       String   @default("0")
+  totalArea    String   @default("0")
+  privateArea  String   @default("0")
+  visible      Boolean  @default(true)
+  createdAt    DateTime @default(now())
+
+  cep           String
+  state         String
+  city          String
+  neighborhood  String
+  street        String
+  numberAddress String?
+  longitude     String
+  latitude      String
+
+  typeProperty_id String?
+  type_property   TypeProperty? @relation(fields: [typeProperty_id], references: [id])
+  files           Files[]
+  Clients         Clients[]
+
+  @@map("properties")
+}
+
+model TypeProperty {
+  id          String @id() @default(uuid())
+  description String
+
+  createdAt  DateTime     @default(now())
+  properties Properties[]
+
+  @@map("type_property")
+}
+
+model Files {
+  id       String  @id() @default(uuid())
+  path     String
+  fileName String?
+
+  createdAt    DateTime    @default(now())
+  Properties   Properties? @relation(fields: [propertiesId], references: [id])
+  propertiesId String?
+
+  @@map("files")
+}
+
+model Clients {
+  id          String  @id() @default(uuid())
+  name        String
+  email       String?
+  phone       String
+  description String
+
+  createdAt    DateTime    @default(now())
+  Properties   Properties? @relation(fields: [propertiesId], references: [id])
+  propertiesId String?
+
+  @@map("clients")
+}
