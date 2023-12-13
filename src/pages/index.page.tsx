@@ -862,7 +862,7 @@ function Footer() {
   )
 }
 
-export const getStaticProps = async () => {
+export const getServerSideProps = async () => {
   const response = await api.get(`/imovel?limit=3&visible=true`)
   const responseTipo = await api.get<TypeProperty[]>(`/tipo-imovel`)
   const responseCities = await api.get<CityProps[]>(`/imovel/cidades`)

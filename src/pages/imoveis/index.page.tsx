@@ -718,7 +718,7 @@ function Properties({
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const { tipoImovel, cidade, bairro } = context.query
-  const responseImoveis = await api.get(`/imovel`, {
+  const responseImoveis = await api.get(`/imovel?visible=true`, {
     params: {
       type: tipoImovel,
       city: cidade,
