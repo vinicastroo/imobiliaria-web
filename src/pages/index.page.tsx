@@ -44,7 +44,6 @@ import { toast } from 'react-toastify'
 import { Search } from '@mui/icons-material'
 import { BiArea } from 'react-icons/bi'
 import { LiaRulerCombinedSolid } from 'react-icons/lia'
-import { GetServerSideProps } from 'next'
 
 interface TypeProperty {
   id: string
@@ -92,13 +91,9 @@ interface Property {
   }[]
 }
 
-function BannerHome({
-  types,
-  cities,
-}: {
-  types: TypeProperty[]
-  cities: CityProps[]
-}) {
+function BannerHome() {
+  const [cities, setCities] = useState<CityProps[]>([])
+  const [types, setTypes] = useState<TypeProperty[]>([])
   const [neighborhoods, setNeighborhood] = useState<NeighborhoodProps[]>([])
 
   const createSchema = z.object({
@@ -118,6 +113,32 @@ function BannerHome({
   )
 
   const city = watch('city')
+
+  const loadTypes = useCallback(async () => {
+    if (city) {
+      const responseTipo = await api.get<TypeProperty[]>(`/tipo-imovel`)
+      if (responseTipo) {
+        setTypes([...responseTipo.data])
+      }
+    }
+  }, [city])
+
+  useEffect(() => {
+    loadTypes()
+  }, [loadTypes])
+
+  const loadCities = useCallback(async () => {
+    if (city) {
+      const responseCities = await api.get<CityProps[]>(`/imovel/cidades`)
+      if (responseCities) {
+        setCities([...responseCities.data])
+      }
+    }
+  }, [city])
+
+  useEffect(() => {
+    loadCities()
+  }, [loadCities])
 
   const loadNeighboorhood = useCallback(async () => {
     if (city) {
@@ -340,7 +361,21 @@ function BannerHome({
   )
 }
 
-function Recent({ properties }: { properties: Property[] }) {
+function Recent() {
+  const [properties, setProperties] = useState<Property[]>([])
+
+  const loadProperties = useCallback(async () => {
+    const response = await api.get(`/imovel?limit=3&visible=true`)
+
+    if (response) {
+      setProperties([...response.data])
+    }
+  }, [])
+
+  useEffect(() => {
+    loadProperties()
+  }, [loadProperties])
+
   return (
     <Box
       sx={{
@@ -863,34 +898,7 @@ function Footer() {
   )
 }
 
-export const getServerSideProps: GetServerSideProps = async ({ res }) => {
-  res.setHeader(
-    'Cache-Control',
-    'public, s-maxage=10, stale-while-revalidate=59',
-  )
-
-  const response = await api.get(`/imovel?limit=3&visible=true`)
-  const responseTipo = await api.get<TypeProperty[]>(`/tipo-imovel`)
-  const responseCities = await api.get<CityProps[]>(`/imovel/cidades`)
-
-  return {
-    props: {
-      properties: response.data,
-      types: responseTipo.data,
-      cities: responseCities.data,
-    },
-  }
-}
-
-export default function Home({
-  properties,
-  types,
-  cities,
-}: {
-  properties: Property[]
-  types: TypeProperty[]
-  cities: CityProps[]
-}) {
+export default function Home() {
   return (
     <>
       <Head>
@@ -898,8 +906,8 @@ export default function Home({
       </Head>
 
       <Box>
-        <BannerHome types={types} cities={cities} />
-        <Recent properties={properties} />
+        <BannerHome />
+        <Recent />
         <Contact />
         <Footer />
       </Box>
