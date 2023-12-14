@@ -1,8 +1,8 @@
 import axios from 'axios'
 // import { getSession } from 'next-auth/react'
 
-// const baseURL = process.env.SOME_API_URL || 'http://localhost:3333'
-const baseURL = 'https://imobiliaria-api.vercel.app'
+const baseURL = process.env.SOME_API_URL || 'http://localhost:3333'
+// const baseURL = 'https://imobiliaria-api.vercel.app'
 
 const ApiClient = () => {
   const defaultOptions = {
