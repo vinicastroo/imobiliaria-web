@@ -44,6 +44,7 @@ import { toast } from 'react-toastify'
 import { Search } from '@mui/icons-material'
 import { BiArea } from 'react-icons/bi'
 import { LiaRulerCombinedSolid } from 'react-icons/lia'
+import { GetServerSideProps } from 'next'
 
 interface TypeProperty {
   id: string
@@ -862,7 +863,12 @@ function Footer() {
   )
 }
 
-export const getServerSideProps = async () => {
+export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
+  res.setHeader(
+    'Cache-Control',
+    'public, s-maxage=10, stale-while-revalidate=59',
+  )
+
   const response = await api.get(`/imovel?limit=3&visible=true`)
   const responseTipo = await api.get<TypeProperty[]>(`/tipo-imovel`)
   const responseCities = await api.get<CityProps[]>(`/imovel/cidades`)

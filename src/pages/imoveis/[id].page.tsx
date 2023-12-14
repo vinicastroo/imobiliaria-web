@@ -31,6 +31,7 @@ import Head from 'next/head'
 import logo from '@/assets/logo-auros-minimalist.svg'
 import { BiArea } from 'react-icons/bi'
 import { LiaRulerCombinedSolid } from 'react-icons/lia'
+import { ServerResponse } from 'http'
 
 interface Property {
   id: string
@@ -459,11 +460,16 @@ function Property({ property }: { property: Property }) {
 
 export const getServerSideProps = async ({
   params,
+  res,
 }: {
   params: { id: string }
+  res: ServerResponse
 }) => {
   const { id } = params
-
+  res.setHeader(
+    'Cache-Control',
+    'public, s-maxage=10, stale-while-revalidate=59',
+  )
   const response = await api.get(`/imovel/${id}`)
 
   return {

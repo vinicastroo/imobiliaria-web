@@ -717,6 +717,11 @@ function Properties({
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
+  context.res.setHeader(
+    'Cache-Control',
+    'public, s-maxage=10, stale-while-revalidate=59',
+  )
+
   const { tipoImovel, cidade, bairro } = context.query
   const responseImoveis = await api.get(`/imovel?visible=true`, {
     params: {

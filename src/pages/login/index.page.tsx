@@ -11,6 +11,7 @@ import { useForm } from 'react-hook-form'
 import { signIn } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import { useCallback } from 'react'
+import { toast } from 'react-toastify'
 
 export default function Login() {
   const createSchema = z.object({
@@ -30,15 +31,20 @@ export default function Login() {
     async (data: SchemaQuestion) => {
       const { email, password } = data
 
-      const result = await signIn('credentials', {
+      await signIn('credentials', {
         redirect: false,
         email,
         password,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      }).then((req: any) => {
+        console.log(req)
+        if (req.ok) {
+          router.push('/admin')
+        } else {
+          console.log(req.error)
+          toast('Email / Senha não combinam !', { type: 'error' })
+        }
       })
-
-      if (result) {
-        router.push('/admin')
-      }
     },
     [router],
   )

@@ -13,7 +13,7 @@ export default NextAuth({
       },
       authorize(credentials) {
         if (
-          credentials?.email !== process.env.AUROS_EMAIL &&
+          credentials?.email !== process.env.AUROS_EMAIL ||
           credentials?.password !== process.env.AUROS_PASSWORD
         ) {
           throw new Error('invalid credentials')
