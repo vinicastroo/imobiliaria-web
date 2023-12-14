@@ -115,26 +115,22 @@ function BannerHome() {
   const city = watch('city')
 
   const loadTypes = useCallback(async () => {
-    if (city) {
-      const responseTipo = await api.get<TypeProperty[]>(`/tipo-imovel`)
-      if (responseTipo) {
-        setTypes([...responseTipo.data])
-      }
+    const responseTipo = await api.get<TypeProperty[]>(`/tipo-imovel`)
+    if (responseTipo) {
+      setTypes([...responseTipo.data])
     }
-  }, [city])
+  }, [])
 
   useEffect(() => {
     loadTypes()
   }, [loadTypes])
 
   const loadCities = useCallback(async () => {
-    if (city) {
-      const responseCities = await api.get<CityProps[]>(`/imovel/cidades`)
-      if (responseCities) {
-        setCities([...responseCities.data])
-      }
+    const responseCities = await api.get<CityProps[]>(`/imovel/cidades`)
+    if (responseCities) {
+      setCities([...responseCities.data])
     }
-  }, [city])
+  }, [])
 
   useEffect(() => {
     loadCities()
