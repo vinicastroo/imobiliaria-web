@@ -91,9 +91,13 @@ interface Property {
   }[]
 }
 
-function BannerHome() {
-  const [cities, setCities] = useState<CityProps[]>([])
-  const [types, setTypes] = useState<TypeProperty[]>([])
+function BannerHome({
+  types,
+  cities,
+}: {
+  types: TypeProperty[]
+  cities: CityProps[]
+}) {
   const [neighborhoods, setNeighborhood] = useState<NeighborhoodProps[]>([])
 
   const createSchema = z.object({
@@ -113,28 +117,6 @@ function BannerHome() {
   )
 
   const city = watch('city')
-
-  const loadTypes = useCallback(async () => {
-    const responseTipo = await api.get<TypeProperty[]>(`/tipo-imovel`)
-    if (responseTipo) {
-      setTypes([...responseTipo.data])
-    }
-  }, [])
-
-  useEffect(() => {
-    loadTypes()
-  }, [loadTypes])
-
-  const loadCities = useCallback(async () => {
-    const responseCities = await api.get<CityProps[]>(`/imovel/cidades`)
-    if (responseCities) {
-      setCities([...responseCities.data])
-    }
-  }, [])
-
-  useEffect(() => {
-    loadCities()
-  }, [loadCities])
 
   const loadNeighboorhood = useCallback(async () => {
     if (city) {
@@ -357,21 +339,7 @@ function BannerHome() {
   )
 }
 
-function Recent() {
-  const [properties, setProperties] = useState<Property[]>([])
-
-  const loadProperties = useCallback(async () => {
-    const response = await api.get(`/imovel?limit=3&visible=true`)
-
-    if (response) {
-      setProperties([...response.data])
-    }
-  }, [])
-
-  useEffect(() => {
-    loadProperties()
-  }, [loadProperties])
-
+function Recent({ properties }: { properties: Property[] }) {
   return (
     <Box
       sx={{
@@ -895,6 +863,45 @@ function Footer() {
 }
 
 export default function Home() {
+  const [properties, setProperties] = useState<Property[]>([])
+
+  const loadProperties = useCallback(async () => {
+    const response = await api.get(`/imovel?limit=3&visible=true`)
+
+    if (response) {
+      setProperties([...response.data])
+    }
+  }, [])
+
+  useEffect(() => {
+    loadProperties()
+  }, [loadProperties])
+
+  const [cities, setCities] = useState<CityProps[]>([])
+  const [types, setTypes] = useState<TypeProperty[]>([])
+
+  const loadTypes = useCallback(async () => {
+    const responseTipo = await api.get<TypeProperty[]>(`/tipo-imovel`)
+    if (responseTipo) {
+      setTypes([...responseTipo.data])
+    }
+  }, [])
+
+  const loadCities = useCallback(async () => {
+    const responseCities = await api.get<CityProps[]>(`/imovel/cidades`)
+    if (responseCities) {
+      setCities([...responseCities.data])
+    }
+  }, [])
+
+  useEffect(() => {
+    loadTypes()
+  }, [loadTypes])
+
+  useEffect(() => {
+    loadCities()
+  }, [loadCities])
+
   return (
     <>
       <Head>
@@ -902,8 +909,8 @@ export default function Home() {
       </Head>
 
       <Box>
-        <BannerHome />
-        <Recent />
+        <BannerHome cities={cities} types={types} />
+        <Recent properties={properties} />
         <Contact />
         <Footer />
       </Box>
