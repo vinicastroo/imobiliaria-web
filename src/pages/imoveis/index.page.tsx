@@ -494,7 +494,7 @@ function Properties({
           totalArea: areaTotal || undefined,
           privateArea: areaTerreno || undefined,
           page,
-          pageSize: 1,
+          pageSize: 10,
         },
       })
       if (responseImoveis) {
@@ -833,7 +833,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       city: cidade,
       neighborhood: bairro,
       page: 1,
-      pageSize: 1,
+      pageSize: 10,
     },
   })
   const responseTipo = await api.get<TypeProperty[]>(`/tipo-imovel`)
