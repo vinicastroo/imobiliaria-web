@@ -754,7 +754,14 @@ function Contact() {
 function Footer() {
   return (
     <>
-      <Box sx={{ display: 'flex', background: '#17375F', minHeight: '324px' }}>
+      <Box
+        sx={{
+          display: 'flex',
+          background: '#17375F',
+          minHeight: '324px',
+          p: 2,
+        }}
+      >
         <Box
           sx={{
             display: 'flex',
@@ -873,6 +880,7 @@ function Footer() {
               width: '100%',
               alignItems: { xs: 'center', sm: 'center', md: 'flex-start' },
               justifyContent: { xs: 'center', sm: 'center', md: 'flex-start' },
+              mb: { xs: 2, sm: 2 },
               a: {
                 textDecoration: 'none',
                 color: 'white',
@@ -921,6 +929,8 @@ function Footer() {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
+          textAlign: 'center',
+          p: 2,
         }}
       >
         <Typography variant="caption">
@@ -938,27 +948,41 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   )
 
   const responseImoveis = await api.get(`/imovel?limit=6&visible=true`)
-  const responseTipo = await api.get<TypeProperty[]>(`/tipo-imovel`)
-  const responseCities = await api.get<CityProps[]>(`/imovel/cidades`)
 
   return {
     props: {
       properties: responseImoveis.data,
-      types: responseTipo.data,
-      cities: responseCities.data,
     },
   }
 }
 
-export default function Home({
-  properties,
-  types,
-  cities,
-}: {
-  properties: Property[]
-  types: TypeProperty[]
-  cities: CityProps[]
-}) {
+export default function Home({ properties }: { properties: Property[] }) {
+  const [types, setTypes] = useState<TypeProperty[]>([])
+  const [cities, setCities] = useState<CityProps[]>([])
+
+  const loadCities = useCallback(async () => {
+    const responseCities = await api.get<CityProps[]>(`/imovel/cidades`)
+
+    if (responseCities) {
+      setCities([...responseCities.data])
+    }
+  }, [])
+
+  const loadTypes = useCallback(async () => {
+    const responseTipo = await api.get<TypeProperty[]>(`/tipo-imovel`)
+
+    if (responseTipo) {
+      setTypes([...responseTipo.data])
+    }
+  }, [])
+
+  useEffect(() => {
+    loadCities()
+  }, [loadCities])
+
+  useEffect(() => {
+    loadTypes()
+  }, [loadTypes])
   return (
     <>
       <Head>
