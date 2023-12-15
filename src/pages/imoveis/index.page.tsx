@@ -109,7 +109,17 @@ function Filter({
 
   const router = useRouter()
 
-  const { tipoImovel, cidade, bairro } = router.query
+  const {
+    tipoImovel,
+    cidade,
+    bairro,
+    quartos,
+    banheiros,
+    suites,
+    garagem,
+    areaTotal,
+    areaTerreno,
+  } = router.query
 
   const createSchema = z.object({
     type: z.string().optional(),
@@ -161,7 +171,7 @@ function Filter({
           totalArea: data.totalArea ? data.totalArea : undefined,
           privateArea: data.privateArea ? data.privateArea : undefined,
           page,
-          pageSize: 1,
+          pageSize: 16,
         },
       })
 
@@ -300,6 +310,7 @@ function Filter({
                   variant="outlined"
                   size="small"
                   fullWidth
+                  defaultValue={quartos}
                   inputRef={ref}
                   {...field}
                 />
@@ -326,6 +337,7 @@ function Filter({
                   label="Nº Suites"
                   size="small"
                   fullWidth
+                  defaultValue={suites}
                   inputRef={ref}
                   {...field}
                 />
@@ -344,6 +356,7 @@ function Filter({
                   label="Nº Banheiros"
                   size="small"
                   fullWidth
+                  defaultValue={banheiros}
                   inputRef={ref}
                   {...field}
                 />
@@ -362,6 +375,7 @@ function Filter({
                   label="Nº Estacionamento"
                   size="small"
                   fullWidth
+                  defaultValue={garagem}
                   inputRef={ref}
                   {...field}
                 />
@@ -380,6 +394,7 @@ function Filter({
                   label="Area do imóvel"
                   size="small"
                   fullWidth
+                  defaultValue={areaTotal}
                   inputRef={ref}
                   {...field}
                 />
@@ -398,6 +413,7 @@ function Filter({
                   label="Area do terreno"
                   fullWidth
                   size="small"
+                  defaultValue={areaTerreno}
                   inputRef={ref}
                   {...field}
                 />
@@ -494,7 +510,7 @@ function Properties({
           totalArea: areaTotal || undefined,
           privateArea: areaTerreno || undefined,
           page,
-          pageSize: 10,
+          pageSize: 16,
         },
       })
       if (responseImoveis) {
@@ -801,13 +817,6 @@ function Properties({
       </Grid>
 
       <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
-        {/* <Pagination
-          count={totalPages}
-          page={page}
-          onChange={handleChange}
-          variant="outlined"
-          color="primary"
-        /> */}
         <Pagination
           count={totalSize}
           page={page}
@@ -825,15 +834,31 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     'Cache-Control',
     'public, s-maxage=10, stale-while-revalidate=59',
   )
+  const {
+    tipoImovel,
+    cidade,
+    bairro,
+    quartos,
+    banheiros,
+    suites,
+    garagem,
+    areaTotal,
+    areaTerreno,
+  } = context.query
 
-  const { tipoImovel, cidade, bairro } = context.query
   const responseImoveis = await api.get(`/imovel?visible=true`, {
     params: {
       type: tipoImovel,
       city: cidade,
       neighborhood: bairro,
+      bedrooms: quartos,
+      bathrooms: banheiros,
+      suites,
+      parkingSpots: garagem,
+      totalArea: areaTotal,
+      privateArea: areaTerreno,
       page: 1,
-      pageSize: 10,
+      pageSize: 16,
     },
   })
   const responseTipo = await api.get<TypeProperty[]>(`/tipo-imovel`)
