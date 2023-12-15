@@ -145,7 +145,6 @@ function BannerHome({
     <form onSubmit={handleSubmit(onSubmit)}>
       <Box
         sx={{
-          backgroundImage: `url(${bg.src})`,
           width: '100%',
           height: '100vh',
           backgroundSize: 'cover',
@@ -155,6 +154,24 @@ function BannerHome({
           p: 2,
         }}
       >
+        <Box>
+          <Image
+            src={bg}
+            alt=""
+            height={950}
+            style={{
+              position: 'absolute',
+              zIndex: -1,
+              top: 0,
+              left: 0,
+              height: '100vh',
+              width: '100%',
+              backgroundSize: 'cover',
+              objectFit: 'cover',
+            }}
+          />
+        </Box>
+
         <Box
           display="flex"
           justifyContent="space-between"
@@ -207,6 +224,7 @@ function BannerHome({
             alignItems: 'center',
             justifyContent: 'center',
             height: '100%',
+            p: 2,
           }}
         >
           <Box
