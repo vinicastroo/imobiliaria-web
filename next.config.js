@@ -4,7 +4,7 @@ const nextConfig = {
   pageExtensions: ['page.tsx', 'api.ts', 'api.tsx'],
   images: {
     deviceSizes: [320, 420, 768, 1024, 1200],
-    domains: ['images.unsplash.com', 'minha-prova.s3.amazonaws.com'],
+    domains: ['images.unsplash.com', 'auros-s3.s3.amazonaws.com'],
     loader: 'default',
   },
 }
