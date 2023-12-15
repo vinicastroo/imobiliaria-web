@@ -44,7 +44,6 @@ import { toast } from 'react-toastify'
 import { Search } from '@mui/icons-material'
 import { BiArea } from 'react-icons/bi'
 import { LiaRulerCombinedSolid } from 'react-icons/lia'
-import { GetServerSideProps } from 'next'
 
 interface TypeProperty {
   id: string
@@ -952,31 +951,17 @@ function Footer() {
         }}
       >
         <Typography variant="caption">
-          {`Auros corretora imobiliária - CRECI-SC 7018-J (Rio do Sul ) CRECI-SC 8732-j (Balneário Camboriú)`}
+          {`Auros corretora imobiliária - CRECI-SC 7018-J (Rio do Sul ) CRECI-SC 8732-J (Balneário Camboriú)`}
         </Typography>
       </Box>
     </>
   )
 }
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  context.res.setHeader(
-    'Cache-Control',
-    'public, s-maxage=10, stale-while-revalidate=59',
-  )
-
-  const responseImoveis = await api.get(`/imovel?limit=6&visible=true`)
-
-  return {
-    props: {
-      properties: responseImoveis.data,
-    },
-  }
-}
-
-export default function Home({ properties }: { properties: Property[] }) {
+export default function Home() {
   const [types, setTypes] = useState<TypeProperty[]>([])
   const [cities, setCities] = useState<CityProps[]>([])
+  const [properties, setProperties] = useState<Property[]>([])
 
   const loadCities = useCallback(async () => {
     const responseCities = await api.get<CityProps[]>(`/imovel/cidades`)
@@ -993,6 +978,18 @@ export default function Home({ properties }: { properties: Property[] }) {
       setTypes([...responseTipo.data])
     }
   }, [])
+
+  const loadProperties = useCallback(async () => {
+    const responseImoveis = await api.get(`/imovel?limit=6&visible=true`)
+
+    if (responseImoveis) {
+      setProperties([...responseImoveis.data])
+    }
+  }, [])
+
+  useEffect(() => {
+    loadProperties()
+  }, [loadProperties])
 
   useEffect(() => {
     loadCities()
