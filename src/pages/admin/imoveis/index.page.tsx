@@ -67,6 +67,8 @@ export default function Property() {
   const { status } = useSession()
   const router = useRouter()
 
+  const [page, setPage] = useState(0)
+  const [total, setTotal] = useState()
   const [loading, setLoading] = useState(false)
   const [openModalDelete, setOpenModalDelete] = useState(false)
   const [properties, setProperties] = useState<Property[]>([])
@@ -77,12 +79,18 @@ export default function Property() {
   const loadProperties = useCallback(async () => {
     setLoading(true)
 
-    const response = await api.get(`/imovel`)
+    const response = await api.get(`/imovel`, {
+      params: {
+        page: page + 1,
+        pageSize: 10,
+      },
+    })
     if (response) {
-      setProperties(response.data)
+      setProperties(response.data.properties)
+      setTotal(response.data.totalPages)
     }
     setLoading(false)
-  }, [])
+  }, [page])
 
   useEffect(() => {
     loadProperties()
@@ -298,7 +306,11 @@ export default function Property() {
                     rows={properties}
                     columns={columns}
                     pageSize={10}
-                    rowsPerPageOptions={[10]}
+                    rowCount={total}
+                    onPageChange={(newPage) => setPage(newPage)}
+                    page={page}
+                    paginationMode="server"
+                    pagination
                     sx={{ borderColor: 'transparent' }}
                     localeText={
                       ptBR.components.MuiDataGrid.defaultProps.localeText

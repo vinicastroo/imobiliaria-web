@@ -134,7 +134,9 @@ function BannerHome({
   const onSubmit = useCallback(
     async (data: SchemaQuestion) => {
       router.push(
-        `/imoveis?tipoImovel=${data.type_id}&cidade=${data.city}&bairro=${data.neighborhood}`,
+        `/imoveis?${data.type_id ? `tipoImovel=${data.type_id}&` : ''}${
+          data.city ? `cidade=${data.city}&` : ''
+        }${data.neighborhood ? `bairro=${data.neighborhood}` : ''}`,
       )
     },
     [router],
@@ -521,7 +523,13 @@ function Recent({ properties }: { properties: Property[] }) {
                       Informações
                     </Typography>
 
-                    <Box display="flex" gap={2} mb={1}>
+                    <Box
+                      display="flex"
+                      gap={2}
+                      mb={1}
+                      rowGap={0.5}
+                      flexWrap="nowrap"
+                    >
                       {Number(property.bedrooms) > 0 && (
                         <Tooltip
                           title="Quartos"
@@ -830,9 +838,8 @@ function Footer() {
             </Typography>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               <MapPin size={20} weight="fill" />
-              <Typography variant="body1">
-                R. XV de Novembro, 1751 - sala02, Laranjeiras, <br /> Rio do Sul
-                - SC, 89167-410
+              <Typography variant="body1" flex={1}>
+                R. XV de Novembro, 1751 - sala02, Laranjeiras, Rio do Sul - SC
               </Typography>
             </Box>
 
@@ -874,7 +881,7 @@ function Footer() {
               }}
             >
               <MapPin size={20} weight="fill" />
-              <Typography variant="body1">
+              <Typography variant="body1" flex={1}>
                 Rua 2000, 121,Edif La Belle Tour Resid., Centro - Balneário
                 Camboriú / SC
               </Typography>
@@ -983,7 +990,7 @@ export default function Home() {
     const responseImoveis = await api.get(`/imovel?limit=6&visible=true`)
 
     if (responseImoveis) {
-      setProperties([...responseImoveis.data])
+      setProperties([...responseImoveis.data.properties])
     }
   }, [])
 

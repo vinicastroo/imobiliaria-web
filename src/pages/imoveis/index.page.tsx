@@ -1,4 +1,5 @@
 import {
+  Backdrop,
   Box,
   Button,
   Card,
@@ -9,6 +10,7 @@ import {
   Grid,
   InputLabel,
   MenuItem,
+  Pagination,
   Select,
   TextField,
   Tooltip,
@@ -36,6 +38,8 @@ import logo from '@/assets/logo-auros-minimalist.svg'
 import Image from 'next/image'
 import { BiArea } from 'react-icons/bi'
 import { LiaRulerCombinedSolid } from 'react-icons/lia'
+import CircularProgress from '@mui/material/CircularProgress'
+
 interface TypeProperty {
   id: string
   createdAt: string
@@ -88,11 +92,17 @@ function Filter({
   cities,
   initialNeighborhood,
   setProperties,
+  setLoading,
+  page,
+  setTotal,
 }: {
   types: TypeProperty[]
   cities: CityProps[]
+  page: number
   initialNeighborhood: NeighborhoodProps[]
   setProperties: Dispatch<SetStateAction<Property[]>>
+  setLoading: Dispatch<SetStateAction<boolean>>
+  setTotal: Dispatch<SetStateAction<number>>
 }) {
   const [neighborhoods, setNeighborhood] =
     useState<NeighborhoodProps[]>(initialNeighborhood)
@@ -137,6 +147,7 @@ function Filter({
 
   const onSubmit = useCallback(
     async (data: SchemaQuestion) => {
+      setLoading(true)
       const responseImoveis = await api.get(`/imovel`, {
         params: {
           type: data.type !== 'undefined' ? data.type : undefined,
@@ -149,12 +160,31 @@ function Filter({
           parkingSpots: data.parkingSpots ? data.parkingSpots : undefined,
           totalArea: data.totalArea ? data.totalArea : undefined,
           privateArea: data.privateArea ? data.privateArea : undefined,
+          page,
+          pageSize: 1,
         },
       })
 
-      setProperties([...responseImoveis.data])
+      router.replace(
+        `/imoveis?${
+          data.type !== 'undefined' ? `tipoImovel=${data.type}&` : ''
+        }${data.city !== 'undefined' ? `cidade=${data.city}&` : ''}${
+          data.neighborhood !== 'undefined'
+            ? `bairro=${data.neighborhood}&`
+            : ''
+        }${data.bedrooms ? `quartos=${data.bedrooms}&` : ''}${
+          data.bathrooms ? `banheiros=${data.bathrooms}&` : ''
+        }${data.suites ? `suites=${data.suites}&` : ''} ${
+          data.parkingSpots ? `garagem=${data.parkingSpots}&` : ''
+        }${data.totalArea ? `areaTotal=${data.totalArea}&` : ''}${
+          data.privateArea ? `areaTerreno=${data.privateArea}&` : ''
+        }`,
+      )
+      setProperties([...responseImoveis.data.properties])
+      setTotal(responseImoveis.data.totalPages)
+      setLoading(false)
     },
-    [setProperties],
+    [page, setProperties, setTotal, setLoading, router],
   )
 
   return (
@@ -420,10 +450,70 @@ function Filter({
 function Properties({
   properties,
   handleOpenFilter,
+  totalSize,
+  page,
+  setPage,
+  setProperties,
 }: {
   properties: Property[]
+  totalSize: number
+  page: number
   handleOpenFilter: () => void
+  setPage: Dispatch<SetStateAction<number>>
+  setProperties: Dispatch<SetStateAction<Property[]>>
 }) {
+  const router = useRouter()
+  const {
+    tipoImovel,
+    cidade,
+    bairro,
+    quartos,
+    banheiros,
+    suites,
+    garagem,
+    areaTotal,
+    areaTerreno,
+  } = router.query
+
+  const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
+    setPage(value)
+    loadProperties(value)
+  }
+
+  const loadProperties = useCallback(
+    async (page: number) => {
+      const responseImoveis = await api.get(`/imovel`, {
+        params: {
+          type: tipoImovel !== 'undefined' ? tipoImovel : undefined,
+          city: cidade !== 'undefined' ? cidade : undefined,
+          neighborhood: bairro !== 'undefined' ? bairro : undefined,
+          bedrooms: quartos || undefined,
+          bathrooms: banheiros || undefined,
+          suites: suites || undefined,
+          parkingSpots: garagem || undefined,
+          totalArea: areaTotal || undefined,
+          privateArea: areaTerreno || undefined,
+          page,
+          pageSize: 1,
+        },
+      })
+      if (responseImoveis) {
+        setProperties([...responseImoveis.data.properties])
+      }
+    },
+    [
+      areaTerreno,
+      areaTotal,
+      bairro,
+      banheiros,
+      cidade,
+      garagem,
+      quartos,
+      setProperties,
+      suites,
+      tipoImovel,
+    ],
+  )
   return (
     <Box
       sx={{
@@ -442,11 +532,12 @@ function Properties({
       </Box>
 
       <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
-        <Typography variant="body1" color="#333" fontWeight="bold">
-          {properties.length}{' '}
-          {properties.length === 1
-            ? 'Imóvel encontrado'
-            : 'Imóveis encontrados'}
+        <Typography variant="caption" color="#333" fontWeight="bold">
+          {`${properties.length}  ${
+            properties.length === 1
+              ? 'Imóvel encontrado'
+              : 'Imóveis encontrados'
+          }`}
         </Typography>
       </Box>
 
@@ -553,7 +644,13 @@ function Properties({
                     >
                       Informações
                     </Typography>
-                    <Box display="flex" gap={1} mb={1}>
+                    <Box
+                      display="flex"
+                      gap={1}
+                      mb={1}
+                      rowGap={0.5}
+                      flexWrap="nowrap"
+                    >
                       {Number(property.bedrooms) > 0 && (
                         <Tooltip
                           title="Quartos"
@@ -703,15 +800,22 @@ function Properties({
         ))}
       </Grid>
 
-      {/* <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
-        <Pagination
+      <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
+        {/* <Pagination
           count={totalPages}
           page={page}
           onChange={handleChange}
           variant="outlined"
           color="primary"
+        /> */}
+        <Pagination
+          count={totalSize}
+          page={page}
+          onChange={handleChange}
+          shape="rounded"
+          color="primary"
         />
-      </Box> */}
+      </Box>
     </Box>
   )
 }
@@ -728,6 +832,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       type: tipoImovel,
       city: cidade,
       neighborhood: bairro,
+      page: 1,
+      pageSize: 1,
     },
   })
   const responseTipo = await api.get<TypeProperty[]>(`/tipo-imovel`)
@@ -739,7 +845,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   return {
     props: {
-      properties: responseImoveis.data,
+      properties: responseImoveis.data.properties,
+      totalPropertiesSize: responseImoveis.data.totalPages,
       types: responseTipo.data,
       cities: responseCities.data,
       neighborhoods: responseNeighborhood.data,
@@ -752,14 +859,19 @@ export default function Home({
   types,
   cities,
   neighborhoods,
+  totalPropertiesSize,
 }: {
   properties: Property[]
   types: TypeProperty[]
   cities: CityProps[]
+  totalPropertiesSize: number
   neighborhoods: NeighborhoodProps[]
 }) {
   const [properties, setProperties] = useState<Property[]>(initialProperties)
   const [openFilter, setOpenFilter] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [total, setTotal] = useState(totalPropertiesSize)
+  const [page, setPage] = useState(1)
 
   const handleOpenFilter = () => {
     setOpenFilter(true)
@@ -777,7 +889,11 @@ export default function Home({
         <MenubarHome />
 
         <Properties
+          page={page}
+          setPage={setPage}
+          totalSize={total}
           properties={properties}
+          setProperties={setProperties}
           handleOpenFilter={handleOpenFilter}
         />
 
@@ -788,13 +904,23 @@ export default function Home({
           sx={{ p: 2 }}
         >
           <Filter
+            page={page}
             types={types}
             cities={cities}
             initialNeighborhood={neighborhoods}
+            setLoading={setLoading}
+            setTotal={setTotal}
             setProperties={setProperties}
           />
         </Drawer>
       </Box>
+
+      <Backdrop
+        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={loading}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
     </>
   )
 }
