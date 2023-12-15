@@ -86,7 +86,7 @@ function Property({ property }: { property: Property }) {
 
       <MenubarHome />
 
-      <Box sx={{ maxWidth: '1200px', margin: '0 auto' }}>
+      <Box sx={{ maxWidth: '1200px', margin: '0 auto', mt: 4 }}>
         <Box>
           <Carousel
             navButtonsAlwaysVisible
