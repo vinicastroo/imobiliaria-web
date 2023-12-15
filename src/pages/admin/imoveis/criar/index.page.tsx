@@ -148,7 +148,11 @@ export default function CriarImoveis() {
         return null
       })
 
-      const responseFile = await api.post('/files/upload', formData)
+      const responseFile = await api.post('/files/upload', formData, {
+        headers: {
+          'Content-Type': `multipart/form-data`,
+        },
+      })
 
       if (responseFile && responseFile.data.paths) {
         const response = await api.post('/imovel', {

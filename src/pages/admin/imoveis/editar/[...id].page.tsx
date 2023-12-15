@@ -181,9 +181,17 @@ export default function EditarImoveis({
       })
 
       if (property.files.length > 0) {
-        await api.post('/files/delete-images', {
-          files: property.files.map((file) => file.fileName),
-        })
+        await api.post(
+          '/files/delete-images',
+          {
+            files: property.files.map((file) => file.fileName),
+          },
+          {
+            headers: {
+              'Content-Type': `multipart/form-data`,
+            },
+          },
+        )
       }
       const responseFile = await api.post('/files/upload', formData)
 
