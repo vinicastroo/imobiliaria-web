@@ -15,7 +15,7 @@ import {
   Typography,
   useMediaQuery,
 } from '@mui/material'
-import bg from '@/assets/background.png'
+import bg from '@/assets/background.jpg'
 import logo from '@/assets/logo-auros-minimalist.svg'
 import logoFull from '@/assets/logo-full.svg'
 import square from '@/assets/square.svg'
@@ -44,6 +44,7 @@ import { toast } from 'react-toastify'
 import { Search } from '@mui/icons-material'
 import { BiArea } from 'react-icons/bi'
 import { LiaRulerCombinedSolid } from 'react-icons/lia'
+import { GetServerSideProps } from 'next'
 
 interface TypeProperty {
   id: string
@@ -144,13 +145,13 @@ function BannerHome({
     <form onSubmit={handleSubmit(onSubmit)}>
       <Box
         sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
           backgroundImage: `url(${bg.src})`,
           width: '100%',
-          height: { xs: 800, sm: 900, md: 1000 },
+          height: '100vh',
           backgroundSize: 'cover',
+          position: 'relative',
+          backgroundRepeat: 'no-repeat',
+          backgroundPositionY: '-80px',
           p: 2,
         }}
       >
@@ -162,6 +163,11 @@ function BannerHome({
             width: '100%',
             maxWidth: '1200px',
             margin: '0 auto',
+            position: 'absolute',
+            top: 0,
+            right: 0,
+            left: 0,
+            px: { xs: 2, sm: 1, md: 0 },
             a: {
               display: 'flex',
               alignItems: 'center',
@@ -194,145 +200,154 @@ function BannerHome({
             </Link>
           </Box>
         </Box>
-
         <Box
           sx={{
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
-            gap: 5,
-            margin: 'auto 0',
-            maxWidth: '1200px',
-            width: '100%',
+            height: '100%',
           }}
         >
-          <Typography
-            variant={isSmallScreen ? 'h5' : 'h3'}
-            textAlign="center"
-            color="#fff"
-          >
-            Assim como o ouro é valioso, seu novo lar será um tesouro
-            inestimável
-          </Typography>
-
-          <Card
-            variant="outlined"
+          <Box
             sx={{
-              p: 3,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 5,
+              margin: 'auto 0',
+              maxWidth: '1200px',
               width: '100%',
-
-              background: {
-                md: 'rgba(255, 255, 255,1)',
-              },
-              boxShadow: {
-                md: '0 1px 30px rgba(0, 0, 0, 0.5)',
-              },
-              backdropFilter: {
-                md: 'blur(3px)',
-              },
-              '-webkit-backdrop-filter': {
-                md: 'blur(3px)',
-              },
             }}
           >
-            <Box
-              sx={{
-                display: 'flex',
-                flexDirection: { xs: 'column', md: 'row' },
-              }}
-              gap={3}
+            <Typography
+              variant={isSmallScreen ? 'h5' : 'h3'}
+              textAlign="center"
+              color="#fff"
             >
-              <FormControl
-                size={isSmallScreen ? 'small' : 'medium'}
-                fullWidth
-                sx={{ background: '#fff' }}
-              >
-                <InputLabel id="neightboor-select-label">
-                  Tipo Imóvel
-                </InputLabel>
-                <Select
-                  // error={Boolean(errors.type_id)}
-                  labelId="neightboor-select-label"
-                  label="Tipo Imóvel"
-                  {...register('type_id')}
-                >
-                  <MenuItem>Selecione</MenuItem>
-                  {types.map((type) => (
-                    <MenuItem key={type.id} value={type.description}>
-                      {type.description}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
+              Assim como o ouro é valioso, seu novo lar será um tesouro
+              inestimável
+            </Typography>
 
-              <FormControl
-                size={isSmallScreen ? 'small' : 'medium'}
-                fullWidth
-                sx={{ background: '#fff' }}
-              >
-                <InputLabel id="neightboor-select-label">Cidade</InputLabel>
-                <Select
-                  // error={Boolean(errors.type_id)}
-                  labelId="neightboor-select-label"
-                  label="Cidade"
-                  {...register('city')}
-                >
-                  <MenuItem>Selecione</MenuItem>
-                  {cities.map((city) => (
-                    <MenuItem key={city.city} value={city.city}>
-                      {city.city}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
+            <Card
+              variant="outlined"
+              sx={{
+                p: 3,
+                width: '100%',
 
-              <FormControl
-                size={isSmallScreen ? 'small' : 'medium'}
-                fullWidth
-                sx={{ background: '#fff' }}
-              >
-                <InputLabel id="demo-simple-select-label">Bairro</InputLabel>
-                <Select
-                  // error={Boolean(errors.type_id)}
-                  label="Bairro"
-                  {...register('neighborhood')}
-                >
-                  <MenuItem>Selecione</MenuItem>
-                  {neighborhoods.map((neighborhood) => (
-                    <MenuItem
-                      key={neighborhood.neighborhood}
-                      value={neighborhood.neighborhood}
-                    >
-                      {neighborhood.neighborhood}
-                    </MenuItem>
-                  ))}
-                </Select>
-
-                {/* {Boolean(errors.type_id) && (
-                      <FormHelperText error>
-                        {errors.type_id?.message}
-                      </FormHelperText>
-                    )} */}
-              </FormControl>
-              <Button
-                variant="contained"
+                background: {
+                  md: 'rgba(255, 255, 255,1)',
+                },
+                boxShadow: {
+                  md: '0 1px 30px rgba(0, 0, 0, 0.5)',
+                },
+                backdropFilter: {
+                  md: 'blur(3px)',
+                },
+                '-webkit-backdrop-filter': {
+                  md: 'blur(3px)',
+                },
+              }}
+            >
+              <Box
                 sx={{
-                  color: '#fff',
                   display: 'flex',
-                  alignItems: 'center',
-                  gap: 1,
+                  flexDirection: { xs: 'column', md: 'row' },
                 }}
-                color="primary"
-                size={isSmallScreen ? 'medium' : 'large'}
-                type="submit"
-                fullWidth
+                gap={3}
               >
-                <Search />
-                Buscar
-              </Button>
-            </Box>
-          </Card>
+                <FormControl
+                  size={isSmallScreen ? 'small' : 'medium'}
+                  fullWidth
+                  sx={{ background: '#fff' }}
+                >
+                  <InputLabel id="neightboor-select-label">
+                    Tipo Imóvel
+                  </InputLabel>
+                  <Select
+                    // error={Boolean(errors.type_id)}
+                    labelId="neightboor-select-label"
+                    label="Tipo Imóvel"
+                    {...register('type_id')}
+                  >
+                    <MenuItem>Selecione</MenuItem>
+                    {types.map((type) => (
+                      <MenuItem key={type.id} value={type.description}>
+                        {type.description}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+
+                <FormControl
+                  size={isSmallScreen ? 'small' : 'medium'}
+                  fullWidth
+                  sx={{ background: '#fff' }}
+                >
+                  <InputLabel id="neightboor-select-label">Cidade</InputLabel>
+                  <Select
+                    // error={Boolean(errors.type_id)}
+                    labelId="neightboor-select-label"
+                    label="Cidade"
+                    {...register('city')}
+                  >
+                    <MenuItem>Selecione</MenuItem>
+                    {cities.map((city) => (
+                      <MenuItem key={city.city} value={city.city}>
+                        {city.city}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+
+                <FormControl
+                  size={isSmallScreen ? 'small' : 'medium'}
+                  fullWidth
+                  sx={{ background: '#fff' }}
+                >
+                  <InputLabel id="demo-simple-select-label">Bairro</InputLabel>
+                  <Select
+                    // error={Boolean(errors.type_id)}
+                    label="Bairro"
+                    {...register('neighborhood')}
+                  >
+                    <MenuItem>Selecione</MenuItem>
+                    {neighborhoods.map((neighborhood) => (
+                      <MenuItem
+                        key={neighborhood.neighborhood}
+                        value={neighborhood.neighborhood}
+                      >
+                        {neighborhood.neighborhood}
+                      </MenuItem>
+                    ))}
+                  </Select>
+
+                  {/* {Boolean(errors.type_id) && (
+                        <FormHelperText error>
+                          {errors.type_id?.message}
+                        </FormHelperText>
+                      )} */}
+                </FormControl>
+                <Button
+                  variant="contained"
+                  sx={{
+                    color: '#fff',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 1,
+                  }}
+                  color="primary"
+                  size={isSmallScreen ? 'medium' : 'large'}
+                  type="submit"
+                  fullWidth
+                >
+                  <Search />
+                  Buscar
+                </Button>
+              </Box>
+            </Card>
+          </Box>
         </Box>
       </Box>
     </form>
@@ -348,7 +363,7 @@ function Recent({ properties }: { properties: Property[] }) {
         alignItems: 'center',
         justifyContent: 'center',
         width: '100%',
-        height: { xs: '100%', sm: '100%', md: 900 },
+        height: '100%',
         p: 2,
         background: '#fafafa',
         backgroundImage: { md: `url(${square.src}), url(${square.src})` },
@@ -501,7 +516,7 @@ function Recent({ properties }: { properties: Property[] }) {
                         >
                           <Box>
                             <Door size={16} weight="bold" />
-                            <Typography variant="caption">
+                            <Typography variant="body2">
                               {property.bedrooms}
                             </Typography>
                           </Box>
@@ -519,7 +534,7 @@ function Recent({ properties }: { properties: Property[] }) {
                         >
                           <Box>
                             <Bed size={16} weight="bold" />
-                            <Typography variant="caption">
+                            <Typography variant="body2">
                               {property.suites}
                             </Typography>
                           </Box>
@@ -537,7 +552,7 @@ function Recent({ properties }: { properties: Property[] }) {
                         >
                           <Box>
                             <Toilet size={16} weight="bold" />
-                            <Typography variant="caption">
+                            <Typography variant="body2">
                               {property.bathrooms}
                             </Typography>
                           </Box>
@@ -555,7 +570,7 @@ function Recent({ properties }: { properties: Property[] }) {
                         >
                           <Box>
                             <Car size={16} weight="bold" />
-                            <Typography variant="caption">
+                            <Typography variant="body2">
                               {property.parkingSpots}
                             </Typography>
                           </Box>
@@ -573,7 +588,7 @@ function Recent({ properties }: { properties: Property[] }) {
                         >
                           <Box>
                             <LiaRulerCombinedSolid size={16} />
-                            <Typography variant="caption">
+                            <Typography variant="body2">
                               {property.totalArea}
                             </Typography>
                           </Box>
@@ -591,7 +606,7 @@ function Recent({ properties }: { properties: Property[] }) {
                         >
                           <Box>
                             <BiArea size={16} />
-                            <Typography variant="caption">
+                            <Typography variant="body2">
                               {property.privateArea}
                             </Typography>
                           </Box>
@@ -744,12 +759,13 @@ function Footer() {
           sx={{
             display: 'flex',
             flexDirection: { xs: 'column', sm: 'column', md: 'row' },
-            alignItems: 'center',
+            alignItems: 'flex-start',
             justifyContent: { xs: 'center', sm: 'center', md: 'space-between' },
             maxWidth: '1200px',
             width: '100%',
-            margin: '2rem auto',
-            p: 2,
+            margin: 'auto auto',
+            gap: 2,
+            p: 1,
           }}
         >
           <Box
@@ -761,7 +777,7 @@ function Footer() {
               width: '100%',
             }}
           >
-            <Image src={logoFull} alt="logo" />
+            <Image src={logoFull} alt="logo" width={160} />
           </Box>
 
           <Box
@@ -782,27 +798,68 @@ function Footer() {
               },
             }}
           >
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+            <Typography
+              variant="body1"
+              sx={{ borderBottom: '1px solid #fff', mb: 1 }}
+            >
+              Rio do sul
+            </Typography>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               <MapPin size={20} weight="fill" />
               <Typography variant="body1">
-                R. XV de Novembro, 1751 - sala02 <br /> Laranjeiras, Rio do Sul
+                R. XV de Novembro, 1751 - sala02, Laranjeiras, <br /> Rio do Sul
                 - SC, 89167-410
               </Typography>
             </Box>
 
             <Link href="https://api.whatsapp.com/send?phone=5547999008090">
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                <WhatsappLogo size={20} weight="fill" />
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <Box sx={{ flex: 1 }}>
+                  <WhatsappLogo size={20} weight="fill" />
+                </Box>
                 <Typography variant="body1">(47) 99900-8090</Typography>
               </Box>
             </Link>
+          </Box>
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 1,
+              color: 'white',
+              alignItems: { xs: 'center', sm: 'center', md: 'flex-start' },
+              mb: { xs: 2, sm: 2 },
+              width: '100%',
+              a: {
+                textDecoration: 'none',
+                color: 'white',
+              },
+              'a:hover': {
+                opacity: 0.8,
+              },
+            }}
+          >
+            <Typography variant="body1" sx={{ borderBottom: '1px solid #fff' }}>
+              Balneário Camboriú
+            </Typography>
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 1,
+              }}
+            >
+              <MapPin size={20} weight="fill" />
+              <Typography variant="body1">
+                Rua 2000, 121,Edif La Belle Tour Resid., Centro - Balneário
+                Camboriú / SC
+              </Typography>
+            </Box>
 
-            <Link href="mailto:aurosimobiliaria@gmail.com">
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                <EnvelopeOpen size={20} weight="fill" />
-                <Typography variant="body1">
-                  aurosimobiliaria@gmail.com
-                </Typography>
+            <Link href="https://api.whatsapp.com/send?phone=5547988163739">
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <WhatsappLogo size={20} weight="fill" />
+                <Typography variant="body1">(47) 98816-3739</Typography>
               </Box>
             </Link>
           </Box>
@@ -825,8 +882,11 @@ function Footer() {
               },
             }}
           >
+            <Typography variant="body1" sx={{ borderBottom: '1px solid #fff' }}>
+              Contato
+            </Typography>
             <Link href="https://www.instagram.com/auroscorretoraimobiliaria/">
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                 <InstagramLogo size={20} weight="fill" />
                 <Typography variant="body1">
                   @auroscorretoraimobiliaria
@@ -835,10 +895,19 @@ function Footer() {
             </Link>
 
             <Link href="https://www.facebook.com/AurosCorretoraImob?locale=pt_BR">
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                 <FacebookLogo size={20} weight="fill" />
                 <Typography variant="body1">
                   @auroscorretoraimobiliaria
+                </Typography>
+              </Box>
+            </Link>
+
+            <Link href="mailto:aurosimobiliaria@gmail.com">
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <EnvelopeOpen size={20} weight="fill" />
+                <Typography variant="body1">
+                  aurosimobiliaria@gmail.com
                 </Typography>
               </Box>
             </Link>
@@ -854,54 +923,42 @@ function Footer() {
           justifyContent: 'center',
         }}
       >
-        <Typography variant="body1">
-          Auros corretora imobiliária - CRECI-SC7018J
+        <Typography variant="caption">
+          {`Auros corretora imobiliária - CRECI-SC 7018-J (Rio do Sul ) CRECI-SC 8732-j (Balneário Camboriú)`}
         </Typography>
       </Box>
     </>
   )
 }
 
-export default function Home() {
-  const [properties, setProperties] = useState<Property[]>([])
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  context.res.setHeader(
+    'Cache-Control',
+    'public, s-maxage=10, stale-while-revalidate=59',
+  )
 
-  const loadProperties = useCallback(async () => {
-    const response = await api.get(`/imovel?limit=3&visible=true`)
+  const responseImoveis = await api.get(`/imovel?limit=6&visible=true`)
+  const responseTipo = await api.get<TypeProperty[]>(`/tipo-imovel`)
+  const responseCities = await api.get<CityProps[]>(`/imovel/cidades`)
 
-    if (response) {
-      setProperties([...response.data])
-    }
-  }, [])
+  return {
+    props: {
+      properties: responseImoveis.data,
+      types: responseTipo.data,
+      cities: responseCities.data,
+    },
+  }
+}
 
-  useEffect(() => {
-    loadProperties()
-  }, [loadProperties])
-
-  const [cities, setCities] = useState<CityProps[]>([])
-  const [types, setTypes] = useState<TypeProperty[]>([])
-
-  const loadTypes = useCallback(async () => {
-    const responseTipo = await api.get<TypeProperty[]>(`/tipo-imovel`)
-    if (responseTipo) {
-      setTypes([...responseTipo.data])
-    }
-  }, [])
-
-  const loadCities = useCallback(async () => {
-    const responseCities = await api.get<CityProps[]>(`/imovel/cidades`)
-    if (responseCities) {
-      setCities([...responseCities.data])
-    }
-  }, [])
-
-  useEffect(() => {
-    loadTypes()
-  }, [loadTypes])
-
-  useEffect(() => {
-    loadCities()
-  }, [loadCities])
-
+export default function Home({
+  properties,
+  types,
+  cities,
+}: {
+  properties: Property[]
+  types: TypeProperty[]
+  cities: CityProps[]
+}) {
   return (
     <>
       <Head>

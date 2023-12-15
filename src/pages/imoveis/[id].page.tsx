@@ -162,7 +162,7 @@ function Property({ property }: { property: Property }) {
                   >
                     <Box>
                       <Door size={16} weight="bold" />
-                      <Typography variant="caption">
+                      <Typography variant="body1">
                         {property.bedrooms}
                       </Typography>
                     </Box>
@@ -180,9 +180,7 @@ function Property({ property }: { property: Property }) {
                   >
                     <Box>
                       <Bed size={16} weight="bold" />
-                      <Typography variant="caption">
-                        {property.suites}
-                      </Typography>
+                      <Typography variant="body1">{property.suites}</Typography>
                     </Box>
                   </Tooltip>
                 )}
@@ -198,7 +196,7 @@ function Property({ property }: { property: Property }) {
                   >
                     <Box>
                       <Toilet size={16} weight="bold" />
-                      <Typography variant="caption">
+                      <Typography variant="body1">
                         {property.bathrooms}
                       </Typography>
                     </Box>
@@ -216,7 +214,7 @@ function Property({ property }: { property: Property }) {
                   >
                     <Box>
                       <Car size={16} weight="bold" />
-                      <Typography variant="caption">
+                      <Typography variant="body1">
                         {property.parkingSpots}
                       </Typography>
                     </Box>
@@ -234,7 +232,7 @@ function Property({ property }: { property: Property }) {
                   >
                     <Box>
                       <LiaRulerCombinedSolid size={16} />
-                      <Typography variant="caption">
+                      <Typography variant="body1">
                         {property.totalArea}
                       </Typography>
                     </Box>
@@ -252,7 +250,7 @@ function Property({ property }: { property: Property }) {
                   >
                     <Box>
                       <BiArea size={16} />
-                      <Typography variant="caption">
+                      <Typography variant="body1">
                         {property.privateArea}
                       </Typography>
                     </Box>
@@ -318,137 +316,296 @@ function Property({ property }: { property: Property }) {
               </Typography>
 
               <Box display="flex" flexDirection="column" gap={2} mt={1}>
-                <Box
-                  display="flex"
-                  alignItems="center"
-                  justifyContent="space-between"
-                  sx={{ borderBottom: '1px solid #eee', pb: 2 }}
-                >
-                  <Box display="flex" alignItems="center" gap={2}>
-                    <Avatar
-                      sx={{ width: '50px', height: '50px' }}
-                      variant="square"
-                      src={adrianaAvatar.src}
-                    />
-
-                    <Box display="flex" flexDirection="column">
-                      <Typography variant="body1">Adriana</Typography>
-                      <Typography variant="caption">CRECI: 48879</Typography>
-                    </Box>
-                  </Box>
-                  <Button
-                    color="success"
-                    variant="contained"
-                    onClick={() =>
-                      window.open(
-                        'https://api.whatsapp.com/send?phone=5547997798081',
-                      )
-                    }
+                {property.city === 'Rio do Sul' && (
+                  <Box
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="space-between"
+                    sx={{ borderBottom: '1px solid #eee', pb: 2 }}
                   >
-                    <WhatsappLogo size={20} weight="fill" />
-                    <Typography variant="caption" ml={1}>
-                      Whatsapp
-                    </Typography>
-                  </Button>
-                </Box>
+                    <Box display="flex" alignItems="center" gap={2}>
+                      <Avatar
+                        sx={{ width: '50px', height: '50px' }}
+                        variant="square"
+                        src={adrianaAvatar.src}
+                      />
 
-                <Box
-                  display="flex"
-                  alignItems="center"
-                  justifyContent="space-between"
-                  sx={{ borderBottom: '1px solid #eee', pb: 2 }}
-                >
-                  <Box display="flex" alignItems="center" gap={2}>
-                    <Avatar
-                      sx={{ width: '50px', height: '50px' }}
-                      variant="square"
-                      src={renatoAvatar.src}
-                    />
-                    <Box display="flex" flexDirection="column">
-                      <Typography variant="body1">Renato</Typography>
-                      <Typography variant="caption">CRECI: 37802</Typography>
+                      <Box display="flex" flexDirection="column">
+                        <Typography variant="body1">Adriana</Typography>
+                        <Typography variant="caption">CRECI: 48879</Typography>
+                      </Box>
                     </Box>
+                    <Button
+                      color="success"
+                      variant="contained"
+                      onClick={() =>
+                        window.open(
+                          'https://api.whatsapp.com/send?phone=5547997798081',
+                        )
+                      }
+                    >
+                      <WhatsappLogo size={20} weight="fill" />
+                      <Typography variant="caption" ml={1}>
+                        Whatsapp
+                      </Typography>
+                    </Button>
                   </Box>
-                  <Button
-                    color="success"
-                    variant="contained"
-                    onClick={() =>
-                      window.open(
-                        'https://api.whatsapp.com/send?phone=5547999008090',
-                      )
-                    }
-                  >
-                    <WhatsappLogo size={20} weight="fill" />
-                    <Typography variant="caption" ml={1}>
-                      Whatsapp
-                    </Typography>
-                  </Button>
-                </Box>
+                )}
 
-                <Box
-                  display="flex"
-                  alignItems="center"
-                  justifyContent="space-between"
-                  sx={{ borderBottom: '1px solid #eee', pb: 2 }}
-                >
-                  <Box display="flex" alignItems="center" gap={2}>
-                    <Avatar
-                      sx={{ width: '50px', height: '50px' }}
-                      variant="square"
-                      src={rodrigoAvatar.src}
-                    />
-                    <Box display="flex" flexDirection="column">
-                      <Typography variant="body1">Rodrigo</Typography>
-                      <Typography variant="caption">CRECI: 52831</Typography>
+                {property.city === 'Rio do Sul' ||
+                  (property.city === 'Aurora' && (
+                    <Box
+                      display="flex"
+                      alignItems="center"
+                      justifyContent="space-between"
+                      sx={{ borderBottom: '1px solid #eee', pb: 2 }}
+                    >
+                      <Box display="flex" alignItems="center" gap={2}>
+                        <Avatar
+                          sx={{ width: '50px', height: '50px' }}
+                          variant="square"
+                          src={renatoAvatar.src}
+                        />
+                        <Box display="flex" flexDirection="column">
+                          <Typography variant="body1">Renato</Typography>
+                          <Typography variant="caption">
+                            CRECI: 37802
+                          </Typography>
+                        </Box>
+                      </Box>
+                      <Button
+                        color="success"
+                        variant="contained"
+                        onClick={() =>
+                          window.open(
+                            'https://api.whatsapp.com/send?phone=5547999008090',
+                          )
+                        }
+                      >
+                        <WhatsappLogo size={20} weight="fill" />
+                        <Typography variant="caption" ml={1}>
+                          Whatsapp
+                        </Typography>
+                      </Button>
                     </Box>
-                  </Box>
-                  <Button
-                    color="success"
-                    variant="contained"
-                    onClick={() =>
-                      window.open(
-                        'https://api.whatsapp.com/send?phone=5547999990607',
-                      )
-                    }
-                  >
-                    <WhatsappLogo size={20} weight="fill" />
-                    <Typography variant="caption" ml={1}>
-                      Whatsapp
-                    </Typography>
-                  </Button>
-                </Box>
+                  ))}
 
-                <Box
-                  display="flex"
-                  alignItems="center"
-                  justifyContent="space-between"
-                >
-                  <Box display="flex" alignItems="center" gap={2}>
-                    <Avatar
-                      sx={{ width: '50px', height: '50px' }}
-                      variant="square"
-                      src={jonathanAvatar.src}
-                    />
-                    <Box display="flex" flexDirection="column">
-                      <Typography variant="body1">Jonathan</Typography>
-                      <Typography variant="caption">CRECI: 27584</Typography>
+                {property.city === 'Aurora' ||
+                  (property.city === 'Balneário Camboriú' && (
+                    <Box
+                      display="flex"
+                      alignItems="center"
+                      justifyContent="space-between"
+                      sx={{ borderBottom: '1px solid #eee', pb: 2 }}
+                    >
+                      <Box display="flex" alignItems="center" gap={2}>
+                        <Avatar
+                          sx={{ width: '50px', height: '50px' }}
+                          variant="square"
+                          src={rodrigoAvatar.src}
+                        />
+                        <Box display="flex" flexDirection="column">
+                          <Typography variant="body1">Rodrigo</Typography>
+                          <Typography variant="caption">
+                            CRECI: 52831
+                          </Typography>
+                        </Box>
+                      </Box>
+                      <Button
+                        color="success"
+                        variant="contained"
+                        onClick={() =>
+                          window.open(
+                            'https://api.whatsapp.com/send?phone=5547999990607',
+                          )
+                        }
+                      >
+                        <WhatsappLogo size={20} weight="fill" />
+                        <Typography variant="caption" ml={1}>
+                          Whatsapp
+                        </Typography>
+                      </Button>
                     </Box>
-                  </Box>
-                  <Button
-                    color="success"
-                    variant="contained"
-                    onClick={() =>
-                      window.open(
-                        'https://api.whatsapp.com/send?phone=5547988163739',
-                      )
-                    }
+                  ))}
+
+                {property.city === 'Balneário Camboriú' && (
+                  <Box
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="space-between"
                   >
-                    <WhatsappLogo size={20} weight="fill" />
-                    <Typography variant="caption" ml={1}>
-                      Whatsapp
-                    </Typography>
-                  </Button>
-                </Box>
+                    <Box display="flex" alignItems="center" gap={2}>
+                      <Avatar
+                        sx={{ width: '50px', height: '50px' }}
+                        variant="square"
+                        src={jonathanAvatar.src}
+                      />
+                      <Box display="flex" flexDirection="column">
+                        <Typography variant="body1">Jonathan</Typography>
+                        <Typography variant="caption">CRECI: 27584</Typography>
+                      </Box>
+                    </Box>
+                    <Button
+                      color="success"
+                      variant="contained"
+                      onClick={() =>
+                        window.open(
+                          'https://api.whatsapp.com/send?phone=5547988163739',
+                        )
+                      }
+                    >
+                      <WhatsappLogo size={20} weight="fill" />
+                      <Typography variant="caption" ml={1}>
+                        Whatsapp
+                      </Typography>
+                    </Button>
+                  </Box>
+                )}
+
+                {property.city !== 'Balneário Camboriú' &&
+                  property.city !== 'Aurora' &&
+                  property.city !== 'Rio do Sul' && (
+                    <>
+                      <Box
+                        display="flex"
+                        alignItems="center"
+                        justifyContent="space-between"
+                        sx={{ borderBottom: '1px solid #eee', pb: 2 }}
+                      >
+                        <Box display="flex" alignItems="center" gap={2}>
+                          <Avatar
+                            sx={{ width: '50px', height: '50px' }}
+                            variant="square"
+                            src={adrianaAvatar.src}
+                          />
+
+                          <Box display="flex" flexDirection="column">
+                            <Typography variant="body1">Adriana</Typography>
+                            <Typography variant="caption">
+                              CRECI: 48879
+                            </Typography>
+                          </Box>
+                        </Box>
+                        <Button
+                          color="success"
+                          variant="contained"
+                          onClick={() =>
+                            window.open(
+                              'https://api.whatsapp.com/send?phone=5547997798081',
+                            )
+                          }
+                        >
+                          <WhatsappLogo size={20} weight="fill" />
+                          <Typography variant="caption" ml={1}>
+                            Whatsapp
+                          </Typography>
+                        </Button>
+                      </Box>
+                      <Box
+                        display="flex"
+                        alignItems="center"
+                        justifyContent="space-between"
+                        sx={{ borderBottom: '1px solid #eee', pb: 2 }}
+                      >
+                        <Box display="flex" alignItems="center" gap={2}>
+                          <Avatar
+                            sx={{ width: '50px', height: '50px' }}
+                            variant="square"
+                            src={renatoAvatar.src}
+                          />
+                          <Box display="flex" flexDirection="column">
+                            <Typography variant="body1">Renato</Typography>
+                            <Typography variant="caption">
+                              CRECI: 37802
+                            </Typography>
+                          </Box>
+                        </Box>
+                        <Button
+                          color="success"
+                          variant="contained"
+                          onClick={() =>
+                            window.open(
+                              'https://api.whatsapp.com/send?phone=5547999008090',
+                            )
+                          }
+                        >
+                          <WhatsappLogo size={20} weight="fill" />
+                          <Typography variant="caption" ml={1}>
+                            Whatsapp
+                          </Typography>
+                        </Button>
+                      </Box>
+
+                      <Box
+                        display="flex"
+                        alignItems="center"
+                        justifyContent="space-between"
+                        sx={{ borderBottom: '1px solid #eee', pb: 2 }}
+                      >
+                        <Box display="flex" alignItems="center" gap={2}>
+                          <Avatar
+                            sx={{ width: '50px', height: '50px' }}
+                            variant="square"
+                            src={rodrigoAvatar.src}
+                          />
+                          <Box display="flex" flexDirection="column">
+                            <Typography variant="body1">Rodrigo</Typography>
+                            <Typography variant="caption">
+                              CRECI: 52831
+                            </Typography>
+                          </Box>
+                        </Box>
+                        <Button
+                          color="success"
+                          variant="contained"
+                          onClick={() =>
+                            window.open(
+                              'https://api.whatsapp.com/send?phone=5547999990607',
+                            )
+                          }
+                        >
+                          <WhatsappLogo size={20} weight="fill" />
+                          <Typography variant="caption" ml={1}>
+                            Whatsapp
+                          </Typography>
+                        </Button>
+                      </Box>
+
+                      <Box
+                        display="flex"
+                        alignItems="center"
+                        justifyContent="space-between"
+                      >
+                        <Box display="flex" alignItems="center" gap={2}>
+                          <Avatar
+                            sx={{ width: '50px', height: '50px' }}
+                            variant="square"
+                            src={jonathanAvatar.src}
+                          />
+                          <Box display="flex" flexDirection="column">
+                            <Typography variant="body1">Jonathan</Typography>
+                            <Typography variant="caption">
+                              CRECI: 27584
+                            </Typography>
+                          </Box>
+                        </Box>
+                        <Button
+                          color="success"
+                          variant="contained"
+                          onClick={() =>
+                            window.open(
+                              'https://api.whatsapp.com/send?phone=5547988163739',
+                            )
+                          }
+                        >
+                          <WhatsappLogo size={20} weight="fill" />
+                          <Typography variant="caption" ml={1}>
+                            Whatsapp
+                          </Typography>
+                        </Button>
+                      </Box>
+                    </>
+                  )}
               </Box>
             </Card>
           </Grid>

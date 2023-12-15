@@ -565,7 +565,7 @@ function Properties({
                         >
                           <Box>
                             <Door size={16} weight="bold" />
-                            <Typography variant="caption">
+                            <Typography variant="body1">
                               {property.bedrooms}
                             </Typography>
                           </Box>
@@ -583,7 +583,7 @@ function Properties({
                         >
                           <Box>
                             <Bed size={16} weight="bold" />
-                            <Typography variant="caption">
+                            <Typography variant="body1">
                               {property.suites}
                             </Typography>
                           </Box>
@@ -601,7 +601,7 @@ function Properties({
                         >
                           <Box>
                             <Toilet size={16} weight="bold" />
-                            <Typography variant="caption">
+                            <Typography variant="body1">
                               {property.bathrooms}
                             </Typography>
                           </Box>
@@ -619,7 +619,7 @@ function Properties({
                         >
                           <Box>
                             <Car size={16} weight="bold" />
-                            <Typography variant="caption">
+                            <Typography variant="body1">
                               {property.parkingSpots}
                             </Typography>
                           </Box>
@@ -637,7 +637,7 @@ function Properties({
                         >
                           <Box>
                             <LiaRulerCombinedSolid size={16} />
-                            <Typography variant="caption">
+                            <Typography variant="body1">
                               {property.totalArea}
                             </Typography>
                           </Box>
@@ -655,7 +655,7 @@ function Properties({
                         >
                           <Box>
                             <BiArea size={16} />
-                            <Typography variant="caption">
+                            <Typography variant="body1">
                               {property.privateArea}
                             </Typography>
                           </Box>
