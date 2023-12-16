@@ -160,6 +160,7 @@ function BannerHome({
             src={bg}
             alt=""
             height={950}
+            quality={100}
             style={{
               position: 'absolute',
               zIndex: -1,
