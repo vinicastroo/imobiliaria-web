@@ -780,7 +780,28 @@ function Contact() {
   )
 }
 
+interface CubProps {
+  monthYear: string
+  cubValue: string
+  monthPercentage: string
+  yearPercentage: string
+  twelveMonthsPercentage: string
+}
 function Footer() {
+  const [cubInformation, setCubinformation] = useState<CubProps>()
+
+  const loadCubinformation = useCallback(async () => {
+    const response = await api.get('/cub-information')
+
+    if (response) {
+      setCubinformation(response.data)
+    }
+  }, [])
+
+  useEffect(() => {
+    loadCubinformation()
+  }, [loadCubinformation])
+
   return (
     <>
       <Box
@@ -800,7 +821,7 @@ function Footer() {
             maxWidth: '1200px',
             width: '100%',
             margin: 'auto auto',
-            gap: 2,
+            gap: 4,
             p: 1,
           }}
         >
@@ -842,7 +863,7 @@ function Footer() {
             </Typography>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               <MapPin size={20} weight="fill" />
-              <Typography variant="body1" flex={1}>
+              <Typography variant="body2" flex={1}>
                 R. XV de Novembro, 1751 - sala02, Laranjeiras, Rio do Sul - SC
               </Typography>
             </Box>
@@ -852,7 +873,7 @@ function Footer() {
                 <Box sx={{ flex: 1 }}>
                   <WhatsappLogo size={20} weight="fill" />
                 </Box>
-                <Typography variant="body1">(47) 99900-8090</Typography>
+                <Typography variant="body2">(47) 99900-8090</Typography>
               </Box>
             </Link>
           </Box>
@@ -885,7 +906,7 @@ function Footer() {
               }}
             >
               <MapPin size={20} weight="fill" />
-              <Typography variant="body1" flex={1}>
+              <Typography variant="body2" flex={1}>
                 Rua 2000, 121,Edif La Belle Tour Resid., Centro - Balneário
                 Camboriú / SC
               </Typography>
@@ -894,7 +915,7 @@ function Footer() {
             <Link href="https://api.whatsapp.com/send?phone=5547988163739">
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                 <WhatsappLogo size={20} weight="fill" />
-                <Typography variant="body1">(47) 98816-3739</Typography>
+                <Typography variant="body2">(47) 98816-3739</Typography>
               </Box>
             </Link>
           </Box>
@@ -924,7 +945,7 @@ function Footer() {
             <Link href="https://www.instagram.com/auroscorretoraimobiliaria/">
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                 <InstagramLogo size={20} weight="fill" />
-                <Typography variant="body1">
+                <Typography variant="body2">
                   @auroscorretoraimobiliaria
                 </Typography>
               </Box>
@@ -933,7 +954,7 @@ function Footer() {
             <Link href="https://www.facebook.com/AurosCorretoraImob?locale=pt_BR">
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                 <FacebookLogo size={20} weight="fill" />
-                <Typography variant="body1">
+                <Typography variant="body2">
                   @auroscorretoraimobiliaria
                 </Typography>
               </Box>
@@ -942,11 +963,44 @@ function Footer() {
             <Link href="mailto:aurosimobiliaria@gmail.com">
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                 <EnvelopeOpen size={20} weight="fill" />
-                <Typography variant="body1">
+                <Typography variant="body2">
                   aurosimobiliaria@gmail.com
                 </Typography>
               </Box>
             </Link>
+          </Box>
+
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 1,
+              color: 'white',
+              width: '100%',
+              alignItems: { xs: 'center', sm: 'center', md: 'flex-start' },
+              justifyContent: { xs: 'center', sm: 'center', md: 'flex-start' },
+              mb: { xs: 2, sm: 2 },
+            }}
+          >
+            <Typography variant="body1" sx={{ borderBottom: '1px solid #fff' }}>
+              Tabela do CUB SC
+            </Typography>
+
+            <Typography variant="body2">
+              Mês/Ano : {cubInformation?.monthYear}
+            </Typography>
+            <Typography variant="body2">
+              CUB SC (R$/m²) : {cubInformation?.cubValue}
+            </Typography>
+            <Typography variant="body2">
+              Mês (%) : {cubInformation?.monthPercentage}
+            </Typography>
+            <Typography variant="body2">
+              Ano (%) : {cubInformation?.yearPercentage}
+            </Typography>
+            <Typography variant="body2">
+              12 meses(%) : {cubInformation?.twelveMonthsPercentage}
+            </Typography>
           </Box>
         </Box>
       </Box>
