@@ -870,9 +870,7 @@ function Footer() {
 
             <Link href="https://api.whatsapp.com/send?phone=5547999008090">
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                <Box sx={{ flex: 1 }}>
-                  <WhatsappLogo size={20} weight="fill" />
-                </Box>
+                <WhatsappLogo size={20} weight="fill" />
                 <Typography variant="body2">(47) 99900-8090</Typography>
               </Box>
             </Link>
