@@ -131,7 +131,7 @@ function Property({ property }: { property: Property }) {
 
         <Grid container spacing={2} sx={{ mt: 1, px: 2 }}>
           <Grid item md={8.5} sm={12} xs={12}>
-            <Card variant="outlined" sx={{ p: 2 }}>
+            <Card variant="outlined" sx={{ p: 2, mb: 2 }}>
               <Box display="flex" flexDirection="column">
                 <Typography variant="h4" fontWeight="bold" color="primary">
                   {property?.name}
