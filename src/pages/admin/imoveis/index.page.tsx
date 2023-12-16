@@ -156,9 +156,18 @@ export default function Property() {
 
   const columns: GridColDef[] = [
     {
+      field: 'id',
+      headerName: '#',
+      flex: 1,
+      minWidth: 300,
+      renderCell: (params) => {
+        return params.row.id
+      },
+    },
+    {
       field: 'type_property',
       headerName: 'Tipo de Imóvel',
-      width: 200,
+      flex: 1,
       renderCell: (params) => {
         const typeProperty = params.row.type_property
         return typeProperty ? typeProperty.description : '-'
@@ -172,27 +181,24 @@ export default function Property() {
     {
       field: 'value',
       headerName: 'Valor',
-      width: 200,
+      flex: 1,
     },
     {
       field: 'city',
       headerName: 'Cidade',
-      width: 200,
     },
     {
       field: 'neighborhood',
       headerName: 'Bairro',
-      width: 200,
     },
     {
       field: 'street',
       headerName: 'Rua',
-      width: 300,
+      flex: 1,
     },
     {
       field: 'visible',
       headerName: 'Situação',
-      width: 100,
       renderCell: ({ row }) => {
         return row.visible ? 'Ativo' : 'Desativo'
       },
