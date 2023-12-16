@@ -352,81 +352,75 @@ function Property({ property }: { property: Property }) {
                   </Box>
                 )}
 
-                {property.city === 'Rio do Sul' ||
-                  (property.city === 'Aurora' && (
-                    <Box
-                      display="flex"
-                      alignItems="center"
-                      justifyContent="space-between"
-                      sx={{ borderBottom: '1px solid #eee', pb: 2 }}
-                    >
-                      <Box display="flex" alignItems="center" gap={2}>
-                        <Avatar
-                          sx={{ width: '50px', height: '50px' }}
-                          variant="square"
-                          src={renatoAvatar.src}
-                        />
-                        <Box display="flex" flexDirection="column">
-                          <Typography variant="body1">Renato</Typography>
-                          <Typography variant="caption">
-                            CRECI: 37802
-                          </Typography>
-                        </Box>
+                {['Rio do sul', 'Aurora'].includes(property.city) && (
+                  <Box
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="space-between"
+                    sx={{ borderBottom: '1px solid #eee', pb: 2 }}
+                  >
+                    <Box display="flex" alignItems="center" gap={2}>
+                      <Avatar
+                        sx={{ width: '50px', height: '50px' }}
+                        variant="square"
+                        src={renatoAvatar.src}
+                      />
+                      <Box display="flex" flexDirection="column">
+                        <Typography variant="body1">Renato</Typography>
+                        <Typography variant="caption">CRECI: 37802</Typography>
                       </Box>
-                      <Button
-                        color="success"
-                        variant="contained"
-                        onClick={() =>
-                          window.open(
-                            'https://api.whatsapp.com/send?phone=5547999008090',
-                          )
-                        }
-                      >
-                        <WhatsappLogo size={20} weight="fill" />
-                        <Typography variant="caption" ml={1}>
-                          Whatsapp
-                        </Typography>
-                      </Button>
                     </Box>
-                  ))}
+                    <Button
+                      color="success"
+                      variant="contained"
+                      onClick={() =>
+                        window.open(
+                          'https://api.whatsapp.com/send?phone=5547999008090',
+                        )
+                      }
+                    >
+                      <WhatsappLogo size={20} weight="fill" />
+                      <Typography variant="caption" ml={1}>
+                        Whatsapp
+                      </Typography>
+                    </Button>
+                  </Box>
+                )}
 
-                {property.city === 'Aurora' ||
-                  (property.city === 'Balneário Camboriú' && (
-                    <Box
-                      display="flex"
-                      alignItems="center"
-                      justifyContent="space-between"
-                      sx={{ borderBottom: '1px solid #eee', pb: 2 }}
-                    >
-                      <Box display="flex" alignItems="center" gap={2}>
-                        <Avatar
-                          sx={{ width: '50px', height: '50px' }}
-                          variant="square"
-                          src={rodrigoAvatar.src}
-                        />
-                        <Box display="flex" flexDirection="column">
-                          <Typography variant="body1">Rodrigo</Typography>
-                          <Typography variant="caption">
-                            CRECI: 52831
-                          </Typography>
-                        </Box>
+                {['Aurora', 'Balneário Camboriú'].includes(property.city) && (
+                  <Box
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="space-between"
+                    sx={{ borderBottom: '1px solid #eee', pb: 2 }}
+                  >
+                    <Box display="flex" alignItems="center" gap={2}>
+                      <Avatar
+                        sx={{ width: '50px', height: '50px' }}
+                        variant="square"
+                        src={rodrigoAvatar.src}
+                      />
+                      <Box display="flex" flexDirection="column">
+                        <Typography variant="body1">Rodrigo</Typography>
+                        <Typography variant="caption">CRECI: 52831</Typography>
                       </Box>
-                      <Button
-                        color="success"
-                        variant="contained"
-                        onClick={() =>
-                          window.open(
-                            'https://api.whatsapp.com/send?phone=5547999990607',
-                          )
-                        }
-                      >
-                        <WhatsappLogo size={20} weight="fill" />
-                        <Typography variant="caption" ml={1}>
-                          Whatsapp
-                        </Typography>
-                      </Button>
                     </Box>
-                  ))}
+                    <Button
+                      color="success"
+                      variant="contained"
+                      onClick={() =>
+                        window.open(
+                          'https://api.whatsapp.com/send?phone=5547999990607',
+                        )
+                      }
+                    >
+                      <WhatsappLogo size={20} weight="fill" />
+                      <Typography variant="caption" ml={1}>
+                        Whatsapp
+                      </Typography>
+                    </Button>
+                  </Box>
+                )}
 
                 {property.city === 'Balneário Camboriú' && (
                   <Box
