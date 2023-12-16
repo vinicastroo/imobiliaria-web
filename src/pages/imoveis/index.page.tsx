@@ -39,7 +39,7 @@ import Image from 'next/image'
 import { BiArea } from 'react-icons/bi'
 import { LiaRulerCombinedSolid } from 'react-icons/lia'
 import CircularProgress from '@mui/material/CircularProgress'
-
+import square from '@/assets/square.svg'
 interface TypeProperty {
   id: string
   createdAt: string
@@ -539,6 +539,7 @@ function Properties({
         flexDirection: 'column',
         margin: '0 auto',
         p: 2,
+        zIndex: 999,
       }}
     >
       <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2 }}>
@@ -911,35 +912,51 @@ export default function Home({
         <title>Auros | Imóveis</title>
       </Head>
       <Box>
-        <MenubarHome />
-
-        <Properties
-          page={page}
-          setPage={setPage}
-          totalSize={total}
-          properties={properties}
-          setProperties={setProperties}
-          handleOpenFilter={handleOpenFilter}
-        />
-
-        <Drawer
-          open={openFilter}
-          onClose={handleCloseFilter}
-          anchor="right"
-          sx={{ p: 2 }}
+        <Box
+          sx={{
+            width: '100vw',
+            height: '100%',
+            minHeight: '100vh',
+            position: 'relative',
+            backgroundColor: '#fff',
+            backgroundImage: { md: `url(${square.src}), url(${square.src})` },
+            backgroundPosition: {
+              xs: '170% 0%,-70% 100%',
+              sm: '170% 0%,-70% 100%',
+              md: '110% 0%, -10% 100%',
+            },
+            backgroundSize: 'auto, auto',
+            backgroundRepeat: 'no-repeat, no-repeat',
+          }}
         >
-          <Filter
+          <MenubarHome />
+          <Properties
             page={page}
-            types={types}
-            cities={cities}
-            initialNeighborhood={neighborhoods}
-            setLoading={setLoading}
-            setTotal={setTotal}
+            setPage={setPage}
+            totalSize={total}
+            properties={properties}
             setProperties={setProperties}
+            handleOpenFilter={handleOpenFilter}
           />
-        </Drawer>
+        </Box>
       </Box>
 
+      <Drawer
+        open={openFilter}
+        onClose={handleCloseFilter}
+        anchor="right"
+        sx={{ p: 2 }}
+      >
+        <Filter
+          page={page}
+          types={types}
+          cities={cities}
+          initialNeighborhood={neighborhoods}
+          setLoading={setLoading}
+          setTotal={setTotal}
+          setProperties={setProperties}
+        />
+      </Drawer>
       <Backdrop
         sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
         open={loading}

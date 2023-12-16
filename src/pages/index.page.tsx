@@ -720,8 +720,8 @@ function Contact() {
           alignItems: 'center',
           width: '100%',
           height: { xs: 600, sm: 600, md: 700 },
-          position: 'relative',
           p: 2,
+          position: 'relative',
           background: 'linear-gradient(#fafafa, #D0DEF8)',
         }}
       >

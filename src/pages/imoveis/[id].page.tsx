@@ -86,7 +86,13 @@ function Property({ property }: { property: Property }) {
 
       <MenubarHome />
 
-      <Box sx={{ maxWidth: '1200px', margin: '0 auto', mt: 4 }}>
+      <Box
+        sx={{
+          maxWidth: '1200px',
+          margin: '0 auto',
+          mt: { xs: 0, sm: 0, md: 4 },
+        }}
+      >
         <Box>
           <Carousel
             navButtonsAlwaysVisible
@@ -129,7 +135,7 @@ function Property({ property }: { property: Property }) {
           </Carousel>
         </Box>
 
-        <Grid container spacing={2} sx={{ mt: 1, px: 2 }}>
+        <Grid container spacing={2} sx={{ mt: 1, px: { xs: 2, sm: 2, md: 0 } }}>
           <Grid item md={8.5} sm={12} xs={12}>
             <Card variant="outlined" sx={{ p: 2, mb: 2 }}>
               <Box display="flex" flexDirection="column">
@@ -296,7 +302,7 @@ function Property({ property }: { property: Property }) {
           </Grid>
 
           <Grid item md={3.5} sm={12} xs={12}>
-            <Card variant="outlined" sx={{ p: 2 }}>
+            <Card variant="outlined" sx={{ p: 2, mb: 2 }}>
               <Box
                 display="flex"
                 alignItems="center"
@@ -316,7 +322,7 @@ function Property({ property }: { property: Property }) {
               </Typography>
 
               <Box display="flex" flexDirection="column" gap={2} mt={1}>
-                {property.city === 'Rio do Sul' && (
+                {['Rio do Sul'].includes(property.city) && (
                   <Box
                     display="flex"
                     alignItems="center"
@@ -352,7 +358,7 @@ function Property({ property }: { property: Property }) {
                   </Box>
                 )}
 
-                {['Rio do sul', 'Aurora'].includes(property.city) && (
+                {['Rio do Sul', 'Aurora'].includes(property.city) && (
                   <Box
                     display="flex"
                     alignItems="center"
@@ -422,7 +428,7 @@ function Property({ property }: { property: Property }) {
                   </Box>
                 )}
 
-                {property.city === 'Balneário Camboriú' && (
+                {['Balneário Camboriú'].includes(property.city) && (
                   <Box
                     display="flex"
                     alignItems="center"
