@@ -264,7 +264,7 @@ export default function CriarImoveis() {
                     files={files}
                     maxFileSize="5mb"
                     labelMaxFileSize="O tamanho maximo toltal dos arquivos permitido é de 5MB"
-                    acceptedFileTypes={['jpg', 'png']}
+                    acceptedFileTypes={['image/*']}
                     server={null} // Não usar a opção de servidor interno do FilePond, pois estamos enviando para um backend personalizado
                     labelIdle='Arraste e solte seus arquivos ou <span class="filepond--label-action">Navegue</span>'
                   />
