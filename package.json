@@ -28,6 +28,8 @@
     "date-fns": "^2.30.0",
     "eslint": "8.34.0",
     "eslint-config-next": "13.1.6",
+    "filepond-plugin-file-validate-size": "^2.2.8",
+    "filepond-plugin-file-validate-type": "^1.2.8",
     "filepond-plugin-image-crop": "^2.0.6",
     "filepond-plugin-image-exif-orientation": "^1.0.11",
     "filepond-plugin-image-preview": "^4.6.11",
