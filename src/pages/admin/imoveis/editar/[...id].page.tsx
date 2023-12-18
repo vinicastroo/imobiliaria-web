@@ -38,7 +38,7 @@ import 'filepond/dist/filepond.min.css'
 import FilePondPluginImageExifOrientation from 'filepond-plugin-image-exif-orientation'
 import FilePondPluginImagePreview from 'filepond-plugin-image-preview'
 import FilePondPluginImageCrop from 'filepond-plugin-image-crop'
-import FilePondPluginFileValidateSize from 'filepond-plugin-file-validate-size'
+// import FilePondPluginFileValidateSize from 'filepond-plugin-file-validate-size'
 import FilePondPluginFileValidateType from 'filepond-plugin-file-validate-type'
 
 import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css'
@@ -54,7 +54,7 @@ registerPlugin(
   FilePondPluginImageExifOrientation,
   FilePondPluginImagePreview,
   FilePondPluginImageCrop,
-  FilePondPluginFileValidateSize,
+  // FilePondPluginFileValidateSize,
   FilePondPluginFileValidateType,
 )
 interface TypeProperty {
@@ -332,15 +332,15 @@ export default function EditarImoveis({
                     allowMultiple={true}
                     allowReorder={true}
                     allowImageCrop={true}
-                    allowFileSizeValidation={true}
+                    // allowFileSizeValidation={true}
                     allowFileTypeValidation={true}
                     imageCropAspectRatio="16:9"
                     onupdatefiles={onFileChange}
                     onreorderfiles={onFileChange}
-                    labelFileTypeNotAllowed="Tipo de arquvio não permitido"
+                    labelFileTypeNotAllowed="Tipo de arquivo não permitido"
                     files={files}
-                    maxFileSize="3.5mb"
-                    labelMaxFileSize="O tamanho maximo toltal dos arquivos permitido é de 5MB"
+                    // maxFileSize="3.5mb"
+                    // labelMaxFileSize="O tamanho maximo toltal dos arquivos permitido é de 5MB"
                     acceptedFileTypes={['image/*']}
                     server={null} // Não usar a opção de servidor interno do FilePond, pois estamos enviando para um backend personalizado
                     labelIdle='Arraste e solte seus arquivos ou <span class="filepond--label-action">Navegue</span>'
