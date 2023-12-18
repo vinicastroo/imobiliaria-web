@@ -142,27 +142,28 @@ export default function CriarImoveis() {
     setLoading(true)
 
     try {
-      const formData = new FormData()
-
       if (files.length === 0) {
         toast.error('Para continuar precisar ter ao menos uma imagem')
         return
       }
-      files.map((fileItem) => {
-        formData.append('files', fileItem)
-        return null
-      })
 
-      const responseFile = await api.post('/files/upload', formData, {
-        headers: {
-          'Content-Type': `multipart/form-data`,
-        },
-      })
+      const paths = await Promise.all(
+        files.map(async (fileItem) => {
+          const formData = new FormData()
+          formData.append('files', fileItem)
+          const responseFile = await api.post('/files/upload', formData, {
+            headers: {
+              'Content-Type': `multipart/form-data`,
+            },
+          })
+          return responseFile.data.paths[0]
+        }),
+      )
 
-      if (responseFile && responseFile.data.paths) {
+      if (paths) {
         const response = await api.post('/imovel', {
           ...data,
-          files: responseFile.data.paths,
+          files: paths,
         })
 
         if (response) {

@@ -49,6 +49,7 @@ import { toast } from 'react-toastify'
 import { useRouter } from 'next/router'
 import { useSession } from 'next-auth/react'
 import CircularProgress from '@mui/material/CircularProgress'
+import Image from 'next/image'
 
 registerPlugin(
   FilePondPluginImageExifOrientation,
@@ -237,38 +238,41 @@ export default function EditarImoveis({
   }, [cep, setValue])
 
   useEffect(() => {
-    async function loadImgs() {
-      let newFilesPonds = await Promise.all(
-        property.files.map(async (file) => {
-          const regex = /\.(jpg|jpeg|png|gif|webp)$/i
-          const match = file.path.match(regex)
+    // async function loadImgs() {
+    //   let newFilesPonds = await Promise.all(
+    //     property.files.map(async (file) => {
+    //       const regex = /\.(jpg|jpeg|png|gif|webp)$/i
+    //       const match = file.path.match(regex)
 
-          if (!match) {
-            return
-          }
+    //       if (!match) {
+    //         return
+    //       }
 
-          const response = await api.get(file.path, {
-            responseType: 'blob',
-          })
+    //       const response = await api.get(file.path, {
+    //         responseType: 'blob',
+    //         headers: {
+    //           'Access-Control-Allow-Origin': '*',
+    //           'Content-Type': 'application/json',
+    //         },
+    //       })
 
-          const newFile = new File([response.data], file.fileName, {
-            type: `image/${match[1]}`,
-          })
+    //       const newFile = new File([response.data], file.fileName, {
+    //         type: `image/${match[1]}`,
+    //       })
 
-          return {
-            source: newFile,
-          }
-        }),
-      )
+    //       return {
+    //         source: newFile,
+    //       }
+    //     }),
+    //   )
 
-      newFilesPonds = newFilesPonds.filter((file) => file?.source)
-      if (newFilesPonds.length > 0) {
-        setFiles([...newFilesPonds])
-      }
-    }
+    //   newFilesPonds = newFilesPonds.filter((file) => file?.source)
+    //   if (newFilesPonds.length > 0) {
+    //     setFiles([...newFilesPonds])
+    //   }
+    // }
 
     if (property) {
-      loadImgs()
       setValue('type_id', property.type_property.id)
     }
   }, [property, setValue])
@@ -324,10 +328,32 @@ export default function EditarImoveis({
 
           <Grid container mt={2} spacing={2}>
             <Grid item md={8}>
-              <Card variant="outlined" sx={{ p: 3 }}>
+              <Card
+                variant="outlined"
+                sx={{ display: 'flex', flexDirection: 'column', p: 3 }}
+              >
                 <Typography variant="body2">Imagens</Typography>
-
-                <Box sx={{ overflowY: 'auto', maxHeight: '400px', mt: 1 }}>
+                <Box
+                  display="flex"
+                  alignItems="center"
+                  flexWrap="wrap"
+                  gap={2}
+                  mt={2}
+                >
+                  {property.files.map((file) => (
+                    <Image
+                      key={file.id}
+                      src={file.path}
+                      alt=""
+                      width={80}
+                      height={80}
+                    />
+                  ))}
+                </Box>
+                <Box sx={{ mt: 2, maxHeight: '400px' }}>
+                  <Typography variant="caption">
+                    * Ao cadastrar novas imagens, as atuais serão apagadas
+                  </Typography>
                   <FilePondStyled
                     allowMultiple={true}
                     allowReorder={true}
