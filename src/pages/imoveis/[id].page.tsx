@@ -110,12 +110,12 @@ function Property({ property }: { property: Property }) {
                   height={1080}
                   loading="lazy"
                   style={{
-                    backgroundSize: 'cover',
+                    backgroundSize: 'contain',
                     backgroundRepeat: 'no-repeat',
                     backgroundPosition: 'center',
                     width: '100%',
                     height: '100%',
-                    objectFit: 'cover',
+                    objectFit: 'contain',
                   }}
                 />
               ))
