@@ -356,9 +356,9 @@ export default function EditarImoveis() {
                     ))}
                   </Box>
                   <Box sx={{ mt: 2, maxHeight: '400px' }}>
-                    <Typography variant="caption">
+                    {/* <Typography variant="caption">
                       * Ao cadastrar novas imagens, as atuais serão apagadas
-                    </Typography>
+                    </Typography> */}
                     <FilePondStyled
                       allowMultiple={true}
                       allowReorder={true}
