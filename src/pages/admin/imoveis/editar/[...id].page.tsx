@@ -143,17 +143,34 @@ export default function EditarImoveis() {
   const router = useRouter()
   const { status } = useSession()
   const { id } = router.query
+  const editor = useEditor({
+    extensions: [
+      StarterKit,
+      TextAlign.configure({
+        types: ['heading', 'paragraph'],
+      }),
+    ],
+    editorProps: {
+      attributes: {
+        spellcheck: 'false',
+      },
+    },
+    onBlur({ editor }) {
+      setValue('description', editor.getHTML())
+    },
+  })
 
   const loadProperty = useCallback(async () => {
     if (id) {
       const response = await api.get(`/imovel/${id}`)
 
-      if (response) {
+      if (response && editor) {
         setProperty(response.data)
+        editor.commands.setContent(response.data.description)
         setValue('description', response.data.description)
       }
     }
-  }, [id, setValue])
+  }, [id, setValue, editor])
 
   useEffect(() => {
     loadProperty()
@@ -176,33 +193,15 @@ export default function EditarImoveis() {
     setFiles(newFiles)
   }
 
-  const editor = useEditor({
-    extensions: [
-      StarterKit,
-      TextAlign.configure({
-        types: ['heading', 'paragraph'],
-      }),
-    ],
-    content: property ? property.description : '',
-    editorProps: {
-      attributes: {
-        spellcheck: 'false',
-      },
-    },
-    onBlur({ editor }) {
-      setValue('description', editor.getHTML())
-    },
-  })
-
   const onSubmit = async (data: SchemaQuestion) => {
     setLoading(true)
 
     if (property) {
       try {
-        if (files.length === 0) {
-          toast.error('Para continuar precisar ter ao menos uma imagem')
-          return
-        }
+        // if (files.length === 0) {
+        //   toast.error('Para continuar precisar ter ao menos uma imagem')
+        //   return
+        // }
 
         const paths = await Promise.all(
           files.map(async (fileItem) => {
