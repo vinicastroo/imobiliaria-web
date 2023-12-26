@@ -469,12 +469,14 @@ function Properties({
   totalSize,
   page,
   setPage,
+  setLoading,
   setProperties,
 }: {
   properties: Property[]
   totalSize: number
   page: number
   handleOpenFilter: () => void
+  setLoading: Dispatch<SetStateAction<boolean>>
   setPage: Dispatch<SetStateAction<number>>
   setProperties: Dispatch<SetStateAction<Property[]>>
 }) {
@@ -568,7 +570,10 @@ function Properties({
             xs={12}
             sx={{ a: { textDecoration: 'none' } }}
           >
-            <Link href={`/imoveis/${property.id}`}>
+            <Link
+              href={`/imoveis/${property.id}`}
+              onClick={() => setLoading(true)}
+            >
               <Card
                 variant="outlined"
                 sx={{
@@ -666,7 +671,7 @@ function Properties({
                       gap={1}
                       mb={1}
                       rowGap={0.5}
-                      flexWrap="nowrap"
+                      flexWrap="wrap"
                     >
                       {Number(property.bedrooms) > 0 && (
                         <Tooltip
@@ -914,7 +919,7 @@ export default function Home({
       <Box>
         <Box
           sx={{
-            width: '100vw',
+            width: '100%',
             height: '100%',
             minHeight: '100vh',
             position: 'relative',
@@ -936,6 +941,7 @@ export default function Home({
             totalSize={total}
             properties={properties}
             setProperties={setProperties}
+            setLoading={setLoading}
             handleOpenFilter={handleOpenFilter}
           />
         </Box>
@@ -957,6 +963,7 @@ export default function Home({
           setProperties={setProperties}
         />
       </Drawer>
+
       <Backdrop
         sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
         open={loading}

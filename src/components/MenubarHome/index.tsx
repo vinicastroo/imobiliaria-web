@@ -27,7 +27,7 @@ export function MenubarHome() {
           },
         }}
       >
-        <Link href="/">
+        <Link href="/" shallow>
           <Image src={logo} alt="logo" width={80} height={80} />
         </Link>
 

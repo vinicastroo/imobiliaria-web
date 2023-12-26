@@ -156,7 +156,7 @@ function Property({ property }: { property: Property }) {
                 Informações
               </Typography>
 
-              <Box display="flex" gap={1} mb={2} rowGap={0.5} flexWrap="nowrap">
+              <Box display="flex" gap={1} mb={2} rowGap={0.5} flexWrap="wrap">
                 {Number(property.bedrooms) > 0 && (
                   <Tooltip
                     title="Quartos"

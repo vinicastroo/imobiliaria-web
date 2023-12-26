@@ -14,6 +14,7 @@ import {
   Tooltip,
   Typography,
   useMediaQuery,
+  Backdrop,
 } from '@mui/material'
 import bg from '@/assets/background.jpg'
 import logo from '@/assets/logo-auros-minimalist.svg'
@@ -33,7 +34,13 @@ import {
   Toilet,
   WhatsappLogo,
 } from 'phosphor-react'
-import { useCallback, useEffect, useState } from 'react'
+import {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react'
 import api from '@/services/api'
 import { useForm } from 'react-hook-form'
 import { z, infer as Infer } from 'zod'
@@ -44,7 +51,7 @@ import { toast } from 'react-toastify'
 import { Search } from '@mui/icons-material'
 import { BiArea } from 'react-icons/bi'
 import { LiaRulerCombinedSolid } from 'react-icons/lia'
-
+import CircularProgress from '@mui/material/CircularProgress'
 interface TypeProperty {
   id: string
   createdAt: string
@@ -94,9 +101,11 @@ interface Property {
 function BannerHome({
   types,
   cities,
+  setLoading,
 }: {
   types: TypeProperty[]
   cities: CityProps[]
+  setLoading: Dispatch<SetStateAction<boolean>>
 }) {
   const [neighborhoods, setNeighborhood] = useState<NeighborhoodProps[]>([])
 
@@ -194,7 +203,7 @@ function BannerHome({
             },
           }}
         >
-          <Link href="/">
+          <Link href="/" onClick={() => setLoading(true)}>
             <Image
               src={logo}
               alt="logo"
@@ -374,7 +383,13 @@ function BannerHome({
   )
 }
 
-function Recent({ properties }: { properties: Property[] }) {
+function Recent({
+  properties,
+  setLoading,
+}: {
+  properties: Property[]
+  setLoading: Dispatch<SetStateAction<boolean>>
+}) {
   return (
     <Box
       sx={{
@@ -431,7 +446,10 @@ function Recent({ properties }: { properties: Property[] }) {
                   },
                 }}
               >
-                <Link href={`/imoveis/${property.id}`}>
+                <Link
+                  href={`/imoveis/${property.id}`}
+                  onClick={() => setLoading(true)}
+                >
                   <Card
                     variant="outlined"
                     sx={{
@@ -1026,7 +1044,7 @@ export default function Home() {
   const [types, setTypes] = useState<TypeProperty[]>([])
   const [cities, setCities] = useState<CityProps[]>([])
   const [properties, setProperties] = useState<Property[]>([])
-
+  const [loading, setLoading] = useState(false)
   const loadCities = useCallback(async () => {
     const responseCities = await api.get<CityProps[]>(`/imovel/cidades`)
 
@@ -1069,11 +1087,18 @@ export default function Home() {
       </Head>
 
       <Box>
-        <BannerHome cities={cities} types={types} />
-        <Recent properties={properties} />
+        <BannerHome cities={cities} types={types} setLoading={setLoading} />
+        <Recent properties={properties} setLoading={setLoading} />
         <Contact />
         <Footer />
       </Box>
+
+      <Backdrop
+        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={loading}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
     </>
   )
 }
