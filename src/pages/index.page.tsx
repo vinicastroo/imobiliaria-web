@@ -796,24 +796,28 @@ export default function Home() {
   const [properties, setProperties] = useState<Property[]>([])
   const [loading, setLoading] = useState(false)
   const loadCities = useCallback(async () => {
+    setLoading(true)
     const responseCities = await api.get<CityProps[]>(`/imovel/cidades`)
 
+    setLoading(false)
     if (responseCities) {
       setCities([...responseCities.data])
     }
   }, [])
 
   const loadTypes = useCallback(async () => {
+    setLoading(true)
     const responseTipo = await api.get<TypeProperty[]>(`/tipo-imovel`)
-
+    setLoading(false)
     if (responseTipo) {
       setTypes([...responseTipo.data])
     }
   }, [])
 
   const loadProperties = useCallback(async () => {
+    setLoading(true)
     const responseImoveis = await api.get(`/imovel?limit=6&visible=true`)
-
+    setLoading(false)
     if (responseImoveis) {
       setProperties([...responseImoveis.data.properties])
     }
