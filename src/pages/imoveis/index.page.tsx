@@ -964,6 +964,7 @@ export default function Home({
           setProperties={setProperties}
         />
       </Drawer>
+      <Box sx={{ mb: 4 }} />
       <Footer />
       <Backdrop
         sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}

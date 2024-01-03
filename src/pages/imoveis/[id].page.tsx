@@ -91,7 +91,7 @@ function Property({ property }: { property: Property }) {
         sx={{
           maxWidth: '1200px',
           margin: '0 auto',
-          mt: { xs: 0, sm: 0, md: 4 },
+          mt: { xs: 0, sm: 0, md: 4, mb: 4 },
         }}
       >
         <Box>
