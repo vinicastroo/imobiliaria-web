@@ -32,6 +32,7 @@ import logo from '@/assets/logo-auros-minimalist.svg'
 import { BiArea } from 'react-icons/bi'
 import { LiaRulerCombinedSolid } from 'react-icons/lia'
 import { ServerResponse } from 'http'
+import Footer from '@/components/Footer'
 
 interface Property {
   id: string
@@ -611,6 +612,8 @@ function Property({ property }: { property: Property }) {
           </Grid>
         </Grid>
       </Box>
+
+      <Footer />
     </Box>
   )
 }

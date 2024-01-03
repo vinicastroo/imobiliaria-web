@@ -40,6 +40,7 @@ import { BiArea } from 'react-icons/bi'
 import { LiaRulerCombinedSolid } from 'react-icons/lia'
 import CircularProgress from '@mui/material/CircularProgress'
 import square from '@/assets/square.svg'
+import Footer from '@/components/Footer'
 interface TypeProperty {
   id: string
   createdAt: string
@@ -963,7 +964,7 @@ export default function Home({
           setProperties={setProperties}
         />
       </Drawer>
-
+      <Footer />
       <Backdrop
         sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
         open={loading}
