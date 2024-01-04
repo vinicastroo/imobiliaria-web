@@ -552,8 +552,8 @@ function Recent({
                               }}
                             >
                               <Box>
-                                <Door size={16} weight="bold" />
-                                <Typography variant="body2">
+                                <Door size={20} weight="bold" />
+                                <Typography variant="body2" fontWeight="bold">
                                   {property.bedrooms}
                                 </Typography>
                               </Box>
@@ -570,8 +570,8 @@ function Recent({
                               }}
                             >
                               <Box>
-                                <Bed size={16} weight="bold" />
-                                <Typography variant="body2">
+                                <Bed size={20} weight="bold" />
+                                <Typography variant="body2" fontWeight="bold">
                                   {property.suites}
                                 </Typography>
                               </Box>
@@ -588,8 +588,8 @@ function Recent({
                               }}
                             >
                               <Box>
-                                <Toilet size={16} weight="bold" />
-                                <Typography variant="body2">
+                                <Toilet size={20} weight="bold" />
+                                <Typography variant="body2" fontWeight="bold">
                                   {property.bathrooms}
                                 </Typography>
                               </Box>
@@ -606,8 +606,8 @@ function Recent({
                               }}
                             >
                               <Box>
-                                <Car size={16} weight="bold" />
-                                <Typography variant="body2">
+                                <Car size={20} weight="bold" />
+                                <Typography variant="body2" fontWeight="bold">
                                   {property.parkingSpots}
                                 </Typography>
                               </Box>
@@ -624,8 +624,8 @@ function Recent({
                               }}
                             >
                               <Box>
-                                <LiaRulerCombinedSolid size={16} />
-                                <Typography variant="body2">
+                                <LiaRulerCombinedSolid size={20} />
+                                <Typography variant="body2" fontWeight="bold">
                                   {property.totalArea}
                                 </Typography>
                               </Box>
@@ -642,8 +642,8 @@ function Recent({
                               }}
                             >
                               <Box>
-                                <BiArea size={16} />
-                                <Typography variant="body2">
+                                <BiArea size={20} />
+                                <Typography variant="body2" fontWeight="bold">
                                   {property.privateArea}
                                 </Typography>
                               </Box>
