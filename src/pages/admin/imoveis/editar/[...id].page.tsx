@@ -327,7 +327,12 @@ export default function EditarImoveis() {
               <Grid item md={8}>
                 <Card
                   variant="outlined"
-                  sx={{ display: 'flex', flexDirection: 'column', p: 3 }}
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    p: 3,
+                    overflowY: 'auto',
+                  }}
                 >
                   <Typography variant="body2">Imagens</Typography>
                   <Box
