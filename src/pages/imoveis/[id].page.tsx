@@ -240,7 +240,7 @@ function Property({ property }: { property: Property }) {
                     <Box>
                       <LiaRulerCombinedSolid size={16} />
                       <Typography variant="body1">
-                        {property.totalArea}
+                        {property.totalArea} M²
                       </Typography>
                     </Box>
                   </Tooltip>
@@ -258,7 +258,7 @@ function Property({ property }: { property: Property }) {
                     <Box>
                       <BiArea size={16} />
                       <Typography variant="body1">
-                        {property.privateArea}
+                        {property.privateArea} M²
                       </Typography>
                     </Box>
                   </Tooltip>

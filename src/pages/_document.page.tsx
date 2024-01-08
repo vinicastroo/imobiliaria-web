@@ -21,6 +21,26 @@ export default function MyDocument({ emotionStyleTags }: MyDocumentProps) {
     <Html>
       <Head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <meta
+          name="description"
+          content="Descubra uma variedade de imóveis em Rio do Sul e Balneário Camboriú com a Auros Corretora Imobiliária. Desde apartamentos compactos até propriedades de luxo, encontre a casa dos seus sonhos."
+        />
+        <meta
+          name="keywords"
+          content="corretora imobiliária, imóveis, Rio do Sul, Balneário Camboriú, compra de imóveis, venda de imóveis, mercado imobiliário"
+        />
+        <meta name="author" content="Auros Corretora Imobiliária" />
+        <meta
+          property="og:title"
+          content="Auros Corretora Imobiliária - Sua Escolha Confiável para Imóveis"
+        />
+        <meta
+          property="og:description"
+          content="Explorando uma ampla gama de imóveis para todos os gostos e orçamentos em Rio do Sul e Balneário Camboriú. Visite nosso site para mais informações."
+        />
+
+        <meta property="og:url" content="https://aurosimobiliaria.com.br" />
+
         <link
           rel="preconnect"
           href="https://fonts.gstatic.com"

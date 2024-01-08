@@ -540,7 +540,7 @@ function Recent({
                           gap={2}
                           mb={1}
                           rowGap={0.5}
-                          flexWrap="nowrap"
+                          flexWrap="wrap"
                         >
                           {Number(property.bedrooms) > 0 && (
                             <Tooltip
@@ -552,7 +552,7 @@ function Recent({
                               }}
                             >
                               <Box>
-                                <Door size={20} weight="bold" />
+                                <Door size={24} weight="bold" />
                                 <Typography variant="body2" fontWeight="bold">
                                   {property.bedrooms}
                                 </Typography>
@@ -570,7 +570,7 @@ function Recent({
                               }}
                             >
                               <Box>
-                                <Bed size={20} weight="bold" />
+                                <Bed size={24} weight="bold" />
                                 <Typography variant="body2" fontWeight="bold">
                                   {property.suites}
                                 </Typography>
@@ -588,7 +588,7 @@ function Recent({
                               }}
                             >
                               <Box>
-                                <Toilet size={20} weight="bold" />
+                                <Toilet size={24} weight="bold" />
                                 <Typography variant="body2" fontWeight="bold">
                                   {property.bathrooms}
                                 </Typography>
@@ -606,7 +606,7 @@ function Recent({
                               }}
                             >
                               <Box>
-                                <Car size={20} weight="bold" />
+                                <Car size={24} weight="bold" />
                                 <Typography variant="body2" fontWeight="bold">
                                   {property.parkingSpots}
                                 </Typography>
@@ -624,9 +624,9 @@ function Recent({
                               }}
                             >
                               <Box>
-                                <LiaRulerCombinedSolid size={20} />
+                                <LiaRulerCombinedSolid size={24} />
                                 <Typography variant="body2" fontWeight="bold">
-                                  {property.totalArea}
+                                  {property.totalArea} M²
                                 </Typography>
                               </Box>
                             </Tooltip>
@@ -642,9 +642,9 @@ function Recent({
                               }}
                             >
                               <Box>
-                                <BiArea size={20} />
+                                <BiArea size={24} />
                                 <Typography variant="body2" fontWeight="bold">
-                                  {property.privateArea}
+                                  {property.privateArea} M²
                                 </Typography>
                               </Box>
                             </Tooltip>
@@ -837,7 +837,10 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>Auros Corretora Imobiliária</title>
+        <title>
+          Auros Corretora Imobiliária - Encontre o Imóvel Ideal em Rio do Sul e
+          Balneário Camboriú
+        </title>
       </Head>
 
       <Box>
