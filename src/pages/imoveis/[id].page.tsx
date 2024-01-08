@@ -157,7 +157,7 @@ function Property({ property }: { property: Property }) {
                 Informações
               </Typography>
 
-              <Box display="flex" gap={1} mb={2} rowGap={0.5} flexWrap="wrap">
+              <Box display="flex" mb={2} gap={2} rowGap={0.5} flexWrap="wrap">
                 {Number(property.bedrooms) > 0 && (
                   <Tooltip
                     title="Quartos"
@@ -168,10 +168,8 @@ function Property({ property }: { property: Property }) {
                     }}
                   >
                     <Box>
-                      <Door size={16} weight="bold" />
-                      <Typography variant="body1">
-                        {property.bedrooms}
-                      </Typography>
+                      <Door size={25} weight="bold" />
+                      <Typography variant="h6">{property.bedrooms}</Typography>
                     </Box>
                   </Tooltip>
                 )}
@@ -186,8 +184,8 @@ function Property({ property }: { property: Property }) {
                     }}
                   >
                     <Box>
-                      <Bed size={16} weight="bold" />
-                      <Typography variant="body1">{property.suites}</Typography>
+                      <Bed size={25} weight="bold" />
+                      <Typography variant="h6">{property.suites}</Typography>
                     </Box>
                   </Tooltip>
                 )}
@@ -202,10 +200,8 @@ function Property({ property }: { property: Property }) {
                     }}
                   >
                     <Box>
-                      <Toilet size={16} weight="bold" />
-                      <Typography variant="body1">
-                        {property.bathrooms}
-                      </Typography>
+                      <Toilet size={25} weight="bold" />
+                      <Typography variant="h6">{property.bathrooms}</Typography>
                     </Box>
                   </Tooltip>
                 )}
@@ -220,8 +216,8 @@ function Property({ property }: { property: Property }) {
                     }}
                   >
                     <Box>
-                      <Car size={16} weight="bold" />
-                      <Typography variant="body1">
+                      <Car size={25} weight="bold" />
+                      <Typography variant="h6">
                         {property.parkingSpots}
                       </Typography>
                     </Box>
@@ -238,8 +234,8 @@ function Property({ property }: { property: Property }) {
                     }}
                   >
                     <Box>
-                      <LiaRulerCombinedSolid size={16} />
-                      <Typography variant="body1">
+                      <LiaRulerCombinedSolid size={25} />
+                      <Typography variant="h6">
                         {property.totalArea} M²
                       </Typography>
                     </Box>
@@ -256,8 +252,8 @@ function Property({ property }: { property: Property }) {
                     }}
                   >
                     <Box>
-                      <BiArea size={16} />
-                      <Typography variant="body1">
+                      <BiArea size={25} />
+                      <Typography variant="h6">
                         {property.privateArea} M²
                       </Typography>
                     </Box>
