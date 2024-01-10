@@ -68,7 +68,7 @@ export default function Property() {
   const router = useRouter()
 
   const [page, setPage] = useState(0)
-  const [total, setTotal] = useState()
+  const [total, setTotal] = useState(0)
   const [loading, setLoading] = useState(false)
   const [openModalDelete, setOpenModalDelete] = useState(false)
   const [properties, setProperties] = useState<Property[]>([])
@@ -316,7 +316,6 @@ export default function Property() {
                     onPageChange={(newPage) => setPage(newPage)}
                     page={page}
                     paginationMode="server"
-                    pagination
                     sx={{ borderColor: 'transparent' }}
                     localeText={
                       ptBR.components.MuiDataGrid.defaultProps.localeText
