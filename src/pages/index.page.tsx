@@ -790,6 +790,8 @@ function Contact() {
   )
 }
 
+export const revalidate = 3600
+
 export default function Home() {
   const [types, setTypes] = useState<TypeProperty[]>([])
   const [cities, setCities] = useState<CityProps[]>([])
@@ -834,6 +836,7 @@ export default function Home() {
   useEffect(() => {
     loadTypes()
   }, [loadTypes])
+
   return (
     <>
       <Head>

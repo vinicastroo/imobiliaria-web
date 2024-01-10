@@ -886,6 +886,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
 }
 
+export const revalidate = 3600 // revalidate every hour
+
 export default function Home({
   properties: initialProperties,
   types,

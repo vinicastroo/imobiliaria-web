@@ -614,6 +614,8 @@ function Property({ property }: { property: Property }) {
   )
 }
 
+export const revalidate = 3600 // revalidate every hour
+
 export const getServerSideProps = async ({
   params,
   res,
