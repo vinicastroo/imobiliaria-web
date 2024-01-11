@@ -288,7 +288,7 @@ function BannerHome({
                 width: '100%',
 
                 background: {
-                  md: 'rgba(255, 255, 255,1)',
+                  md: 'rgba(255, 255, 255,0.1)',
                 },
                 boxShadow: {
                   md: '0 1px 30px rgba(0, 0, 0, 0.5)',
@@ -309,9 +309,9 @@ function BannerHome({
                 gap={3}
               >
                 <FormControl
+                  sx={{ background: '#fff', borderRadius: 1 }}
                   size={isSmallScreen ? 'small' : 'medium'}
                   fullWidth
-                  sx={{ background: '#fff' }}
                 >
                   <InputLabel id="neightboor-select-label">
                     Tipo Imóvel
@@ -333,8 +333,8 @@ function BannerHome({
 
                 <FormControl
                   size={isSmallScreen ? 'small' : 'medium'}
+                  sx={{ background: '#fff', borderRadius: 1 }}
                   fullWidth
-                  sx={{ background: '#fff' }}
                 >
                   <InputLabel id="neightboor-select-label">Cidade</InputLabel>
                   <Select
@@ -354,8 +354,8 @@ function BannerHome({
 
                 <FormControl
                   size={isSmallScreen ? 'small' : 'medium'}
+                  sx={{ background: '#fff', borderRadius: 1 }}
                   fullWidth
-                  sx={{ background: '#fff' }}
                 >
                   <InputLabel id="demo-simple-select-label">Bairro</InputLabel>
                   <Select
