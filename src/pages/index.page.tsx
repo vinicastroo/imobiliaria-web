@@ -822,7 +822,7 @@ function Contact() {
   )
 }
 
-// export const revalidate = 3600
+export const revalidate = 3600
 
 export default function Home() {
   const [types, setTypes] = useState<TypeProperty[]>([])
