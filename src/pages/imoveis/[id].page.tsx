@@ -268,7 +268,7 @@ function Property({ property }: { property: Property }) {
               <Typography
                 variant="body1"
                 mb={2}
-                sx={{ wordBreak: 'break-all' }}
+                sx={{ wordBreak: 'break-word' }}
               >
                 {property?.summary}
               </Typography>

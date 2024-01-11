@@ -509,7 +509,7 @@ function Recent({
                         <Typography
                           variant="body2"
                           color="text.primary"
-                          sx={{ wordBreak: 'break-all' }}
+                          sx={{ wordBreak: 'break-word' }}
                         >
                           {property.summary}
                         </Typography>
