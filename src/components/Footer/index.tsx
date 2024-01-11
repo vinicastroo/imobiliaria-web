@@ -88,16 +88,13 @@ export default function Footer() {
               },
             }}
           >
-            <Typography
-              variant="body1"
-              sx={{ borderBottom: '1px solid #fff', mb: 1 }}
-            >
+            <Typography variant="body1" sx={{ borderBottom: '1px solid #fff' }}>
               Rio do sul
             </Typography>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               <MapPin size={20} weight="fill" />
               <Typography variant="body2" flex={1}>
-                R. XV de Novembro, 1751 - sala02, Laranjeiras, Rio do Sul - SC
+                R. XV de Novembro, 1751 - sala 02, Laranjeiras, Rio do Sul - SC
               </Typography>
             </Box>
 
@@ -138,8 +135,8 @@ export default function Footer() {
             >
               <MapPin size={20} weight="fill" />
               <Typography variant="body2" flex={1}>
-                Rua 2000, 121,Edif La Belle Tour Resid., Centro - Balneário
-                Camboriú / SC
+                Rua 2000, 121, La Belle Tour Résidence - sala 11, Centro -
+                Balneário Camboriú/ SC
               </Typography>
             </Box>
 

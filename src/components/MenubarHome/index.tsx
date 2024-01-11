@@ -1,9 +1,15 @@
 import Image from 'next/image'
 import Link from 'next/link'
-import { Box, Typography } from '@mui/material'
+import { Box, Typography, useMediaQuery } from '@mui/material'
 import logo from '@/assets/logo-auros-minimalist.svg'
+import { FacebookLogo, InstagramLogo } from 'phosphor-react'
 
 export function MenubarHome() {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const isSmallScreen = useMediaQuery((theme: any) =>
+    theme.breakpoints.down('sm'),
+  )
+
   return (
     <Box
       display="flex"
@@ -19,7 +25,7 @@ export function MenubarHome() {
           width: '100%',
           maxWidth: '1200px',
           margin: '0 auto',
-          px: 2,
+          p: 2,
           a: {
             display: 'flex',
             alignItems: 'center',
@@ -28,7 +34,12 @@ export function MenubarHome() {
         }}
       >
         <Link href="/" shallow>
-          <Image src={logo} alt="logo" width={80} height={80} />
+          <Image
+            src={logo}
+            alt="logo"
+            width={isSmallScreen ? 80 : 120}
+            height={isSmallScreen ? 80 : 120}
+          />
         </Link>
 
         <Box
@@ -39,6 +50,17 @@ export function MenubarHome() {
             'a:hover': { opacity: 0.7 },
           }}
         >
+          <Link href="https://www.instagram.com/auroscorretoraimobiliaria/">
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <InstagramLogo size={20} weight="fill" />
+            </Box>
+          </Link>
+
+          <Link href="https://www.facebook.com/AurosCorretoraImob?locale=pt_BR">
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <FacebookLogo size={20} weight="fill" />
+            </Box>
+          </Link>
           <Link href="/imoveis">
             <Typography variant="body2">Imóveis</Typography>
           </Link>

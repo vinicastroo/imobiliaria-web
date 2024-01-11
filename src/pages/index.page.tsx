@@ -23,7 +23,15 @@ import square from '@/assets/square.svg'
 import cityBackground from '@/assets/city-background.svg'
 import Image from 'next/image'
 import Link from 'next/link'
-import { Bed, Car, Door, Toilet } from 'phosphor-react'
+import {
+  Bed,
+  Car,
+  Door,
+  FacebookLogo,
+  InstagramLogo,
+  Toilet,
+  WhatsappLogo,
+} from 'phosphor-react'
 import {
   Dispatch,
   SetStateAction,
@@ -186,6 +194,9 @@ function BannerHome({
             top: 0,
             right: 0,
             left: 0,
+            py: 1,
+            gap: 2,
+            flexDirection: { xs: 'column', sm: 'column', md: 'row' },
             px: { xs: 2, sm: 1, md: 0 },
             a: {
               display: 'flex',
@@ -211,6 +222,26 @@ function BannerHome({
               'a:hover': { opacity: 0.7 },
             }}
           >
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <Link href="https://api.whatsapp.com/send?phone=5547988163739">
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <WhatsappLogo size={20} weight="fill" />
+                </Box>
+              </Link>
+
+              <Link href="https://www.instagram.com/auroscorretoraimobiliaria/">
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <InstagramLogo size={20} weight="fill" />
+                </Box>
+              </Link>
+
+              <Link href="https://www.facebook.com/AurosCorretoraImob?locale=pt_BR">
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <FacebookLogo size={20} weight="fill" />
+                </Box>
+              </Link>
+            </Box>
+
             <Link href="/imoveis">
               <Typography variant="body1">Imóveis</Typography>
             </Link>
@@ -439,6 +470,7 @@ function Recent({
               >
                 <Link
                   href={`/imoveis/${property.id}`}
+                  target="_blank"
                   onClick={() => setLoading(true)}
                 >
                   <Card
@@ -790,7 +822,7 @@ function Contact() {
   )
 }
 
-export const revalidate = 3600
+// export const revalidate = 3600
 
 export default function Home() {
   const [types, setTypes] = useState<TypeProperty[]>([])
