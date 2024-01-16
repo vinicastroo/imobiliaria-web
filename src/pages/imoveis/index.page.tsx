@@ -583,11 +583,7 @@ function Properties({
                 xs={12}
                 sx={{ a: { textDecoration: 'none' } }}
               >
-                <Link
-                  href={`/imoveis/${property.id}`}
-                  target="_blank"
-                  onClick={() => setLoading(true)}
-                >
+                <Link href={`/imoveis/${property.id}`} target="_blank">
                   <Card
                     variant="outlined"
                     sx={{
