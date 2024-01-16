@@ -100,7 +100,6 @@ interface Property {
 function BannerHome({
   types,
   cities,
-  setLoading,
 }: {
   types: TypeProperty[]
   cities: CityProps[]
@@ -205,7 +204,7 @@ function BannerHome({
             },
           }}
         >
-          <Link href="/" onClick={() => setLoading(true)}>
+          <Link href="/">
             <Image
               src={logo}
               alt="logo"
@@ -407,7 +406,6 @@ function BannerHome({
 
 function Recent({
   properties,
-  setLoading,
 }: {
   properties: Property[]
   setLoading: Dispatch<SetStateAction<boolean>>
@@ -468,11 +466,7 @@ function Recent({
                   },
                 }}
               >
-                <Link
-                  href={`/imoveis/${property.id}`}
-                  target="_blank"
-                  onClick={() => setLoading(true)}
-                >
+                <Link href={`/imoveis/${property.id}`} target="_blank">
                   <Card
                     variant="outlined"
                     sx={{
