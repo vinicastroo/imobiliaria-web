@@ -305,7 +305,7 @@ export default function EditarImoveis() {
   const handleEditThumb = useCallback(
     async (id: string) => {
       if (id && property) {
-        await api.patch(`/files/update-thumb/${id}?property_id=${property.id}`)
+        await api.patch(`/imovel/update-thumb/${id}?property_id=${property.id}`)
       }
 
       loadProperty()
