@@ -302,7 +302,7 @@ export default function EditarImoveis() {
             setLoading(false)
           }
         } catch (e) {
-          toast.error('Aconteceu um problema ao trocar a capa')
+          toast.error('Aconteceu ao remover a imagem')
           setLoading(false)
           console.error(e)
         }
