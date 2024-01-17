@@ -165,7 +165,6 @@ export default function EditarImoveis() {
       const response = await api.get(`/imovel/${id}`)
 
       if (response && editor) {
-        console.log(response.data)
         setProperty(response.data)
         editor.commands.setContent(response.data.description)
         setValue('description', response.data.description)
@@ -292,12 +291,22 @@ export default function EditarImoveis() {
   const handleDeleteImg = useCallback(
     async (fileName: string) => {
       if (fileName) {
-        await api.post('/files/delete-images', {
-          fileName,
-        })
+        setLoading(true)
+        try {
+          const response = await api.post('/files/delete-images', {
+            fileName,
+          })
+          if (response) {
+            toast.success('Imagem removida com sucesso')
+            loadProperty()
+            setLoading(false)
+          }
+        } catch (e) {
+          toast.error('Aconteceu um problema ao trocar a capa')
+          setLoading(false)
+          console.error(e)
+        }
       }
-
-      loadProperty()
     },
     [loadProperty],
   )
@@ -305,18 +314,29 @@ export default function EditarImoveis() {
   const handleEditThumb = useCallback(
     async (id: string) => {
       if (id && property) {
-        await api.post(
-          `/imovel/update-thumb/${id}`,
-          { property_id: property.id },
-          {
-            headers: {
-              'Content-Type': 'application/json',
+        try {
+          setLoading(true)
+          const response = await api.post(
+            `/imovel/update-thumb/${id}`,
+            { property_id: property.id },
+            {
+              headers: {
+                'Content-Type': 'application/json',
+              },
             },
-          },
-        )
-      }
+          )
 
-      loadProperty()
+          if (response) {
+            toast.success('Capa alterada com sucesso')
+            loadProperty()
+            setLoading(false)
+          }
+        } catch (e) {
+          toast.error('Aconteceu um problema ao trocar a capa')
+          setLoading(false)
+          console.error(e)
+        }
+      }
     },
     [loadProperty, property],
   )
