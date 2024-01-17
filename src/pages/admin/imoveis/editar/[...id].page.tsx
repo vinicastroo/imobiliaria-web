@@ -52,6 +52,7 @@ import { useSession } from 'next-auth/react'
 import CircularProgress from '@mui/material/CircularProgress'
 import Image from 'next/image'
 import DeleteIcon from '@mui/icons-material/Delete'
+import ImageIcon from '@mui/icons-material/Image'
 
 registerPlugin(
   FilePondPluginImageExifOrientation,
@@ -137,7 +138,6 @@ export default function EditarImoveis() {
     formState: { errors },
   } = useForm<SchemaQuestion>({
     resolver: zodResolver(createSchema),
-    defaultValues: property,
   })
 
   const router = useRouter()
@@ -165,6 +165,7 @@ export default function EditarImoveis() {
       const response = await api.get(`/imovel/${id}`)
 
       if (response && editor) {
+        console.log(response.data)
         setProperty(response.data)
         editor.commands.setContent(response.data.description)
         setValue('description', response.data.description)
@@ -254,11 +255,17 @@ export default function EditarImoveis() {
     loadByCEP()
   }, [cep, setValue])
 
-  useEffect(() => {
-    if (property) {
-      setValue('type_id', property.type_property.id)
-    }
-  }, [property, setValue])
+  // useEffect(() => {
+  //   if (property) {
+  //     setValue('type_id', property.type_property.id)
+  //     setValue('city', property.city)
+  //     setValue('neighborhood', property.neighborhood)
+  //     setValue('state', property.state)
+  //     setValue('street', property.street)
+  //     setValue('latitude', property.latitude)
+  //     setValue('longitude', property.longitude)
+  //   }
+  // }, [property, setValue])
 
   const NumericFormatWithRef = forwardRef((props, ref) => (
     <NumericFormat
@@ -293,6 +300,17 @@ export default function EditarImoveis() {
       loadProperty()
     },
     [loadProperty],
+  )
+
+  const handleEditThumb = useCallback(
+    async (id: string) => {
+      if (id && property) {
+        await api.patch(`/files/update-thumb/${id}?property_id=${property.id}`)
+      }
+
+      loadProperty()
+    },
+    [loadProperty, property],
   )
 
   if (status === 'unauthenticated') {
@@ -343,20 +361,46 @@ export default function EditarImoveis() {
                   >
                     {property.files.map((file) => (
                       <Box key={file.id} sx={{ position: 'relative' }}>
-                        <Image src={file.path} alt="" width={80} height={80} />
+                        <Image
+                          src={file.path}
+                          alt=""
+                          width={80}
+                          height={80}
+                          priority={false}
+                        />
 
-                        <IconButton
-                          onClick={() => handleDeleteImg(file.fileName)}
+                        <Box
                           sx={{
                             position: 'absolute',
                             top: 0,
                             right: 0,
-                            color: '#fff',
+                            display: 'flex',
                           }}
-                          size="small"
                         >
-                          <DeleteIcon fontSize="small" />
-                        </IconButton>
+                          <IconButton
+                            onClick={() => handleEditThumb(file.id)}
+                            size="small"
+                            sx={{
+                              color: '#fff',
+                              backgroundColor: 'rgba(0,0,0,0.5)',
+                            }}
+                            title="Atualizar capa"
+                          >
+                            <ImageIcon fontSize="small" />
+                          </IconButton>
+
+                          <IconButton
+                            onClick={() => handleDeleteImg(file.fileName)}
+                            size="small"
+                            sx={{
+                              color: '#fff',
+                              backgroundColor: 'rgba(0,0,0,0.5)',
+                            }}
+                            title="Deletar"
+                          >
+                            <DeleteIcon fontSize="small" />
+                          </IconButton>
+                        </Box>
                       </Box>
                     ))}
                   </Box>
