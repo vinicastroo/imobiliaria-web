@@ -100,6 +100,7 @@ function BannerHome() {
     neighborhood: z.string(),
     city: z.string(),
   });
+
   type SchemaQuestion = Infer<typeof createSchema>;
   const router = useRouter();
 
