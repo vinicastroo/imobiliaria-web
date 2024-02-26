@@ -497,6 +497,7 @@ function Properties({
     garagem,
     areaTotal,
     areaTerreno,
+    page: pageQuery,
   } = router.query;
 
   const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
@@ -517,7 +518,7 @@ function Properties({
           parkingSpots: garagem || undefined,
           totalArea: areaTotal || undefined,
           privateArea: areaTerreno || undefined,
-          page,
+          page: pageQuery || page,
           pageSize: 12,
         },
       });
@@ -891,7 +892,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   return {
     props: {
       properties: responseImoveis.data.properties,
-      totalPropertiesSize: Math.round(responseImoveis.data.totalPages / 12),
+      totalPropertiesSize: Math.ceil(responseImoveis.data.totalPages / 12),
       types: responseTipo.data,
       cities: responseCities.data,
       neighborhoods: responseNeighborhood.data,
