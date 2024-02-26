@@ -502,6 +502,7 @@ function Properties({
 
   const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);
+    scrollToTop();
     loadProperties(value);
   };
 
@@ -539,6 +540,16 @@ function Properties({
       tipoImovel,
     ]
   );
+
+  const scrollToTop = () => {
+    if (window) {
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth", // para uma transição suave
+      });
+    }
+  };
+
   return (
     <Box
       sx={{
