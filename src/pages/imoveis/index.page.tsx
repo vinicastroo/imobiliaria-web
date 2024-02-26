@@ -13,7 +13,7 @@ import {
   Select,
   TextField,
   Tooltip,
-  Typography,
+  Typography
 } from '@mui/material'
 
 import Link from 'next/link'
@@ -24,7 +24,7 @@ import {
   SetStateAction,
   useCallback,
   useEffect,
-  useState,
+  useState
 } from 'react'
 import api from '@/services/api'
 import Head from 'next/head'
@@ -94,7 +94,7 @@ function Filter({
   setProperties,
   setLoading,
   page,
-  setTotal,
+  setTotal
 }: {
   types: TypeProperty[]
   cities: CityProps[]
@@ -118,7 +118,7 @@ function Filter({
     suites,
     garagem,
     areaTotal,
-    areaTerreno,
+    areaTerreno
   } = router.query
 
   const createSchema = z.object({
@@ -130,12 +130,12 @@ function Filter({
     suites: z.string().optional(),
     parkingSpots: z.string().optional(),
     totalArea: z.string().optional(),
-    privateArea: z.string().optional(),
+    privateArea: z.string().optional()
   })
   type SchemaQuestion = Infer<typeof createSchema>
 
   const { watch, handleSubmit, reset, control } = useForm<SchemaQuestion>({
-    resolver: zodResolver(createSchema),
+    resolver: zodResolver(createSchema)
   })
 
   const city = watch('city')
@@ -143,7 +143,7 @@ function Filter({
   const loadNeighboorhood = useCallback(async () => {
     if (city) {
       const response = await api.get<NeighborhoodProps[]>(
-        `/imovel/bairro/${city}`,
+        `/imovel/bairro/${city}`
       )
       if (response) {
         setNeighborhood([...response.data])
@@ -171,8 +171,8 @@ function Filter({
           totalArea: data.totalArea ? data.totalArea : undefined,
           privateArea: data.privateArea ? data.privateArea : undefined,
           page,
-          pageSize: 16,
-        },
+          pageSize: 12
+        }
       })
 
       router.replace(
@@ -188,13 +188,13 @@ function Filter({
           data.parkingSpots ? `garagem=${data.parkingSpots}&` : ''
         }${data.totalArea ? `areaTotal=${data.totalArea}&` : ''}${
           data.privateArea ? `areaTerreno=${data.privateArea}&` : ''
-        }`,
+        }`
       )
       setProperties([...responseImoveis.data.properties])
       setTotal(responseImoveis.data.totalPages)
       setLoading(false)
     },
-    [page, setProperties, setTotal, setLoading, router],
+    [page, setProperties, setTotal, setLoading, router]
   )
 
   return (
@@ -297,7 +297,7 @@ function Filter({
               alignItems: 'center',
               gap: 1,
               mb: 1.5,
-              mt: 2,
+              mt: 2
             }}
           >
             <Door size={18} weight="bold" color="rgba(0, 0, 0, 0.6)" />
@@ -324,7 +324,7 @@ function Filter({
               alignItems: 'center',
               gap: 1,
               mb: 1.5,
-              mt: 2,
+              mt: 2
             }}
           >
             <Bed size={18} weight="bold" color="rgba(0, 0, 0, 0.6)" />
@@ -426,7 +426,7 @@ function Filter({
           sx={{
             display: 'flex',
             flexDirection: 'column',
-            gap: 2,
+            gap: 2
           }}
         >
           <Button
@@ -451,7 +451,7 @@ function Filter({
                 parkingSpots: '',
                 privateArea: '',
                 suites: '',
-                totalArea: '',
+                totalArea: ''
               })
             }}
           >
@@ -473,7 +473,7 @@ function Properties({
   types,
   cities,
   initialNeighborhood,
-  setTotal,
+  setTotal
 }: {
   properties: Property[]
   totalSize: number
@@ -496,7 +496,7 @@ function Properties({
     suites,
     garagem,
     areaTotal,
-    areaTerreno,
+    areaTerreno
   } = router.query
 
   const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
@@ -518,8 +518,8 @@ function Properties({
           totalArea: areaTotal || undefined,
           privateArea: areaTerreno || undefined,
           page,
-          pageSize: 4,
-        },
+          pageSize: 12
+        }
       })
       if (responseImoveis) {
         setProperties([...responseImoveis.data.properties])
@@ -535,8 +535,8 @@ function Properties({
       quartos,
       setProperties,
       suites,
-      tipoImovel,
-    ],
+      tipoImovel
+    ]
   )
   return (
     <Box
@@ -547,7 +547,7 @@ function Properties({
         flexDirection: 'column',
         margin: '0 auto',
         p: 2,
-        zIndex: 999,
+        zIndex: 999
       }}
     >
       <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
@@ -590,7 +590,7 @@ function Properties({
                       display: 'flex',
                       flexDirection: 'column',
                       height: '100%',
-                      position: 'relative',
+                      position: 'relative'
                     }}
                   >
                     {property.files.length > 0 ? (
@@ -607,7 +607,7 @@ function Properties({
                           background: '#17375F',
                           display: 'flex',
                           alignItems: 'center',
-                          justifyContent: 'center',
+                          justifyContent: 'center'
                         }}
                       >
                         <Image src={logo} alt="logo" width={120} height={120} />
@@ -620,7 +620,7 @@ function Properties({
                         flexDirection: 'column',
                         height: '100%',
                         justifyContent: 'space-between',
-                        flex: 1,
+                        flex: 1
                       }}
                     >
                       <Box
@@ -628,7 +628,7 @@ function Properties({
                           display: 'flex',
                           flexDirection: 'column',
                           px: 2,
-                          mt: 1,
+                          mt: 1
                         }}
                       >
                         <Box
@@ -636,7 +636,7 @@ function Properties({
                             display: 'flex',
                             flexDirection: 'column',
                             py: 1,
-                            width: '100%',
+                            width: '100%'
                           }}
                         >
                           <Typography
@@ -666,7 +666,7 @@ function Properties({
                           justifyContent: 'center',
                           alignItems: 'flex-start',
                           width: '100%',
-                          p: 2,
+                          p: 2
                         }}
                       >
                         <Typography
@@ -689,7 +689,7 @@ function Properties({
                               sx={{
                                 display: 'flex',
                                 alignItems: 'center',
-                                gap: 1,
+                                gap: 1
                               }}
                             >
                               <Box>
@@ -707,7 +707,7 @@ function Properties({
                               sx={{
                                 display: 'flex',
                                 alignItems: 'center',
-                                gap: 1,
+                                gap: 1
                               }}
                             >
                               <Box>
@@ -725,7 +725,7 @@ function Properties({
                               sx={{
                                 display: 'flex',
                                 alignItems: 'center',
-                                gap: 1,
+                                gap: 1
                               }}
                             >
                               <Box>
@@ -743,7 +743,7 @@ function Properties({
                               sx={{
                                 display: 'flex',
                                 alignItems: 'center',
-                                gap: 1,
+                                gap: 1
                               }}
                             >
                               <Box>
@@ -761,7 +761,7 @@ function Properties({
                               sx={{
                                 display: 'flex',
                                 alignItems: 'center',
-                                gap: 1,
+                                gap: 1
                               }}
                             >
                               <Box>
@@ -779,7 +779,7 @@ function Properties({
                               sx={{
                                 display: 'flex',
                                 alignItems: 'center',
-                                gap: 1,
+                                gap: 1
                               }}
                             >
                               <Box>
@@ -813,7 +813,7 @@ function Properties({
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'flex-end',
-                            width: '100%',
+                            width: '100%'
                           }}
                         >
                           <Typography
@@ -834,7 +834,7 @@ function Properties({
         </Grid>
       </Grid>
 
-      {page > 1 && (
+      {page >= 1 && (
         <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
           <Pagination
             count={totalSize}
@@ -852,7 +852,7 @@ function Properties({
 export const getServerSideProps: GetServerSideProps = async (context) => {
   context.res.setHeader(
     'Cache-Control',
-    'public, s-maxage=10, stale-while-revalidate=59',
+    'public, s-maxage=10, stale-while-revalidate=59'
   )
   const {
     tipoImovel,
@@ -863,7 +863,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     suites,
     garagem,
     areaTotal,
-    areaTerreno,
+    areaTerreno
   } = context.query
 
   const responseImoveis = await api.get(`/imovel?visible=true`, {
@@ -878,24 +878,24 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       totalArea: areaTotal,
       privateArea: areaTerreno,
       page: 1,
-      pageSize: 16,
-    },
+      pageSize: 12
+    }
   })
   const responseTipo = await api.get<TypeProperty[]>(`/tipo-imovel`)
   const responseCities = await api.get<CityProps[]>(`/imovel/cidades`)
 
   const responseNeighborhood = await api.get<NeighborhoodProps[]>(
-    `/imovel/bairro/${cidade}`,
+    `/imovel/bairro/${cidade}`
   )
 
   return {
     props: {
       properties: responseImoveis.data.properties,
-      totalPropertiesSize: Math.round(responseImoveis.data.totalPages / 16),
+      totalPropertiesSize: Math.round(responseImoveis.data.totalPages / 12),
       types: responseTipo.data,
       cities: responseCities.data,
-      neighborhoods: responseNeighborhood.data,
-    },
+      neighborhoods: responseNeighborhood.data
+    }
   }
 }
 
@@ -906,7 +906,7 @@ export default function Home({
   types,
   cities,
   neighborhoods,
-  totalPropertiesSize,
+  totalPropertiesSize
 }: {
   properties: Property[]
   types: TypeProperty[]
@@ -936,10 +936,10 @@ export default function Home({
             backgroundPosition: {
               xs: '170% 0%,-70% 100%',
               sm: '170% 0%,-70% 100%',
-              md: '110% 0%, -10% 100%',
+              md: '110% 0%, -10% 100%'
             },
             backgroundSize: 'auto, auto',
-            backgroundRepeat: 'no-repeat, no-repeat',
+            backgroundRepeat: 'no-repeat, no-repeat'
           }}
         >
           <MenubarHome />
