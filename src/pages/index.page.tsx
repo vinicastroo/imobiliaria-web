@@ -16,6 +16,7 @@ import {
   Typography,
   useMediaQuery,
   Backdrop,
+  Skeleton,
 } from "@mui/material";
 import bg from "@/assets/background.jpg";
 import logo from "@/assets/logo-auros-minimalist.svg";
@@ -98,14 +99,7 @@ interface Property {
   }[];
 }
 
-function BannerHome({
-  types,
-  cities,
-}: {
-  types: TypeProperty[];
-  cities: CityProps[];
-  setLoading: Dispatch<SetStateAction<boolean>>;
-}) {
+function BannerHome() {
   const [neighborhoods, setNeighborhood] = useState<NeighborhoodProps[]>([]);
 
   const createSchema = z.object({
@@ -149,6 +143,38 @@ function BannerHome({
     },
     [router]
   );
+
+  const [types, setTypes] = useState<TypeProperty[]>([]);
+  const [cities, setCities] = useState<CityProps[]>([]);
+
+  const [loading, setLoading] = useState(false);
+
+  const loadCities = useCallback(async () => {
+    setLoading(true);
+    const responseCities = await api.get<CityProps[]>(`/imovel/cidades`);
+
+    setLoading(false);
+    if (responseCities) {
+      setCities([...responseCities.data]);
+    }
+  }, []);
+
+  const loadTypes = useCallback(async () => {
+    setLoading(true);
+    const responseTipo = await api.get<TypeProperty[]>(`/tipo-imovel`);
+    setLoading(false);
+    if (responseTipo) {
+      setTypes([...responseTipo.data]);
+    }
+  }, []);
+
+  useEffect(() => {
+    loadCities();
+  }, [loadCities]);
+
+  useEffect(() => {
+    loadTypes();
+  }, [loadTypes]);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -312,6 +338,7 @@ function BannerHome({
                   sx={{ background: "#fff", borderRadius: 1 }}
                   size={isSmallScreen ? "small" : "medium"}
                   fullWidth
+                  disabled={loading}
                 >
                   <InputLabel id="neightboor-select-label">
                     Tipo Imóvel
@@ -335,6 +362,7 @@ function BannerHome({
                   size={isSmallScreen ? "small" : "medium"}
                   sx={{ background: "#fff", borderRadius: 1 }}
                   fullWidth
+                  disabled={loading}
                 >
                   <InputLabel id="neightboor-select-label">Cidade</InputLabel>
                   <Select
@@ -405,12 +433,27 @@ function BannerHome({
   );
 }
 
-function Recent({
-  properties,
-}: {
-  properties: Property[];
-  setLoading: Dispatch<SetStateAction<boolean>>;
-}) {
+function Recent() {
+  const [properties, setProperties] = useState<Property[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const loadProperties = useCallback(async () => {
+    // setLoading(true);
+    const responseImoveis = await api.get(`/imovel?limit=6&visible=true`);
+    // setLoading(false);
+    if (responseImoveis) {
+      setProperties([...responseImoveis.data.properties]);
+    }
+  }, []);
+
+  useEffect(() => {
+    loadProperties();
+  }, [loadProperties]);
+
+  const isSmallScreen = useMediaQuery((theme: any) =>
+    theme.breakpoints.down("sm")
+  );
+
   return (
     <Box
       sx={{
@@ -451,261 +494,319 @@ function Recent({
             }}
             spacing={2}
           >
-            {properties.map((property) => (
-              <Grid
-                key={property.id}
-                item
-                md={4}
-                sm={12}
-                xs={12}
-                sx={{
-                  a: {
-                    textDecoration: "none",
-                    "&:hover": {
-                      opacity: 0.8,
-                    },
-                  },
-                }}
-              >
-                <Link href={`/imoveis/${property.id}`} target="_blank">
-                  <Card
-                    variant="outlined"
+            {loading
+              ? Array.from({ length: 6 }).map((_, index) => (
+                  <Grid
+                    key={index}
+                    item
+                    md={4}
+                    sm={12}
+                    xs={12}
                     sx={{
-                      display: "flex",
-                      flexDirection: "column",
-                      height: "100%",
+                      a: {
+                        textDecoration: "none",
+                        "&:hover": {
+                          opacity: 0.8,
+                        },
+                      },
                     }}
                   >
-                    {property.files.length > 0 ? (
-                      <CardMedia
-                        component="img"
-                        height="250"
-                        image={property.files[0].path}
-                        alt="Foto do imóvel"
-                      />
-                    ) : (
-                      <Box
-                        sx={{
-                          height: "250px",
-                          background: "#17375F",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                        }}
-                      >
-                        <Image src={logo} alt="logo" width={120} height={120} />
-                      </Box>
-                    )}
-
                     <Box
                       sx={{
                         display: "flex",
                         flexDirection: "column",
-                        height: "100%",
-                        justifyContent: "space-between",
-                        flex: 1,
+                        gap: 1,
                       }}
                     >
-                      <Box
+                      <Skeleton
+                        variant="rectangular"
+                        width={384}
+                        height={250}
+                      />
+                      <Skeleton variant="text" sx={{ fontSize: "1rem" }} />
+                      <Skeleton variant="text" sx={{ fontSize: "1rem" }} />
+                      <Skeleton variant="text" sx={{ fontSize: "1rem" }} />
+                    </Box>
+                  </Grid>
+                ))
+              : properties.map((property) => (
+                  <Grid
+                    key={property.id}
+                    item
+                    md={4}
+                    sm={12}
+                    xs={12}
+                    sx={{
+                      a: {
+                        textDecoration: "none",
+                        "&:hover": {
+                          opacity: 0.8,
+                        },
+                      },
+                    }}
+                  >
+                    <Link href={`/imoveis/${property.id}`} target="_blank">
+                      <Card
+                        variant="outlined"
                         sx={{
                           display: "flex",
                           flexDirection: "column",
-                          px: 2,
-                          mt: 1,
+                          height: "100%",
                         }}
                       >
+                        {property.files.length > 0 ? (
+                          <CardMedia
+                            component="img"
+                            height="250"
+                            image={property.files[0].path}
+                            alt="Foto do imóvel"
+                          />
+                        ) : (
+                          <Box
+                            sx={{
+                              height: "250px",
+                              background: "#17375F",
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                            }}
+                          >
+                            <Image
+                              src={logo}
+                              alt="logo"
+                              width={120}
+                              height={120}
+                            />
+                          </Box>
+                        )}
+
                         <Box
                           sx={{
                             display: "flex",
                             flexDirection: "column",
-                            py: 1,
-                            width: "100%",
-                          }}
-                        >
-                          <Typography
-                            variant="body1"
-                            color="#333"
-                            fontWeight="bold"
-                          >
-                            {property.name}
-                          </Typography>
-                          <Typography variant="body2">
-                            {property.city} - {property.neighborhood}
-                          </Typography>
-                        </Box>
-                        <Typography
-                          variant="body2"
-                          color="text.primary"
-                          sx={{ wordBreak: "break-word" }}
-                        >
-                          {property.summary}
-                        </Typography>
-                      </Box>
-
-                      <Box
-                        sx={{
-                          display: "flex",
-                          flexDirection: "column",
-                          justifyContent: "center",
-                          alignItems: "flex-start",
-                          width: "100%",
-                          p: 2,
-                          overflowX: "auto",
-                        }}
-                      >
-                        <Typography
-                          variant="body2"
-                          color="text.primary"
-                          mt={2}
-                          fontWeight="bold"
-                        >
-                          Informações
-                        </Typography>
-
-                        <Box
-                          display="flex"
-                          gap={2}
-                          mb={1}
-                          rowGap={0.5}
-                          flexWrap="wrap"
-                        >
-                          {Number(property.bedrooms) > 0 && (
-                            <Tooltip
-                              title="Quartos"
-                              sx={{
-                                display: "flex",
-                                alignItems: "center",
-                                gap: 1,
-                              }}
-                            >
-                              <Box>
-                                <Bed size={24} weight="bold" />
-                                <Typography variant="body2" fontWeight="bold">
-                                  {property.bedrooms}
-                                </Typography>
-                              </Box>
-                            </Tooltip>
-                          )}
-
-                          {Number(property.suites) > 0 && (
-                            <Tooltip
-                              title="Suites"
-                              sx={{
-                                display: "flex",
-                                alignItems: "center",
-                                gap: 1,
-                              }}
-                            >
-                              <Box>
-                                <Bathtub size={24} weight="bold" />
-                                <Typography variant="body2" fontWeight="bold">
-                                  {property.suites}
-                                </Typography>
-                              </Box>
-                            </Tooltip>
-                          )}
-
-                          {Number(property.bathrooms) > 0 && (
-                            <Tooltip
-                              title="Banheiros"
-                              sx={{
-                                display: "flex",
-                                alignItems: "center",
-                                gap: 1,
-                              }}
-                            >
-                              <Box>
-                                <Toilet size={24} weight="bold" />
-                                <Typography variant="body2" fontWeight="bold">
-                                  {property.bathrooms}
-                                </Typography>
-                              </Box>
-                            </Tooltip>
-                          )}
-
-                          {Number(property.parkingSpots) > 0 && (
-                            <Tooltip
-                              title="Garagem"
-                              sx={{
-                                display: "flex",
-                                alignItems: "center",
-                                gap: 1,
-                              }}
-                            >
-                              <Box>
-                                <Car size={24} weight="bold" />
-                                <Typography variant="body2" fontWeight="bold">
-                                  {property.parkingSpots}
-                                </Typography>
-                              </Box>
-                            </Tooltip>
-                          )}
-
-                          {Number(property.totalArea) > 0 && (
-                            <Tooltip
-                              title="Area total"
-                              sx={{
-                                display: "flex",
-                                alignItems: "center",
-                                gap: 1,
-                              }}
-                            >
-                              <Box>
-                                <LiaRulerCombinedSolid size={24} />
-                                <Typography variant="body2" fontWeight="bold">
-                                  {property.totalArea} M²
-                                </Typography>
-                              </Box>
-                            </Tooltip>
-                          )}
-
-                          {Number(property.privateArea) > 0 && (
-                            <Tooltip
-                              title="Area do terreno"
-                              sx={{
-                                display: "flex",
-                                alignItems: "center",
-                                gap: 1,
-                              }}
-                            >
-                              <Box>
-                                <BiArea size={24} />
-                                <Typography variant="body2" fontWeight="bold">
-                                  {property.privateArea} M²
-                                </Typography>
-                              </Box>
-                            </Tooltip>
-                          )}
-                        </Box>
-
-                        <Box
-                          sx={{
-                            display: "flex",
-                            alignItems: "center",
+                            height: "100%",
                             justifyContent: "space-between",
-                            width: "100%",
+                            flex: 1,
                           }}
                         >
-                          <Typography
-                            variant="subtitle1"
-                            fontWeight="bold"
-                            sx={{ color: "#17375F" }}
+                          <Box
+                            sx={{
+                              display: "flex",
+                              flexDirection: "column",
+                              px: 2,
+                              mt: 1,
+                            }}
                           >
-                            {property.value}
-                          </Typography>
+                            <Box
+                              sx={{
+                                display: "flex",
+                                flexDirection: "column",
+                                py: 1,
+                                width: "100%",
+                              }}
+                            >
+                              <Typography
+                                variant="body1"
+                                color="#333"
+                                fontWeight="bold"
+                              >
+                                {property.name}
+                              </Typography>
+                              <Typography variant="body2">
+                                {property.city} - {property.neighborhood}
+                              </Typography>
+                            </Box>
+                            <Typography
+                              variant="body2"
+                              color="text.primary"
+                              sx={{ wordBreak: "break-word" }}
+                            >
+                              {property.summary}
+                            </Typography>
+                          </Box>
 
-                          <Chip
-                            label="Venda"
-                            color="primary"
-                            sx={{ fontWeight: "600" }}
-                          />
+                          <Box
+                            sx={{
+                              display: "flex",
+                              flexDirection: "column",
+                              justifyContent: "center",
+                              alignItems: "flex-start",
+                              width: "100%",
+                              p: 2,
+                              overflowX: "auto",
+                            }}
+                          >
+                            <Typography
+                              variant="body2"
+                              color="text.primary"
+                              mt={2}
+                              fontWeight="bold"
+                            >
+                              Informações
+                            </Typography>
+
+                            <Box
+                              display="flex"
+                              gap={2}
+                              mb={1}
+                              rowGap={0.5}
+                              flexWrap="wrap"
+                            >
+                              {Number(property.bedrooms) > 0 && (
+                                <Tooltip
+                                  title="Quartos"
+                                  sx={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: 1,
+                                  }}
+                                >
+                                  <Box>
+                                    <Bed size={24} weight="bold" />
+                                    <Typography
+                                      variant="body2"
+                                      fontWeight="bold"
+                                    >
+                                      {property.bedrooms}
+                                    </Typography>
+                                  </Box>
+                                </Tooltip>
+                              )}
+
+                              {Number(property.suites) > 0 && (
+                                <Tooltip
+                                  title="Suites"
+                                  sx={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: 1,
+                                  }}
+                                >
+                                  <Box>
+                                    <Bathtub size={24} weight="bold" />
+                                    <Typography
+                                      variant="body2"
+                                      fontWeight="bold"
+                                    >
+                                      {property.suites}
+                                    </Typography>
+                                  </Box>
+                                </Tooltip>
+                              )}
+
+                              {Number(property.bathrooms) > 0 && (
+                                <Tooltip
+                                  title="Banheiros"
+                                  sx={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: 1,
+                                  }}
+                                >
+                                  <Box>
+                                    <Toilet size={24} weight="bold" />
+                                    <Typography
+                                      variant="body2"
+                                      fontWeight="bold"
+                                    >
+                                      {property.bathrooms}
+                                    </Typography>
+                                  </Box>
+                                </Tooltip>
+                              )}
+
+                              {Number(property.parkingSpots) > 0 && (
+                                <Tooltip
+                                  title="Garagem"
+                                  sx={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: 1,
+                                  }}
+                                >
+                                  <Box>
+                                    <Car size={24} weight="bold" />
+                                    <Typography
+                                      variant="body2"
+                                      fontWeight="bold"
+                                    >
+                                      {property.parkingSpots}
+                                    </Typography>
+                                  </Box>
+                                </Tooltip>
+                              )}
+
+                              {Number(property.totalArea) > 0 && (
+                                <Tooltip
+                                  title="Area total"
+                                  sx={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: 1,
+                                  }}
+                                >
+                                  <Box>
+                                    <LiaRulerCombinedSolid size={24} />
+                                    <Typography
+                                      variant="body2"
+                                      fontWeight="bold"
+                                    >
+                                      {property.totalArea} M²
+                                    </Typography>
+                                  </Box>
+                                </Tooltip>
+                              )}
+
+                              {Number(property.privateArea) > 0 && (
+                                <Tooltip
+                                  title="Area do terreno"
+                                  sx={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: 1,
+                                  }}
+                                >
+                                  <Box>
+                                    <BiArea size={24} />
+                                    <Typography
+                                      variant="body2"
+                                      fontWeight="bold"
+                                    >
+                                      {property.privateArea} M²
+                                    </Typography>
+                                  </Box>
+                                </Tooltip>
+                              )}
+                            </Box>
+
+                            <Box
+                              sx={{
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "space-between",
+                                width: "100%",
+                              }}
+                            >
+                              <Typography
+                                variant="subtitle1"
+                                fontWeight="bold"
+                                sx={{ color: "#17375F" }}
+                              >
+                                {property.value}
+                              </Typography>
+
+                              <Chip
+                                label="Venda"
+                                color="primary"
+                                sx={{ fontWeight: "600" }}
+                              />
+                            </Box>
+                          </Box>
                         </Box>
-                      </Box>
-                    </Box>
-                  </Card>
-                </Link>
-              </Grid>
-            ))}
+                      </Card>
+                    </Link>
+                  </Grid>
+                ))}
           </Grid>
 
           <Link href="/imoveis">
@@ -820,51 +921,6 @@ function Contact() {
 export const revalidate = 3600;
 
 export default function Home() {
-  const [types, setTypes] = useState<TypeProperty[]>([]);
-  const [cities, setCities] = useState<CityProps[]>([]);
-  const [properties, setProperties] = useState<Property[]>([]);
-  const [loading, setLoading] = useState(false);
-
-  const loadCities = useCallback(async () => {
-    setLoading(true);
-    const responseCities = await api.get<CityProps[]>(`/imovel/cidades`);
-
-    setLoading(false);
-    if (responseCities) {
-      setCities([...responseCities.data]);
-    }
-  }, []);
-
-  const loadTypes = useCallback(async () => {
-    setLoading(true);
-    const responseTipo = await api.get<TypeProperty[]>(`/tipo-imovel`);
-    setLoading(false);
-    if (responseTipo) {
-      setTypes([...responseTipo.data]);
-    }
-  }, []);
-
-  const loadProperties = useCallback(async () => {
-    setLoading(true);
-    const responseImoveis = await api.get(`/imovel?limit=6&visible=true`);
-    setLoading(false);
-    if (responseImoveis) {
-      setProperties([...responseImoveis.data.properties]);
-    }
-  }, []);
-
-  useEffect(() => {
-    loadProperties();
-  }, [loadProperties]);
-
-  useEffect(() => {
-    loadCities();
-  }, [loadCities]);
-
-  useEffect(() => {
-    loadTypes();
-  }, [loadTypes]);
-
   return (
     <>
       <Head>
@@ -875,18 +931,11 @@ export default function Home() {
       </Head>
 
       <Box>
-        <BannerHome cities={cities} types={types} setLoading={setLoading} />
-        <Recent properties={properties} setLoading={setLoading} />
+        <BannerHome />
+        <Recent />
         <Contact />
         <Footer />
       </Box>
-
-      <Backdrop
-        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        open={loading}
-      >
-        <CircularProgress color="inherit" />
-      </Backdrop>
     </>
   );
 }
