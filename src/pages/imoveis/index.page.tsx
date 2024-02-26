@@ -13,78 +13,78 @@ import {
   Select,
   TextField,
   Tooltip,
-  Typography
-} from '@mui/material'
+  Typography,
+} from "@mui/material";
 
-import Link from 'next/link'
-import { Bed, Car, Door, Ruler, Toilet } from 'phosphor-react'
-import { MenubarHome } from '@/components/MenubarHome'
+import Link from "next/link";
+import { Bed, Car, Door, Ruler, Toilet } from "phosphor-react";
+import { MenubarHome } from "@/components/MenubarHome";
 import {
   Dispatch,
   SetStateAction,
   useCallback,
   useEffect,
-  useState
-} from 'react'
-import api from '@/services/api'
-import Head from 'next/head'
-import { useRouter } from 'next/router'
-import { z, infer as Infer } from 'zod'
-import { Controller, useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { GetServerSideProps } from 'next'
-import logo from '@/assets/logo-auros-minimalist.svg'
-import Image from 'next/image'
-import { BiArea } from 'react-icons/bi'
-import { LiaRulerCombinedSolid } from 'react-icons/lia'
-import CircularProgress from '@mui/material/CircularProgress'
-import square from '@/assets/square.svg'
-import Footer from '@/components/Footer'
+  useState,
+} from "react";
+import api from "@/services/api";
+import Head from "next/head";
+import { useRouter } from "next/router";
+import { z, infer as Infer } from "zod";
+import { Controller, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { GetServerSideProps } from "next";
+import logo from "@/assets/logo-auros-minimalist.svg";
+import Image from "next/image";
+import { BiArea } from "react-icons/bi";
+import { LiaRulerCombinedSolid } from "react-icons/lia";
+import CircularProgress from "@mui/material/CircularProgress";
+import square from "@/assets/square.svg";
+import Footer from "@/components/Footer";
 interface TypeProperty {
-  id: string
-  createdAt: string
-  description: string
-  checked: boolean
+  id: string;
+  createdAt: string;
+  description: string;
+  checked: boolean;
 }
 
 interface Property {
-  id: string
-  name: string
-  summary: string
-  description: string
-  value: string
-  bedrooms: string
-  bathrooms: string
-  parkingSpots: string
-  suites: string
-  totalArea: string
-  privateArea: string
-  createdAt: string
-  cep: string
-  state: string
-  city: string
-  neighborhood: string
-  street: string
-  numberAddress: string
-  longitude: string
-  latitude: string
+  id: string;
+  name: string;
+  summary: string;
+  description: string;
+  value: string;
+  bedrooms: string;
+  bathrooms: string;
+  parkingSpots: string;
+  suites: string;
+  totalArea: string;
+  privateArea: string;
+  createdAt: string;
+  cep: string;
+  state: string;
+  city: string;
+  neighborhood: string;
+  street: string;
+  numberAddress: string;
+  longitude: string;
+  latitude: string;
   type_property: {
-    id: string
-    description: string
-    createdAt: string
-  }
+    id: string;
+    description: string;
+    createdAt: string;
+  };
   files: {
-    id: string
-    path: string
-  }[]
+    id: string;
+    path: string;
+  }[];
 }
 
 interface CityProps {
-  city: string
+  city: string;
 }
 
 interface NeighborhoodProps {
-  neighborhood: string
+  neighborhood: string;
 }
 
 function Filter({
@@ -94,20 +94,20 @@ function Filter({
   setProperties,
   setLoading,
   page,
-  setTotal
+  setTotal,
 }: {
-  types: TypeProperty[]
-  cities: CityProps[]
-  page: number
-  initialNeighborhood: NeighborhoodProps[]
-  setProperties: Dispatch<SetStateAction<Property[]>>
-  setLoading: Dispatch<SetStateAction<boolean>>
-  setTotal: Dispatch<SetStateAction<number>>
+  types: TypeProperty[];
+  cities: CityProps[];
+  page: number;
+  initialNeighborhood: NeighborhoodProps[];
+  setProperties: Dispatch<SetStateAction<Property[]>>;
+  setLoading: Dispatch<SetStateAction<boolean>>;
+  setTotal: Dispatch<SetStateAction<number>>;
 }) {
   const [neighborhoods, setNeighborhood] =
-    useState<NeighborhoodProps[]>(initialNeighborhood)
+    useState<NeighborhoodProps[]>(initialNeighborhood);
 
-  const router = useRouter()
+  const router = useRouter();
 
   const {
     tipoImovel,
@@ -118,8 +118,8 @@ function Filter({
     suites,
     garagem,
     areaTotal,
-    areaTerreno
-  } = router.query
+    areaTerreno,
+  } = router.query;
 
   const createSchema = z.object({
     type: z.string().optional(),
@@ -130,40 +130,40 @@ function Filter({
     suites: z.string().optional(),
     parkingSpots: z.string().optional(),
     totalArea: z.string().optional(),
-    privateArea: z.string().optional()
-  })
-  type SchemaQuestion = Infer<typeof createSchema>
+    privateArea: z.string().optional(),
+  });
+  type SchemaQuestion = Infer<typeof createSchema>;
 
   const { watch, handleSubmit, reset, control } = useForm<SchemaQuestion>({
-    resolver: zodResolver(createSchema)
-  })
+    resolver: zodResolver(createSchema),
+  });
 
-  const city = watch('city')
+  const city = watch("city");
 
   const loadNeighboorhood = useCallback(async () => {
     if (city) {
       const response = await api.get<NeighborhoodProps[]>(
         `/imovel/bairro/${city}`
-      )
+      );
       if (response) {
-        setNeighborhood([...response.data])
+        setNeighborhood([...response.data]);
       }
     }
-  }, [city])
+  }, [city]);
 
   useEffect(() => {
-    loadNeighboorhood()
-  }, [loadNeighboorhood])
+    loadNeighboorhood();
+  }, [loadNeighboorhood]);
 
   const onSubmit = useCallback(
     async (data: SchemaQuestion) => {
-      setLoading(true)
+      setLoading(true);
       const responseImoveis = await api.get(`/imovel`, {
         params: {
-          type: data.type !== 'undefined' ? data.type : undefined,
-          city: data.city !== 'undefined' ? data.city : undefined,
+          type: data.type !== "undefined" ? data.type : undefined,
+          city: data.city !== "undefined" ? data.city : undefined,
           neighborhood:
-            data.neighborhood !== 'undefined' ? data.neighborhood : undefined,
+            data.neighborhood !== "undefined" ? data.neighborhood : undefined,
           bedrooms: data.bedrooms ? data.bedrooms : undefined,
           bathrooms: data.bathrooms ? data.bathrooms : undefined,
           suites: data.suites ? data.suites : undefined,
@@ -171,37 +171,37 @@ function Filter({
           totalArea: data.totalArea ? data.totalArea : undefined,
           privateArea: data.privateArea ? data.privateArea : undefined,
           page,
-          pageSize: 12
-        }
-      })
+          pageSize: 12,
+        },
+      });
 
       router.replace(
         `/imoveis?${
-          data.type !== 'undefined' ? `tipoImovel=${data.type}&` : ''
-        }${data.city !== 'undefined' ? `cidade=${data.city}&` : ''}${
-          data.neighborhood !== 'undefined'
+          data.type !== "undefined" ? `tipoImovel=${data.type}&` : ""
+        }${data.city !== "undefined" ? `cidade=${data.city}&` : ""}${
+          data.neighborhood !== "undefined"
             ? `bairro=${data.neighborhood}&`
-            : ''
-        }${data.bedrooms ? `quartos=${data.bedrooms}&` : ''}${
-          data.bathrooms ? `banheiros=${data.bathrooms}&` : ''
-        }${data.suites ? `suites=${data.suites}&` : ''} ${
-          data.parkingSpots ? `garagem=${data.parkingSpots}&` : ''
-        }${data.totalArea ? `areaTotal=${data.totalArea}&` : ''}${
-          data.privateArea ? `areaTerreno=${data.privateArea}&` : ''
+            : ""
+        }${data.bedrooms ? `quartos=${data.bedrooms}&` : ""}${
+          data.bathrooms ? `banheiros=${data.bathrooms}&` : ""
+        }${data.suites ? `suites=${data.suites}&` : ""} ${
+          data.parkingSpots ? `garagem=${data.parkingSpots}&` : ""
+        }${data.totalArea ? `areaTotal=${data.totalArea}&` : ""}${
+          data.privateArea ? `areaTerreno=${data.privateArea}&` : ""
         }`
-      )
-      setProperties([...responseImoveis.data.properties])
-      setTotal(responseImoveis.data.totalPages)
-      setLoading(false)
+      );
+      setProperties([...responseImoveis.data.properties]);
+      setTotal(responseImoveis.data.totalPages);
+      setLoading(false);
     },
     [page, setProperties, setTotal, setLoading, router]
-  )
+  );
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Card
         variant="outlined"
-        sx={{ display: 'flex', flexDirection: 'column', p: 2 }}
+        sx={{ display: "flex", flexDirection: "column", p: 2 }}
       >
         <Controller
           name="type"
@@ -226,7 +226,7 @@ function Filter({
                   ))}
                 </Select>
               </FormControl>
-            )
+            );
           }}
         />
 
@@ -253,7 +253,7 @@ function Filter({
                   ))}
                 </Select>
               </FormControl>
-            )
+            );
           }}
         />
         <Controller
@@ -282,7 +282,7 @@ function Filter({
                   ))}
                 </Select>
               </FormControl>
-            )
+            );
           }}
         />
 
@@ -293,11 +293,11 @@ function Filter({
 
           <Box
             sx={{
-              display: 'flex',
-              alignItems: 'center',
+              display: "flex",
+              alignItems: "center",
               gap: 1,
               mb: 1.5,
-              mt: 2
+              mt: 2,
             }}
           >
             <Door size={18} weight="bold" color="rgba(0, 0, 0, 0.6)" />
@@ -320,11 +320,11 @@ function Filter({
 
           <Box
             sx={{
-              display: 'flex',
-              alignItems: 'center',
+              display: "flex",
+              alignItems: "center",
               gap: 1,
               mb: 1.5,
-              mt: 2
+              mt: 2,
             }}
           >
             <Bed size={18} weight="bold" color="rgba(0, 0, 0, 0.6)" />
@@ -345,7 +345,7 @@ function Filter({
             />
           </Box>
 
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1.5 }}>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1.5 }}>
             <Toilet size={18} weight="bold" color="rgba(0, 0, 0, 0.6)" />
 
             <Controller
@@ -364,7 +364,7 @@ function Filter({
             />
           </Box>
 
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1.5 }}>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1.5 }}>
             <Car size={18} weight="bold" color="rgba(0, 0, 0, 0.6)" />
 
             <Controller
@@ -383,7 +383,7 @@ function Filter({
             />
           </Box>
 
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1.5 }}>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1.5 }}>
             <Ruler size={18} weight="bold" color="rgba(0, 0, 0, 0.6)" />
 
             <Controller
@@ -402,7 +402,7 @@ function Filter({
             />
           </Box>
 
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1.5 }}>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1.5 }}>
             <Ruler size={18} weight="bold" color="rgba(0, 0, 0, 0.6)" />
 
             <Controller
@@ -424,9 +424,9 @@ function Filter({
 
         <Box
           sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 2
+            display: "flex",
+            flexDirection: "column",
+            gap: 2,
           }}
         >
           <Button
@@ -441,18 +441,18 @@ function Filter({
           <Button
             color="primary"
             onClick={() => {
-              router.replace('/imoveis', undefined, { shallow: true })
+              router.replace("/imoveis", undefined, { shallow: true });
               reset({
-                city: '',
-                type: '',
-                neighborhood: '',
-                bathrooms: '',
-                bedrooms: '',
-                parkingSpots: '',
-                privateArea: '',
-                suites: '',
-                totalArea: ''
-              })
+                city: "",
+                type: "",
+                neighborhood: "",
+                bathrooms: "",
+                bedrooms: "",
+                parkingSpots: "",
+                privateArea: "",
+                suites: "",
+                totalArea: "",
+              });
             }}
           >
             Limpar Filtros
@@ -460,7 +460,7 @@ function Filter({
         </Box>
       </Card>
     </form>
-  )
+  );
 }
 
 function Properties({
@@ -473,20 +473,20 @@ function Properties({
   types,
   cities,
   initialNeighborhood,
-  setTotal
+  setTotal,
 }: {
-  properties: Property[]
-  totalSize: number
-  page: number
-  setLoading: Dispatch<SetStateAction<boolean>>
-  setPage: Dispatch<SetStateAction<number>>
-  setProperties: Dispatch<SetStateAction<Property[]>>
-  types: TypeProperty[]
-  cities: CityProps[]
-  initialNeighborhood: NeighborhoodProps[]
-  setTotal: Dispatch<SetStateAction<number>>
+  properties: Property[];
+  totalSize: number;
+  page: number;
+  setLoading: Dispatch<SetStateAction<boolean>>;
+  setPage: Dispatch<SetStateAction<number>>;
+  setProperties: Dispatch<SetStateAction<Property[]>>;
+  types: TypeProperty[];
+  cities: CityProps[];
+  initialNeighborhood: NeighborhoodProps[];
+  setTotal: Dispatch<SetStateAction<number>>;
 }) {
-  const router = useRouter()
+  const router = useRouter();
   const {
     tipoImovel,
     cidade,
@@ -496,21 +496,21 @@ function Properties({
     suites,
     garagem,
     areaTotal,
-    areaTerreno
-  } = router.query
+    areaTerreno,
+  } = router.query;
 
   const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
-    setPage(value)
-    loadProperties(value)
-  }
+    setPage(value);
+    loadProperties(value);
+  };
 
   const loadProperties = useCallback(
     async (page: number) => {
       const responseImoveis = await api.get(`/imovel`, {
         params: {
-          type: tipoImovel !== 'undefined' ? tipoImovel : undefined,
-          city: cidade !== 'undefined' ? cidade : undefined,
-          neighborhood: bairro !== 'undefined' ? bairro : undefined,
+          type: tipoImovel !== "undefined" ? tipoImovel : undefined,
+          city: cidade !== "undefined" ? cidade : undefined,
+          neighborhood: bairro !== "undefined" ? bairro : undefined,
           bedrooms: quartos || undefined,
           bathrooms: banheiros || undefined,
           suites: suites || undefined,
@@ -518,11 +518,11 @@ function Properties({
           totalArea: areaTotal || undefined,
           privateArea: areaTerreno || undefined,
           page,
-          pageSize: 12
-        }
-      })
+          pageSize: 12,
+        },
+      });
       if (responseImoveis) {
-        setProperties([...responseImoveis.data.properties])
+        setProperties([...responseImoveis.data.properties]);
       }
     },
     [
@@ -535,27 +535,27 @@ function Properties({
       quartos,
       setProperties,
       suites,
-      tipoImovel
+      tipoImovel,
     ]
-  )
+  );
   return (
     <Box
       sx={{
-        maxWidth: '1200px',
-        width: '100%',
-        display: 'flex',
-        flexDirection: 'column',
-        margin: '0 auto',
+        maxWidth: "1200px",
+        width: "100%",
+        display: "flex",
+        flexDirection: "column",
+        margin: "0 auto",
         p: 2,
-        zIndex: 999
+        zIndex: 999,
       }}
     >
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+      <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
         <Typography variant="body2" color="#333" fontWeight="bold">
           {`${properties.length}  ${
             properties.length === 1
-              ? 'Imóvel encontrado'
-              : 'Imóveis encontrados'
+              ? "Imóvel encontrado"
+              : "Imóveis encontrados"
           }`}
         </Typography>
       </Box>
@@ -564,7 +564,7 @@ function Properties({
         <Grid item md={3} sm={12} xs={12}>
           <Filter
             page={page}
-            types={types}
+            types={types} 
             cities={cities}
             initialNeighborhood={initialNeighborhood}
             setTotal={setTotal}
@@ -581,16 +581,16 @@ function Properties({
                 md={4}
                 sm={12}
                 xs={12}
-                sx={{ a: { textDecoration: 'none' } }}
+                sx={{ a: { textDecoration: "none" } }}
               >
                 <Link href={`/imoveis/${property.id}`} target="_blank">
                   <Card
                     variant="outlined"
                     sx={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      height: '100%',
-                      position: 'relative'
+                      display: "flex",
+                      flexDirection: "column",
+                      height: "100%",
+                      position: "relative",
                     }}
                   >
                     {property.files.length > 0 ? (
@@ -603,11 +603,11 @@ function Properties({
                     ) : (
                       <Box
                         sx={{
-                          height: '250px',
-                          background: '#17375F',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center'
+                          height: "250px",
+                          background: "#17375F",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
                         }}
                       >
                         <Image src={logo} alt="logo" width={120} height={120} />
@@ -616,27 +616,27 @@ function Properties({
 
                     <Box
                       sx={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        height: '100%',
-                        justifyContent: 'space-between',
-                        flex: 1
+                        display: "flex",
+                        flexDirection: "column",
+                        height: "100%",
+                        justifyContent: "space-between",
+                        flex: 1,
                       }}
                     >
                       <Box
                         sx={{
-                          display: 'flex',
-                          flexDirection: 'column',
+                          display: "flex",
+                          flexDirection: "column",
                           px: 2,
-                          mt: 1
+                          mt: 1,
                         }}
                       >
                         <Box
                           sx={{
-                            display: 'flex',
-                            flexDirection: 'column',
+                            display: "flex",
+                            flexDirection: "column",
                             py: 1,
-                            width: '100%'
+                            width: "100%",
                           }}
                         >
                           <Typography
@@ -653,7 +653,7 @@ function Properties({
                         <Typography
                           variant="body2"
                           color="text.primary"
-                          sx={{ wordBreak: 'break-word' }}
+                          sx={{ wordBreak: "break-word" }}
                         >
                           {property.summary}
                         </Typography>
@@ -661,12 +661,12 @@ function Properties({
 
                       <Box
                         sx={{
-                          display: 'flex',
-                          flexDirection: 'column',
-                          justifyContent: 'center',
-                          alignItems: 'flex-start',
-                          width: '100%',
-                          p: 2
+                          display: "flex",
+                          flexDirection: "column",
+                          justifyContent: "center",
+                          alignItems: "flex-start",
+                          width: "100%",
+                          p: 2,
                         }}
                       >
                         <Typography
@@ -687,9 +687,9 @@ function Properties({
                             <Tooltip
                               title="Quartos"
                               sx={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: 1
+                                display: "flex",
+                                alignItems: "center",
+                                gap: 1,
                               }}
                             >
                               <Box>
@@ -705,9 +705,9 @@ function Properties({
                             <Tooltip
                               title="Suites"
                               sx={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: 1
+                                display: "flex",
+                                alignItems: "center",
+                                gap: 1,
                               }}
                             >
                               <Box>
@@ -723,9 +723,9 @@ function Properties({
                             <Tooltip
                               title="Banheiros"
                               sx={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: 1
+                                display: "flex",
+                                alignItems: "center",
+                                gap: 1,
                               }}
                             >
                               <Box>
@@ -741,9 +741,9 @@ function Properties({
                             <Tooltip
                               title="Garagem"
                               sx={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: 1
+                                display: "flex",
+                                alignItems: "center",
+                                gap: 1,
                               }}
                             >
                               <Box>
@@ -759,9 +759,9 @@ function Properties({
                             <Tooltip
                               title="Area total"
                               sx={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: 1
+                                display: "flex",
+                                alignItems: "center",
+                                gap: 1,
                               }}
                             >
                               <Box>
@@ -777,9 +777,9 @@ function Properties({
                             <Tooltip
                               title="Area do terreno"
                               sx={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: 1
+                                display: "flex",
+                                alignItems: "center",
+                                gap: 1,
                               }}
                             >
                               <Box>
@@ -792,7 +792,7 @@ function Properties({
                           )}
                         </Box>
 
-                        <Box sx={{ display: 'flex', gap: 1, my: 0.5 }}>
+                        <Box sx={{ display: "flex", gap: 1, my: 0.5 }}>
                           <Chip
                             label="Venda"
                             size="small"
@@ -810,16 +810,16 @@ function Properties({
 
                         <Box
                           sx={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'flex-end',
-                            width: '100%'
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "flex-end",
+                            width: "100%",
                           }}
                         >
                           <Typography
                             variant="subtitle1"
                             fontWeight="bold"
-                            sx={{ color: '#17375F' }}
+                            sx={{ color: "#17375F" }}
                           >
                             {property.value}
                           </Typography>
@@ -835,7 +835,7 @@ function Properties({
       </Grid>
 
       {page >= 1 && (
-        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
+        <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
           <Pagination
             count={totalSize}
             page={page}
@@ -846,14 +846,14 @@ function Properties({
         </Box>
       )}
     </Box>
-  )
+  );
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   context.res.setHeader(
-    'Cache-Control',
-    'public, s-maxage=10, stale-while-revalidate=59'
-  )
+    "Cache-Control",
+    "public, s-maxage=10, stale-while-revalidate=59"
+  );
   const {
     tipoImovel,
     cidade,
@@ -863,8 +863,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     suites,
     garagem,
     areaTotal,
-    areaTerreno
-  } = context.query
+    areaTerreno,
+  } = context.query;
 
   const responseImoveis = await api.get(`/imovel?visible=true`, {
     params: {
@@ -878,15 +878,15 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       totalArea: areaTotal,
       privateArea: areaTerreno,
       page: 1,
-      pageSize: 12
-    }
-  })
-  const responseTipo = await api.get<TypeProperty[]>(`/tipo-imovel`)
-  const responseCities = await api.get<CityProps[]>(`/imovel/cidades`)
+      pageSize: 12,
+    },
+  });
+  const responseTipo = await api.get<TypeProperty[]>(`/tipo-imovel`);
+  const responseCities = await api.get<CityProps[]>(`/imovel/cidades`);
 
   const responseNeighborhood = await api.get<NeighborhoodProps[]>(
     `/imovel/bairro/${cidade}`
-  )
+  );
 
   return {
     props: {
@@ -894,30 +894,30 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       totalPropertiesSize: Math.round(responseImoveis.data.totalPages / 12),
       types: responseTipo.data,
       cities: responseCities.data,
-      neighborhoods: responseNeighborhood.data
-    }
-  }
-}
+      neighborhoods: responseNeighborhood.data,
+    },
+  };
+};
 
-export const revalidate = 3600 // revalidate every hour
+export const revalidate = 3600; // revalidate every hour
 
 export default function Home({
   properties: initialProperties,
   types,
   cities,
   neighborhoods,
-  totalPropertiesSize
+  totalPropertiesSize,
 }: {
-  properties: Property[]
-  types: TypeProperty[]
-  cities: CityProps[]
-  totalPropertiesSize: number
-  neighborhoods: NeighborhoodProps[]
+  properties: Property[];
+  types: TypeProperty[];
+  cities: CityProps[];
+  totalPropertiesSize: number;
+  neighborhoods: NeighborhoodProps[];
 }) {
-  const [properties, setProperties] = useState<Property[]>(initialProperties)
-  const [loading, setLoading] = useState(false)
-  const [total, setTotal] = useState(totalPropertiesSize)
-  const [page, setPage] = useState(1)
+  const [properties, setProperties] = useState<Property[]>(initialProperties);
+  const [loading, setLoading] = useState(false);
+  const [total, setTotal] = useState(totalPropertiesSize);
+  const [page, setPage] = useState(1);
 
   return (
     <>
@@ -927,19 +927,19 @@ export default function Home({
       <Box>
         <Box
           sx={{
-            width: '100%',
-            height: '100%',
-            minHeight: '100vh',
-            position: 'relative',
-            backgroundColor: '#fff',
+            width: "100%",
+            height: "100%",
+            minHeight: "100vh",
+            position: "relative",
+            backgroundColor: "#fff",
             backgroundImage: { md: `url(${square.src}), url(${square.src})` },
             backgroundPosition: {
-              xs: '170% 0%,-70% 100%',
-              sm: '170% 0%,-70% 100%',
-              md: '110% 0%, -10% 100%'
+              xs: "170% 0%,-70% 100%",
+              sm: "170% 0%,-70% 100%",
+              md: "110% 0%, -10% 100%",
             },
-            backgroundSize: 'auto, auto',
-            backgroundRepeat: 'no-repeat, no-repeat'
+            backgroundSize: "auto, auto",
+            backgroundRepeat: "no-repeat, no-repeat",
           }}
         >
           <MenubarHome />
@@ -961,11 +961,11 @@ export default function Home({
       <Box sx={{ mb: 4 }} />
       <Footer />
       <Backdrop
-        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
         open={loading}
       >
         <CircularProgress color="inherit" />
       </Backdrop>
     </>
-  )
+  );
 }
