@@ -34,13 +34,7 @@ import {
   WhatsappLogo,
   Bathtub,
 } from "phosphor-react";
-import {
-  Dispatch,
-  SetStateAction,
-  useCallback,
-  useEffect,
-  useState,
-} from "react";
+import { useCallback, useEffect, useState } from "react";
 import api from "@/services/api";
 import { useForm } from "react-hook-form";
 import { z, infer as Infer } from "zod";
@@ -51,7 +45,6 @@ import { toast } from "react-toastify";
 import { Search } from "@mui/icons-material";
 import { BiArea } from "react-icons/bi";
 import { LiaRulerCombinedSolid } from "react-icons/lia";
-import CircularProgress from "@mui/material/CircularProgress";
 import Footer from "@/components/Footer";
 interface TypeProperty {
   id: string;
