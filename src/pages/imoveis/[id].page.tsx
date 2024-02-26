@@ -6,14 +6,14 @@ import {
   Grid,
   Tooltip,
   Typography,
-} from '@mui/material'
+} from "@mui/material";
 
-import rodrigoAvatar from '@/assets/digo.jpeg'
-import jonathanAvatar from '@/assets/jonathan.jpeg'
-import renatoAvatar from '@/assets/renato.jpeg'
-import adrianaAvatar from '@/assets/adriana.jpeg'
+import rodrigoAvatar from "@/assets/digo.jpeg";
+import jonathanAvatar from "@/assets/jonathan.jpeg";
+import renatoAvatar from "@/assets/renato.jpeg";
+import adrianaAvatar from "@/assets/adriana.jpeg";
 
-import Image from 'next/image'
+import Image from "next/image";
 import {
   Bathtub,
   Bed,
@@ -22,48 +22,48 @@ import {
   CaretRight,
   Toilet,
   WhatsappLogo,
-} from 'phosphor-react'
-import { MenubarHome } from '@/components/MenubarHome'
-import Carousel from 'react-material-ui-carousel'
-import { useMemo } from 'react'
-import api from '@/services/api'
-import Head from 'next/head'
-import logo from '@/assets/logo-auros-minimalist.svg'
-import { BiArea } from 'react-icons/bi'
-import { LiaRulerCombinedSolid } from 'react-icons/lia'
-import { ServerResponse } from 'http'
-import Footer from '@/components/Footer'
+} from "phosphor-react";
+import { MenubarHome } from "@/components/MenubarHome";
+import Carousel from "react-material-ui-carousel";
+import { useMemo } from "react";
+import api from "@/services/api";
+import Head from "next/head";
+import logo from "@/assets/logo-auros-minimalist.svg";
+import { BiArea } from "react-icons/bi";
+import { LiaRulerCombinedSolid } from "react-icons/lia";
+import { ServerResponse } from "http";
+import Footer from "@/components/Footer";
 
 interface Property {
-  id: string
-  name: string
-  summary: string
-  description: string
-  value: string
-  bedrooms: string
-  bathrooms: string
-  parkingSpots: string
-  suites: string
-  totalArea: string
-  privateArea: string
-  createdAt: string
-  cep: string
-  state: string
-  city: string
-  neighborhood: string
-  street: string
-  numberAddress: string
-  longitude: string
-  latitude: string
+  id: string;
+  name: string;
+  summary: string;
+  description: string;
+  value: string;
+  bedrooms: string;
+  bathrooms: string;
+  parkingSpots: string;
+  suites: string;
+  totalArea: string;
+  privateArea: string;
+  createdAt: string;
+  cep: string;
+  state: string;
+  city: string;
+  neighborhood: string;
+  street: string;
+  numberAddress: string;
+  longitude: string;
+  latitude: string;
   type_property: {
-    id: string
-    description: string
-    createdAt: string
-  }
+    id: string;
+    description: string;
+    createdAt: string;
+  };
   files: {
-    id: string
-    path: string
-  }[]
+    id: string;
+    path: string;
+  }[];
 }
 
 function Property({ property }: { property: Property }) {
@@ -72,10 +72,10 @@ function Property({ property }: { property: Property }) {
       ? property?.files.map((file) => {
           return {
             img: file.path,
-          }
+          };
         })
-      : []
-  }, [property])
+      : [];
+  }, [property]);
 
   return (
     <Box>
@@ -83,14 +83,16 @@ function Property({ property }: { property: Property }) {
         <title>
           {`Auros | ${property.name}  (${property?.city} - ${property?.neighborhood} / ${property?.street}, ${property?.numberAddress})`}
         </title>
+
+        <meta name="description" content={property?.description} />
       </Head>
 
       <MenubarHome />
 
       <Box
         sx={{
-          maxWidth: '1200px',
-          margin: '0 auto',
+          maxWidth: "1200px",
+          margin: "0 auto",
           mt: { xs: 0, sm: 0, md: 4, mb: 4 },
         }}
       >
@@ -111,23 +113,23 @@ function Property({ property }: { property: Property }) {
                   height={1080}
                   loading="lazy"
                   style={{
-                    backgroundSize: 'contain',
-                    backgroundRepeat: 'no-repeat',
-                    backgroundPosition: 'center',
-                    width: '100%',
-                    height: '100%',
-                    objectFit: 'contain',
+                    backgroundSize: "contain",
+                    backgroundRepeat: "no-repeat",
+                    backgroundPosition: "center",
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "contain",
                   }}
                 />
               ))
             ) : (
               <Box
                 sx={{
-                  background: '#17375F',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  height: '100%',
+                  background: "#17375F",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  height: "100%",
                 }}
               >
                 <Image src={logo} alt="logo" width={200} height={200} />
@@ -162,8 +164,8 @@ function Property({ property }: { property: Property }) {
                   <Tooltip
                     title="Quartos"
                     sx={{
-                      display: 'flex',
-                      alignItems: 'center',
+                      display: "flex",
+                      alignItems: "center",
                       gap: 1,
                     }}
                   >
@@ -178,8 +180,8 @@ function Property({ property }: { property: Property }) {
                   <Tooltip
                     title="Suites"
                     sx={{
-                      display: 'flex',
-                      alignItems: 'center',
+                      display: "flex",
+                      alignItems: "center",
                       gap: 1,
                     }}
                   >
@@ -194,8 +196,8 @@ function Property({ property }: { property: Property }) {
                   <Tooltip
                     title="Banheiros"
                     sx={{
-                      display: 'flex',
-                      alignItems: 'center',
+                      display: "flex",
+                      alignItems: "center",
                       gap: 1,
                     }}
                   >
@@ -210,8 +212,8 @@ function Property({ property }: { property: Property }) {
                   <Tooltip
                     title="Garagem"
                     sx={{
-                      display: 'flex',
-                      alignItems: 'center',
+                      display: "flex",
+                      alignItems: "center",
                       gap: 1,
                     }}
                   >
@@ -228,8 +230,8 @@ function Property({ property }: { property: Property }) {
                   <Tooltip
                     title="Area total"
                     sx={{
-                      display: 'flex',
-                      alignItems: 'center',
+                      display: "flex",
+                      alignItems: "center",
                       gap: 1,
                     }}
                   >
@@ -246,8 +248,8 @@ function Property({ property }: { property: Property }) {
                   <Tooltip
                     title="Area do terreno"
                     sx={{
-                      display: 'flex',
-                      alignItems: 'center',
+                      display: "flex",
+                      alignItems: "center",
                       gap: 1,
                     }}
                   >
@@ -268,7 +270,7 @@ function Property({ property }: { property: Property }) {
               <Typography
                 variant="body1"
                 mb={2}
-                sx={{ wordBreak: 'break-word' }}
+                sx={{ wordBreak: "break-word" }}
               >
                 {property?.summary}
               </Typography>
@@ -283,7 +285,7 @@ function Property({ property }: { property: Property }) {
                     className="ql-editor"
                     sx={{
                       ul: {
-                        paddingLeft: '20px',
+                        paddingLeft: "20px",
                       },
                     }}
                   >
@@ -304,7 +306,7 @@ function Property({ property }: { property: Property }) {
                 display="flex"
                 alignItems="center"
                 justifyContent="space-between"
-                sx={{ borderBottom: '1px solid #eee', pb: 2 }}
+                sx={{ borderBottom: "1px solid #eee", pb: 2 }}
               >
                 <Typography variant="h6" color="primary" fontWeight="bold">
                   Venda
@@ -319,16 +321,16 @@ function Property({ property }: { property: Property }) {
               </Typography>
 
               <Box display="flex" flexDirection="column" gap={2} mt={1}>
-                {['Rio do Sul'].includes(property.city) && (
+                {["Rio do Sul"].includes(property.city) && (
                   <Box
                     display="flex"
                     alignItems="center"
                     justifyContent="space-between"
-                    sx={{ borderBottom: '1px solid #eee', pb: 2 }}
+                    sx={{ borderBottom: "1px solid #eee", pb: 2 }}
                   >
                     <Box display="flex" alignItems="center" gap={2}>
                       <Avatar
-                        sx={{ width: '50px', height: '50px' }}
+                        sx={{ width: "50px", height: "50px" }}
                         variant="square"
                         src={adrianaAvatar.src}
                       />
@@ -343,7 +345,7 @@ function Property({ property }: { property: Property }) {
                       variant="contained"
                       onClick={() =>
                         window.open(
-                          'https://api.whatsapp.com/send?phone=5547997798081',
+                          "https://api.whatsapp.com/send?phone=5547997798081"
                         )
                       }
                     >
@@ -355,16 +357,16 @@ function Property({ property }: { property: Property }) {
                   </Box>
                 )}
 
-                {['Rio do Sul', 'Aurora'].includes(property.city) && (
+                {["Rio do Sul", "Aurora"].includes(property.city) && (
                   <Box
                     display="flex"
                     alignItems="center"
                     justifyContent="space-between"
-                    sx={{ borderBottom: '1px solid #eee', pb: 2 }}
+                    sx={{ borderBottom: "1px solid #eee", pb: 2 }}
                   >
                     <Box display="flex" alignItems="center" gap={2}>
                       <Avatar
-                        sx={{ width: '50px', height: '50px' }}
+                        sx={{ width: "50px", height: "50px" }}
                         variant="square"
                         src={renatoAvatar.src}
                       />
@@ -378,7 +380,7 @@ function Property({ property }: { property: Property }) {
                       variant="contained"
                       onClick={() =>
                         window.open(
-                          'https://api.whatsapp.com/send?phone=5547999008090',
+                          "https://api.whatsapp.com/send?phone=5547999008090"
                         )
                       }
                     >
@@ -390,16 +392,16 @@ function Property({ property }: { property: Property }) {
                   </Box>
                 )}
 
-                {['Aurora', 'Balneário Camboriú'].includes(property.city) && (
+                {["Aurora", "Balneário Camboriú"].includes(property.city) && (
                   <Box
                     display="flex"
                     alignItems="center"
                     justifyContent="space-between"
-                    sx={{ borderBottom: '1px solid #eee', pb: 2 }}
+                    sx={{ borderBottom: "1px solid #eee", pb: 2 }}
                   >
                     <Box display="flex" alignItems="center" gap={2}>
                       <Avatar
-                        sx={{ width: '50px', height: '50px' }}
+                        sx={{ width: "50px", height: "50px" }}
                         variant="square"
                         src={rodrigoAvatar.src}
                       />
@@ -413,7 +415,7 @@ function Property({ property }: { property: Property }) {
                       variant="contained"
                       onClick={() =>
                         window.open(
-                          'https://api.whatsapp.com/send?phone=5547999990607',
+                          "https://api.whatsapp.com/send?phone=5547999990607"
                         )
                       }
                     >
@@ -425,7 +427,7 @@ function Property({ property }: { property: Property }) {
                   </Box>
                 )}
 
-                {['Balneário Camboriú'].includes(property.city) && (
+                {["Balneário Camboriú"].includes(property.city) && (
                   <Box
                     display="flex"
                     alignItems="center"
@@ -433,7 +435,7 @@ function Property({ property }: { property: Property }) {
                   >
                     <Box display="flex" alignItems="center" gap={2}>
                       <Avatar
-                        sx={{ width: '50px', height: '50px' }}
+                        sx={{ width: "50px", height: "50px" }}
                         variant="square"
                         src={jonathanAvatar.src}
                       />
@@ -447,7 +449,7 @@ function Property({ property }: { property: Property }) {
                       variant="contained"
                       onClick={() =>
                         window.open(
-                          'https://api.whatsapp.com/send?phone=5547988163739',
+                          "https://api.whatsapp.com/send?phone=5547988163739"
                         )
                       }
                     >
@@ -459,19 +461,19 @@ function Property({ property }: { property: Property }) {
                   </Box>
                 )}
 
-                {property.city !== 'Balneário Camboriú' &&
-                  property.city !== 'Aurora' &&
-                  property.city !== 'Rio do Sul' && (
+                {property.city !== "Balneário Camboriú" &&
+                  property.city !== "Aurora" &&
+                  property.city !== "Rio do Sul" && (
                     <>
                       <Box
                         display="flex"
                         alignItems="center"
                         justifyContent="space-between"
-                        sx={{ borderBottom: '1px solid #eee', pb: 2 }}
+                        sx={{ borderBottom: "1px solid #eee", pb: 2 }}
                       >
                         <Box display="flex" alignItems="center" gap={2}>
                           <Avatar
-                            sx={{ width: '50px', height: '50px' }}
+                            sx={{ width: "50px", height: "50px" }}
                             variant="square"
                             src={adrianaAvatar.src}
                           />
@@ -488,7 +490,7 @@ function Property({ property }: { property: Property }) {
                           variant="contained"
                           onClick={() =>
                             window.open(
-                              'https://api.whatsapp.com/send?phone=5547997798081',
+                              "https://api.whatsapp.com/send?phone=5547997798081"
                             )
                           }
                         >
@@ -502,11 +504,11 @@ function Property({ property }: { property: Property }) {
                         display="flex"
                         alignItems="center"
                         justifyContent="space-between"
-                        sx={{ borderBottom: '1px solid #eee', pb: 2 }}
+                        sx={{ borderBottom: "1px solid #eee", pb: 2 }}
                       >
                         <Box display="flex" alignItems="center" gap={2}>
                           <Avatar
-                            sx={{ width: '50px', height: '50px' }}
+                            sx={{ width: "50px", height: "50px" }}
                             variant="square"
                             src={renatoAvatar.src}
                           />
@@ -522,7 +524,7 @@ function Property({ property }: { property: Property }) {
                           variant="contained"
                           onClick={() =>
                             window.open(
-                              'https://api.whatsapp.com/send?phone=5547999008090',
+                              "https://api.whatsapp.com/send?phone=5547999008090"
                             )
                           }
                         >
@@ -537,11 +539,11 @@ function Property({ property }: { property: Property }) {
                         display="flex"
                         alignItems="center"
                         justifyContent="space-between"
-                        sx={{ borderBottom: '1px solid #eee', pb: 2 }}
+                        sx={{ borderBottom: "1px solid #eee", pb: 2 }}
                       >
                         <Box display="flex" alignItems="center" gap={2}>
                           <Avatar
-                            sx={{ width: '50px', height: '50px' }}
+                            sx={{ width: "50px", height: "50px" }}
                             variant="square"
                             src={rodrigoAvatar.src}
                           />
@@ -557,7 +559,7 @@ function Property({ property }: { property: Property }) {
                           variant="contained"
                           onClick={() =>
                             window.open(
-                              'https://api.whatsapp.com/send?phone=5547999990607',
+                              "https://api.whatsapp.com/send?phone=5547999990607"
                             )
                           }
                         >
@@ -575,7 +577,7 @@ function Property({ property }: { property: Property }) {
                       >
                         <Box display="flex" alignItems="center" gap={2}>
                           <Avatar
-                            sx={{ width: '50px', height: '50px' }}
+                            sx={{ width: "50px", height: "50px" }}
                             variant="square"
                             src={jonathanAvatar.src}
                           />
@@ -591,7 +593,7 @@ function Property({ property }: { property: Property }) {
                           variant="contained"
                           onClick={() =>
                             window.open(
-                              'https://api.whatsapp.com/send?phone=5547988163739',
+                              "https://api.whatsapp.com/send?phone=5547988163739"
                             )
                           }
                         >
@@ -611,30 +613,30 @@ function Property({ property }: { property: Property }) {
 
       <Footer />
     </Box>
-  )
+  );
 }
 
-export const revalidate = 3600 // revalidate every hour
+export const revalidate = 3600; // revalidate every hour
 
 export const getServerSideProps = async ({
   params,
   res,
 }: {
-  params: { id: string }
-  res: ServerResponse
+  params: { id: string };
+  res: ServerResponse;
 }) => {
-  const { id } = params
+  const { id } = params;
   res.setHeader(
-    'Cache-Control',
-    'public, s-maxage=10, stale-while-revalidate=59',
-  )
-  const response = await api.get(`/imovel/${id}`)
+    "Cache-Control",
+    "public, s-maxage=10, stale-while-revalidate=59"
+  );
+  const response = await api.get(`/imovel/${id}`);
 
   return {
     props: {
       property: response.data,
     },
-  }
-}
+  };
+};
 
-export default Property
+export default Property;
