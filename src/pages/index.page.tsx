@@ -434,9 +434,11 @@ function Recent() {
   const loadProperties = useCallback(async () => {
     setLoading(true);
     const responseImoveis = await api.get(`/imovel?limit=6&visible=true`);
-    setLoading(false);
     if (responseImoveis) {
+      setLoading(false);
       setProperties([...responseImoveis.data.properties]);
+    } else {
+      setLoading(false);
     }
   }, []);
 
@@ -486,21 +488,7 @@ function Recent() {
           >
             {loading
               ? Array.from({ length: 6 }).map((_, index) => (
-                  <Grid
-                    key={index}
-                    item
-                    md={4}
-                    sm={12}
-                    xs={12}
-                    sx={{
-                      a: {
-                        textDecoration: "none",
-                        "&:hover": {
-                          opacity: 0.8,
-                        },
-                      },
-                    }}
-                  >
+                  <Grid key={index} item md={4} sm={12} xs={12}>
                     <Box
                       sx={{
                         display: "flex",
