@@ -438,9 +438,9 @@ function Recent() {
   const [loading, setLoading] = useState(true);
 
   const loadProperties = useCallback(async () => {
-    // setLoading(true);
+    setLoading(true);
     const responseImoveis = await api.get(`/imovel?limit=6&visible=true`);
-    // setLoading(false);
+    setLoading(false);
     if (responseImoveis) {
       setProperties([...responseImoveis.data.properties]);
     }
@@ -449,10 +449,6 @@ function Recent() {
   useEffect(() => {
     loadProperties();
   }, [loadProperties]);
-
-  const isSmallScreen = useMediaQuery((theme: any) =>
-    theme.breakpoints.down("sm")
-  );
 
   return (
     <Box
