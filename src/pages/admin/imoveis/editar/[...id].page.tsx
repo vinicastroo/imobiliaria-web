@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Menubar } from '@/components/Menubar'
-import { Bed, Car, Ruler, Toilet, Door } from 'phosphor-react'
+import { Menubar } from "@/components/Menubar";
+import { Bed, Car, Ruler, Toilet, Bathtub } from "phosphor-react";
 
-import { Content, EditorStyled, FilePondStyled } from './styles'
+import { Content, EditorStyled, FilePondStyled } from "./styles";
 
-import Container from '@/components/Container'
+import Container from "@/components/Container";
 import {
   Button,
   Card,
@@ -19,115 +19,115 @@ import {
   FormHelperText,
   Backdrop,
   IconButton,
-} from '@mui/material'
+} from "@mui/material";
 
-import { forwardRef, useCallback, useEffect, useState } from 'react'
-import { BackLink } from '@/components/BackLink'
-import api from '@/services/api'
-import brasilAPi from '@/services/brasilAPi'
-import Head from 'next/head'
-import MenuBar from '@/components/MenuEditor'
-import { useEditor } from '@tiptap/react'
-import StarterKit from '@tiptap/starter-kit'
-import TextAlign from '@tiptap/extension-text-align'
-import { Controller, useForm } from 'react-hook-form'
+import { forwardRef, useCallback, useEffect, useState } from "react";
+import { BackLink } from "@/components/BackLink";
+import api from "@/services/api";
+import brasilAPi from "@/services/brasilAPi";
+import Head from "next/head";
+import MenuBar from "@/components/MenuEditor";
+import { useEditor } from "@tiptap/react";
+import StarterKit from "@tiptap/starter-kit";
+import TextAlign from "@tiptap/extension-text-align";
+import { Controller, useForm } from "react-hook-form";
 
-import { registerPlugin } from 'react-filepond'
+import { registerPlugin } from "react-filepond";
 
-import 'filepond/dist/filepond.min.css'
+import "filepond/dist/filepond.min.css";
 
-import FilePondPluginImageExifOrientation from 'filepond-plugin-image-exif-orientation'
-import FilePondPluginImagePreview from 'filepond-plugin-image-preview'
-import FilePondPluginImageCrop from 'filepond-plugin-image-crop'
+import FilePondPluginImageExifOrientation from "filepond-plugin-image-exif-orientation";
+import FilePondPluginImagePreview from "filepond-plugin-image-preview";
+import FilePondPluginImageCrop from "filepond-plugin-image-crop";
 // import FilePondPluginFileValidateSize from 'filepond-plugin-file-validate-size'
-import FilePondPluginFileValidateType from 'filepond-plugin-file-validate-type'
+import FilePondPluginFileValidateType from "filepond-plugin-file-validate-type";
 
-import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css'
-import { z, infer as Infer } from 'zod'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { NumericFormat } from 'react-number-format'
-import { toast } from 'react-toastify'
-import { useRouter } from 'next/router'
-import { useSession } from 'next-auth/react'
-import CircularProgress from '@mui/material/CircularProgress'
-import Image from 'next/image'
-import DeleteIcon from '@mui/icons-material/Delete'
-import ImageIcon from '@mui/icons-material/Image'
+import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css";
+import { z, infer as Infer } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { NumericFormat } from "react-number-format";
+import { toast } from "react-toastify";
+import { useRouter } from "next/router";
+import { useSession } from "next-auth/react";
+import CircularProgress from "@mui/material/CircularProgress";
+import Image from "next/image";
+import DeleteIcon from "@mui/icons-material/Delete";
+import ImageIcon from "@mui/icons-material/Image";
 
 registerPlugin(
   FilePondPluginImageExifOrientation,
   FilePondPluginImagePreview,
   FilePondPluginImageCrop,
   // FilePondPluginFileValidateSize,
-  FilePondPluginFileValidateType,
-)
+  FilePondPluginFileValidateType
+);
 interface TypeProperty {
-  id: string
-  createdAt: string
-  description: string
+  id: string;
+  createdAt: string;
+  description: string;
 }
 
 interface Property {
-  id: string
-  name: string
-  summary: string
-  description: string
-  value: string
-  bedrooms: string
-  bathrooms: string
-  parkingSpots: string
-  suites: string
-  totalArea: string
-  privateArea: string
-  createdAt: string
-  cep: string
-  state: string
-  city: string
-  neighborhood: string
-  street: string
-  numberAddress: string
-  longitude: string
-  latitude: string
+  id: string;
+  name: string;
+  summary: string;
+  description: string;
+  value: string;
+  bedrooms: string;
+  bathrooms: string;
+  parkingSpots: string;
+  suites: string;
+  totalArea: string;
+  privateArea: string;
+  createdAt: string;
+  cep: string;
+  state: string;
+  city: string;
+  neighborhood: string;
+  street: string;
+  numberAddress: string;
+  longitude: string;
+  latitude: string;
   type_property: {
-    id: string
-    description: string
-    createdAt: string
-  }
+    id: string;
+    description: string;
+    createdAt: string;
+  };
   files: {
-    id: string
-    path: string
-    fileName: string
-  }[]
+    id: string;
+    path: string;
+    fileName: string;
+  }[];
 }
 
 export default function EditarImoveis() {
-  const [property, setProperty] = useState<Property>()
-  const [types, setTypes] = useState<TypeProperty[]>([])
-  const [files, setFiles] = useState<any[]>([])
-  const [loading, setLoading] = useState(false)
+  const [property, setProperty] = useState<Property>();
+  const [types, setTypes] = useState<TypeProperty[]>([]);
+  const [files, setFiles] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
 
   const createSchema = z.object({
-    name: z.string({ required_error: 'Nome é obrigatório' }),
-    value: z.string({ required_error: 'Valor é obrigatório' }),
-    summary: z.string({ required_error: 'Resumo é obrigatório' }),
-    type_id: z.string({ required_error: 'Tipo do imóvel é obrigatório' }),
-    description: z.string({ required_error: 'Descrição é obrigatório' }),
+    name: z.string({ required_error: "Nome é obrigatório" }),
+    value: z.string({ required_error: "Valor é obrigatório" }),
+    summary: z.string({ required_error: "Resumo é obrigatório" }),
+    type_id: z.string({ required_error: "Tipo do imóvel é obrigatório" }),
+    description: z.string({ required_error: "Descrição é obrigatório" }),
     bedrooms: z.string(),
     bathrooms: z.string(),
     suites: z.string(),
     parkingSpots: z.string(),
     totalArea: z.string(),
     privateArea: z.string(),
-    cep: z.string({ required_error: 'CEP é obrigatório' }),
-    state: z.string({ required_error: 'Estado é obrigatório' }),
-    city: z.string({ required_error: 'Cidade é obrigatório' }),
-    neighborhood: z.string({ required_error: 'Bairro é obrigatório' }),
-    street: z.string({ required_error: 'Rua é obrigatório' }),
+    cep: z.string({ required_error: "CEP é obrigatório" }),
+    state: z.string({ required_error: "Estado é obrigatório" }),
+    city: z.string({ required_error: "Cidade é obrigatório" }),
+    neighborhood: z.string({ required_error: "Bairro é obrigatório" }),
+    street: z.string({ required_error: "Rua é obrigatório" }),
     number: z.string().optional(),
-    latitude: z.string({ required_error: 'Latitude é obrigatório' }),
-    longitude: z.string({ required_error: 'Longitude é obrigatório' }),
-  })
-  type SchemaQuestion = Infer<typeof createSchema>
+    latitude: z.string({ required_error: "Latitude é obrigatório" }),
+    longitude: z.string({ required_error: "Longitude é obrigatório" }),
+  });
+  type SchemaQuestion = Infer<typeof createSchema>;
 
   const {
     register,
@@ -138,63 +138,63 @@ export default function EditarImoveis() {
     formState: { errors },
   } = useForm<SchemaQuestion>({
     resolver: zodResolver(createSchema),
-  })
+  });
 
-  const router = useRouter()
-  const { status } = useSession()
-  const { id } = router.query
+  const router = useRouter();
+  const { status } = useSession();
+  const { id } = router.query;
   const editor = useEditor({
     extensions: [
       StarterKit,
       TextAlign.configure({
-        types: ['heading', 'paragraph'],
+        types: ["heading", "paragraph"],
       }),
     ],
     editorProps: {
       attributes: {
-        spellcheck: 'false',
+        spellcheck: "false",
       },
     },
     onBlur({ editor }) {
-      setValue('description', editor.getHTML())
+      setValue("description", editor.getHTML());
     },
-  })
+  });
 
   const loadProperty = useCallback(async () => {
     if (id) {
-      const response = await api.get(`/imovel/${id}`)
+      const response = await api.get(`/imovel/${id}`);
 
       if (response && editor) {
-        setProperty(response.data)
-        editor.commands.setContent(response.data.description)
-        setValue('description', response.data.description)
+        setProperty(response.data);
+        editor.commands.setContent(response.data.description);
+        setValue("description", response.data.description);
       }
     }
-  }, [id, setValue, editor])
+  }, [id, setValue, editor]);
 
   useEffect(() => {
-    loadProperty()
-  }, [loadProperty])
+    loadProperty();
+  }, [loadProperty]);
 
   const loadTypes = useCallback(async () => {
-    const response = await api.get<TypeProperty[]>(`/tipo-imovel`)
+    const response = await api.get<TypeProperty[]>(`/tipo-imovel`);
     if (response) {
-      setTypes([...response.data])
+      setTypes([...response.data]);
     }
-  }, [])
+  }, []);
 
   useEffect(() => {
-    loadTypes()
-  }, [loadTypes])
+    loadTypes();
+  }, [loadTypes]);
 
   const onFileChange = (files: any) => {
-    const newFiles = files.map((fileItem: any) => fileItem.file)
+    const newFiles = files.map((fileItem: any) => fileItem.file);
 
-    setFiles(newFiles)
-  }
+    setFiles(newFiles);
+  };
 
   const onSubmit = async (data: SchemaQuestion) => {
-    setLoading(true)
+    setLoading(true);
 
     if (property) {
       try {
@@ -205,54 +205,54 @@ export default function EditarImoveis() {
 
         const paths = await Promise.all(
           files.map(async (fileItem) => {
-            const formData = new FormData()
-            formData.append('files', fileItem)
-            const responseFile = await api.post('/files/upload', formData, {
+            const formData = new FormData();
+            formData.append("files", fileItem);
+            const responseFile = await api.post("/files/upload", formData, {
               headers: {
-                'Content-Type': `multipart/form-data`,
+                "Content-Type": `multipart/form-data`,
               },
-            })
-            return responseFile.data.paths[0]
-          }),
-        )
+            });
+            return responseFile.data.paths[0];
+          })
+        );
 
         if (paths) {
           const response = await api.put(`/imovel/${property.id}`, {
             ...data,
             files: paths,
-          })
+          });
 
           if (response) {
-            setLoading(false)
-            toast.success('Imóvel alterado com sucesso')
-            router.push('/admin/imoveis/')
+            setLoading(false);
+            toast.success("Imóvel alterado com sucesso");
+            router.push("/admin/imoveis/");
           }
         }
       } catch (e) {
-        setLoading(false)
-        console.error(e)
+        setLoading(false);
+        console.error(e);
       }
     }
-  }
+  };
 
-  const cep = watch('cep')
+  const cep = watch("cep");
 
   useEffect(() => {
     async function loadByCEP() {
       if (cep && cep.length >= 8) {
         await brasilAPi.get(`/api/cep/v2/${cep}`).then((response) => {
-          setValue('city', response.data.city)
-          setValue('neighborhood', response.data.neighborhood)
-          setValue('state', response.data.state)
-          setValue('street', response.data.street)
-          setValue('latitude', response.data.location.coordinates.latitude)
-          setValue('longitude', response.data.location.coordinates.longitude)
-        })
+          setValue("city", response.data.city);
+          setValue("neighborhood", response.data.neighborhood);
+          setValue("state", response.data.state);
+          setValue("street", response.data.street);
+          setValue("latitude", response.data.location.coordinates.latitude);
+          setValue("longitude", response.data.location.coordinates.longitude);
+        });
       }
     }
 
-    loadByCEP()
-  }, [cep, setValue])
+    loadByCEP();
+  }, [cep, setValue]);
 
   // useEffect(() => {
   //   if (property) {
@@ -285,71 +285,71 @@ export default function EditarImoveis() {
       placeholder="Digite o valor"
       label="Valor"
     />
-  ))
-  NumericFormatWithRef.displayName = 'NumericFormatWithRef'
+  ));
+  NumericFormatWithRef.displayName = "NumericFormatWithRef";
 
   const handleDeleteImg = useCallback(
     async (fileName: string) => {
       if (fileName) {
-        setLoading(true)
+        setLoading(true);
         try {
-          const response = await api.post('/files/delete-images', {
+          const response = await api.post("/files/delete-images", {
             fileName,
-          })
+          });
           if (response) {
-            toast.success('Imagem removida com sucesso')
-            loadProperty()
-            setLoading(false)
+            toast.success("Imagem removida com sucesso");
+            loadProperty();
+            setLoading(false);
           }
         } catch (e) {
-          toast.error('Aconteceu ao remover a imagem')
-          setLoading(false)
-          console.error(e)
+          toast.error("Aconteceu ao remover a imagem");
+          setLoading(false);
+          console.error(e);
         }
       }
     },
-    [loadProperty],
-  )
+    [loadProperty]
+  );
 
   const handleEditThumb = useCallback(
     async (id: string) => {
       if (id && property) {
         try {
-          setLoading(true)
+          setLoading(true);
           const response = await api.post(
             `/imovel/update-thumb/${id}`,
             { property_id: property.id },
             {
               headers: {
-                'Content-Type': 'application/json',
+                "Content-Type": "application/json",
               },
-            },
-          )
+            }
+          );
 
           if (response) {
-            toast.success('Capa alterada com sucesso')
-            loadProperty()
-            setLoading(false)
+            toast.success("Capa alterada com sucesso");
+            loadProperty();
+            setLoading(false);
           }
         } catch (e) {
-          toast.error('Aconteceu um problema ao trocar a capa')
-          setLoading(false)
-          console.error(e)
+          toast.error("Aconteceu um problema ao trocar a capa");
+          setLoading(false);
+          console.error(e);
         }
       }
     },
-    [loadProperty, property],
-  )
+    [loadProperty, property]
+  );
 
-  if (status === 'unauthenticated') {
-    router.push('/login')
-    return null
+  if (status === "unauthenticated") {
+    router.push("/login");
+    return null;
   }
 
   return (
     <Container>
       <Backdrop
-        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
         open={loading}
       >
         <CircularProgress color="inherit" />
@@ -374,10 +374,10 @@ export default function EditarImoveis() {
                 <Card
                   variant="outlined"
                   sx={{
-                    display: 'flex',
-                    flexDirection: 'column',
+                    display: "flex",
+                    flexDirection: "column",
                     p: 3,
-                    overflowY: 'auto',
+                    overflowY: "auto",
                   }}
                 >
                   <Typography variant="body2">Imagens</Typography>
@@ -388,7 +388,7 @@ export default function EditarImoveis() {
                     gap={2}
                   >
                     {property.files.map((file) => (
-                      <Box key={file.id} sx={{ position: 'relative' }}>
+                      <Box key={file.id} sx={{ position: "relative" }}>
                         <Image
                           src={file.path}
                           alt=""
@@ -399,18 +399,18 @@ export default function EditarImoveis() {
 
                         <Box
                           sx={{
-                            position: 'absolute',
+                            position: "absolute",
                             top: 0,
                             right: 0,
-                            display: 'flex',
+                            display: "flex",
                           }}
                         >
                           <IconButton
                             onClick={() => handleEditThumb(file.id)}
                             size="small"
                             sx={{
-                              color: '#fff',
-                              backgroundColor: 'rgba(0,0,0,0.5)',
+                              color: "#fff",
+                              backgroundColor: "rgba(0,0,0,0.5)",
                             }}
                             title="Atualizar capa"
                           >
@@ -421,8 +421,8 @@ export default function EditarImoveis() {
                             onClick={() => handleDeleteImg(file.fileName)}
                             size="small"
                             sx={{
-                              color: '#fff',
-                              backgroundColor: 'rgba(0,0,0,0.5)',
+                              color: "#fff",
+                              backgroundColor: "rgba(0,0,0,0.5)",
                             }}
                             title="Deletar"
                           >
@@ -432,7 +432,7 @@ export default function EditarImoveis() {
                       </Box>
                     ))}
                   </Box>
-                  <Box sx={{ mt: 2, maxHeight: '400px' }}>
+                  <Box sx={{ mt: 2, maxHeight: "400px" }}>
                     {/* <Typography variant="caption">
                       * Ao cadastrar novas imagens, as atuais serão apagadas
                     </Typography> */}
@@ -449,7 +449,7 @@ export default function EditarImoveis() {
                       files={files}
                       // maxFileSize="3.5mb"
                       // labelMaxFileSize="O tamanho maximo toltal dos arquivos permitido é de 5MB"
-                      acceptedFileTypes={['image/*']}
+                      acceptedFileTypes={["image/*"]}
                       server={null} // Não usar a opção de servidor interno do FilePond, pois estamos enviando para um backend personalizado
                       labelIdle='Arraste e solte seus arquivos ou <span class="filepond--label-action">Navegue</span>'
                     />
@@ -460,7 +460,7 @@ export default function EditarImoveis() {
 
                   <Typography variant="body2">Dados Gerais</Typography>
 
-                  <Box sx={{ display: 'flex', gap: 2, mt: 2 }}>
+                  <Box sx={{ display: "flex", gap: 2, mt: 2 }}>
                     <Controller
                       name="name"
                       control={control}
@@ -481,7 +481,7 @@ export default function EditarImoveis() {
                     />
                   </Box>
 
-                  <Box sx={{ display: 'flex', gap: 2, mt: 2 }}>
+                  <Box sx={{ display: "flex", gap: 2, mt: 2 }}>
                     <Controller
                       name="value"
                       control={control}
@@ -501,7 +501,7 @@ export default function EditarImoveis() {
                         required
                         defaultValue={property.type_property.id}
                         label="Tipo Imóvel"
-                        {...register('type_id')}
+                        {...register("type_id")}
                       >
                         <MenuItem>Selecione</MenuItem>
                         {types.map((type) => (
@@ -519,7 +519,7 @@ export default function EditarImoveis() {
                     </FormControl>
                   </Box>
 
-                  <Box sx={{ display: 'flex', gap: 2, mt: 2 }}>
+                  <Box sx={{ display: "flex", gap: 2, mt: 2 }}>
                     <Controller
                       name="summary"
                       control={control}
@@ -545,8 +545,8 @@ export default function EditarImoveis() {
                   <Box
                     sx={{
                       border: errors.description
-                        ? '1px solid red'
-                        : '1px solid #c7c7c7',
+                        ? "1px solid red"
+                        : "1px solid #c7c7c7",
                       mt: 2,
                     }}
                   >
@@ -569,12 +569,12 @@ export default function EditarImoveis() {
                     <Grid item md={6}>
                       <Box
                         sx={{
-                          display: 'flex',
-                          alignItems: 'center',
+                          display: "flex",
+                          alignItems: "center",
                           gap: 1,
                         }}
                       >
-                        <Door
+                        <Bed
                           size={18}
                           weight="bold"
                           color="rgba(0, 0, 0, 0.6)"
@@ -587,15 +587,15 @@ export default function EditarImoveis() {
                           size="small"
                           type="number"
                           defaultValue={property.bedrooms}
-                          {...register('bedrooms')}
+                          {...register("bedrooms")}
                         />
                       </Box>
                     </Grid>
                     <Grid item md={6}>
                       <Box
                         sx={{
-                          display: 'flex',
-                          alignItems: 'center',
+                          display: "flex",
+                          alignItems: "center",
                           gap: 1,
                         }}
                       >
@@ -612,19 +612,19 @@ export default function EditarImoveis() {
                           size="small"
                           type="number"
                           defaultValue={property.bathrooms}
-                          {...register('bathrooms')}
+                          {...register("bathrooms")}
                         />
                       </Box>
                     </Grid>
                     <Grid item md={6}>
                       <Box
                         sx={{
-                          display: 'flex',
-                          alignItems: 'center',
+                          display: "flex",
+                          alignItems: "center",
                           gap: 1,
                         }}
                       >
-                        <Bed
+                        <Bathtub
                           size={18}
                           weight="bold"
                           color="rgba(0, 0, 0, 0.6)"
@@ -637,15 +637,15 @@ export default function EditarImoveis() {
                           size="small"
                           type="number"
                           defaultValue={property.suites}
-                          {...register('suites')}
+                          {...register("suites")}
                         />
                       </Box>
                     </Grid>
                     <Grid item md={6}>
                       <Box
                         sx={{
-                          display: 'flex',
-                          alignItems: 'center',
+                          display: "flex",
+                          alignItems: "center",
                           gap: 1,
                         }}
                       >
@@ -662,15 +662,15 @@ export default function EditarImoveis() {
                           size="small"
                           type="number"
                           defaultValue={property.parkingSpots}
-                          {...register('parkingSpots')}
+                          {...register("parkingSpots")}
                         />
                       </Box>
                     </Grid>
                     <Grid item md={6}>
                       <Box
                         sx={{
-                          display: 'flex',
-                          alignItems: 'center',
+                          display: "flex",
+                          alignItems: "center",
                           gap: 1,
                         }}
                       >
@@ -687,15 +687,15 @@ export default function EditarImoveis() {
                           size="small"
                           type="number"
                           defaultValue={property.totalArea}
-                          {...register('totalArea')}
+                          {...register("totalArea")}
                         />
                       </Box>
                     </Grid>
                     <Grid item md={6}>
                       <Box
                         sx={{
-                          display: 'flex',
-                          alignItems: 'center',
+                          display: "flex",
+                          alignItems: "center",
                           gap: 1,
                         }}
                       >
@@ -712,7 +712,7 @@ export default function EditarImoveis() {
                           size="small"
                           type="number"
                           defaultValue={property.privateArea}
-                          {...register('privateArea')}
+                          {...register("privateArea")}
                         />
                       </Box>
                     </Grid>
@@ -722,7 +722,7 @@ export default function EditarImoveis() {
                 <Card variant="outlined" sx={{ p: 3, mt: 2 }}>
                   <Typography variant="body2">Endereço</Typography>
 
-                  <Box sx={{ display: 'flex', gap: 2, mt: 2 }}>
+                  <Box sx={{ display: "flex", gap: 2, mt: 2 }}>
                     <Controller
                       name="cep"
                       control={control}
@@ -781,7 +781,7 @@ export default function EditarImoveis() {
                     />
                   </Box>
 
-                  <Box sx={{ display: 'flex', gap: 2, mt: 2 }}>
+                  <Box sx={{ display: "flex", gap: 2, mt: 2 }}>
                     <Controller
                       name="neighborhood"
                       control={control}
@@ -836,7 +836,7 @@ export default function EditarImoveis() {
                       )}
                     />
                   </Box>
-                  <Box sx={{ display: 'flex', gap: 2, mt: 2 }}>
+                  <Box sx={{ display: "flex", gap: 2, mt: 2 }}>
                     <Controller
                       name="latitude"
                       control={control}
@@ -881,9 +881,9 @@ export default function EditarImoveis() {
 
             <Box
               sx={{
-                width: '100%',
-                display: 'flex',
-                justifyContent: 'flex-end',
+                width: "100%",
+                display: "flex",
+                justifyContent: "flex-end",
               }}
             >
               <Button variant="contained" sx={{ mt: 2 }} type="submit">
@@ -894,5 +894,5 @@ export default function EditarImoveis() {
         )}
       </Content>
     </Container>
-  )
+  );
 }

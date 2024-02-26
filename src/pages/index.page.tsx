@@ -27,11 +27,11 @@ import Link from "next/link";
 import {
   Bed,
   Car,
-  Door,
   FacebookLogo,
   InstagramLogo,
   Toilet,
   WhatsappLogo,
+  Bathtub,
 } from "phosphor-react";
 import {
   Dispatch,
@@ -579,7 +579,7 @@ function Recent({
                               }}
                             >
                               <Box>
-                                <Door size={24} weight="bold" />
+                                <Bed size={24} weight="bold" />
                                 <Typography variant="body2" fontWeight="bold">
                                   {property.bedrooms}
                                 </Typography>
@@ -597,7 +597,7 @@ function Recent({
                               }}
                             >
                               <Box>
-                                <Bed size={24} weight="bold" />
+                                <Bathtub size={24} weight="bold" />
                                 <Typography variant="body2" fontWeight="bold">
                                   {property.suites}
                                 </Typography>

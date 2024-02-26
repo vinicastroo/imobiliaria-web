@@ -17,7 +17,7 @@ import {
 } from "@mui/material";
 
 import Link from "next/link";
-import { Bed, Car, Door, Ruler, Toilet } from "phosphor-react";
+import { Bathtub, Bed, Car, Ruler, Toilet } from "phosphor-react";
 import { MenubarHome } from "@/components/MenubarHome";
 import {
   Dispatch,
@@ -300,7 +300,7 @@ function Filter({
               mt: 2,
             }}
           >
-            <Door size={18} weight="bold" color="rgba(0, 0, 0, 0.6)" />
+            <Bed size={18} weight="bold" color="rgba(0, 0, 0, 0.6)" />
             <Controller
               name="bedrooms"
               control={control}
@@ -327,7 +327,7 @@ function Filter({
               mt: 2,
             }}
           >
-            <Bed size={18} weight="bold" color="rgba(0, 0, 0, 0.6)" />
+            <Bathtub size={18} weight="bold" color="rgba(0, 0, 0, 0.6)" />
 
             <Controller
               name="suites"
@@ -564,7 +564,7 @@ function Properties({
         <Grid item md={3} sm={12} xs={12}>
           <Filter
             page={page}
-            types={types} 
+            types={types}
             cities={cities}
             initialNeighborhood={initialNeighborhood}
             setTotal={setTotal}
@@ -693,7 +693,7 @@ function Properties({
                               }}
                             >
                               <Box>
-                                <Door size={16} weight="bold" />
+                                <Bed size={16} weight="bold" />
                                 <Typography variant="body1">
                                   {property.bedrooms}
                                 </Typography>
@@ -711,7 +711,7 @@ function Properties({
                               }}
                             >
                               <Box>
-                                <Bed size={16} weight="bold" />
+                                <Bathtub size={16} weight="bold" />
                                 <Typography variant="body1">
                                   {property.suites}
                                 </Typography>

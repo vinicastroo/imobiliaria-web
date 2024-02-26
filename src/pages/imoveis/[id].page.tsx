@@ -15,11 +15,11 @@ import adrianaAvatar from '@/assets/adriana.jpeg'
 
 import Image from 'next/image'
 import {
+  Bathtub,
   Bed,
   Car,
   CaretLeft,
   CaretRight,
-  Door,
   Toilet,
   WhatsappLogo,
 } from 'phosphor-react'
@@ -168,7 +168,7 @@ function Property({ property }: { property: Property }) {
                     }}
                   >
                     <Box>
-                      <Door size={25} weight="bold" />
+                      <Bed size={25} weight="bold" />
                       <Typography variant="h6">{property.bedrooms}</Typography>
                     </Box>
                   </Tooltip>
@@ -184,7 +184,7 @@ function Property({ property }: { property: Property }) {
                     }}
                   >
                     <Box>
-                      <Bed size={25} weight="bold" />
+                      <Bathtub size={25} weight="bold" />
                       <Typography variant="h6">{property.suites}</Typography>
                     </Box>
                   </Tooltip>
