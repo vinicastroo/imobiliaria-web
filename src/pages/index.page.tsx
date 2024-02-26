@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Box,
@@ -15,14 +16,14 @@ import {
   Typography,
   useMediaQuery,
   Backdrop,
-} from '@mui/material'
-import bg from '@/assets/background.jpg'
-import logo from '@/assets/logo-auros-minimalist.svg'
+} from "@mui/material";
+import bg from "@/assets/background.jpg";
+import logo from "@/assets/logo-auros-minimalist.svg";
 
-import square from '@/assets/square.svg'
-import cityBackground from '@/assets/city-background.svg'
-import Image from 'next/image'
-import Link from 'next/link'
+import square from "@/assets/square.svg";
+import cityBackground from "@/assets/city-background.svg";
+import Image from "next/image";
+import Link from "next/link";
 import {
   Bed,
   Car,
@@ -31,134 +32,134 @@ import {
   InstagramLogo,
   Toilet,
   WhatsappLogo,
-} from 'phosphor-react'
+} from "phosphor-react";
 import {
   Dispatch,
   SetStateAction,
   useCallback,
   useEffect,
   useState,
-} from 'react'
-import api from '@/services/api'
-import { useForm } from 'react-hook-form'
-import { z, infer as Infer } from 'zod'
-import { zodResolver } from '@hookform/resolvers/zod'
-import Head from 'next/head'
-import { useRouter } from 'next/router'
-import { toast } from 'react-toastify'
-import { Search } from '@mui/icons-material'
-import { BiArea } from 'react-icons/bi'
-import { LiaRulerCombinedSolid } from 'react-icons/lia'
-import CircularProgress from '@mui/material/CircularProgress'
-import Footer from '@/components/Footer'
+} from "react";
+import api from "@/services/api";
+import { useForm } from "react-hook-form";
+import { z, infer as Infer } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import Head from "next/head";
+import { useRouter } from "next/router";
+import { toast } from "react-toastify";
+import { Search } from "@mui/icons-material";
+import { BiArea } from "react-icons/bi";
+import { LiaRulerCombinedSolid } from "react-icons/lia";
+import CircularProgress from "@mui/material/CircularProgress";
+import Footer from "@/components/Footer";
 interface TypeProperty {
-  id: string
-  createdAt: string
-  description: string
+  id: string;
+  createdAt: string;
+  description: string;
 }
 
 interface CityProps {
-  city: string
+  city: string;
 }
 
 interface NeighborhoodProps {
-  neighborhood: string
+  neighborhood: string;
 }
 
 interface Property {
-  id: string
-  name: string
-  summary: string
-  description: string
-  value: string
-  bedrooms: string
-  bathrooms: string
-  parkingSpots: string
-  suites: string
-  totalArea: string
-  privateArea: string
-  createdAt: string
-  cep: string
-  state: string
-  city: string
-  neighborhood: string
-  street: string
-  numberAddress: string
-  longitude: string
-  latitude: string
+  id: string;
+  name: string;
+  summary: string;
+  description: string;
+  value: string;
+  bedrooms: string;
+  bathrooms: string;
+  parkingSpots: string;
+  suites: string;
+  totalArea: string;
+  privateArea: string;
+  createdAt: string;
+  cep: string;
+  state: string;
+  city: string;
+  neighborhood: string;
+  street: string;
+  numberAddress: string;
+  longitude: string;
+  latitude: string;
   type_property: {
-    id: string
-    description: string
-    createdAt: string
-  }
+    id: string;
+    description: string;
+    createdAt: string;
+  };
   files: {
-    id: string
-    path: string
-  }[]
+    id: string;
+    path: string;
+  }[];
 }
 
 function BannerHome({
   types,
   cities,
 }: {
-  types: TypeProperty[]
-  cities: CityProps[]
-  setLoading: Dispatch<SetStateAction<boolean>>
+  types: TypeProperty[];
+  cities: CityProps[];
+  setLoading: Dispatch<SetStateAction<boolean>>;
 }) {
-  const [neighborhoods, setNeighborhood] = useState<NeighborhoodProps[]>([])
+  const [neighborhoods, setNeighborhood] = useState<NeighborhoodProps[]>([]);
 
   const createSchema = z.object({
     type_id: z.string(),
     neighborhood: z.string(),
     city: z.string(),
-  })
-  type SchemaQuestion = Infer<typeof createSchema>
-  const router = useRouter()
+  });
+  type SchemaQuestion = Infer<typeof createSchema>;
+  const router = useRouter();
 
   const { register, watch, handleSubmit } = useForm<SchemaQuestion>({
     resolver: zodResolver(createSchema),
-  })
+  });
 
   const isSmallScreen = useMediaQuery((theme: any) =>
-    theme.breakpoints.down('sm'),
-  )
+    theme.breakpoints.down("sm")
+  );
 
-  const city = watch('city')
+  const city = watch("city");
 
   const loadNeighboorhood = useCallback(async () => {
     if (city) {
-      const response = await api.get(`/imovel/bairro/${city}`)
+      const response = await api.get(`/imovel/bairro/${city}`);
       if (response) {
-        setNeighborhood([...response.data])
+        setNeighborhood([...response.data]);
       }
     }
-  }, [city])
+  }, [city]);
 
   useEffect(() => {
-    loadNeighboorhood()
-  }, [loadNeighboorhood])
+    loadNeighboorhood();
+  }, [loadNeighboorhood]);
 
   const onSubmit = useCallback(
     async (data: SchemaQuestion) => {
       router.push(
-        `/imoveis?${data.type_id ? `tipoImovel=${data.type_id}&` : ''}${
-          data.city ? `cidade=${data.city}&` : ''
-        }${data.neighborhood ? `bairro=${data.neighborhood}` : ''}`,
-      )
+        `/imoveis?${data.type_id ? `tipoImovel=${data.type_id}&` : ""}${
+          data.city ? `cidade=${data.city}&` : ""
+        }${data.neighborhood ? `bairro=${data.neighborhood}` : ""}`
+      );
     },
-    [router],
-  )
+    [router]
+  );
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Box
         sx={{
-          width: '100%',
-          height: '100vh',
-          backgroundSize: 'cover',
-          position: 'relative',
-          backgroundRepeat: 'no-repeat',
-          backgroundPositionY: '-80px',
+          width: "100%",
+          height: "100vh",
+          backgroundSize: "cover",
+          position: "relative",
+          backgroundRepeat: "no-repeat",
+          backgroundPositionY: "-80px",
           p: 2,
         }}
       >
@@ -169,14 +170,14 @@ function BannerHome({
             height={950}
             quality={100}
             style={{
-              position: 'absolute',
+              position: "absolute",
               zIndex: -1,
               top: 0,
               left: 0,
-              height: '100vh',
-              width: '100%',
-              backgroundSize: 'cover',
-              objectFit: 'cover',
+              height: "100vh",
+              width: "100%",
+              backgroundSize: "cover",
+              objectFit: "cover",
             }}
           />
         </Box>
@@ -186,21 +187,21 @@ function BannerHome({
           justifyContent="space-between"
           alignItems="center"
           sx={{
-            width: '100%',
-            maxWidth: '1200px',
-            margin: '0 auto',
-            position: 'absolute',
+            width: "100%",
+            maxWidth: "1200px",
+            margin: "0 auto",
+            position: "absolute",
             top: 0,
             right: 0,
             left: 0,
             py: 1,
             gap: 2,
-            flexDirection: { xs: 'column', sm: 'column', md: 'row' },
+            flexDirection: { xs: "column", sm: "column", md: "row" },
             px: { xs: 2, sm: 1, md: 0 },
             a: {
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
             },
           }}
         >
@@ -215,27 +216,27 @@ function BannerHome({
 
           <Box
             sx={{
-              display: 'flex',
+              display: "flex",
               gap: 3,
-              a: { color: 'white', textDecoration: 'none' },
-              'a:hover': { opacity: 0.7 },
+              a: { color: "white", textDecoration: "none" },
+              "a:hover": { opacity: 0.7 },
             }}
           >
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
               <Link href="https://api.whatsapp.com/send?phone=5547988163739">
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                   <WhatsappLogo size={20} weight="fill" />
                 </Box>
               </Link>
 
               <Link href="https://www.instagram.com/auroscorretoraimobiliaria/">
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                   <InstagramLogo size={20} weight="fill" />
                 </Box>
               </Link>
 
               <Link href="https://www.facebook.com/AurosCorretoraImob?locale=pt_BR">
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                   <FacebookLogo size={20} weight="fill" />
                 </Box>
               </Link>
@@ -251,28 +252,28 @@ function BannerHome({
         </Box>
         <Box
           sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            height: '100%',
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            height: "100%",
             p: 2,
           }}
         >
           <Box
             sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
               gap: 5,
-              margin: 'auto 0',
-              maxWidth: '1200px',
-              width: '100%',
+              margin: "auto 0",
+              maxWidth: "1200px",
+              width: "100%",
             }}
           >
             <Typography
-              variant={isSmallScreen ? 'h5' : 'h3'}
+              variant={isSmallScreen ? "h5" : "h3"}
               textAlign="center"
               color="#fff"
             >
@@ -284,32 +285,32 @@ function BannerHome({
               variant="outlined"
               sx={{
                 p: 3,
-                width: '100%',
+                width: "100%",
 
                 background: {
-                  md: 'rgba(255, 255, 255,0.1)',
+                  md: "rgba(255, 255, 255,0.1)",
                 },
                 boxShadow: {
-                  md: '0 1px 30px rgba(0, 0, 0, 0.5)',
+                  md: "0 1px 30px rgba(0, 0, 0, 0.5)",
                 },
                 backdropFilter: {
-                  md: 'blur(3px)',
+                  md: "blur(3px)",
                 },
-                '-webkit-backdrop-filter': {
-                  md: 'blur(3px)',
+                "-webkit-backdrop-filter": {
+                  md: "blur(3px)",
                 },
               }}
             >
               <Box
                 sx={{
-                  display: 'flex',
-                  flexDirection: { xs: 'column', md: 'row' },
+                  display: "flex",
+                  flexDirection: { xs: "column", md: "row" },
                 }}
                 gap={3}
               >
                 <FormControl
-                  sx={{ background: '#fff', borderRadius: 1 }}
-                  size={isSmallScreen ? 'small' : 'medium'}
+                  sx={{ background: "#fff", borderRadius: 1 }}
+                  size={isSmallScreen ? "small" : "medium"}
                   fullWidth
                 >
                   <InputLabel id="neightboor-select-label">
@@ -319,7 +320,7 @@ function BannerHome({
                     // error={Boolean(errors.type_id)}
                     labelId="neightboor-select-label"
                     label="Tipo Imóvel"
-                    {...register('type_id')}
+                    {...register("type_id")}
                   >
                     <MenuItem>Selecione</MenuItem>
                     {types.map((type) => (
@@ -331,8 +332,8 @@ function BannerHome({
                 </FormControl>
 
                 <FormControl
-                  size={isSmallScreen ? 'small' : 'medium'}
-                  sx={{ background: '#fff', borderRadius: 1 }}
+                  size={isSmallScreen ? "small" : "medium"}
+                  sx={{ background: "#fff", borderRadius: 1 }}
                   fullWidth
                 >
                   <InputLabel id="neightboor-select-label">Cidade</InputLabel>
@@ -340,7 +341,7 @@ function BannerHome({
                     // error={Boolean(errors.type_id)}
                     labelId="neightboor-select-label"
                     label="Cidade"
-                    {...register('city')}
+                    {...register("city")}
                   >
                     <MenuItem>Selecione</MenuItem>
                     {cities.map((city) => (
@@ -352,15 +353,15 @@ function BannerHome({
                 </FormControl>
 
                 <FormControl
-                  size={isSmallScreen ? 'small' : 'medium'}
-                  sx={{ background: '#fff', borderRadius: 1 }}
+                  size={isSmallScreen ? "small" : "medium"}
+                  sx={{ background: "#fff", borderRadius: 1 }}
                   fullWidth
                 >
                   <InputLabel id="demo-simple-select-label">Bairro</InputLabel>
                   <Select
                     // error={Boolean(errors.type_id)}
                     label="Bairro"
-                    {...register('neighborhood')}
+                    {...register("neighborhood")}
                   >
                     <MenuItem>Selecione</MenuItem>
                     {neighborhoods.map((neighborhood) => (
@@ -382,13 +383,13 @@ function BannerHome({
                 <Button
                   variant="contained"
                   sx={{
-                    color: '#fff',
-                    display: 'flex',
-                    alignItems: 'center',
+                    color: "#fff",
+                    display: "flex",
+                    alignItems: "center",
                     gap: 1,
                   }}
                   color="primary"
-                  size={isSmallScreen ? 'medium' : 'large'}
+                  size={isSmallScreen ? "medium" : "large"}
                   type="submit"
                   fullWidth
                 >
@@ -401,35 +402,35 @@ function BannerHome({
         </Box>
       </Box>
     </form>
-  )
+  );
 }
 
 function Recent({
   properties,
 }: {
-  properties: Property[]
-  setLoading: Dispatch<SetStateAction<boolean>>
+  properties: Property[];
+  setLoading: Dispatch<SetStateAction<boolean>>;
 }) {
   return (
     <Box
       sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        width: '100%',
-        height: '100%',
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        width: "100%",
+        height: "100%",
         p: 2,
-        background: '#fafafa',
+        background: "#fafafa",
         backgroundImage: { md: `url(${square.src}), url(${square.src})` },
         backgroundPosition: {
-          xs: '170% 0%,-70% 100%',
-          sm: '170% 0%,-70% 100%',
-          md: '110% 0%, -10% 100%',
+          xs: "170% 0%,-70% 100%",
+          sm: "170% 0%,-70% 100%",
+          md: "110% 0%, -10% 100%",
         },
 
-        backgroundSize: 'auto, auto',
-        backgroundRepeat: 'no-repeat, no-repeat',
+        backgroundSize: "auto, auto",
+        backgroundRepeat: "no-repeat, no-repeat",
       }}
     >
       {properties.length > 0 && (
@@ -446,7 +447,7 @@ function Recent({
           <Grid
             container
             sx={{
-              maxWidth: '1200px',
+              maxWidth: "1200px",
             }}
             spacing={2}
           >
@@ -459,8 +460,8 @@ function Recent({
                 xs={12}
                 sx={{
                   a: {
-                    textDecoration: 'none',
-                    '&:hover': {
+                    textDecoration: "none",
+                    "&:hover": {
                       opacity: 0.8,
                     },
                   },
@@ -470,9 +471,9 @@ function Recent({
                   <Card
                     variant="outlined"
                     sx={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      height: '100%',
+                      display: "flex",
+                      flexDirection: "column",
+                      height: "100%",
                     }}
                   >
                     {property.files.length > 0 ? (
@@ -485,11 +486,11 @@ function Recent({
                     ) : (
                       <Box
                         sx={{
-                          height: '250px',
-                          background: '#17375F',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
+                          height: "250px",
+                          background: "#17375F",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
                         }}
                       >
                         <Image src={logo} alt="logo" width={120} height={120} />
@@ -498,27 +499,27 @@ function Recent({
 
                     <Box
                       sx={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        height: '100%',
-                        justifyContent: 'space-between',
+                        display: "flex",
+                        flexDirection: "column",
+                        height: "100%",
+                        justifyContent: "space-between",
                         flex: 1,
                       }}
                     >
                       <Box
                         sx={{
-                          display: 'flex',
-                          flexDirection: 'column',
+                          display: "flex",
+                          flexDirection: "column",
                           px: 2,
                           mt: 1,
                         }}
                       >
                         <Box
                           sx={{
-                            display: 'flex',
-                            flexDirection: 'column',
+                            display: "flex",
+                            flexDirection: "column",
                             py: 1,
-                            width: '100%',
+                            width: "100%",
                           }}
                         >
                           <Typography
@@ -535,7 +536,7 @@ function Recent({
                         <Typography
                           variant="body2"
                           color="text.primary"
-                          sx={{ wordBreak: 'break-word' }}
+                          sx={{ wordBreak: "break-word" }}
                         >
                           {property.summary}
                         </Typography>
@@ -543,13 +544,13 @@ function Recent({
 
                       <Box
                         sx={{
-                          display: 'flex',
-                          flexDirection: 'column',
-                          justifyContent: 'center',
-                          alignItems: 'flex-start',
-                          width: '100%',
+                          display: "flex",
+                          flexDirection: "column",
+                          justifyContent: "center",
+                          alignItems: "flex-start",
+                          width: "100%",
                           p: 2,
-                          overflowX: 'auto',
+                          overflowX: "auto",
                         }}
                       >
                         <Typography
@@ -572,8 +573,8 @@ function Recent({
                             <Tooltip
                               title="Quartos"
                               sx={{
-                                display: 'flex',
-                                alignItems: 'center',
+                                display: "flex",
+                                alignItems: "center",
                                 gap: 1,
                               }}
                             >
@@ -590,8 +591,8 @@ function Recent({
                             <Tooltip
                               title="Suites"
                               sx={{
-                                display: 'flex',
-                                alignItems: 'center',
+                                display: "flex",
+                                alignItems: "center",
                                 gap: 1,
                               }}
                             >
@@ -608,8 +609,8 @@ function Recent({
                             <Tooltip
                               title="Banheiros"
                               sx={{
-                                display: 'flex',
-                                alignItems: 'center',
+                                display: "flex",
+                                alignItems: "center",
                                 gap: 1,
                               }}
                             >
@@ -626,8 +627,8 @@ function Recent({
                             <Tooltip
                               title="Garagem"
                               sx={{
-                                display: 'flex',
-                                alignItems: 'center',
+                                display: "flex",
+                                alignItems: "center",
                                 gap: 1,
                               }}
                             >
@@ -644,8 +645,8 @@ function Recent({
                             <Tooltip
                               title="Area total"
                               sx={{
-                                display: 'flex',
-                                alignItems: 'center',
+                                display: "flex",
+                                alignItems: "center",
                                 gap: 1,
                               }}
                             >
@@ -662,8 +663,8 @@ function Recent({
                             <Tooltip
                               title="Area do terreno"
                               sx={{
-                                display: 'flex',
-                                alignItems: 'center',
+                                display: "flex",
+                                alignItems: "center",
                                 gap: 1,
                               }}
                             >
@@ -679,16 +680,16 @@ function Recent({
 
                         <Box
                           sx={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'space-between',
-                            width: '100%',
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                            width: "100%",
                           }}
                         >
                           <Typography
                             variant="subtitle1"
                             fontWeight="bold"
-                            sx={{ color: '#17375F' }}
+                            sx={{ color: "#17375F" }}
                           >
                             {property.value}
                           </Typography>
@@ -696,7 +697,7 @@ function Recent({
                           <Chip
                             label="Venda"
                             color="primary"
-                            sx={{ fontWeight: '600' }}
+                            sx={{ fontWeight: "600" }}
                           />
                         </Box>
                       </Box>
@@ -715,7 +716,7 @@ function Recent({
         </>
       )}
     </Box>
-  )
+  );
 }
 
 function Contact() {
@@ -724,63 +725,63 @@ function Contact() {
     email: z.string().email(),
     phone: z.string(),
     description: z.string(),
-  })
-  type SchemaQuestion = Infer<typeof createSchema>
+  });
+  type SchemaQuestion = Infer<typeof createSchema>;
 
   const { register, handleSubmit, reset } = useForm<SchemaQuestion>({
     resolver: zodResolver(createSchema),
-  })
+  });
 
   const onSubmit = useCallback(
     async (data: SchemaQuestion) => {
       try {
-        await api.post('/clientes', data)
-        toast.success('contato enviado com sucesso')
-        reset()
+        await api.post("/clientes", data);
+        toast.success("contato enviado com sucesso");
+        reset();
       } catch (e) {
-        console.error(e)
-        toast.error('Ocorreu um erro ao enviar seu contato')
+        console.error(e);
+        toast.error("Ocorreu um erro ao enviar seu contato");
       }
     },
-    [reset],
-  )
+    [reset]
+  );
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Box
         id="contact"
         sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          width: '100%',
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          width: "100%",
           height: { xs: 600, sm: 600, md: 700 },
           p: 2,
-          position: 'relative',
-          background: 'linear-gradient(#fafafa, #D0DEF8)',
+          position: "relative",
+          background: "linear-gradient(#fafafa, #D0DEF8)",
         }}
       >
         <Box
           sx={{
             background: `url(${cityBackground.src})`,
-            backgroundPosition: '50% 95%',
-            backgroundRepeat: 'no-repeat',
-            position: 'absolute',
-            width: '100%',
-            height: '100%',
+            backgroundPosition: "50% 95%",
+            backgroundRepeat: "no-repeat",
+            position: "absolute",
+            width: "100%",
+            height: "100%",
             zIndex: 1,
           }}
         />
         <Card
           variant="outlined"
           sx={{
-            display: 'flex',
-            flexDirection: 'column',
+            display: "flex",
+            flexDirection: "column",
             gap: 3,
             p: 3,
             mt: 4,
-            maxWidth: '544px',
-            width: '100%',
+            maxWidth: "544px",
+            width: "100%",
             zIndex: 999,
           }}
         >
@@ -788,13 +789,13 @@ function Contact() {
             Entre em contato
           </Typography>
 
-          <TextField label="Nome" size="small" required {...register('name')} />
-          <TextField label="Email" size="small" {...register('email')} />
+          <TextField label="Nome" size="small" required {...register("name")} />
+          <TextField label="Email" size="small" {...register("email")} />
           <TextField
             label="Telefone"
             size="small"
             required
-            {...register('phone')}
+            {...register("phone")}
           />
 
           <TextField
@@ -804,7 +805,7 @@ function Contact() {
             inputProps={{ maxLength: 255 }}
             size="small"
             required
-            {...register('description')}
+            {...register("description")}
           />
 
           <Button variant="contained" sx={{ py: 1 }} type="submit">
@@ -813,55 +814,56 @@ function Contact() {
         </Card>
       </Box>
     </form>
-  )
+  );
 }
 
-export const revalidate = 3600
+export const revalidate = 3600;
 
 export default function Home() {
-  const [types, setTypes] = useState<TypeProperty[]>([])
-  const [cities, setCities] = useState<CityProps[]>([])
-  const [properties, setProperties] = useState<Property[]>([])
-  const [loading, setLoading] = useState(false)
-  const loadCities = useCallback(async () => {
-    setLoading(true)
-    const responseCities = await api.get<CityProps[]>(`/imovel/cidades`)
+  const [types, setTypes] = useState<TypeProperty[]>([]);
+  const [cities, setCities] = useState<CityProps[]>([]);
+  const [properties, setProperties] = useState<Property[]>([]);
+  const [loading, setLoading] = useState(false);
 
-    setLoading(false)
+  const loadCities = useCallback(async () => {
+    setLoading(true);
+    const responseCities = await api.get<CityProps[]>(`/imovel/cidades`);
+
+    setLoading(false);
     if (responseCities) {
-      setCities([...responseCities.data])
+      setCities([...responseCities.data]);
     }
-  }, [])
+  }, []);
 
   const loadTypes = useCallback(async () => {
-    setLoading(true)
-    const responseTipo = await api.get<TypeProperty[]>(`/tipo-imovel`)
-    setLoading(false)
+    setLoading(true);
+    const responseTipo = await api.get<TypeProperty[]>(`/tipo-imovel`);
+    setLoading(false);
     if (responseTipo) {
-      setTypes([...responseTipo.data])
+      setTypes([...responseTipo.data]);
     }
-  }, [])
+  }, []);
 
   const loadProperties = useCallback(async () => {
-    setLoading(true)
-    const responseImoveis = await api.get(`/imovel?limit=6&visible=true`)
-    setLoading(false)
+    setLoading(true);
+    const responseImoveis = await api.get(`/imovel?limit=6&visible=true`);
+    setLoading(false);
     if (responseImoveis) {
-      setProperties([...responseImoveis.data.properties])
+      setProperties([...responseImoveis.data.properties]);
     }
-  }, [])
+  }, []);
 
   useEffect(() => {
-    loadProperties()
-  }, [loadProperties])
+    loadProperties();
+  }, [loadProperties]);
 
   useEffect(() => {
-    loadCities()
-  }, [loadCities])
+    loadCities();
+  }, [loadCities]);
 
   useEffect(() => {
-    loadTypes()
-  }, [loadTypes])
+    loadTypes();
+  }, [loadTypes]);
 
   return (
     <>
@@ -880,11 +882,11 @@ export default function Home() {
       </Box>
 
       <Backdrop
-        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
         open={loading}
       >
         <CircularProgress color="inherit" />
       </Backdrop>
     </>
-  )
+  );
 }
