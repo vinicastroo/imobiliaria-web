@@ -433,6 +433,7 @@ function Recent() {
 
   const loadProperties = useCallback(async () => {
     setLoading(true);
+    await new Promise((resolve) => setTimeout(resolve, 3000));
     const responseImoveis = await api.get(`/imovel?limit=6&visible=true`);
     if (responseImoveis) {
       setLoading(false);
@@ -468,331 +469,301 @@ function Recent() {
         backgroundRepeat: "no-repeat, no-repeat",
       }}
     >
-      {properties.length > 0 && (
-        <>
-          <Box display="flex" flexDirection="column" alignItems="center" mb={4}>
-            <Typography variant="h5" color="#000">
-              Propriedades
-            </Typography>
-            <Typography variant="h6" color="primary" fontWeight="bold">
-              Recentes
-            </Typography>
-          </Box>
+      <Box display="flex" flexDirection="column" alignItems="center" mb={4}>
+        <Typography variant="h5" color="#000">
+          Propriedades
+        </Typography>
+        <Typography variant="h6" color="primary" fontWeight="bold">
+          Recentes
+        </Typography>
+      </Box>
 
+      <Grid
+        container
+        sx={{
+          maxWidth: "1200px",
+        }}
+        spacing={2}
+      >
+        {loading &&
+          Array.from({ length: 6 }).map((_, index) => (
+            <Grid key={index} item md={4} sm={12} xs={12}>
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 1,
+                }}
+              >
+                <Skeleton variant="rectangular" width={384} height={250} />
+                <Skeleton variant="text" sx={{ fontSize: "1rem" }} />
+                <Skeleton variant="text" sx={{ fontSize: "1rem" }} />
+                <Skeleton variant="text" sx={{ fontSize: "1rem" }} />
+              </Box>
+            </Grid>
+          ))}
+        {properties.map((property) => (
           <Grid
-            container
+            key={property.id}
+            item
+            md={4}
+            sm={12}
+            xs={12}
             sx={{
-              maxWidth: "1200px",
+              a: {
+                textDecoration: "none",
+                "&:hover": {
+                  opacity: 0.8,
+                },
+              },
             }}
-            spacing={2}
           >
-            {loading
-              ? Array.from({ length: 6 }).map((_, index) => (
-                  <Grid key={index} item md={4} sm={12} xs={12}>
+            <Link href={`/imoveis/${property.id}`} target="_blank">
+              <Card
+                variant="outlined"
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  height: "100%",
+                }}
+              >
+                {property.files.length > 0 ? (
+                  <CardMedia
+                    component="img"
+                    height="250"
+                    image={property.files[0].path}
+                    alt="Foto do imóvel"
+                  />
+                ) : (
+                  <Box
+                    sx={{
+                      height: "250px",
+                      background: "#17375F",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <Image src={logo} alt="logo" width={120} height={120} />
+                  </Box>
+                )}
+
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    height: "100%",
+                    justifyContent: "space-between",
+                    flex: 1,
+                  }}
+                >
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      px: 2,
+                      mt: 1,
+                    }}
+                  >
                     <Box
                       sx={{
                         display: "flex",
                         flexDirection: "column",
-                        gap: 1,
+                        py: 1,
+                        width: "100%",
                       }}
                     >
-                      <Skeleton
-                        variant="rectangular"
-                        width={384}
-                        height={250}
-                      />
-                      <Skeleton variant="text" sx={{ fontSize: "1rem" }} />
-                      <Skeleton variant="text" sx={{ fontSize: "1rem" }} />
-                      <Skeleton variant="text" sx={{ fontSize: "1rem" }} />
+                      <Typography
+                        variant="body1"
+                        color="#333"
+                        fontWeight="bold"
+                      >
+                        {property.name}
+                      </Typography>
+                      <Typography variant="body2">
+                        {property.city} - {property.neighborhood}
+                      </Typography>
                     </Box>
-                  </Grid>
-                ))
-              : properties.map((property) => (
-                  <Grid
-                    key={property.id}
-                    item
-                    md={4}
-                    sm={12}
-                    xs={12}
+                    <Typography
+                      variant="body2"
+                      color="text.primary"
+                      sx={{ wordBreak: "break-word" }}
+                    >
+                      {property.summary}
+                    </Typography>
+                  </Box>
+
+                  <Box
                     sx={{
-                      a: {
-                        textDecoration: "none",
-                        "&:hover": {
-                          opacity: 0.8,
-                        },
-                      },
+                      display: "flex",
+                      flexDirection: "column",
+                      justifyContent: "center",
+                      alignItems: "flex-start",
+                      width: "100%",
+                      p: 2,
+                      overflowX: "auto",
                     }}
                   >
-                    <Link href={`/imoveis/${property.id}`} target="_blank">
-                      <Card
-                        variant="outlined"
-                        sx={{
-                          display: "flex",
-                          flexDirection: "column",
-                          height: "100%",
-                        }}
-                      >
-                        {property.files.length > 0 ? (
-                          <CardMedia
-                            component="img"
-                            height="250"
-                            image={property.files[0].path}
-                            alt="Foto do imóvel"
-                          />
-                        ) : (
-                          <Box
-                            sx={{
-                              height: "250px",
-                              background: "#17375F",
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "center",
-                            }}
-                          >
-                            <Image
-                              src={logo}
-                              alt="logo"
-                              width={120}
-                              height={120}
-                            />
-                          </Box>
-                        )}
+                    <Typography
+                      variant="body2"
+                      color="text.primary"
+                      mt={2}
+                      fontWeight="bold"
+                    >
+                      Informações
+                    </Typography>
 
-                        <Box
+                    <Box
+                      display="flex"
+                      gap={2}
+                      mb={1}
+                      rowGap={0.5}
+                      flexWrap="wrap"
+                    >
+                      {Number(property.bedrooms) > 0 && (
+                        <Tooltip
+                          title="Quartos"
                           sx={{
                             display: "flex",
-                            flexDirection: "column",
-                            height: "100%",
-                            justifyContent: "space-between",
-                            flex: 1,
+                            alignItems: "center",
+                            gap: 1,
                           }}
                         >
-                          <Box
-                            sx={{
-                              display: "flex",
-                              flexDirection: "column",
-                              px: 2,
-                              mt: 1,
-                            }}
-                          >
-                            <Box
-                              sx={{
-                                display: "flex",
-                                flexDirection: "column",
-                                py: 1,
-                                width: "100%",
-                              }}
-                            >
-                              <Typography
-                                variant="body1"
-                                color="#333"
-                                fontWeight="bold"
-                              >
-                                {property.name}
-                              </Typography>
-                              <Typography variant="body2">
-                                {property.city} - {property.neighborhood}
-                              </Typography>
-                            </Box>
-                            <Typography
-                              variant="body2"
-                              color="text.primary"
-                              sx={{ wordBreak: "break-word" }}
-                            >
-                              {property.summary}
+                          <Box>
+                            <Bed size={24} weight="bold" />
+                            <Typography variant="body2" fontWeight="bold">
+                              {property.bedrooms}
                             </Typography>
                           </Box>
+                        </Tooltip>
+                      )}
 
-                          <Box
-                            sx={{
-                              display: "flex",
-                              flexDirection: "column",
-                              justifyContent: "center",
-                              alignItems: "flex-start",
-                              width: "100%",
-                              p: 2,
-                              overflowX: "auto",
-                            }}
-                          >
-                            <Typography
-                              variant="body2"
-                              color="text.primary"
-                              mt={2}
-                              fontWeight="bold"
-                            >
-                              Informações
+                      {Number(property.suites) > 0 && (
+                        <Tooltip
+                          title="Suites"
+                          sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 1,
+                          }}
+                        >
+                          <Box>
+                            <Bathtub size={24} weight="bold" />
+                            <Typography variant="body2" fontWeight="bold">
+                              {property.suites}
                             </Typography>
-
-                            <Box
-                              display="flex"
-                              gap={2}
-                              mb={1}
-                              rowGap={0.5}
-                              flexWrap="wrap"
-                            >
-                              {Number(property.bedrooms) > 0 && (
-                                <Tooltip
-                                  title="Quartos"
-                                  sx={{
-                                    display: "flex",
-                                    alignItems: "center",
-                                    gap: 1,
-                                  }}
-                                >
-                                  <Box>
-                                    <Bed size={24} weight="bold" />
-                                    <Typography
-                                      variant="body2"
-                                      fontWeight="bold"
-                                    >
-                                      {property.bedrooms}
-                                    </Typography>
-                                  </Box>
-                                </Tooltip>
-                              )}
-
-                              {Number(property.suites) > 0 && (
-                                <Tooltip
-                                  title="Suites"
-                                  sx={{
-                                    display: "flex",
-                                    alignItems: "center",
-                                    gap: 1,
-                                  }}
-                                >
-                                  <Box>
-                                    <Bathtub size={24} weight="bold" />
-                                    <Typography
-                                      variant="body2"
-                                      fontWeight="bold"
-                                    >
-                                      {property.suites}
-                                    </Typography>
-                                  </Box>
-                                </Tooltip>
-                              )}
-
-                              {Number(property.bathrooms) > 0 && (
-                                <Tooltip
-                                  title="Banheiros"
-                                  sx={{
-                                    display: "flex",
-                                    alignItems: "center",
-                                    gap: 1,
-                                  }}
-                                >
-                                  <Box>
-                                    <Toilet size={24} weight="bold" />
-                                    <Typography
-                                      variant="body2"
-                                      fontWeight="bold"
-                                    >
-                                      {property.bathrooms}
-                                    </Typography>
-                                  </Box>
-                                </Tooltip>
-                              )}
-
-                              {Number(property.parkingSpots) > 0 && (
-                                <Tooltip
-                                  title="Garagem"
-                                  sx={{
-                                    display: "flex",
-                                    alignItems: "center",
-                                    gap: 1,
-                                  }}
-                                >
-                                  <Box>
-                                    <Car size={24} weight="bold" />
-                                    <Typography
-                                      variant="body2"
-                                      fontWeight="bold"
-                                    >
-                                      {property.parkingSpots}
-                                    </Typography>
-                                  </Box>
-                                </Tooltip>
-                              )}
-
-                              {Number(property.totalArea) > 0 && (
-                                <Tooltip
-                                  title="Area total"
-                                  sx={{
-                                    display: "flex",
-                                    alignItems: "center",
-                                    gap: 1,
-                                  }}
-                                >
-                                  <Box>
-                                    <LiaRulerCombinedSolid size={24} />
-                                    <Typography
-                                      variant="body2"
-                                      fontWeight="bold"
-                                    >
-                                      {property.totalArea} M²
-                                    </Typography>
-                                  </Box>
-                                </Tooltip>
-                              )}
-
-                              {Number(property.privateArea) > 0 && (
-                                <Tooltip
-                                  title="Area do terreno"
-                                  sx={{
-                                    display: "flex",
-                                    alignItems: "center",
-                                    gap: 1,
-                                  }}
-                                >
-                                  <Box>
-                                    <BiArea size={24} />
-                                    <Typography
-                                      variant="body2"
-                                      fontWeight="bold"
-                                    >
-                                      {property.privateArea} M²
-                                    </Typography>
-                                  </Box>
-                                </Tooltip>
-                              )}
-                            </Box>
-
-                            <Box
-                              sx={{
-                                display: "flex",
-                                alignItems: "center",
-                                justifyContent: "space-between",
-                                width: "100%",
-                              }}
-                            >
-                              <Typography
-                                variant="subtitle1"
-                                fontWeight="bold"
-                                sx={{ color: "#17375F" }}
-                              >
-                                {property.value}
-                              </Typography>
-
-                              <Chip
-                                label="Venda"
-                                color="primary"
-                                sx={{ fontWeight: "600" }}
-                              />
-                            </Box>
                           </Box>
-                        </Box>
-                      </Card>
-                    </Link>
-                  </Grid>
-                ))}
+                        </Tooltip>
+                      )}
+
+                      {Number(property.bathrooms) > 0 && (
+                        <Tooltip
+                          title="Banheiros"
+                          sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 1,
+                          }}
+                        >
+                          <Box>
+                            <Toilet size={24} weight="bold" />
+                            <Typography variant="body2" fontWeight="bold">
+                              {property.bathrooms}
+                            </Typography>
+                          </Box>
+                        </Tooltip>
+                      )}
+
+                      {Number(property.parkingSpots) > 0 && (
+                        <Tooltip
+                          title="Garagem"
+                          sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 1,
+                          }}
+                        >
+                          <Box>
+                            <Car size={24} weight="bold" />
+                            <Typography variant="body2" fontWeight="bold">
+                              {property.parkingSpots}
+                            </Typography>
+                          </Box>
+                        </Tooltip>
+                      )}
+
+                      {Number(property.totalArea) > 0 && (
+                        <Tooltip
+                          title="Area total"
+                          sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 1,
+                          }}
+                        >
+                          <Box>
+                            <LiaRulerCombinedSolid size={24} />
+                            <Typography variant="body2" fontWeight="bold">
+                              {property.totalArea} M²
+                            </Typography>
+                          </Box>
+                        </Tooltip>
+                      )}
+
+                      {Number(property.privateArea) > 0 && (
+                        <Tooltip
+                          title="Area do terreno"
+                          sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 1,
+                          }}
+                        >
+                          <Box>
+                            <BiArea size={24} />
+                            <Typography variant="body2" fontWeight="bold">
+                              {property.privateArea} M²
+                            </Typography>
+                          </Box>
+                        </Tooltip>
+                      )}
+                    </Box>
+
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        width: "100%",
+                      }}
+                    >
+                      <Typography
+                        variant="subtitle1"
+                        fontWeight="bold"
+                        sx={{ color: "#17375F" }}
+                      >
+                        {property.value}
+                      </Typography>
+
+                      <Chip
+                        label="Venda"
+                        color="primary"
+                        sx={{ fontWeight: "600" }}
+                      />
+                    </Box>
+                  </Box>
+                </Box>
+              </Card>
+            </Link>
           </Grid>
-
-          <Link href="/imoveis">
-            <Button variant="outlined" size="large" sx={{ mt: 4 }}>
-              Ver todos
-            </Button>
-          </Link>
-        </>
+        ))}
+      </Grid>
+      {properties.length > 0 && (
+        <Link href="/imoveis">
+          <Button variant="outlined" size="large" sx={{ mt: 4 }}>
+            Ver todos
+          </Button>
+        </Link>
       )}
     </Box>
   );
