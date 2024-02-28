@@ -433,7 +433,6 @@ function Recent() {
 
   const loadProperties = useCallback(async () => {
     setLoading(true);
-    await new Promise((resolve) => setTimeout(resolve, 3000));
     const responseImoveis = await api.get(`/imovel?limit=6&visible=true`);
     if (responseImoveis) {
       setLoading(false);
