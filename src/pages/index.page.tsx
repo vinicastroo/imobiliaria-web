@@ -771,7 +771,7 @@ function Recent() {
 function Contact() {
   const createSchema = z.object({
     name: z.string(),
-    email: z.string().email(),
+    email: z.string(),
     phone: z.string(),
     description: z.string(),
   });
