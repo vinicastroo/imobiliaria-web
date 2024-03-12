@@ -1,5 +1,5 @@
 import api from '@/services/api'
-import { Box, Typography } from '@mui/material'
+import { Box, Theme, Typography, useMediaQuery } from '@mui/material'
 import Link from 'next/link'
 import {
   EnvelopeOpen,
@@ -19,8 +19,13 @@ interface CubProps {
   yearPercentage: string
   twelveMonthsPercentage: string
 }
+import codelabz from '../../../public/codelabz.svg'
 
 export default function Footer() {
+  const isSmallScreen = useMediaQuery((theme: Theme) =>
+  theme.breakpoints.down('sm'),
+)
+
   const [cubInformation, setCubinformation] = useState<CubProps>()
 
   const loadCubinformation = useCallback(async () => {
@@ -238,14 +243,45 @@ export default function Footer() {
           minHeight: '40px',
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'center',
+          justifyContent: 'space-between',
           textAlign: 'center',
           p: 2,
         }}
       >
+        <Box sx={{  
+            display: 'flex',
+            alignItems: 'center',
+            flexDirection: isSmallScreen ? 'column':'row',
+            gap: isSmallScreen ? 1 :0,
+            justifyContent: 'space-between',
+            maxWidth: '1200px',
+            width: '100%',
+            margin: 'auto auto',
+            px: 1,
+          }}>
+
         <Typography variant="caption">
           {`Auros corretora imobiliária - CRECI-SC 7018-J (Rio do Sul ) CRECI-SC 8732-J (Balneário Camboriú)`}
         </Typography>
+
+        <Link href="https://www.codelabz.com.br/" style={{ gap: 2, display:'flex', alignItems:'center',textDecoration:'none',   }}>
+          <Typography
+            variant={isSmallScreen ? 'caption' : 'caption'}
+            color="#fff"
+            sx={{mr:1, ":hover": {
+              opacity: 0.8
+            }}}
+          >
+            Desenvolvido por :
+          </Typography>
+          <Image
+            src={codelabz}
+            alt="Desenvolvido pela empresa codelabz"
+            width={25}
+            height={25}
+          />
+        </Link>
+        </Box>
       </Box>
     </>
   )
