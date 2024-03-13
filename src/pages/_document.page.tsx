@@ -27,7 +27,7 @@ export default function MyDocument({ emotionStyleTags }: MyDocumentProps) {
         />
         <meta
           name="keywords"
-          content="corretora imobiliária, imóveis, Rio do Sul, Balneário Camboriú, compra de imóveis, venda de imóveis, mercado imobiliário"
+          content="corretora imobiliária, imóveis, Rio do Sul, Imobiliária em Rio do Sul, Balneário Camboriú, Imobiliária em Balneário Camboriú, compra de imóveis, venda de imóveis, mercado imobiliário"
         />
         <meta name="author" content="Auros Corretora Imobiliária" />
         <meta
