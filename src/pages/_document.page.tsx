@@ -30,16 +30,19 @@ export default function MyDocument({ emotionStyleTags }: MyDocumentProps) {
           content="corretora imobiliária, imóveis, Rio do Sul, Imobiliária em Rio do Sul, Balneário Camboriú, Imobiliária em Balneário Camboriú, compra de imóveis, venda de imóveis, mercado imobiliário"
         />
         <meta name="author" content="Auros Corretora Imobiliária" />
-        <meta
-          property="og:title"
-          content="Auros Corretora Imobiliária - Sua Escolha Confiável para Imóveis"
-        />
-        <meta
-          property="og:description"
-          content="Explorando uma ampla gama de imóveis para todos os gostos e orçamentos em Rio do Sul e Balneário Camboriú. Visite nosso site para mais informações."
-        />
+  
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://www.aurosimobiliaria.com.br/" />
+        <meta property="og:title" content="Auros Corretora Imobiliária" />
+        <meta property="og:description" content="Descubra uma variedade de imóveis em Rio do Sul e Balneário Camboriú com a Auros Corretora Imobiliária. Desde apartamentos compactos até propriedades de luxo, encontre a casa dos seus sonhos." />
+        <meta property="og:image" content="https://www.aurosimobiliaria.com.br/logo.svg" />
 
-        <meta property="og:url" content="https://aurosimobiliaria.com.br" />
+        <meta property="twitter:card" content="summary_large_image" />
+        <meta property="twitter:url" content="https://www.aurosimobiliaria.com.br/" />
+        <meta property="twitter:title" content="Auros Corretora Imobiliária" />
+        <meta property="twitter:description" content="Descubra uma variedade de imóveis em Rio do Sul e Balneário Camboriú com a Auros Corretora Imobiliária. Desde apartamentos compactos até propriedades de luxo, encontre a casa dos seus sonhos." />
+        <meta property="twitter:image" content="https://www.aurosimobiliaria.com.br/logo.svg" />
+
 
         <link
           rel="preconnect"
