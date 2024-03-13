@@ -934,7 +934,7 @@ export default function Home({
   return (
     <>
       <Head>
-        <title>Auros | Imóveis</title>
+        <title>Auros Corretora Imobiliária  | Imóveis</title>
       </Head>
       <Box>
         <Box

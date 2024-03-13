@@ -96,9 +96,9 @@ function BannerHome() {
   const [neighborhoods, setNeighborhood] = useState<NeighborhoodProps[]>([]);
 
   const createSchema = z.object({
-    type_id: z.string(),
-    neighborhood: z.string(),
-    city: z.string(),
+    type_id: z.string().optional(),
+    neighborhood: z.string().optional(),
+    city: z.string().optional(),
   });
 
   type SchemaQuestion = Infer<typeof createSchema>;
@@ -262,7 +262,7 @@ function BannerHome() {
               </Link>
             </Box>
 
-            <Link href="/imoveis">
+            <Link href="/imoveis" prefetch>
               <Typography variant="body1">Imóveis</Typography>
             </Link>
             <Link href="#contact">
@@ -769,6 +769,7 @@ function Recent() {
 }
 
 function Contact() {
+  
   const createSchema = z.object({
     name: z.string(),
     email: z.string(),
