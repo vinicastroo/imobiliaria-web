@@ -15,6 +15,7 @@ import {
   useMediaQuery,
   Backdrop,
   Skeleton,
+  CircularProgress,
 } from "@mui/material";
 import bg from "@/assets/background.jpg";
 import logo from "@/assets/logo-auros-minimalist.svg";
@@ -125,6 +126,15 @@ function BannerHome() {
     loadNeighboorhood();
   }, [loadNeighboorhood]);
 
+
+
+  const [types, setTypes] = useState<TypeProperty[]>([]);
+  const [cities, setCities] = useState<CityProps[]>([]);
+
+  const [loading, setLoading] = useState(false);
+  const [redirectLoading, setRedirectLoading] = useState(false);
+
+
   const onSubmit = useCallback(
     async (data: SchemaQuestion) => {
       router.push(
@@ -132,14 +142,10 @@ function BannerHome() {
           data.city ? `cidade=${data.city}&` : ""
         }${data.neighborhood ? `bairro=${data.neighborhood}` : ""}`
       );
+      setRedirectLoading(true)
     },
     [router]
   );
-
-  const [types, setTypes] = useState<TypeProperty[]>([]);
-  const [cities, setCities] = useState<CityProps[]>([]);
-
-  const [loading, setLoading] = useState(false);
 
   const loadCities = useCallback(async () => {
     setLoading(true);
@@ -260,7 +266,7 @@ function BannerHome() {
               </Link>
             </Box>
 
-            <Link href="/imoveis">
+            <Link href="/imoveis" onClick={() => setRedirectLoading(true)}>
               <Typography variant="body1">Imóveis</Typography>
             </Link>
             <Link href="#contact">
@@ -421,6 +427,13 @@ function BannerHome() {
           </Box>
         </Box>
       </Box>
+
+      <Backdrop
+        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={redirectLoading}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
     </form>
   );
 }
