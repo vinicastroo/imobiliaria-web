@@ -758,7 +758,7 @@ function Recent() {
         ))}
       </Grid>
       {properties.length > 0 && (
-        <Link href="/imoveis">
+        <Link href="/imoveis" prefetch>
           <Button variant="outlined" size="large" sx={{ mt: 4 }}>
             Ver todos
           </Button>
