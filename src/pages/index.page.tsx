@@ -1,5 +1,3 @@
-/* eslint-disable prettier/prettier */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Box,
   Button,
@@ -11,7 +9,7 @@ import {
   InputLabel,
   MenuItem,
   Select,
-  TextField,
+  TextField, 
   Tooltip,
   Typography,
   useMediaQuery,
@@ -262,7 +260,7 @@ function BannerHome() {
               </Link>
             </Box>
 
-            <Link href="/imoveis" prefetch>
+            <Link href="/imoveis">
               <Typography variant="body1">Imóveis</Typography>
             </Link>
             <Link href="#contact">
@@ -758,7 +756,7 @@ function Recent() {
         ))}
       </Grid>
       {properties.length > 0 && (
-        <Link href="/imoveis" prefetch>
+        <Link href="/imoveis">
           <Button variant="outlined" size="large" sx={{ mt: 4 }}>
             Ver todos
           </Button>
