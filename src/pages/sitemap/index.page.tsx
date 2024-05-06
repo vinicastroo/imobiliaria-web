@@ -10,13 +10,13 @@ function generateSiteMap(posts:Posts[]) {
    <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
      <url>
         <loc>${EXTERNAL_DATA_URL}</loc>
-        <lastmod>${new Date()}</lastmod>
+        <lastmod>${new Date().toISOString()}</lastmod>
         <changefreq>weekly</changefreq>
         <priority>1</priority>
      </url>
      <url>
         <loc>${EXTERNAL_DATA_URL}/imoveis</loc>
-        <lastmod>${new Date()}</lastmod>
+        <lastmod>${new Date().toISOString()}</lastmod>
         <changefreq>weekly</changefreq>
         <priority>1</priority>
      </url>
@@ -25,7 +25,7 @@ function generateSiteMap(posts:Posts[]) {
          return `
        <url>
           <loc>${`${EXTERNAL_DATA_URL}/${id}`}</loc>
-          <lastmod>${new Date()}</lastmod>
+          <lastmod>${new Date().toISOString()}</lastmod>
        </url>
      `;
        })
