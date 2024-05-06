@@ -106,7 +106,7 @@ function Filter({
 }) {
   const [neighborhoods, setNeighborhood] =
     useState<NeighborhoodProps[]>(initialNeighborhood);
-
+ 
   const router = useRouter();
 
   const {
@@ -158,6 +158,7 @@ function Filter({
   const onSubmit = useCallback(
     async (data: SchemaQuestion) => {
       setLoading(true);
+      console.log(data)
       const responseImoveis = await api.get(`/imovel`, {
         params: {
           type: data.type !== "undefined" ? data.type : undefined,
@@ -177,9 +178,9 @@ function Filter({
 
       router.replace(
         `/imoveis?${
-          data.type !== "undefined" ? `tipoImovel=${data.type}&` : ""
-        }${data.city !== "undefined" ? `cidade=${data.city}&` : ""}${
-          data.neighborhood !== "undefined"
+          !!data.type && data.type !== 'undefined' ? `tipoImovel=${data.type}&` : ""
+        }${!!data.city && data.city !== 'undefined' ? `cidade=${data.city}&` : ""}${
+          !!data.neighborhood && data.neighborhood !== 'undefined' 
             ? `bairro=${data.neighborhood}&`
             : ""
         }${data.bedrooms ? `quartos=${data.bedrooms}&` : ""}${
