@@ -34,7 +34,7 @@ export function MenubarHome() {
       >
         <Link href="/" shallow>
           <Image
-            src='./logo-auros-minimalist.svg'
+            src='/logo-auros-minimalist.svg'
             alt="logo"
             width={isSmallScreen ? 80 : 120}
             height={isSmallScreen ? 80 : 120}
