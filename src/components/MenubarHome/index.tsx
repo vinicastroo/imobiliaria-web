@@ -1,7 +1,6 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { Box, Typography, useMediaQuery } from '@mui/material'
-import logo from '@/assets/logo-auros-minimalist.svg'
 import { FacebookLogo, InstagramLogo } from 'phosphor-react'
 
 export function MenubarHome() {
@@ -35,7 +34,7 @@ export function MenubarHome() {
       >
         <Link href="/" shallow>
           <Image
-            src={logo}
+            src='./logo-auros-minimalist.svg'
             alt="logo"
             width={isSmallScreen ? 80 : 120}
             height={isSmallScreen ? 80 : 120}
