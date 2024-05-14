@@ -124,7 +124,7 @@ function BannerHome() {
           <Image
             src={bg}
             alt=""
-            height={950}
+            height={isSmallScreen ? 650 : 950}
             quality={100}
             style={{
               position: "absolute",
@@ -354,12 +354,7 @@ function BannerHome() {
         </Box>
       </Box>
 
-      <Backdrop
-        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        open={isLoading}
-      >
-        <CircularProgress color="inherit" />
-      </Backdrop>
+
     </form>
   );
 }
@@ -725,6 +720,10 @@ function Contact() {
     [reset]
   );
 
+  const isSmallScreen = useMediaQuery((theme: any) =>
+    theme.breakpoints.down("sm")
+  );
+
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Box
@@ -738,17 +737,19 @@ function Contact() {
           p: 2,
           position: "relative",
           background: "linear-gradient(#fafafa, #D0DEF8)",
+          overflow: 'hidden',
         }}
       >
+        <Image src={cityBackground}  alt="" height={isSmallScreen ? 300: 450} style={{position: 'absolute',bottom: 0}}/>
         <Box
           sx={{
-            background: `url(${cityBackground.src})`,
-            backgroundPosition: "50% 95%",
-            backgroundRepeat: "no-repeat",
-            position: "absolute",
             width: "100%",
             height: "100%",
             zIndex: 1,
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            position: 'absolute'
           }}
         />
         <Card
