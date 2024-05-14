@@ -318,6 +318,7 @@ function BannerHome() {
                   <Select
                     // error={Boolean(errors.type_id)}
                     label="Bairro"
+                    title="Bairros"
                     {...register("neighborhood")}
                   >
                     <MenuItem>Selecione</MenuItem>
