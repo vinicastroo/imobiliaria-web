@@ -539,14 +539,14 @@ function Properties({
                       }}
                     >
                       {property.files.length > 0 ? (
-                      <CardMedia>
+                      <CardMedia  sx={{ objectFit: 'cover',width: '100%',height: '250px' }}>
                         <Image
                           src={property.files[0].path}
-                          width={500}
+                          width={350}
                           height={250}
                           alt="Foto do imóvel"
-                          quality={100}
-                          style={{ objectFit: 'cover',width: '100%' }}
+                          quality={80}
+                          style={{ objectFit: 'cover',width: '100%', height: '250px'}}
                         />
                       </CardMedia>
                       ) : (
