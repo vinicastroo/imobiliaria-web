@@ -539,12 +539,16 @@ function Properties({
                       }}
                     >
                       {property.files.length > 0 ? (
-                        <CardMedia
-                          component="img"
-                          height="250"
-                          image={property.files[0].path}
+                      <CardMedia>
+                        <Image
+                          src={property.files[0].path}
+                          width={500}
+                          height={250}
                           alt="Foto do imóvel"
+                          quality={100}
+                          style={{ objectFit: 'cover',width: '100%' }}
                         />
+                      </CardMedia>
                       ) : (
                         <Box
                           sx={{
