@@ -33,7 +33,7 @@ import {
   WhatsappLogo,
   Bathtub,
 } from "phosphor-react";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback } from "react";
 import api from "@/services/api";
 import { useForm } from "react-hook-form";
 import { z, infer as Infer } from "zod";
@@ -45,136 +45,69 @@ import { Search } from "@mui/icons-material";
 import { BiArea } from "react-icons/bi";
 import { LiaRulerCombinedSolid } from "react-icons/lia";
 import Footer from "@/components/Footer";
-interface TypeProperty {
-  id: string;
-  createdAt: string;
-  description: string;
-}
+import { getTypes } from "./api/get-types";
+import { useQuery } from "@tanstack/react-query";
+import { getNeighborhoods } from "./api/get-neighborhoods";
+import { getCities } from "./api/get-cities";
+import { getRecentProperties } from "./api/get-recent-properties";
 
-interface CityProps {
-  city: string;
-}
 
-interface NeighborhoodProps {
-  neighborhood: string;
-}
-
-interface Property {
-  id: string;
-  name: string;
-  summary: string;
-  description: string;
-  value: string;
-  bedrooms: string;
-  bathrooms: string;
-  parkingSpots: string;
-  suites: string;
-  totalArea: string;
-  privateArea: string;
-  createdAt: string;
-  cep: string;
-  state: string;
-  city: string;
-  neighborhood: string;
-  street: string;
-  numberAddress: string;
-  longitude: string;
-  latitude: string;
-  type_property: {
-    id: string;
-    description: string;
-    createdAt: string;
-  };
-  files: {
-    id: string;
-    path: string;
-  }[];
-}
 
 function BannerHome() {
-  const [neighborhoods, setNeighborhood] = useState<NeighborhoodProps[]>([]);
-
   const createSchema = z.object({
-    type_id: z.string().optional(),
-    neighborhood: z.string().optional(),
-    city: z.string().optional(),
+    type_id: z.string().optional(), 
+    neighborhood: z.string().optional(), 
+    city: z.string().optional(), 
   });
 
   type SchemaQuestion = Infer<typeof createSchema>;
   const router = useRouter();
 
-  const { register, watch, handleSubmit } = useForm<SchemaQuestion>({
+  const { register, watch, handleSubmit,formState: {isLoading} } = useForm<SchemaQuestion>({
     resolver: zodResolver(createSchema),
   });
-
+ 
   const isSmallScreen = useMediaQuery((theme: any) =>
     theme.breakpoints.down("sm")
   );
 
-  const city = watch("city");
-
-  const loadNeighboorhood = useCallback(async () => {
-    if (city) {
-      const response = await api.get(`/imovel/bairro/${city}`);
-      if (response) {
-        setNeighborhood([...response.data]);
-      }
-    }
-  }, [city]);
-
-  useEffect(() => {
-    loadNeighboorhood();
-  }, [loadNeighboorhood]);
-
-
-
-  const [types, setTypes] = useState<TypeProperty[]>([]);
-  const [cities, setCities] = useState<CityProps[]>([]);
-
-  const [loading, setLoading] = useState(false);
-  const [redirectLoading, setRedirectLoading] = useState(false);
-
-
   const onSubmit = useCallback(
     async (data: SchemaQuestion) => {
       router.push(
-        `/imoveis?${data.type_id ? `tipoImovel=${data.type_id}&` : ""}${
-          data.city ? `cidade=${data.city}&` : ""
-        }${data.neighborhood ? `bairro=${data.neighborhood}` : ""}`
+        {
+         pathname: 'imoveis',
+         query: {
+          tipoImovel: !!data.type_id ? data.type_id :  undefined,
+          cidade : !!data.city ? data.city : undefined,
+          bairro: !!data.neighborhood ?data.neighborhood :  undefined
+         }
+        }
       );
-      setRedirectLoading(true)
     },
     [router]
   );
 
-  const loadCities = useCallback(async () => {
-    setLoading(true);
-    const responseCities = await api.get<CityProps[]>(`/imovel/cidades`);
+  const { data: cities } = useQuery({
+    queryKey: ['cities'],
+    queryFn: () =>
+      getCities()
+  })
 
-    setLoading(false);
-    if (responseCities) {
-      setCities([...responseCities.data]);
-    }
-  }, []);
+  const { data: types } = useQuery({
+    queryKey: ['types'],
+    queryFn: () =>
+      getTypes()
+  })
 
-  const loadTypes = useCallback(async () => {
-    setLoading(true);
-    const responseTipo = await api.get<TypeProperty[]>(`/tipo-imovel`);
-    setLoading(false);
-    if (responseTipo) {
-      setTypes([...responseTipo.data]);
-    }
-  }, []);
+  const city = watch("city");
 
-  useEffect(() => {
-    loadCities();
-  }, [loadCities]);
+  const { data: neighborhoods } = useQuery({
+    queryKey: ['neighborhoods', city],
+    queryFn: () =>
+      getNeighborhoods({ city })
+  })
 
-  useEffect(() => {
-    loadTypes();
-  }, [loadTypes]);
-
-  return (
+  return ( 
     <form onSubmit={handleSubmit(onSubmit)}>
       <Box
         sx={{
@@ -247,26 +180,26 @@ function BannerHome() {
             }}
           >
             <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-              <Link href="https://api.whatsapp.com/send?phone=5547988163739">
+              <Link href="https://api.whatsapp.com/send?phone=5547988163739" aria-label="Link para o WhatsApp" title="Link para o WhatsApp">
                 <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                   <WhatsappLogo size={20} weight="fill" />
                 </Box>
               </Link>
 
-              <Link href="https://www.instagram.com/auroscorretoraimobiliaria/">
+              <Link href="https://www.instagram.com/auroscorretoraimobiliaria/" aria-label="Link para o Instagram" title="Link para o Instagram">
                 <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                   <InstagramLogo size={20} weight="fill" />
                 </Box>
               </Link>
 
-              <Link href="https://www.facebook.com/AurosCorretoraImob?locale=pt_BR">
+              <Link href="https://www.facebook.com/AurosCorretoraImob?locale=pt_BR" aria-label="Link para o Facebook" title="Link para o Facebook">
                 <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                   <FacebookLogo size={20} weight="fill" />
                 </Box>
               </Link>
             </Box>
 
-            <Link href="/imoveis" onClick={() => setRedirectLoading(true)}>
+            <Link href="/imoveis">
               <Typography variant="body1">Imóveis</Typography>
             </Link>
             <Link href="#contact">
@@ -336,7 +269,6 @@ function BannerHome() {
                   sx={{ background: "#fff", borderRadius: 1 }}
                   size={isSmallScreen ? "small" : "medium"}
                   fullWidth
-                  disabled={loading}
                 >
                   <InputLabel id="neightboor-select-label">
                     Tipo Imóvel
@@ -348,7 +280,7 @@ function BannerHome() {
                     {...register("type_id")}
                   >
                     <MenuItem>Selecione</MenuItem>
-                    {types.map((type) => (
+                    {types && types.map((type) => (
                       <MenuItem key={type.id} value={type.description}>
                         {type.description}
                       </MenuItem>
@@ -360,7 +292,6 @@ function BannerHome() {
                   size={isSmallScreen ? "small" : "medium"}
                   sx={{ background: "#fff", borderRadius: 1 }}
                   fullWidth
-                  disabled={loading}
                 >
                   <InputLabel id="neightboor-select-label">Cidade</InputLabel>
                   <Select
@@ -370,7 +301,7 @@ function BannerHome() {
                     {...register("city")}
                   >
                     <MenuItem>Selecione</MenuItem>
-                    {cities.map((city) => (
+                    {cities && cities.map((city) => (
                       <MenuItem key={city.city} value={city.city}>
                         {city.city}
                       </MenuItem>
@@ -390,7 +321,7 @@ function BannerHome() {
                     {...register("neighborhood")}
                   >
                     <MenuItem>Selecione</MenuItem>
-                    {neighborhoods.map((neighborhood) => (
+                    {neighborhoods && neighborhoods.map((neighborhood) => (
                       <MenuItem
                         key={neighborhood.neighborhood}
                         value={neighborhood.neighborhood}
@@ -399,12 +330,6 @@ function BannerHome() {
                       </MenuItem>
                     ))}
                   </Select>
-
-                  {/* {Boolean(errors.type_id) && (
-                        <FormHelperText error>
-                          {errors.type_id?.message}
-                        </FormHelperText>
-                      )} */}
                 </FormControl>
                 <Button
                   variant="contained"
@@ -418,6 +343,7 @@ function BannerHome() {
                   size={isSmallScreen ? "medium" : "large"}
                   type="submit"
                   fullWidth
+                  disabled={isLoading}
                 >
                   <Search />
                   Buscar
@@ -430,7 +356,7 @@ function BannerHome() {
 
       <Backdrop
         sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        open={redirectLoading}
+        open={isLoading}
       >
         <CircularProgress color="inherit" />
       </Backdrop>
@@ -439,23 +365,11 @@ function BannerHome() {
 }
 
 function Recent() {
-  const [properties, setProperties] = useState<Property[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  const loadProperties = useCallback(async () => {
-    setLoading(true);
-    const responseImoveis = await api.get(`/imovel?limit=6&visible=true`);
-    if (responseImoveis) {
-      setLoading(false);
-      setProperties([...responseImoveis.data.properties]);
-    } else {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    loadProperties();
-  }, [loadProperties]);
+  const { data, isLoading: loading } = useQuery({
+    queryKey: ['recent-properties'],
+    queryFn: () =>
+      getRecentProperties()
+  })
 
   return (
     <Box
@@ -512,7 +426,7 @@ function Recent() {
               </Box>
             </Grid>
           ))}
-        {properties.map((property) => (
+        {data && data.properties.map((property) => (
           <Grid
             key={property.id}
             item
@@ -768,7 +682,7 @@ function Recent() {
           </Grid>
         ))}
       </Grid>
-      {properties.length > 0 && (
+      {data && data.properties.length > 0 && (
         <Link href="/imoveis">
           <Button variant="outlined" size="large" sx={{ mt: 4 }}>
             Ver todos

@@ -50,13 +50,13 @@ export function MenubarHome() {
             'a:hover': { opacity: 0.7 },
           }}
         >
-          <Link href="https://www.instagram.com/auroscorretoraimobiliaria/">
+          <Link href="https://www.instagram.com/auroscorretoraimobiliaria/" aria-label="Link para o Instagram">
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               <InstagramLogo size={20} weight="fill" />
             </Box>
           </Link>
 
-          <Link href="https://www.facebook.com/AurosCorretoraImob?locale=pt_BR">
+          <Link href="https://www.facebook.com/AurosCorretoraImob?locale=pt_BR" aria-label="Link para o Facebook">
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               <FacebookLogo size={20} weight="fill" />
             </Box>

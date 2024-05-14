@@ -18,7 +18,7 @@ interface MyDocumentProps extends DocumentProps {
 
 export default function MyDocument({ emotionStyleTags }: MyDocumentProps) {
   return (
-    <Html>
+    <Html lang='pt-BR'>
       <Head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <meta

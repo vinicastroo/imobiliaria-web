@@ -1,5 +1,4 @@
 import {
-  Backdrop,
   Box,
   Button,
   Card,
@@ -11,6 +10,7 @@ import {
   MenuItem,
   Pagination,
   Select,
+  Skeleton,
   TextField,
   Tooltip,
   Typography,
@@ -20,13 +20,8 @@ import Link from "next/link";
 import { Bathtub, Bed, Car, Ruler, Toilet } from "phosphor-react";
 import { MenubarHome } from "@/components/MenubarHome";
 import {
-  Dispatch,
-  SetStateAction,
   useCallback,
-  useEffect,
-  useState,
 } from "react";
-import api from "@/services/api";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { z, infer as Infer } from "zod";
@@ -37,89 +32,31 @@ import logo from "@/assets/logo-auros-minimalist.svg";
 import Image from "next/image";
 import { BiArea } from "react-icons/bi";
 import { LiaRulerCombinedSolid } from "react-icons/lia";
-import CircularProgress from "@mui/material/CircularProgress";
 import square from "@/assets/square.svg";
 import Footer from "@/components/Footer";
-interface TypeProperty {
-  id: string;
-  createdAt: string;
-  description: string;
-  checked: boolean;
-}
+import { useQuery } from "@tanstack/react-query";
+import { getNeighborhoods } from "../api/get-neighborhoods";
+import { getTypes } from "../api/get-types";
+import { getCities } from "../api/get-cities";
+import { usePathname, useSearchParams } from "next/navigation";
+import { GetPropertiesResponse, getProperties } from "../api/get-properties";
 
-interface Property {
-  id: string;
-  name: string;
-  summary: string;
-  description: string;
-  value: string;
-  bedrooms: string;
-  bathrooms: string;
-  parkingSpots: string;
-  suites: string;
-  totalArea: string;
-  privateArea: string;
-  createdAt: string;
-  cep: string;
-  state: string;
-  city: string;
-  neighborhood: string;
-  street: string;
-  numberAddress: string;
-  longitude: string;
-  latitude: string;
-  type_property: {
-    id: string;
-    description: string;
-    createdAt: string;
-  };
-  files: {
-    id: string;
-    path: string;
-  }[];
-}
-
-interface CityProps {
-  city: string;
-}
-
-interface NeighborhoodProps {
-  neighborhood: string;
-}
-
-function Filter({
-  types,
-  cities,
-  initialNeighborhood,
-  setProperties,
-  setLoading,
-  page,
-  setTotal,
-}: {
-  types: TypeProperty[];
-  cities: CityProps[];
-  page: number;
-  initialNeighborhood: NeighborhoodProps[];
-  setProperties: Dispatch<SetStateAction<Property[]>>;
-  setLoading: Dispatch<SetStateAction<boolean>>;
-  setTotal: Dispatch<SetStateAction<number>>;
-}) {
-  const [neighborhoods, setNeighborhood] =
-    useState<NeighborhoodProps[]>(initialNeighborhood);
- 
+function Filter() {
   const router = useRouter();
 
-  const {
-    tipoImovel,
-    cidade,
-    bairro,
-    quartos,
-    banheiros,
-    suites,
-    garagem,
-    areaTotal,
-    areaTerreno,
-  } = router.query;
+  const searchParams = useSearchParams()
+  const type = searchParams.get('tipoImovel')
+  const cityUrl = searchParams.get('cidade')
+  const neighborhood = searchParams.get('bairro')
+  const bedrooms = searchParams.get('quartos')
+  const bathrooms = searchParams.get('banheiros')
+  const suites = searchParams.get('suites')
+  const parkingSpots = searchParams.get('garagem')
+  const totalArea = searchParams.get('areaTotal')
+  const privateArea = searchParams.get('areaTerreno')
+
+  const pathname = usePathname();
+  
 
   const createSchema = z.object({
     type: z.string().optional(),
@@ -134,69 +71,121 @@ function Filter({
   });
   type SchemaQuestion = Infer<typeof createSchema>;
 
-  const { watch, handleSubmit, reset, control } = useForm<SchemaQuestion>({
+  const { watch, handleSubmit, reset, control, formState: {isLoading} } = useForm<SchemaQuestion>({
     resolver: zodResolver(createSchema),
+    defaultValues: {
+      type: type ?? '',
+      city: cityUrl ?? '',
+      neighborhood: neighborhood ?? '',
+      bedrooms: bedrooms ?? '',
+      bathrooms: bathrooms ?? '',
+      suites: suites ?? '',
+      parkingSpots: parkingSpots ?? '',
+      totalArea: totalArea ?? '',
+      privateArea: privateArea ?? ''
+    } 
   });
-
-  const city = watch("city");
-
-  const loadNeighboorhood = useCallback(async () => {
-    if (city) {
-      const response = await api.get<NeighborhoodProps[]>(
-        `/imovel/bairro/${city}`
-      );
-      if (response) {
-        setNeighborhood([...response.data]);
-      }
-    }
-  }, [city]);
-
-  useEffect(() => {
-    loadNeighboorhood();
-  }, [loadNeighboorhood]);
 
   const onSubmit = useCallback(
     async (data: SchemaQuestion) => {
-      setLoading(true);
-      console.log(data)
-      const responseImoveis = await api.get(`/imovel`, {
-        params: {
-          type: data.type !== "undefined" ? data.type : undefined,
-          city: data.city !== "undefined" ? data.city : undefined,
-          neighborhood:
-            data.neighborhood !== "undefined" ? data.neighborhood : undefined,
-          bedrooms: data.bedrooms ? data.bedrooms : undefined,
-          bathrooms: data.bathrooms ? data.bathrooms : undefined,
-          suites: data.suites ? data.suites : undefined,
-          parkingSpots: data.parkingSpots ? data.parkingSpots : undefined,
-          totalArea: data.totalArea ? data.totalArea : undefined,
-          privateArea: data.privateArea ? data.privateArea : undefined,
-          page,
-          pageSize: 12,
-        },
-      });
+      const params = new URLSearchParams(searchParams);
+      if(data.type && data.type !== 'undefined'){
+        params.set('tipoImovel', data.type)
+      } else {
+        params.delete('tipoImovel')
+      }
 
-      router.replace(
-        `/imoveis?${
-          !!data.type && data.type !== 'undefined' ? `tipoImovel=${data.type}&` : ""
-        }${!!data.city && data.city !== 'undefined' ? `cidade=${data.city}&` : ""}${
-          !!data.neighborhood && data.neighborhood !== 'undefined' 
-            ? `bairro=${data.neighborhood}&`
-            : ""
-        }${data.bedrooms ? `quartos=${data.bedrooms}&` : ""}${
-          data.bathrooms ? `banheiros=${data.bathrooms}&` : ""
-        }${data.suites ? `suites=${data.suites}&` : ""} ${
-          data.parkingSpots ? `garagem=${data.parkingSpots}&` : ""
-        }${data.totalArea ? `areaTotal=${data.totalArea}&` : ""}${
-          data.privateArea ? `areaTerreno=${data.privateArea}&` : ""
-        }`
-      );
-      setProperties([...responseImoveis.data.properties]);
-      setTotal(responseImoveis.data.totalPages);
-      setLoading(false);
+      if(data.city && data.city !== 'undefined'){
+        params.set('cidade', data.city)
+      } else {
+        params.delete('cidade')
+      }
+      
+      if(data.neighborhood && data.neighborhood !== 'undefined'){
+        params.set('bairro', data.neighborhood)
+      } else {
+        params.delete('bairro')
+      }	
+      
+      if(data.bedrooms){
+        params.set('quartos', data.bedrooms)
+      } else {
+        params.delete('quartos')
+      }
+
+      if(data.bathrooms){
+        params.set('banheiros', data.bathrooms)
+      } else {
+        params.delete('banheiros')
+      }
+
+      if(data.suites){
+        params.set('suites', data.suites)
+      } else {
+        params.delete('suites')
+      }
+
+      if(data.parkingSpots){
+        params.set('garagem', data.parkingSpots)
+      } else {
+        params.delete('garagem')
+      }
+
+      if(data.totalArea){
+        params.set('areaTotal', data.totalArea)
+      } else {
+        params.delete('areaTotal')
+      }
+
+      if(data.privateArea){
+        params.set('areaTerreno', data.privateArea)
+      } else {
+        params.delete('areaTerreno')
+      }
+
+      params.set('page', '1')
+      
+      const search = params.toString()
+      const query = search ? `?${search}` : "";
+      router.push(`${pathname}${query}`);
     },
-    [page, setProperties, setTotal, setLoading, router]
+    [router]
   );
+
+  const city = watch("city");
+
+  const { data: cities } = useQuery({
+    queryKey: ['cities'],
+    queryFn: () =>
+      getCities()
+  })
+
+  const { data: types } = useQuery({
+    queryKey: ['types'],
+    queryFn: () =>
+      getTypes()
+  })
+
+  const { data: neighborhoods } = useQuery({
+    queryKey: ['neighborhoods', city],
+    queryFn: () =>
+      getNeighborhoods({ city })
+  })
+
+  function handleClearFilter(){
+    router.replace("/imoveis", undefined, { shallow: true });
+    reset({
+      city: "",
+      type: "",
+      neighborhood: "",
+      bathrooms: "",
+      bedrooms: "",
+      parkingSpots: "",
+      privateArea: "",
+      suites: "",
+      totalArea: "",
+    })
+}
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -207,7 +196,6 @@ function Filter({
         <Controller
           name="type"
           control={control}
-          defaultValue={String(tipoImovel)}
           render={({ field: { ref, ...field } }) => {
             return (
               <FormControl sx={{ mt: 1, mb: 1 }} fullWidth size="small">
@@ -219,8 +207,8 @@ function Filter({
                   label="Tipo Imóvel"
                   {...field}
                 >
-                  <MenuItem value={undefined}>Selecione</MenuItem>
-                  {types.map((type) => (
+                  <MenuItem value=''>Selecione</MenuItem>
+                  {types && types.map((type) => (
                     <MenuItem key={type.id} value={type.description}>
                       {type.description}
                     </MenuItem>
@@ -234,7 +222,6 @@ function Filter({
         <Controller
           name="city"
           control={control}
-          defaultValue={String(cidade)}
           render={({ field: { ref, ...field } }) => {
             return (
               <FormControl fullWidth size="small" sx={{ mt: 1, mb: 1 }}>
@@ -246,8 +233,8 @@ function Filter({
                   label="Cidade"
                   {...field}
                 >
-                  <MenuItem value={undefined}>Selecione</MenuItem>
-                  {cities.map((city) => (
+                  <MenuItem value=''>Selecione</MenuItem>
+                  {cities && cities.map((city) => (
                     <MenuItem key={city.city} value={city.city}>
                       {city.city}
                     </MenuItem>
@@ -260,7 +247,6 @@ function Filter({
         <Controller
           name="neighborhood"
           control={control}
-          defaultValue={String(bairro)}
           render={({ field: { ref, ...field } }) => {
             return (
               <FormControl fullWidth size="small" sx={{ mt: 1, mb: 1 }}>
@@ -272,8 +258,8 @@ function Filter({
                   label="Bairro"
                   {...field}
                 >
-                  <MenuItem value={undefined}>Selecione</MenuItem>
-                  {neighborhoods.map((neighborhood) => (
+                  <MenuItem value=''>Selecione</MenuItem>
+                  {neighborhoods && neighborhoods.map((neighborhood) => (
                     <MenuItem
                       key={neighborhood.neighborhood}
                       value={neighborhood.neighborhood}
@@ -311,7 +297,6 @@ function Filter({
                   variant="outlined"
                   size="small"
                   fullWidth
-                  defaultValue={quartos}
                   inputRef={ref}
                   {...field}
                 />
@@ -338,7 +323,6 @@ function Filter({
                   label="Nº Suites"
                   size="small"
                   fullWidth
-                  defaultValue={suites}
                   inputRef={ref}
                   {...field}
                 />
@@ -357,7 +341,6 @@ function Filter({
                   label="Nº Banheiros"
                   size="small"
                   fullWidth
-                  defaultValue={banheiros}
                   inputRef={ref}
                   {...field}
                 />
@@ -376,7 +359,6 @@ function Filter({
                   label="Nº Estacionamento"
                   size="small"
                   fullWidth
-                  defaultValue={garagem}
                   inputRef={ref}
                   {...field}
                 />
@@ -395,7 +377,6 @@ function Filter({
                   label="Area do imóvel"
                   size="small"
                   fullWidth
-                  defaultValue={areaTotal}
                   inputRef={ref}
                   {...field}
                 />
@@ -414,7 +395,6 @@ function Filter({
                   label="Area do terreno"
                   fullWidth
                   size="small"
-                  defaultValue={areaTerreno}
                   inputRef={ref}
                   {...field}
                 />
@@ -435,26 +415,14 @@ function Filter({
             type="submit"
             variant="contained"
             sx={{ mt: 1 }}
+            disabled={isLoading}
           >
             Filtrar
           </Button>
 
           <Button
             color="primary"
-            onClick={() => {
-              router.replace("/imoveis", undefined, { shallow: true });
-              reset({
-                city: "",
-                type: "",
-                neighborhood: "",
-                bathrooms: "",
-                bedrooms: "",
-                parkingSpots: "",
-                privateArea: "",
-                suites: "",
-                totalArea: "",
-              });
-            }}
+            onClick={handleClearFilter}
           >
             Limpar Filtros
           </Button>
@@ -466,400 +434,420 @@ function Filter({
 
 function Properties({
   properties,
-  totalSize,
-  page,
-  setPage,
-  setLoading,
-  setProperties,
-  types,
-  cities,
-  initialNeighborhood,
-  setTotal,
 }: {
-  properties: Property[];
-  totalSize: number;
-  page: number;
-  setLoading: Dispatch<SetStateAction<boolean>>;
-  setPage: Dispatch<SetStateAction<number>>;
-  setProperties: Dispatch<SetStateAction<Property[]>>;
-  types: TypeProperty[];
-  cities: CityProps[];
-  initialNeighborhood: NeighborhoodProps[];
-  setTotal: Dispatch<SetStateAction<number>>;
+  properties: GetPropertiesResponse;
 }) {
+  const searchParams = useSearchParams()
+  const type = searchParams.get('tipoImovel')
+  const city = searchParams.get('cidade')
+  const neighborhood = searchParams.get('bairro')
+  const bedrooms = searchParams.get('quartos')
+  const bathrooms = searchParams.get('banheiros')
+  const suites = searchParams.get('suites')
+  const parkingSpots = searchParams.get('garagem')
+  const totalArea = searchParams.get('areaTotal')
+  const privateArea = searchParams.get('areaTerreno')
+  const page = z.coerce
+  .number()
+  .parse(searchParams.get('page') ?? '1')
+
   const router = useRouter();
-  const {
-    tipoImovel,
-    cidade,
-    bairro,
-    quartos,
-    banheiros,
-    suites,
-    garagem,
-    areaTotal,
-    areaTerreno,
-    page: pageQuery,
-  } = router.query;
+  const pathname = usePathname();
 
   const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
-    setPage(value);
-    scrollToTop();
-    loadProperties(value);
+    const params = new URLSearchParams(searchParams);
+    params.set('page', value.toString());
+    const search = params.toString()
+    const query = search ? `?${search}` : "";
+    router.push(`${pathname}${query}`);
   };
 
-  const loadProperties = useCallback(
-    async (page: number) => {
-      const responseImoveis = await api.get(`/imovel`, {
-        params: {
-          type: tipoImovel !== "undefined" ? tipoImovel : undefined,
-          city: cidade !== "undefined" ? cidade : undefined,
-          neighborhood: bairro !== "undefined" ? bairro : undefined,
-          bedrooms: quartos || undefined,
-          bathrooms: banheiros || undefined,
-          suites: suites || undefined,
-          parkingSpots: garagem || undefined,
-          totalArea: areaTotal || undefined,
-          privateArea: areaTerreno || undefined,
-          page: pageQuery || page,
-          pageSize: 12,
-        },
-      });
-      if (responseImoveis) {
-        setProperties([...responseImoveis.data.properties]);
-      }
-    },
-    [
-      areaTerreno,
-      areaTotal,
-      bairro,
-      banheiros,
-      cidade,
-      garagem,
-      quartos,
-      setProperties,
+  const { data: result, isFetching } = useQuery({
+    queryKey: ['properties',
+    type,
+    city,
+    neighborhood,
+    bedrooms,
+    bathrooms,
+    suites,
+    parkingSpots,
+    totalArea,
+    privateArea,
+    page],
+    queryFn: () => getProperties({
+      page,
+      type,
+      city,
+      neighborhood,
+      bedrooms,
+      bathrooms,
       suites,
-      tipoImovel,
-    ]
-  );
+      parkingSpots,
+      totalArea,
+      privateArea,
+    }),
+    initialData: properties
+  })
 
-  const scrollToTop = () => {
-    if (window) {
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth", // para uma transição suave
-      });
-    }
-  };
+  const totalPages = Math.ceil(result.totalPages / 12) || 1
 
   return (
-    <Box
-      sx={{
-        maxWidth: "1200px",
-        width: "100%",
-        display: "flex",
-        flexDirection: "column",
-        margin: "0 auto",
-        p: 2,
-        zIndex: 999,
-      }}
-    >
-      <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
-        <Typography variant="body2" color="#333" fontWeight="bold">
-          {`${properties.length}  ${
-            properties.length === 1
-              ? "Imóvel encontrado"
-              : "Imóveis encontrados"
-          }`}
-        </Typography>
-      </Box>
+        <Box
+          sx={{
+            maxWidth: "1200px",
+            width: "100%",
+            display: "flex",
+            flexDirection: "column",
+            margin: "0 auto",
+            p: 2,
+            zIndex: 999,
+          }}
+        >
+        <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
+          <Typography variant="body2" color="#333" fontWeight="bold">
+            {result && `${result.totalPages} ${result.totalPages === 1 ? "Imóvel encontrado" : "Imóveis encontrados" }`}
+          </Typography>
+        </Box>
 
-      <Grid container spacing={2}>
-        <Grid item md={3} sm={12} xs={12}>
-          <Filter
-            page={page}
-            types={types}
-            cities={cities}
-            initialNeighborhood={initialNeighborhood}
-            setTotal={setTotal}
-            setLoading={setLoading}
-            setProperties={setProperties}
-          />
-        </Grid>
-        <Grid item md={9} sm={12} xs={12}>
-          <Grid container spacing={2}>
-            {properties.map((property) => (
-              <Grid
-                key={property.id}
-                item
-                md={4}
-                sm={12}
-                xs={12}
-                sx={{ a: { textDecoration: "none" } }}
-              >
-                <Link href={`/imoveis/${property.id}`} target="_blank">
-                  <Card
-                    variant="outlined"
-                    sx={{
-                      display: "flex",
-                      flexDirection: "column",
-                      height: "100%",
-                      position: "relative",
-                    }}
-                  >
-                    {property.files.length > 0 ? (
-                      <CardMedia
-                        component="img"
-                        height="250"
-                        image={property.files[0].path}
-                        alt="Foto do imóvel"
-                      />
-                    ) : (
-                      <Box
-                        sx={{
-                          height: "250px",
-                          background: "#17375F",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                        }}
-                      >
-                        <Image src={logo} alt="logo" width={120} height={120} />
-                      </Box>
-                    )}
-
-                    <Box
+        <Grid container spacing={2}>
+          <Grid item md={3} sm={12} xs={12}>
+            <Filter />
+          </Grid>
+          <Grid item md={9} sm={12} xs={12}>
+            <Grid container spacing={2}>
+              {result && !isFetching && result.properties.map((property) => (
+                <Grid
+                  key={property.id}
+                  item
+                  md={4}
+                  sm={12}
+                  xs={12}
+                  sx={{ 
+                    transition: '0.5s',
+                    a: { textDecoration: "none" }, ":hover": {
+                    opacity: 0.8 
+                  } }}
+                >
+                  <Link href={`/imoveis/${property.id}`} target="_blank">
+                    <Card
+                      variant="outlined"
                       sx={{
                         display: "flex",
                         flexDirection: "column",
                         height: "100%",
-                        justifyContent: "space-between",
-                        flex: 1,
+                        position: "relative",
                       }}
                     >
+                      {property.files.length > 0 ? (
+                        <CardMedia
+                          component="img"
+                          height="250"
+                          image={property.files[0].path}
+                          alt="Foto do imóvel"
+                        />
+                      ) : (
+                        <Box
+                          sx={{
+                            height: "250px",
+                            background: "#17375F",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
+                        >
+                          <Image src={logo} alt="logo" width={120} height={120} />
+                        </Box>
+                      )}
+
                       <Box
                         sx={{
                           display: "flex",
                           flexDirection: "column",
-                          px: 2,
-                          mt: 1,
+                          height: "100%",
+                          justifyContent: "space-between",
+                          flex: 1,
                         }}
                       >
                         <Box
                           sx={{
                             display: "flex",
                             flexDirection: "column",
-                            py: 1,
-                            width: "100%",
+                            px: 2,
+                            mt: 1,
                           }}
                         >
-                          <Typography
-                            variant="body1"
-                            color="#333"
-                            fontWeight="bold"
+                          <Box
+                            sx={{
+                              display: "flex",
+                              flexDirection: "column",
+                              py: 1,
+                              width: "100%",
+                            }}
                           >
-                            {property.name}
+                            <Typography
+                              variant="body1"
+                              color="#333"
+                              fontWeight="bold"
+                            >
+                              {property.name}
+                            </Typography>
+                            <Typography variant="caption">
+                              {property.city} - {property.neighborhood}
+                            </Typography>
+                          </Box>
+                          <Typography
+                            variant="body2"
+                            color="text.primary"
+                            sx={{ wordBreak: "break-word" }}
+                          >
+                            {property.summary}
                           </Typography>
-                          <Typography variant="caption">
-                            {property.city} - {property.neighborhood}
-                          </Typography>
-                        </Box>
-                        <Typography
-                          variant="body2"
-                          color="text.primary"
-                          sx={{ wordBreak: "break-word" }}
-                        >
-                          {property.summary}
-                        </Typography>
-                      </Box>
-
-                      <Box
-                        sx={{
-                          display: "flex",
-                          flexDirection: "column",
-                          justifyContent: "center",
-                          alignItems: "flex-start",
-                          width: "100%",
-                          p: 2,
-                        }}
-                      >
-                        <Typography
-                          variant="body2"
-                          color="primary"
-                          fontWeight="bold"
-                        >
-                          Informações
-                        </Typography>
-                        <Box
-                          display="flex"
-                          gap={1}
-                          mb={1}
-                          rowGap={0.5}
-                          flexWrap="wrap"
-                        >
-                          {Number(property.bedrooms) > 0 && (
-                            <Tooltip
-                              title="Quartos"
-                              sx={{
-                                display: "flex",
-                                alignItems: "center",
-                                gap: 1,
-                              }}
-                            >
-                              <Box>
-                                <Bed size={16} weight="bold" />
-                                <Typography variant="body1">
-                                  {property.bedrooms}
-                                </Typography>
-                              </Box>
-                            </Tooltip>
-                          )}
-
-                          {Number(property.suites) > 0 && (
-                            <Tooltip
-                              title="Suites"
-                              sx={{
-                                display: "flex",
-                                alignItems: "center",
-                                gap: 1,
-                              }}
-                            >
-                              <Box>
-                                <Bathtub size={16} weight="bold" />
-                                <Typography variant="body1">
-                                  {property.suites}
-                                </Typography>
-                              </Box>
-                            </Tooltip>
-                          )}
-
-                          {Number(property.bathrooms) > 0 && (
-                            <Tooltip
-                              title="Banheiros"
-                              sx={{
-                                display: "flex",
-                                alignItems: "center",
-                                gap: 1,
-                              }}
-                            >
-                              <Box>
-                                <Toilet size={16} weight="bold" />
-                                <Typography variant="body1">
-                                  {property.bathrooms}
-                                </Typography>
-                              </Box>
-                            </Tooltip>
-                          )}
-
-                          {Number(property.parkingSpots) > 0 && (
-                            <Tooltip
-                              title="Garagem"
-                              sx={{
-                                display: "flex",
-                                alignItems: "center",
-                                gap: 1,
-                              }}
-                            >
-                              <Box>
-                                <Car size={16} weight="bold" />
-                                <Typography variant="body1">
-                                  {property.parkingSpots}
-                                </Typography>
-                              </Box>
-                            </Tooltip>
-                          )}
-
-                          {Number(property.totalArea) > 0 && (
-                            <Tooltip
-                              title="Area total"
-                              sx={{
-                                display: "flex",
-                                alignItems: "center",
-                                gap: 1,
-                              }}
-                            >
-                              <Box>
-                                <LiaRulerCombinedSolid size={16} />
-                                <Typography variant="body1">
-                                  {property.totalArea} M²
-                                </Typography>
-                              </Box>
-                            </Tooltip>
-                          )}
-
-                          {Number(property.privateArea) > 0 && (
-                            <Tooltip
-                              title="Area do terreno"
-                              sx={{
-                                display: "flex",
-                                alignItems: "center",
-                                gap: 1,
-                              }}
-                            >
-                              <Box>
-                                <BiArea size={16} />
-                                <Typography variant="body1">
-                                  {property.privateArea} M²
-                                </Typography>
-                              </Box>
-                            </Tooltip>
-                          )}
-                        </Box>
-
-                        <Box sx={{ display: "flex", gap: 1, my: 0.5 }}>
-                          <Chip
-                            label="Venda"
-                            size="small"
-                            variant="outlined"
-                            sx={{ fontWeight: 400 }}
-                          />
-
-                          <Chip
-                            label={property.type_property.description}
-                            size="small"
-                            variant="outlined"
-                            sx={{ fontWeight: 400 }}
-                          />
                         </Box>
 
                         <Box
                           sx={{
                             display: "flex",
-                            alignItems: "center",
-                            justifyContent: "flex-end",
+                            flexDirection: "column",
+                            justifyContent: "center",
+                            alignItems: "flex-start",
                             width: "100%",
+                            p: 2,
                           }}
                         >
                           <Typography
-                            variant="subtitle1"
+                            variant="body2"
+                            color="primary"
                             fontWeight="bold"
-                            sx={{ color: "#17375F" }}
                           >
-                            {property.value}
+                            Informações
                           </Typography>
+                          <Box
+                            display="flex"
+                            gap={1}
+                            mb={1}
+                            rowGap={0.5}
+                            flexWrap="wrap"
+                          >
+                            {Number(property.bedrooms) > 0 && (
+                              <Tooltip
+                                title="Quartos"
+                                sx={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  gap: 1,
+                                }}
+                              >
+                                <Box>
+                                  <Bed size={16} weight="bold" />
+                                  <Typography variant="body1">
+                                    {property.bedrooms}
+                                  </Typography>
+                                </Box>
+                              </Tooltip>
+                            )}
+
+                            {Number(property.suites) > 0 && (
+                              <Tooltip
+                                title="Suites"
+                                sx={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  gap: 1,
+                                }}
+                              >
+                                <Box>
+                                  <Bathtub size={16} weight="bold" />
+                                  <Typography variant="body1">
+                                    {property.suites}
+                                  </Typography>
+                                </Box>
+                              </Tooltip>
+                            )}
+
+                            {Number(property.bathrooms) > 0 && (
+                              <Tooltip
+                                title="Banheiros"
+                                sx={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  gap: 1,
+                                }}
+                              >
+                                <Box>
+                                  <Toilet size={16} weight="bold" />
+                                  <Typography variant="body1">
+                                    {property.bathrooms}
+                                  </Typography>
+                                </Box>
+                              </Tooltip>
+                            )}
+
+                            {Number(property.parkingSpots) > 0 && (
+                              <Tooltip
+                                title="Garagem"
+                                sx={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  gap: 1,
+                                }}
+                              >
+                                <Box>
+                                  <Car size={16} weight="bold" />
+                                  <Typography variant="body1">
+                                    {property.parkingSpots}
+                                  </Typography>
+                                </Box>
+                              </Tooltip>
+                            )}
+
+                            {Number(property.totalArea) > 0 && (
+                              <Tooltip
+                                title="Area total"
+                                sx={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  gap: 1,
+                                }}
+                              >
+                                <Box>
+                                  <LiaRulerCombinedSolid size={16} />
+                                  <Typography variant="body1">
+                                    {property.totalArea} M²
+                                  </Typography>
+                                </Box>
+                              </Tooltip>
+                            )}
+
+                            {Number(property.privateArea) > 0 && (
+                              <Tooltip
+                                title="Area do terreno"
+                                sx={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  gap: 1,
+                                }}
+                              >
+                                <Box>
+                                  <BiArea size={16} />
+                                  <Typography variant="body1">
+                                    {property.privateArea} M²
+                                  </Typography>
+                                </Box>
+                              </Tooltip>
+                            )}
+                          </Box>
+
+                          <Box sx={{ display: "flex", gap: 1, my: 0.5 }}>
+                            <Chip
+                              label="Venda"
+                              size="small"
+                              variant="outlined"
+                              sx={{ fontWeight: 400 }}
+                            />
+
+                            <Chip
+                              label={property.type_property.description}
+                              size="small"
+                              variant="outlined"
+                              sx={{ fontWeight: 400 }}
+                            />
+                          </Box>
+
+                          <Box
+                            sx={{
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "flex-end",
+                              width: "100%",
+                            }}
+                          >
+                            <Typography
+                              variant="subtitle1"
+                              fontWeight="bold"
+                              sx={{ color: "#17375F" }}
+                            >
+                              {property.value}
+                            </Typography>
+                          </Box>
                         </Box>
                       </Box>
-                    </Box>
+                    </Card>
+                  </Link>
+                </Grid>
+              ))}
+              {
+                isFetching && Array.from({length: 12}).map(() => {
+                  return (
+                    <Grid key={Math.random()} item md={4} sm={12} xs={12}>
+                      <Box
+                        sx={{
+                          display: "flex",
+                          flexDirection: "column",
+                          gap: 1,
+                        }}
+                      >
+                        <Skeleton variant="rectangular"  height={250} />
+
+                        <Box>
+                          <Skeleton variant="text" width="70%" sx={{ fontSize: "1rem" }} />
+                          <Skeleton variant="text" width="50%" sx={{ fontSize: "1rem" }} />
+
+                          <Skeleton variant="rectangular"  height={50}  sx={{my: 2}} />
+
+                          <Skeleton variant="text" width="20%"/>
+
+                          <Skeleton variant="text" />
+
+                          <Box sx={{display: 'flex', gap:2 }}>
+                            <Skeleton variant="text" width="20%"/>
+                            <Skeleton variant="text" width="40%"/>
+                          </Box>
+
+
+                          <Box sx={{display: 'flex', justifyContent: 'flex-end'}}>
+                            <Skeleton variant="text" width="70%" sx={{mt:1, justifySelf:'flex-end'}}/>
+                          </Box>
+                        </Box>
+
+                      </Box>
+                    </Grid>
+                  )
+                })
+              }
+              {
+                result.properties.length === 0 && (
+                  <Grid
+                  item
+                  md={12}
+                  sm={12}
+                  xs={12}
+                  sx={{ a: { textDecoration: "none" } }}
+                >
+                  <Card variant="outlined" sx={{ p: 4, textAlign: 'center'}}>
+                    Nenhum imóvel encontrado
                   </Card>
-                </Link>
-              </Grid>
-            ))}
+                </Grid>
+                )
+              }
+            </Grid>
           </Grid>
         </Grid>
-      </Grid>
 
-      {page >= 1 && (
-        <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
-          <Pagination
-            count={totalSize}
-            page={page}
-            onChange={handleChange}
-            shape="rounded"
-            color="primary"
-          />
-        </Box>
-      )}
+        {totalPages > 1 && (
+          <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}> 
+            <Pagination
+              count={totalPages}
+              page={page}
+              onChange={handleChange}
+              shape="rounded"
+              color="primary"
+            />
+          </Box>
+        )}
     </Box>
-  );
+      )
+      
+   
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
@@ -867,6 +855,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     "Cache-Control",
     "public, s-maxage=10, stale-while-revalidate=59"
   );
+
   const {
     tipoImovel,
     cidade,
@@ -879,35 +868,22 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     areaTerreno,
   } = context.query;
 
-  const responseImoveis = await api.get(`/imovel?visible=true`, {
-    params: {
-      type: tipoImovel,
-      city: cidade,
-      neighborhood: bairro,
-      bedrooms: quartos,
-      bathrooms: banheiros,
-      suites,
-      parkingSpots: garagem,
-      totalArea: areaTotal,
-      privateArea: areaTerreno,
-      page: 1,
-      pageSize: 12,
-    },
-  });
-  const responseTipo = await api.get<TypeProperty[]>(`/tipo-imovel`);
-  const responseCities = await api.get<CityProps[]>(`/imovel/cidades`);
-
-  const responseNeighborhood = await api.get<NeighborhoodProps[]>(
-    `/imovel/bairro/${cidade}`
-  );
+  const propertiesData = await getProperties({
+    type: String(tipoImovel)?? undefined,
+    city: String(cidade)?? undefined,
+    neighborhood: String(bairro)?? undefined,
+    bedrooms: String(quartos)?? undefined,
+    bathrooms: String(banheiros)?? undefined,
+    suites: String(suites)?? undefined,
+    parkingSpots: String(garagem)?? undefined,
+    totalArea: String(areaTotal)?? undefined,
+    privateArea: String(areaTerreno)?? undefined,
+    page: 1,
+  })
 
   return {
     props: {
-      properties: responseImoveis.data.properties,
-      totalPropertiesSize: Math.ceil(responseImoveis.data.totalPages / 12),
-      types: responseTipo.data,
-      cities: responseCities.data,
-      neighborhoods: responseNeighborhood.data,
+      propertiesData
     },
   };
 };
@@ -915,28 +891,17 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 export const revalidate = 3600; // revalidate every hour
 
 export default function Home({
-  properties: initialProperties,
-  types,
-  cities,
-  neighborhoods,
-  totalPropertiesSize,
+  propertiesData,
 }: {
-  properties: Property[];
-  types: TypeProperty[];
-  cities: CityProps[];
-  totalPropertiesSize: number;
-  neighborhoods: NeighborhoodProps[];
+  propertiesData: GetPropertiesResponse;
 }) {
-  const [properties, setProperties] = useState<Property[]>(initialProperties);
-  const [loading, setLoading] = useState(false);
-  const [total, setTotal] = useState(totalPropertiesSize);
-  const [page, setPage] = useState(1);
 
   return (
     <>
       <Head>
         <title>Auros Corretora Imobiliária  | Imóveis</title>
       </Head>
+
       <Box>
         <Box
           sx={{
@@ -957,28 +922,13 @@ export default function Home({
         >
           <MenubarHome />
           <Properties
-            page={page}
-            setPage={setPage}
-            totalSize={total}
-            properties={properties}
-            setProperties={setProperties}
-            setLoading={setLoading}
-            types={types}
-            cities={cities}
-            initialNeighborhood={neighborhoods}
-            setTotal={setTotal}
+            properties={propertiesData}
           />
         </Box>
       </Box>
 
       <Box sx={{ mb: 4 }} />
       <Footer />
-      <Backdrop
-        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        open={loading}
-      >
-        <CircularProgress color="inherit" />
-      </Backdrop>
     </>
   );
 }

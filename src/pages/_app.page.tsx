@@ -9,6 +9,8 @@ import 'react-toastify/dist/ReactToastify.css'
 import { CacheProvider, EmotionCache } from '@emotion/react'
 import Head from 'next/head'
 import createEmotionCache from '@/createEmotionCache'
+import { QueryClientProvider } from '@tanstack/react-query'
+import { query } from '@/lib/react-query'
 
 const theme = createTheme({
   palette: {
@@ -51,7 +53,11 @@ export default function App(props: MyAppProps) {
         </Head>
         <ThemeProvider theme={theme}>
           <CssBaseline />
-          <Component {...pageProps} />
+
+          <QueryClientProvider client={query}>
+
+            <Component {...pageProps} />
+          </QueryClientProvider>
           <ToastContainer autoClose={2000} />
         </ThemeProvider>
       </CacheProvider>
