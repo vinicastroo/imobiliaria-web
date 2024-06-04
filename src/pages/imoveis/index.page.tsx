@@ -432,11 +432,7 @@ function Filter() {
   );
 }
 
-function Properties({
-  properties,
-}: {
-  properties: GetPropertiesResponse;
-}) {
+function Properties() {
   const searchParams = useSearchParams()
   const type = searchParams.get('tipoImovel')
   const city = searchParams.get('cidade')
@@ -486,10 +482,9 @@ function Properties({
       totalArea,
       privateArea,
     }),
-    initialData: properties
   })
 
-  const totalPages = Math.ceil(result.totalPages / 12) || 1
+  const totalPages = result ? Math.ceil(result.totalPages / 12) || 1 : 1
 
   return (
         <Box
@@ -819,7 +814,7 @@ function Properties({
                 })
               }
               {
-                result.properties.length === 0 && (
+                result && !isLoading && result.properties.length === 0 && (
                   <Grid
                   item
                   md={12}
@@ -854,51 +849,7 @@ function Properties({
    
 }
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  context.res.setHeader(
-    "Cache-Control",
-    "public, s-maxage=10, stale-while-revalidate=59"
-  );
-
-  const {
-    tipoImovel,
-    cidade,
-    bairro,
-    quartos,
-    banheiros,
-    suites,
-    garagem,
-    areaTotal,
-    areaTerreno,
-  } = context.query;
-
-  const propertiesData = await getProperties({
-    type: String(tipoImovel)?? undefined,
-    city: String(cidade)?? undefined,
-    neighborhood: String(bairro)?? undefined,
-    bedrooms: String(quartos)?? undefined,
-    bathrooms: String(banheiros)?? undefined,
-    suites: String(suites)?? undefined,
-    parkingSpots: String(garagem)?? undefined,
-    totalArea: String(areaTotal)?? undefined,
-    privateArea: String(areaTerreno)?? undefined,
-    page: 1,
-  })
-
-  return {
-    props: {
-      propertiesData
-    },
-  };
-};
-
-export const revalidate = 3600; // revalidate every hour
-
-export default function Home({
-  propertiesData,
-}: {
-  propertiesData: GetPropertiesResponse;
-}) {
+export default function Home() {
 
   return (
     <>
@@ -926,7 +877,6 @@ export default function Home({
         >
           <MenubarHome />
           <Properties
-            properties={propertiesData}
           />
         </Box>
       </Box>
