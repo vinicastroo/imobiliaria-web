@@ -462,7 +462,7 @@ function Properties({
     router.push(`${pathname}${query}`);
   };
 
-  const { data: result, isFetching } = useQuery({
+  const { data: result, isLoading } = useQuery({
     queryKey: ['properties',
     type,
     city,
@@ -515,7 +515,7 @@ function Properties({
           </Grid>
           <Grid item md={9} sm={12} xs={12}>
             <Grid container spacing={2}>
-              {result && !isFetching && result.properties.map((property) => (
+              {result && !isLoading && result.properties.map((property) => (
                 <Grid
                   key={property.id}
                   item
@@ -780,7 +780,7 @@ function Properties({
                 </Grid>
               ))}
               {
-                isFetching && Array.from({length: 12}).map(() => {
+                isLoading && Array.from({length: 12}).map(() => {
                   return (
                     <Grid key={Math.random()} item md={4} sm={12} xs={12}>
                       <Box

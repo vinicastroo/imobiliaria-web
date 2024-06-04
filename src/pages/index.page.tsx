@@ -361,7 +361,7 @@ function BannerHome() {
 }
 
 function Recent() {
-  const { data, isFetching: loading } = useQuery({
+  const { data, isLoading: loading } = useQuery({
     queryKey: ['recent-properties'],
     queryFn: () =>
       getRecentProperties()
