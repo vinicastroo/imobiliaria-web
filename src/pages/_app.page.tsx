@@ -12,6 +12,7 @@ import createEmotionCache from '@/createEmotionCache'
 import { QueryClientProvider } from '@tanstack/react-query'
 import { query } from '@/lib/react-query'
 import { GoogleAnalytics } from '@next/third-parties/google' 
+import CookieConsent from 'react-cookie-consent'
 const theme = createTheme({
   palette: {
     primary: {
@@ -60,6 +61,17 @@ export default function App(props: MyAppProps) {
           </QueryClientProvider>
           <ToastContainer autoClose={2000} />
           <GoogleAnalytics gaId="G-EBJQ0S2YY6" />
+
+          <CookieConsent
+              location="bottom"
+              buttonText="Aceitar"
+              cookieName="auros-cookie-consent"
+              style={{ background: "#333" }}
+              buttonStyle={{ color: "#fff",background: "#17375F" , fontSize: "14px" }}
+              expires={150}
+            >
+            Este site utiliza cookies para melhorar a experiência do usuário.{" "}
+            </CookieConsent>
         </ThemeProvider>
       </CacheProvider>
     </SessionProvider>
