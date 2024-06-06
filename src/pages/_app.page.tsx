@@ -62,7 +62,7 @@ export default function App(props: MyAppProps) {
           <ToastContainer autoClose={2000} />
           <GoogleAnalytics gaId="G-EBJQ0S2YY6" />
 
-          <CookieConsent
+          {/* <CookieConsent
               location="bottom"
               buttonText="Aceitar"
               cookieName="auros-cookie-consent"
@@ -71,7 +71,7 @@ export default function App(props: MyAppProps) {
               expires={150}
             >
             Este site utiliza cookies para melhorar a experiência do usuário.{" "}
-            </CookieConsent>
+            </CookieConsent> */}
         </ThemeProvider>
       </CacheProvider>
     </SessionProvider>
