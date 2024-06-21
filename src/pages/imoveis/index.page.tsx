@@ -897,7 +897,10 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>Auros Corretora Imobiliária | Imóveis</title>
+        <title>
+          Auros Corretora Imobiliária | Imóveis em Rio do Sul e Balneário
+          Camboriú
+        </title>
       </Head>
 
       <Box>
