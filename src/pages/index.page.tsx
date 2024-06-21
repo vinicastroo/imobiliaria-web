@@ -805,8 +805,7 @@ export default function Home() {
     <>
       <Head>
         <title>
-          Auros Corretora Imobiliária - Encontre o Imóvel Ideal em Rio do Sul e
-          Balneário Camboriú - Imobiliária em Rio do Sul / Balneário Camboriú
+          Auros Imobiliária - Encontre o Imóvel Ideal em Rio do Sul e BC
         </title>
       </Head>
 
