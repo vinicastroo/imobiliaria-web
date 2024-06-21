@@ -499,7 +499,12 @@ function Properties() {
       }}
     >
       <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
-        <Typography variant="body2" color="#333" fontWeight="bold">
+        <Typography
+          variant="h1"
+          color="#333"
+          fontWeight="bold"
+          style={{ fontSize: ' 0.875rem' }}
+        >
           {result &&
             `${result.totalPages} ${result.totalPages === 1 ? 'Imóvel encontrado' : 'Imóveis encontrados'}`}
         </Typography>
@@ -604,13 +609,21 @@ function Properties() {
                             }}
                           >
                             <Typography
-                              variant="body1"
+                              variant="h2"
                               color="#333"
                               fontWeight="bold"
+                              style={{
+                                fontSize: '1rem',
+                              }}
                             >
                               {property.name}
                             </Typography>
-                            <Typography variant="caption">
+                            <Typography
+                              variant="h3"
+                              style={{
+                                fontSize: '0.75rem',
+                              }}
+                            >
                               {property.city} - {property.neighborhood}
                             </Typography>
                           </Box>
@@ -781,9 +794,9 @@ function Properties() {
                             }}
                           >
                             <Typography
-                              variant="subtitle1"
+                              variant="h4"
                               fontWeight="bold"
-                              sx={{ color: '#17375F' }}
+                              sx={{ color: '#17375F', fontSize: '1rem' }}
                             >
                               {property.value}
                             </Typography>

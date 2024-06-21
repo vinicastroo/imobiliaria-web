@@ -75,11 +75,9 @@ function Property({ property }: { property: Property }) {
   return (
     <Box>
       <Head>
-        <title>
-          {`Auros | ${property.name}  (${property?.city} - ${property?.neighborhood} / ${property?.street}, ${property?.numberAddress})`}
-        </title>
+        <title>{`Auros | ${property.name}`}</title>
 
-        <meta name="description" content={property?.description} />
+        <meta name="description" content={property?.summary} />
       </Head>
 
       <MenubarHome />
@@ -137,7 +135,12 @@ function Property({ property }: { property: Property }) {
           <Grid item md={8.5} sm={12} xs={12}>
             <Card variant="outlined" sx={{ p: 2, mb: 2 }}>
               <Box display="flex" flexDirection="column">
-                <Typography variant="h4" fontWeight="bold" color="primary">
+                <Typography
+                  variant="h1"
+                  fontWeight="bold"
+                  color="primary"
+                  sx={{ fontSize: '2.125rem' }}
+                >
                   {property?.name}
                 </Typography>
                 <Typography variant="body2">
@@ -146,10 +149,11 @@ function Property({ property }: { property: Property }) {
               </Box>
 
               <Typography
-                variant="subtitle2"
+                variant="body1"
                 mt={2}
                 fontWeight="bold"
                 color="primary"
+                sx={{ fontSize: '0.875rem' }}
               >
                 Informações
               </Typography>
@@ -166,7 +170,9 @@ function Property({ property }: { property: Property }) {
                   >
                     <Box>
                       <Bed size={25} weight="bold" />
-                      <Typography variant="h6">{property.bedrooms}</Typography>
+                      <Typography variant="body1" sx={{ fontSize: '1.25rem' }}>
+                        {property.bedrooms}
+                      </Typography>
                     </Box>
                   </Tooltip>
                 )}
@@ -182,7 +188,9 @@ function Property({ property }: { property: Property }) {
                   >
                     <Box>
                       <Bathtub size={25} weight="bold" />
-                      <Typography variant="h6">{property.suites}</Typography>
+                      <Typography variant="body1" sx={{ fontSize: '1.25rem' }}>
+                        {property.suites}
+                      </Typography>
                     </Box>
                   </Tooltip>
                 )}
@@ -198,7 +206,9 @@ function Property({ property }: { property: Property }) {
                   >
                     <Box>
                       <Toilet size={25} weight="bold" />
-                      <Typography variant="h6">{property.bathrooms}</Typography>
+                      <Typography variant="body1" sx={{ fontSize: '1.25rem' }}>
+                        {property.bathrooms}
+                      </Typography>
                     </Box>
                   </Tooltip>
                 )}
@@ -214,7 +224,7 @@ function Property({ property }: { property: Property }) {
                   >
                     <Box>
                       <Car size={25} weight="bold" />
-                      <Typography variant="h6">
+                      <Typography variant="body1" sx={{ fontSize: '1.25rem' }}>
                         {property.parkingSpots}
                       </Typography>
                     </Box>
@@ -232,7 +242,7 @@ function Property({ property }: { property: Property }) {
                   >
                     <Box>
                       <LiaRulerCombinedSolid size={25} />
-                      <Typography variant="h6">
+                      <Typography variant="body1" sx={{ fontSize: '1.25rem' }}>
                         {property.totalArea} M²
                       </Typography>
                     </Box>
@@ -250,7 +260,7 @@ function Property({ property }: { property: Property }) {
                   >
                     <Box>
                       <BiArea size={25} />
-                      <Typography variant="h6">
+                      <Typography variant="body1" sx={{ fontSize: '1.25rem' }}>
                         {property.privateArea} M²
                       </Typography>
                     </Box>
@@ -258,7 +268,12 @@ function Property({ property }: { property: Property }) {
                 )}
               </Box>
 
-              <Typography variant="subtitle2" fontWeight="bold" color="primary">
+              <Typography
+                variant="body1"
+                fontWeight="bold"
+                color="primary"
+                sx={{ fontSize: '0.875rem' }}
+              >
                 Resumo
               </Typography>
 
@@ -303,15 +318,25 @@ function Property({ property }: { property: Property }) {
                 justifyContent="space-between"
                 sx={{ borderBottom: '1px solid #eee', pb: 2 }}
               >
-                <Typography variant="h6" color="primary" fontWeight="bold">
+                <Typography
+                  variant="h2"
+                  color="primary"
+                  fontWeight="bold"
+                  sx={{ fontSize: '1.25rem' }}
+                >
                   Venda
                 </Typography>
-                <Typography variant="h6" color="primary" fontWeight="bold">
+                <Typography
+                  variant="h2"
+                  color="primary"
+                  fontWeight="bold"
+                  sx={{ fontSize: '1.25rem' }}
+                >
                   {property.value}
                 </Typography>
               </Box>
 
-              <Typography variant="subtitle2" sx={{ mt: 2 }}>
+              <Typography variant="h3" sx={{ mt: 2, fontSize: '0.875rem' }}>
                 Corretores
               </Typography>
 
@@ -331,7 +356,9 @@ function Property({ property }: { property: Property }) {
                       />
 
                       <Box display="flex" flexDirection="column">
-                        <Typography variant="body1">Adriana</Typography>
+                        <Typography variant="h4" sx={{ fontSize: '1rem' }}>
+                          Adriana
+                        </Typography>
                         <Typography variant="caption">CRECI: 48879</Typography>
                       </Box>
                     </Box>
@@ -366,7 +393,9 @@ function Property({ property }: { property: Property }) {
                         src={renatoAvatar.src}
                       />
                       <Box display="flex" flexDirection="column">
-                        <Typography variant="body1">Renato</Typography>
+                        <Typography variant="h4" sx={{ fontSize: '1rem' }}>
+                          Renato
+                        </Typography>
                         <Typography variant="caption">CRECI: 37802</Typography>
                       </Box>
                     </Box>
@@ -401,7 +430,9 @@ function Property({ property }: { property: Property }) {
                         src={rodrigoAvatar.src}
                       />
                       <Box display="flex" flexDirection="column">
-                        <Typography variant="body1">Rodrigo</Typography>
+                        <Typography variant="h4" sx={{ fontSize: '1rem' }}>
+                          Rodrigo
+                        </Typography>
                         <Typography variant="caption">CRECI: 52831</Typography>
                       </Box>
                     </Box>
@@ -435,7 +466,9 @@ function Property({ property }: { property: Property }) {
                         src={jonathanAvatar.src}
                       />
                       <Box display="flex" flexDirection="column">
-                        <Typography variant="body1">Jonathan</Typography>
+                        <Typography variant="h4" sx={{ fontSize: '1rem' }}>
+                          Jonathan
+                        </Typography>
                         <Typography variant="caption">CRECI: 27584</Typography>
                       </Box>
                     </Box>
@@ -474,7 +507,9 @@ function Property({ property }: { property: Property }) {
                           />
 
                           <Box display="flex" flexDirection="column">
-                            <Typography variant="body1">Adriana</Typography>
+                            <Typography variant="h4" sx={{ fontSize: '1rem' }}>
+                              Adriana
+                            </Typography>
                             <Typography variant="caption">
                               CRECI: 48879
                             </Typography>
@@ -508,7 +543,9 @@ function Property({ property }: { property: Property }) {
                             src={renatoAvatar.src}
                           />
                           <Box display="flex" flexDirection="column">
-                            <Typography variant="body1">Renato</Typography>
+                            <Typography variant="h4" sx={{ fontSize: '1rem' }}>
+                              Renato
+                            </Typography>
                             <Typography variant="caption">
                               CRECI: 37802
                             </Typography>
@@ -543,7 +580,9 @@ function Property({ property }: { property: Property }) {
                             src={rodrigoAvatar.src}
                           />
                           <Box display="flex" flexDirection="column">
-                            <Typography variant="body1">Rodrigo</Typography>
+                            <Typography variant="h4" sx={{ fontSize: '1rem' }}>
+                              Rodrigo
+                            </Typography>
                             <Typography variant="caption">
                               CRECI: 52831
                             </Typography>
@@ -577,7 +616,9 @@ function Property({ property }: { property: Property }) {
                             src={jonathanAvatar.src}
                           />
                           <Box display="flex" flexDirection="column">
-                            <Typography variant="body1">Jonathan</Typography>
+                            <Typography variant="h4" sx={{ fontSize: '1rem' }}>
+                              Jonathan
+                            </Typography>
                             <Typography variant="caption">
                               CRECI: 27584
                             </Typography>
