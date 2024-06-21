@@ -289,8 +289,8 @@ export default function Footer() {
             <Image
               src={codelabz}
               alt="Desenvolvido pela empresa codelabz"
-              width={25}
-              height={25}
+              width={20}
+              height={20}
             />
           </Link>
         </Box>
