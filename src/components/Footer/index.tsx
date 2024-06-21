@@ -103,7 +103,7 @@ export default function Footer() {
               </Typography>
             </Box>
 
-            <Link href="https://api.whatsapp.com/send?phone=5547999008090">
+            <Link href="https://api.whatsapp.com/send?phone=5547999008090&&text=Olá, vim pelo site, gostaria de mais informações">
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                 <WhatsappLogo size={20} weight="fill" />
                 <Typography variant="body2">(47) 99900-8090</Typography>
@@ -145,7 +145,7 @@ export default function Footer() {
               </Typography>
             </Box>
 
-            <Link href="https://api.whatsapp.com/send?phone=5547988163739">
+            <Link href="https://api.whatsapp.com/send?phone=5547988163739&&text=Olá, vim pelo site, gostaria de mais informações">
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                 <WhatsappLogo size={20} weight="fill" />
                 <Typography variant="body2">(47) 98816-3739</Typography>

@@ -1,7 +1,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { Box, Typography, useMediaQuery } from '@mui/material'
-import { FacebookLogo, InstagramLogo } from 'phosphor-react'
+import { FacebookLogo, InstagramLogo, WhatsappLogo } from 'phosphor-react'
 
 export function MenubarHome() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -49,6 +49,16 @@ export function MenubarHome() {
             'a:hover': { opacity: 0.7 },
           }}
         >
+          <Link
+            href="https://api.whatsapp.com/send?phone=5547988163739&text=Olá, vim pelo site, gostaria de mais informações"
+            aria-label="Link para o WhatsApp"
+            title="Link para o WhatsApp"
+          >
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <WhatsappLogo size={20} weight="fill" />
+            </Box>
+          </Link>
+
           <Link
             href="https://www.instagram.com/auroscorretoraimobiliaria/"
             aria-label="Link para o Instagram"

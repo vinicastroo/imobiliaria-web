@@ -178,7 +178,7 @@ function BannerHome() {
           >
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               <Link
-                href="https://api.whatsapp.com/send?phone=5547988163739"
+                href="https://api.whatsapp.com/send?phone=5547988163739&text=Olá, vim pelo site, gostaria de mais informações"
                 aria-label="Link para o WhatsApp"
                 title="Link para o WhatsApp"
               >

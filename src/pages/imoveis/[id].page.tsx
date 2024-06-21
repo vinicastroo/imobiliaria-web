@@ -340,7 +340,7 @@ function Property({ property }: { property: Property }) {
                       variant="contained"
                       onClick={() =>
                         window.open(
-                          'https://api.whatsapp.com/send?phone=5547997798081',
+                          `https://api.whatsapp.com/send?phone=5547997798081&&text=Olá, vim pelo site, gostaria de mais informações, do imóvel (${property.id})`,
                         )
                       }
                     >
@@ -375,7 +375,7 @@ function Property({ property }: { property: Property }) {
                       variant="contained"
                       onClick={() =>
                         window.open(
-                          'https://api.whatsapp.com/send?phone=5547999008090',
+                          `https://api.whatsapp.com/send?phone=5547999008090&text=Olá, vim pelo site, gostaria de mais informações, do imóvel (${property.id})`,
                         )
                       }
                     >
@@ -410,7 +410,7 @@ function Property({ property }: { property: Property }) {
                       variant="contained"
                       onClick={() =>
                         window.open(
-                          'https://api.whatsapp.com/send?phone=5547999990607',
+                          `https://api.whatsapp.com/send?phone=5547999990607&text=Olá, vim pelo site, gostaria de mais informações, do imóvel (${property.id})`,
                         )
                       }
                     >
@@ -444,7 +444,7 @@ function Property({ property }: { property: Property }) {
                       variant="contained"
                       onClick={() =>
                         window.open(
-                          'https://api.whatsapp.com/send?phone=5547988163739',
+                          `https://api.whatsapp.com/send?phone=5547988163739&text=Olá, vim pelo site, gostaria de mais informações, do imóvel (${property.id})`,
                         )
                       }
                     >
@@ -485,7 +485,7 @@ function Property({ property }: { property: Property }) {
                           variant="contained"
                           onClick={() =>
                             window.open(
-                              'https://api.whatsapp.com/send?phone=5547997798081',
+                              `https://api.whatsapp.com/send?phone=5547997798081&text=Olá, vim pelo site, gostaria de mais informações, do imóvel (${property.id})`,
                             )
                           }
                         >
@@ -519,7 +519,7 @@ function Property({ property }: { property: Property }) {
                           variant="contained"
                           onClick={() =>
                             window.open(
-                              'https://api.whatsapp.com/send?phone=5547999008090',
+                              `https://api.whatsapp.com/send?phone=5547999008090&text=Olá, vim pelo site, gostaria de mais informações, do imóvel (${property.id})`,
                             )
                           }
                         >
@@ -554,7 +554,7 @@ function Property({ property }: { property: Property }) {
                           variant="contained"
                           onClick={() =>
                             window.open(
-                              'https://api.whatsapp.com/send?phone=5547999990607',
+                              `https://api.whatsapp.com/send?phone=5547999990607&&text=Olá, vim pelo site, gostaria de mais informações, do imóvel (${property.id})`,
                             )
                           }
                         >
@@ -588,7 +588,7 @@ function Property({ property }: { property: Property }) {
                           variant="contained"
                           onClick={() =>
                             window.open(
-                              'https://api.whatsapp.com/send?phone=5547988163739',
+                              `https://api.whatsapp.com/send?phone=5547988163739&text=Olá, vim pelo site, gostaria de mais informações, do imóvel (${property.id})`,
                             )
                           }
                         >
