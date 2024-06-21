@@ -1,7 +1,7 @@
-import api from "@/services/api";
+import api from '@/services/api'
 
 interface GetCities {
-  city: string;
+  city: string
 }
 
 export async function getCities() {

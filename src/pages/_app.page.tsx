@@ -11,8 +11,7 @@ import Head from 'next/head'
 import createEmotionCache from '@/createEmotionCache'
 import { QueryClientProvider } from '@tanstack/react-query'
 import { query } from '@/lib/react-query'
-import { GoogleAnalytics } from '@next/third-parties/google' 
-import CookieConsent from 'react-cookie-consent'
+import { GoogleAnalytics } from '@next/third-parties/google'
 const theme = createTheme({
   palette: {
     primary: {
@@ -56,7 +55,6 @@ export default function App(props: MyAppProps) {
           <CssBaseline />
 
           <QueryClientProvider client={query}>
-
             <Component {...pageProps} />
           </QueryClientProvider>
           <ToastContainer autoClose={2000} />

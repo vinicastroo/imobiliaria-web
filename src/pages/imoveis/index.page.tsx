@@ -14,35 +14,32 @@ import {
   TextField,
   Tooltip,
   Typography,
-} from "@mui/material";
+} from '@mui/material'
 
-import Link from "next/link";
-import { Bathtub, Bed, Car, Ruler, Toilet } from "phosphor-react";
-import { MenubarHome } from "@/components/MenubarHome";
-import {
-  useCallback,
-} from "react";
-import Head from "next/head";
-import { useRouter } from "next/router";
-import { z, infer as Infer } from "zod";
-import { Controller, useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { GetServerSideProps } from "next";
-import logo from "@/assets/logo-auros-minimalist.svg";
-import Image from "next/image";
-import { BiArea } from "react-icons/bi";
-import { LiaRulerCombinedSolid } from "react-icons/lia";
-import square from "@/assets/square.svg";
-import Footer from "@/components/Footer";
-import { useQuery } from "@tanstack/react-query";
-import { getNeighborhoods } from "../api/get-neighborhoods";
-import { getTypes } from "../api/get-types";
-import { getCities } from "../api/get-cities";
-import { usePathname, useSearchParams } from "next/navigation";
-import { GetPropertiesResponse, getProperties } from "../api/get-properties";
+import Link from 'next/link'
+import { Bathtub, Bed, Car, Ruler, Toilet } from 'phosphor-react'
+import { MenubarHome } from '@/components/MenubarHome'
+import { useCallback } from 'react'
+import Head from 'next/head'
+import { useRouter } from 'next/router'
+import { z, infer as Infer } from 'zod'
+import { Controller, useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import logo from '@/assets/logo-auros-minimalist.svg'
+import Image from 'next/image'
+import { BiArea } from 'react-icons/bi'
+import { LiaRulerCombinedSolid } from 'react-icons/lia'
+import square from '@/assets/square.svg'
+import Footer from '@/components/Footer'
+import { useQuery } from '@tanstack/react-query'
+import { getNeighborhoods } from '../api/get-neighborhoods'
+import { getTypes } from '../api/get-types'
+import { getCities } from '../api/get-cities'
+import { usePathname, useSearchParams } from 'next/navigation'
+import { getProperties } from '../api/get-properties'
 
 function Filter() {
-  const router = useRouter();
+  const router = useRouter()
 
   const searchParams = useSearchParams()
   const type = searchParams.get('tipoImovel')
@@ -55,8 +52,7 @@ function Filter() {
   const totalArea = searchParams.get('areaTotal')
   const privateArea = searchParams.get('areaTerreno')
 
-  const pathname = usePathname();
-  
+  const pathname = usePathname()
 
   const createSchema = z.object({
     type: z.string().optional(),
@@ -68,10 +64,16 @@ function Filter() {
     parkingSpots: z.string().optional(),
     totalArea: z.string().optional(),
     privateArea: z.string().optional(),
-  });
-  type SchemaQuestion = Infer<typeof createSchema>;
+  })
+  type SchemaQuestion = Infer<typeof createSchema>
 
-  const { watch, handleSubmit, reset, control, formState: {isLoading} } = useForm<SchemaQuestion>({
+  const {
+    watch,
+    handleSubmit,
+    reset,
+    control,
+    formState: { isLoading },
+  } = useForm<SchemaQuestion>({
     resolver: zodResolver(createSchema),
     defaultValues: {
       type: type ?? '',
@@ -82,116 +84,113 @@ function Filter() {
       suites: suites ?? '',
       parkingSpots: parkingSpots ?? '',
       totalArea: totalArea ?? '',
-      privateArea: privateArea ?? ''
-    } 
-  });
+      privateArea: privateArea ?? '',
+    },
+  })
 
   const onSubmit = useCallback(
     async (data: SchemaQuestion) => {
-      const params = new URLSearchParams(searchParams);
-      if(data.type && data.type !== 'undefined'){
+      const params = new URLSearchParams(searchParams)
+      if (data.type && data.type !== 'undefined') {
         params.set('tipoImovel', data.type)
       } else {
         params.delete('tipoImovel')
       }
 
-      if(data.city && data.city !== 'undefined'){
+      if (data.city && data.city !== 'undefined') {
         params.set('cidade', data.city)
       } else {
         params.delete('cidade')
       }
-      
-      if(data.neighborhood && data.neighborhood !== 'undefined'){
+
+      if (data.neighborhood && data.neighborhood !== 'undefined') {
         params.set('bairro', data.neighborhood)
       } else {
         params.delete('bairro')
-      }	
-      
-      if(data.bedrooms){
+      }
+
+      if (data.bedrooms) {
         params.set('quartos', data.bedrooms)
       } else {
         params.delete('quartos')
       }
 
-      if(data.bathrooms){
+      if (data.bathrooms) {
         params.set('banheiros', data.bathrooms)
       } else {
         params.delete('banheiros')
       }
 
-      if(data.suites){
+      if (data.suites) {
         params.set('suites', data.suites)
       } else {
         params.delete('suites')
       }
 
-      if(data.parkingSpots){
+      if (data.parkingSpots) {
         params.set('garagem', data.parkingSpots)
       } else {
         params.delete('garagem')
       }
 
-      if(data.totalArea){
+      if (data.totalArea) {
         params.set('areaTotal', data.totalArea)
       } else {
         params.delete('areaTotal')
       }
 
-      if(data.privateArea){
+      if (data.privateArea) {
         params.set('areaTerreno', data.privateArea)
       } else {
         params.delete('areaTerreno')
       }
 
       params.set('page', '1')
-      
-      const search = params.toString()
-      const query = search ? `?${search}` : "";
-      router.push(`${pathname}${query}`);
-    },
-    [router]
-  );
 
-  const city = watch("city");
+      const search = params.toString()
+      const query = search ? `?${search}` : ''
+      router.push(`${pathname}${query}`)
+    },
+    [pathname, router, searchParams],
+  )
+
+  const city = watch('city')
 
   const { data: cities } = useQuery({
     queryKey: ['cities'],
-    queryFn: () =>
-      getCities()
+    queryFn: () => getCities(),
   })
 
   const { data: types } = useQuery({
     queryKey: ['types'],
-    queryFn: () =>
-      getTypes()
+    queryFn: () => getTypes(),
   })
 
   const { data: neighborhoods } = useQuery({
     queryKey: ['neighborhoods', city],
-    queryFn: () =>
-      getNeighborhoods({ city })
+    queryFn: () => getNeighborhoods({ city }),
   })
 
-  function handleClearFilter(){
-    router.replace("/imoveis", undefined, { shallow: true });
+  function handleClearFilter() {
+    router.replace('/imoveis', undefined, { shallow: true })
     reset({
-      city: "",
-      type: "",
-      neighborhood: "",
-      bathrooms: "",
-      bedrooms: "",
-      parkingSpots: "",
-      privateArea: "",
-      suites: "",
-      totalArea: "",
+      city: '',
+      type: '',
+      neighborhood: '',
+      bathrooms: '',
+      bedrooms: '',
+      parkingSpots: '',
+      privateArea: '',
+      suites: '',
+      totalArea: '',
     })
-}
+  }
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Card
         variant="outlined"
-        sx={{ display: "flex", flexDirection: "column", p: 2 }}
+        sx={{ display: 'flex', flexDirection: 'column', p: 2 }}
       >
         <Controller
           name="type"
@@ -207,15 +206,16 @@ function Filter() {
                   label="Tipo Imóvel"
                   {...field}
                 >
-                  <MenuItem value=''>Selecione</MenuItem>
-                  {types && types.map((type) => (
-                    <MenuItem key={type.id} value={type.description}>
-                      {type.description}
-                    </MenuItem>
-                  ))}
+                  <MenuItem value="">Selecione</MenuItem>
+                  {types &&
+                    types.map((type) => (
+                      <MenuItem key={type.id} value={type.description}>
+                        {type.description}
+                      </MenuItem>
+                    ))}
                 </Select>
               </FormControl>
-            );
+            )
           }}
         />
 
@@ -233,15 +233,16 @@ function Filter() {
                   label="Cidade"
                   {...field}
                 >
-                  <MenuItem value=''>Selecione</MenuItem>
-                  {cities && cities.map((city) => (
-                    <MenuItem key={city.city} value={city.city}>
-                      {city.city}
-                    </MenuItem>
-                  ))}
+                  <MenuItem value="">Selecione</MenuItem>
+                  {cities &&
+                    cities.map((city) => (
+                      <MenuItem key={city.city} value={city.city}>
+                        {city.city}
+                      </MenuItem>
+                    ))}
                 </Select>
               </FormControl>
-            );
+            )
           }}
         />
         <Controller
@@ -258,18 +259,19 @@ function Filter() {
                   label="Bairro"
                   {...field}
                 >
-                  <MenuItem value=''>Selecione</MenuItem>
-                  {neighborhoods && neighborhoods.map((neighborhood) => (
-                    <MenuItem
-                      key={neighborhood.neighborhood}
-                      value={neighborhood.neighborhood}
-                    >
-                      {neighborhood.neighborhood}
-                    </MenuItem>
-                  ))}
+                  <MenuItem value="">Selecione</MenuItem>
+                  {neighborhoods &&
+                    neighborhoods.map((neighborhood) => (
+                      <MenuItem
+                        key={neighborhood.neighborhood}
+                        value={neighborhood.neighborhood}
+                      >
+                        {neighborhood.neighborhood}
+                      </MenuItem>
+                    ))}
                 </Select>
               </FormControl>
-            );
+            )
           }}
         />
 
@@ -280,8 +282,8 @@ function Filter() {
 
           <Box
             sx={{
-              display: "flex",
-              alignItems: "center",
+              display: 'flex',
+              alignItems: 'center',
               gap: 1,
               mb: 1.5,
               mt: 2,
@@ -306,8 +308,8 @@ function Filter() {
 
           <Box
             sx={{
-              display: "flex",
-              alignItems: "center",
+              display: 'flex',
+              alignItems: 'center',
               gap: 1,
               mb: 1.5,
               mt: 2,
@@ -330,7 +332,7 @@ function Filter() {
             />
           </Box>
 
-          <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1.5 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1.5 }}>
             <Toilet size={18} weight="bold" color="rgba(0, 0, 0, 0.6)" />
 
             <Controller
@@ -348,7 +350,7 @@ function Filter() {
             />
           </Box>
 
-          <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1.5 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1.5 }}>
             <Car size={18} weight="bold" color="rgba(0, 0, 0, 0.6)" />
 
             <Controller
@@ -366,7 +368,7 @@ function Filter() {
             />
           </Box>
 
-          <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1.5 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1.5 }}>
             <Ruler size={18} weight="bold" color="rgba(0, 0, 0, 0.6)" />
 
             <Controller
@@ -384,7 +386,7 @@ function Filter() {
             />
           </Box>
 
-          <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1.5 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1.5 }}>
             <Ruler size={18} weight="bold" color="rgba(0, 0, 0, 0.6)" />
 
             <Controller
@@ -405,8 +407,8 @@ function Filter() {
 
         <Box
           sx={{
-            display: "flex",
-            flexDirection: "column",
+            display: 'flex',
+            flexDirection: 'column',
             gap: 2,
           }}
         >
@@ -420,16 +422,13 @@ function Filter() {
             Filtrar
           </Button>
 
-          <Button
-            color="primary"
-            onClick={handleClearFilter}
-          >
+          <Button color="primary" onClick={handleClearFilter}>
             Limpar Filtros
           </Button>
         </Box>
       </Card>
     </form>
-  );
+  )
 }
 
 function Properties() {
@@ -443,35 +442,22 @@ function Properties() {
   const parkingSpots = searchParams.get('garagem')
   const totalArea = searchParams.get('areaTotal')
   const privateArea = searchParams.get('areaTerreno')
-  const page = z.coerce
-  .number()
-  .parse(searchParams.get('page') ?? '1')
+  const page = z.coerce.number().parse(searchParams.get('page') ?? '1')
 
-  const router = useRouter();
-  const pathname = usePathname();
+  const router = useRouter()
+  const pathname = usePathname()
 
   const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
-    const params = new URLSearchParams(searchParams);
-    params.set('page', value.toString());
+    const params = new URLSearchParams(searchParams)
+    params.set('page', value.toString())
     const search = params.toString()
-    const query = search ? `?${search}` : "";
-    router.push(`${pathname}${query}`);
-  };
+    const query = search ? `?${search}` : ''
+    router.push(`${pathname}${query}`)
+  }
 
   const { data: result, isLoading } = useQuery({
-    queryKey: ['properties',
-    type,
-    city,
-    neighborhood,
-    bedrooms,
-    bathrooms,
-    suites,
-    parkingSpots,
-    totalArea,
-    privateArea,
-    page],
-    queryFn: () => getProperties({
-      page,
+    queryKey: [
+      'properties',
       type,
       city,
       neighborhood,
@@ -481,106 +467,140 @@ function Properties() {
       parkingSpots,
       totalArea,
       privateArea,
-    }),
+      page,
+    ],
+    queryFn: () =>
+      getProperties({
+        page,
+        type,
+        city,
+        neighborhood,
+        bedrooms,
+        bathrooms,
+        suites,
+        parkingSpots,
+        totalArea,
+        privateArea,
+      }),
   })
 
   const totalPages = result ? Math.ceil(result.totalPages / 12) || 1 : 1
 
   return (
-        <Box
-          sx={{
-            maxWidth: "1200px",
-            width: "100%",
-            display: "flex",
-            flexDirection: "column",
-            margin: "0 auto",
-            p: 2,
-            zIndex: 999,
-          }}
-        >
-        <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
-          <Typography variant="body2" color="#333" fontWeight="bold">
-            {result && `${result.totalPages} ${result.totalPages === 1 ? "Imóvel encontrado" : "Imóveis encontrados" }`}
-          </Typography>
-        </Box>
+    <Box
+      sx={{
+        maxWidth: '1200px',
+        width: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        margin: '0 auto',
+        p: 2,
+        zIndex: 999,
+      }}
+    >
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+        <Typography variant="body2" color="#333" fontWeight="bold">
+          {result &&
+            `${result.totalPages} ${result.totalPages === 1 ? 'Imóvel encontrado' : 'Imóveis encontrados'}`}
+        </Typography>
+      </Box>
 
-        <Grid container spacing={2}>
-          <Grid item md={3} sm={12} xs={12}>
-            <Filter />
-          </Grid>
-          <Grid item md={9} sm={12} xs={12}>
-            <Grid container spacing={2}>
-              {result && !isLoading && result.properties.map((property) => (
+      <Grid container spacing={2}>
+        <Grid item md={3} sm={12} xs={12}>
+          <Filter />
+        </Grid>
+        <Grid item md={9} sm={12} xs={12}>
+          <Grid container spacing={2}>
+            {result &&
+              !isLoading &&
+              result.properties.map((property) => (
                 <Grid
                   key={property.id}
                   item
                   md={4}
                   sm={12}
                   xs={12}
-                  sx={{ 
+                  sx={{
                     transition: '0.5s',
-                    a: { textDecoration: "none" }, ":hover": {
-                    opacity: 0.8 
-                  } }}
+                    a: { textDecoration: 'none' },
+                    ':hover': {
+                      opacity: 0.8,
+                    },
+                  }}
                 >
                   <Link href={`/imoveis/${property.id}`} target="_blank">
                     <Card
                       variant="outlined"
                       sx={{
-                        display: "flex",
-                        flexDirection: "column",
-                        height: "100%",
-                        position: "relative",
+                        display: 'flex',
+                        flexDirection: 'column',
+                        height: '100%',
+                        position: 'relative',
                       }}
                     >
                       {property.files.length > 0 ? (
-                      <CardMedia  sx={{ objectFit: 'cover',width: '100%',height: '250px' }}>
-                        <Image
-                          src={property.files[0].path}
-                          width={350}
-                          height={250}
-                          alt="Foto do imóvel"
-                          quality={80}
-                          style={{ objectFit: 'cover',width: '100%', height: '250px'}}
-                        />
-                      </CardMedia>
+                        <CardMedia
+                          sx={{
+                            objectFit: 'cover',
+                            width: '100%',
+                            height: '250px',
+                          }}
+                        >
+                          <Image
+                            src={property.files[0].path}
+                            width={350}
+                            height={250}
+                            alt="Foto do imóvel"
+                            quality={80}
+                            style={{
+                              objectFit: 'cover',
+                              width: '100%',
+                              height: '250px',
+                            }}
+                          />
+                        </CardMedia>
                       ) : (
                         <Box
                           sx={{
-                            height: "250px",
-                            background: "#17375F",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
+                            height: '250px',
+                            background: '#17375F',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
                           }}
                         >
-                          <Image src={logo} alt="logo" width={120} height={120} />
+                          <Image
+                            src={logo}
+                            alt="logo"
+                            width={120}
+                            height={120}
+                          />
                         </Box>
                       )}
 
                       <Box
                         sx={{
-                          display: "flex",
-                          flexDirection: "column",
-                          height: "100%",
-                          justifyContent: "space-between",
+                          display: 'flex',
+                          flexDirection: 'column',
+                          height: '100%',
+                          justifyContent: 'space-between',
                           flex: 1,
                         }}
                       >
                         <Box
                           sx={{
-                            display: "flex",
-                            flexDirection: "column",
+                            display: 'flex',
+                            flexDirection: 'column',
                             px: 2,
                             mt: 1,
                           }}
                         >
                           <Box
                             sx={{
-                              display: "flex",
-                              flexDirection: "column",
+                              display: 'flex',
+                              flexDirection: 'column',
                               py: 1,
-                              width: "100%",
+                              width: '100%',
                             }}
                           >
                             <Typography
@@ -597,7 +617,7 @@ function Properties() {
                           <Typography
                             variant="body2"
                             color="text.primary"
-                            sx={{ wordBreak: "break-word" }}
+                            sx={{ wordBreak: 'break-word' }}
                           >
                             {property.summary}
                           </Typography>
@@ -605,11 +625,11 @@ function Properties() {
 
                         <Box
                           sx={{
-                            display: "flex",
-                            flexDirection: "column",
-                            justifyContent: "center",
-                            alignItems: "flex-start",
-                            width: "100%",
+                            display: 'flex',
+                            flexDirection: 'column',
+                            justifyContent: 'center',
+                            alignItems: 'flex-start',
+                            width: '100%',
                             p: 2,
                           }}
                         >
@@ -631,8 +651,8 @@ function Properties() {
                               <Tooltip
                                 title="Quartos"
                                 sx={{
-                                  display: "flex",
-                                  alignItems: "center",
+                                  display: 'flex',
+                                  alignItems: 'center',
                                   gap: 1,
                                 }}
                               >
@@ -649,8 +669,8 @@ function Properties() {
                               <Tooltip
                                 title="Suites"
                                 sx={{
-                                  display: "flex",
-                                  alignItems: "center",
+                                  display: 'flex',
+                                  alignItems: 'center',
                                   gap: 1,
                                 }}
                               >
@@ -667,8 +687,8 @@ function Properties() {
                               <Tooltip
                                 title="Banheiros"
                                 sx={{
-                                  display: "flex",
-                                  alignItems: "center",
+                                  display: 'flex',
+                                  alignItems: 'center',
                                   gap: 1,
                                 }}
                               >
@@ -685,8 +705,8 @@ function Properties() {
                               <Tooltip
                                 title="Garagem"
                                 sx={{
-                                  display: "flex",
-                                  alignItems: "center",
+                                  display: 'flex',
+                                  alignItems: 'center',
                                   gap: 1,
                                 }}
                               >
@@ -703,8 +723,8 @@ function Properties() {
                               <Tooltip
                                 title="Area total"
                                 sx={{
-                                  display: "flex",
-                                  alignItems: "center",
+                                  display: 'flex',
+                                  alignItems: 'center',
                                   gap: 1,
                                 }}
                               >
@@ -721,8 +741,8 @@ function Properties() {
                               <Tooltip
                                 title="Area do terreno"
                                 sx={{
-                                  display: "flex",
-                                  alignItems: "center",
+                                  display: 'flex',
+                                  alignItems: 'center',
                                   gap: 1,
                                 }}
                               >
@@ -736,7 +756,7 @@ function Properties() {
                             )}
                           </Box>
 
-                          <Box sx={{ display: "flex", gap: 1, my: 0.5 }}>
+                          <Box sx={{ display: 'flex', gap: 1, my: 0.5 }}>
                             <Chip
                               label="Venda"
                               size="small"
@@ -754,16 +774,16 @@ function Properties() {
 
                           <Box
                             sx={{
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "flex-end",
-                              width: "100%",
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'flex-end',
+                              width: '100%',
                             }}
                           >
                             <Typography
                               variant="subtitle1"
                               fontWeight="bold"
-                              sx={{ color: "#17375F" }}
+                              sx={{ color: '#17375F' }}
                             >
                               {property.value}
                             </Typography>
@@ -774,115 +794,124 @@ function Properties() {
                   </Link>
                 </Grid>
               ))}
-              {
-                isLoading && Array.from({length: 12}).map(() => {
-                  return (
-                    <Grid key={Math.random()} item md={4} sm={12} xs={12}>
-                      <Box
-                        sx={{
-                          display: "flex",
-                          flexDirection: "column",
-                          gap: 1,
-                        }}
-                      >
-                        <Skeleton variant="rectangular"  height={250} />
+            {isLoading &&
+              Array.from({ length: 12 }).map(() => {
+                return (
+                  <Grid key={Math.random()} item md={4} sm={12} xs={12}>
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: 1,
+                      }}
+                    >
+                      <Skeleton variant="rectangular" height={250} />
 
-                        <Box>
-                          <Skeleton variant="text" width="70%" sx={{ fontSize: "1rem" }} />
-                          <Skeleton variant="text" width="50%" sx={{ fontSize: "1rem" }} />
+                      <Box>
+                        <Skeleton
+                          variant="text"
+                          width="70%"
+                          sx={{ fontSize: '1rem' }}
+                        />
+                        <Skeleton
+                          variant="text"
+                          width="50%"
+                          sx={{ fontSize: '1rem' }}
+                        />
 
-                          <Skeleton variant="rectangular"  height={50}  sx={{my: 2}} />
+                        <Skeleton
+                          variant="rectangular"
+                          height={50}
+                          sx={{ my: 2 }}
+                        />
 
-                          <Skeleton variant="text" width="20%"/>
+                        <Skeleton variant="text" width="20%" />
 
-                          <Skeleton variant="text" />
+                        <Skeleton variant="text" />
 
-                          <Box sx={{display: 'flex', gap:2 }}>
-                            <Skeleton variant="text" width="20%"/>
-                            <Skeleton variant="text" width="40%"/>
-                          </Box>
-
-
-                          <Box sx={{display: 'flex', justifyContent: 'flex-end'}}>
-                            <Skeleton variant="text" width="70%" sx={{mt:1, justifySelf:'flex-end'}}/>
-                          </Box>
+                        <Box sx={{ display: 'flex', gap: 2 }}>
+                          <Skeleton variant="text" width="20%" />
+                          <Skeleton variant="text" width="40%" />
                         </Box>
 
+                        <Box
+                          sx={{ display: 'flex', justifyContent: 'flex-end' }}
+                        >
+                          <Skeleton
+                            variant="text"
+                            width="70%"
+                            sx={{ mt: 1, justifySelf: 'flex-end' }}
+                          />
+                        </Box>
                       </Box>
-                    </Grid>
-                  )
-                })
-              }
-              {
-                result && !isLoading && result.properties.length === 0 && (
-                  <Grid
-                  item
-                  md={12}
-                  sm={12}
-                  xs={12}
-                  sx={{ a: { textDecoration: "none" } }}
-                >
-                  <Card variant="outlined" sx={{ p: 4, textAlign: 'center'}}>
-                    Nenhum imóvel encontrado
-                  </Card>
-                </Grid>
+                    </Box>
+                  </Grid>
                 )
-              }
-            </Grid>
+              })}
+            {result && !isLoading && result.properties.length === 0 && (
+              <Grid
+                item
+                md={12}
+                sm={12}
+                xs={12}
+                sx={{ a: { textDecoration: 'none' } }}
+              >
+                <Card variant="outlined" sx={{ p: 4, textAlign: 'center' }}>
+                  Nenhum imóvel encontrado
+                </Card>
+              </Grid>
+            )}
           </Grid>
         </Grid>
+      </Grid>
 
-        {totalPages > 1 && (
-          <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}> 
-            <Pagination
-              count={totalPages}
-              page={page}
-              onChange={handleChange}
-              shape="rounded"
-              color="primary"
-            />
-          </Box>
-        )}
+      {totalPages > 1 && (
+        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
+          <Pagination
+            count={totalPages}
+            page={page}
+            onChange={handleChange}
+            shape="rounded"
+            color="primary"
+          />
+        </Box>
+      )}
     </Box>
-      )
-      
-   
+  )
 }
 
 export default function Home() {
-
   return (
     <>
       <Head>
-        <title>Auros Corretora Imobiliária  | Imóveis</title>
+        <title>Auros Corretora Imobiliária | Imóveis</title>
       </Head>
 
       <Box>
         <Box
           sx={{
-            width: "100%",
-            height: "100%",
-            minHeight: "100vh",
-            position: "relative",
-            backgroundColor: "#fff",
+            width: '100%',
+            height: '100%',
+            minHeight: '100vh',
+            position: 'relative',
+            backgroundColor: '#fff',
             backgroundImage: { md: `url(${square.src}), url(${square.src})` },
             backgroundPosition: {
-              xs: "170% 0%,-70% 100%",
-              sm: "170% 0%,-70% 100%",
-              md: "110% 0%, -10% 100%",
+              xs: '170% 0%,-70% 100%',
+              sm: '170% 0%,-70% 100%',
+              md: '110% 0%, -10% 100%',
             },
-            backgroundSize: "auto, auto",
-            backgroundRepeat: "no-repeat, no-repeat",
+            backgroundSize: 'auto, auto',
+            backgroundRepeat: 'no-repeat, no-repeat',
           }}
         >
           <MenubarHome />
-          <Properties
-          />
+          <Properties />
         </Box>
       </Box>
 
       <Box sx={{ mb: 4 }} />
       <Footer />
     </>
-  );
+  )
 }

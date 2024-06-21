@@ -1,11 +1,11 @@
-import api from "@/services/api";
+import api from '@/services/api'
 
 interface GetNeighborhoods {
-  neighborhood: string;
+  neighborhood: string
 }
 
 interface getNeighborhoodsProps {
-  city: string | undefined;
+  city: string | undefined
 }
 export async function getNeighborhoods({ city }: getNeighborhoodsProps) {
   if (!city) {

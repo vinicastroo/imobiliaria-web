@@ -18,7 +18,7 @@ interface MyDocumentProps extends DocumentProps {
 
 export default function MyDocument({ emotionStyleTags }: MyDocumentProps) {
   return (
-    <Html lang='pt-BR'>
+    <Html lang="pt-BR">
       <Head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <meta
@@ -30,19 +30,36 @@ export default function MyDocument({ emotionStyleTags }: MyDocumentProps) {
           content="corretora imobiliária, imóveis, Rio do Sul, Imobiliária em Rio do Sul, Balneário Camboriú, Imobiliária em Balneário Camboriú, compra de imóveis, venda de imóveis, mercado imobiliário"
         />
         <meta name="author" content="Auros Corretora Imobiliária" />
-  
+
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://www.aurosimobiliaria.com.br/" />
+        <meta
+          property="og:url"
+          content="https://www.aurosimobiliaria.com.br/"
+        />
         <meta property="og:title" content="Auros Corretora Imobiliária" />
-        <meta property="og:description" content="Descubra uma variedade de imóveis em Rio do Sul e Balneário Camboriú com a Auros Corretora Imobiliária. Desde apartamentos compactos até propriedades de luxo, encontre a casa dos seus sonhos." />
-        <meta property="og:image" content="https://www.aurosimobiliaria.com.br/logo.png" />
+        <meta
+          property="og:description"
+          content="Descubra uma variedade de imóveis em Rio do Sul e Balneário Camboriú com a Auros Corretora Imobiliária. Desde apartamentos compactos até propriedades de luxo, encontre a casa dos seus sonhos."
+        />
+        <meta
+          property="og:image"
+          content="https://www.aurosimobiliaria.com.br/logo.png"
+        />
 
         <meta property="twitter:card" content="summary_large_image" />
-        <meta property="twitter:url" content="https://www.aurosimobiliaria.com.br/" />
+        <meta
+          property="twitter:url"
+          content="https://www.aurosimobiliaria.com.br/"
+        />
         <meta property="twitter:title" content="Auros Corretora Imobiliária" />
-        <meta property="twitter:description" content="Descubra uma variedade de imóveis em Rio do Sul e Balneário Camboriú com a Auros Corretora Imobiliária. Desde apartamentos compactos até propriedades de luxo, encontre a casa dos seus sonhos." />
-        <meta property="twitter:image" content="https://www.aurosimobiliaria.com.br/logo.png" />
-
+        <meta
+          property="twitter:description"
+          content="Descubra uma variedade de imóveis em Rio do Sul e Balneário Camboriú com a Auros Corretora Imobiliária. Desde apartamentos compactos até propriedades de luxo, encontre a casa dos seus sonhos."
+        />
+        <meta
+          property="twitter:image"
+          content="https://www.aurosimobiliaria.com.br/logo.png"
+        />
 
         <link
           rel="preconnect"
