@@ -9,7 +9,7 @@ function generateSiteMap(posts: Posts[]) {
   const postsString = posts
     .map(
       ({ id }) =>
-        `<url> <loc>${`${EXTERNAL_DATA_URL}/${id}`}</loc><lastmod>${new Date().toISOString()}</lastmod> </url>`,
+        `<url> <loc>${`${EXTERNAL_DATA_URL}/imoveis/${id}`}</loc><lastmod>${new Date().toISOString()}</lastmod> </url>`,
     )
     .join('')
   return `<?xml version="1.0" encoding="UTF-8"?>
