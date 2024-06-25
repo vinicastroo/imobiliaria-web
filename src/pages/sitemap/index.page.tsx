@@ -38,7 +38,7 @@ function SiteMap() {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function getServerSideProps({ res }: any) {
   // We make an API call to gather the URLs for our site
-  const response = await api.get('/imovel')
+  const response = await api.get('/imovel', { params: { visible: true } })
   const imoveis = response.data.properties
   // We generate the XML sitemap with the posts data
   const sitemap = generateSiteMap(imoveis)
