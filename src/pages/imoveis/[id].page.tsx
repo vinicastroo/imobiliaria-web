@@ -73,6 +73,8 @@ function Property() {
     queryKey: ['cities'],
     queryFn: () => getProperty(String(params.id)),
   })
+
+  const auroraBc = ['Aurora', 'Balneário Camboriú']
   return (
     <Box>
       {property && (
@@ -451,46 +453,44 @@ function Property() {
                       </Box>
                     )}
 
-                    {['Aurora', 'Balneário Camboriú'].includes(
-                      property.city,
-                    ) && (
-                        <Box
-                          display="flex"
-                          alignItems="center"
-                          justifyContent="space-between"
-                          sx={{ borderBottom: '1px solid #eee', pb: 2 }}
-                        >
-                          <Box display="flex" alignItems="center" gap={2}>
-                            <Avatar
-                              sx={{ width: '50px', height: '50px' }}
-                              variant="square"
-                              src={rodrigoAvatar.src}
-                            />
-                            <Box display="flex" flexDirection="column">
-                              <Typography variant="h4" sx={{ fontSize: '1rem' }}>
-                                Rodrigo
-                              </Typography>
-                              <Typography variant="caption">
-                                CRECI: 52831
-                              </Typography>
-                            </Box>
-                          </Box>
-                          <Button
-                            color="success"
-                            variant="contained"
-                            onClick={() =>
-                              window.open(
-                                `https://api.whatsapp.com/send?phone=5547999990607&text=Olá, vim pelo site, gostaria de mais informações, do imóvel (https://www.aurosimobiliaria.com.br/imoveis/${property.id})`,
-                              )
-                            }
-                          >
-                            <WhatsappLogo size={20} weight="fill" />
-                            <Typography variant="caption" ml={1}>
-                              Whatsapp
+                    {auroraBc.includes(property.city) && (
+                      <Box
+                        display="flex"
+                        alignItems="center"
+                        justifyContent="space-between"
+                        sx={{ borderBottom: '1px solid #eee', pb: 2 }}
+                      >
+                        <Box display="flex" alignItems="center" gap={2}>
+                          <Avatar
+                            sx={{ width: '50px', height: '50px' }}
+                            variant="square"
+                            src={rodrigoAvatar.src}
+                          />
+                          <Box display="flex" flexDirection="column">
+                            <Typography variant="h4" sx={{ fontSize: '1rem' }}>
+                              Rodrigo
                             </Typography>
-                          </Button>
+                            <Typography variant="caption">
+                              CRECI: 52831
+                            </Typography>
+                          </Box>
                         </Box>
-                      )}
+                        <Button
+                          color="success"
+                          variant="contained"
+                          onClick={() =>
+                            window.open(
+                              `https://api.whatsapp.com/send?phone=5547999990607&text=Olá, vim pelo site, gostaria de mais informações, do imóvel (https://www.aurosimobiliaria.com.br/imoveis/${property.id})`,
+                            )
+                          }
+                        >
+                          <WhatsappLogo size={20} weight="fill" />
+                          <Typography variant="caption" ml={1}>
+                            Whatsapp
+                          </Typography>
+                        </Button>
+                      </Box>
+                    )}
 
                     {['Balneário Camboriú'].includes(property.city) && (
                       <Box
