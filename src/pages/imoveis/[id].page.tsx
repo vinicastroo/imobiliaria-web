@@ -652,24 +652,6 @@ function Property({ property }: { property: Property }) {
   )
 }
 
-interface GetImovelId {
-  ids: { id: string }[]
-}
-
-export async function getStaticPaths() {
-  const response = await api.get<GetImovelId>('imovel/all')
-  const imoveis = response.data.ids
-
-  const paths = imoveis.map((item) => ({
-    params: { id: item.id },
-  }))
-
-  return {
-    paths,
-    fallback: false,
-  }
-}
-
 export async function getStaticProps({ params }: { params: { id: string } }) {
   const response = await api.get(`/imovel/${params.id}`)
 
