@@ -37,7 +37,6 @@ export default function Login() {
         password,
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       }).then((req: any) => {
-        console.log(req)
         if (req.ok) {
           router.push('/admin')
         } else {

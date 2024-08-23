@@ -91,7 +91,6 @@ function BannerHome() {
     queryKey: ['cities'],
     queryFn: () => getCities(),
   })
-
   const { data: types } = useQuery({
     queryKey: ['types'],
     queryFn: () => getTypes(),
@@ -294,6 +293,7 @@ function BannerHome() {
                   >
                     <MenuItem>Selecione</MenuItem>
                     {types &&
+                      types.length > 0 &&
                       types.map((type) => (
                         <MenuItem key={type.id} value={type.description}>
                           {type.description}
@@ -316,6 +316,7 @@ function BannerHome() {
                   >
                     <MenuItem>Selecione</MenuItem>
                     {cities &&
+                      cities.length > 0 &&
                       cities.map((city) => (
                         <MenuItem key={city.city} value={city.city}>
                           {city.city}
@@ -338,6 +339,7 @@ function BannerHome() {
                   >
                     <MenuItem>Selecione</MenuItem>
                     {neighborhoods &&
+                      neighborhoods.length > 0 &&
                       neighborhoods.map((neighborhood) => (
                         <MenuItem
                           key={neighborhood.neighborhood}

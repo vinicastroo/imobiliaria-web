@@ -25,13 +25,14 @@ import {
 } from 'phosphor-react'
 import { MenubarHome } from '@/components/MenubarHome'
 import Carousel from 'react-material-ui-carousel'
-import { useMemo } from 'react'
-import api from '@/services/api'
 import Head from 'next/head'
 import logo from '@/assets/logo-auros-minimalist.svg'
 import { BiArea } from 'react-icons/bi'
 import { LiaRulerCombinedSolid } from 'react-icons/lia'
 import Footer from '@/components/Footer'
+import { useQuery } from '@tanstack/react-query'
+import { getProperty } from '../api/get-property'
+import { useParams } from 'next/navigation'
 
 interface Property {
   id: string
@@ -65,434 +66,313 @@ interface Property {
   }[]
 }
 
-function Property({ property }: { property: Property }) {
-  const items = useMemo(() => {
-    const condition = property && property.files.length > 0
+function Property() {
+  const params = useParams()
 
-    return condition ? property?.files.map((file) => ({ img: file.path })) : []
-  }, [property])
-
+  const { data: property } = useQuery({
+    queryKey: ['cities'],
+    queryFn: () => getProperty(String(params.id)),
+  })
   return (
     <Box>
-      <Head>
-        <title>{`Auros | ${property.name}`}</title>
+      {property && (
+        <>
+          <Head>
+            <title>{`Auros | ${property.name}`}</title>
 
-        <meta name="description" content={property?.summary} />
-      </Head>
+            <meta name="description" content={property?.summary} />
+          </Head>
 
-      <MenubarHome />
+          <MenubarHome />
 
-      <Box
-        sx={{
-          maxWidth: '1200px',
-          margin: '0 auto',
-          mt: { xs: 0, sm: 0, md: 4, mb: 4 },
-        }}
-      >
-        <Box>
-          <Carousel
-            navButtonsAlwaysVisible
-            PrevIcon={<CaretLeft />}
-            NextIcon={<CaretRight />}
-            height={600}
+          <Box
+            sx={{
+              maxWidth: '1200px',
+              margin: '0 auto',
+              mt: { xs: 0, sm: 0, md: 4, mb: 4 },
+            }}
           >
-            {items.length > 0 ? (
-              items.map((item, i) => (
-                <Image
-                  key={i}
-                  src={item.img}
-                  alt="foto do imovel"
-                  width={1920}
-                  height={1080}
-                  loading="lazy"
-                  style={{
-                    backgroundSize: 'contain',
-                    backgroundRepeat: 'no-repeat',
-                    backgroundPosition: 'center',
-                    width: '100%',
-                    height: '100%',
-                    objectFit: 'contain',
-                  }}
-                />
-              ))
-            ) : (
-              <Box
-                sx={{
-                  background: '#17375F',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  height: '100%',
-                }}
+            <Box>
+              <Carousel
+                navButtonsAlwaysVisible
+                PrevIcon={<CaretLeft />}
+                NextIcon={<CaretRight />}
+                height={600}
               >
-                <Image src={logo} alt="logo" width={200} height={200} />
-              </Box>
-            )}
-          </Carousel>
-        </Box>
-
-        <Grid container spacing={2} sx={{ mt: 1, px: { xs: 2, sm: 2, md: 0 } }}>
-          <Grid item md={8.5} sm={12} xs={12}>
-            <Card variant="outlined" sx={{ p: 2, mb: 2 }}>
-              <Box display="flex" flexDirection="column">
-                <Typography
-                  variant="h1"
-                  fontWeight="bold"
-                  color="primary"
-                  sx={{ fontSize: '2.125rem' }}
-                >
-                  {property?.name}
-                </Typography>
-                <Typography variant="body2">
-                  {`${property?.city} - ${property?.neighborhood} / ${property?.street}, ${property?.numberAddress}`}
-                </Typography>
-              </Box>
-
-              <Typography
-                variant="body1"
-                mt={2}
-                fontWeight="bold"
-                color="primary"
-                sx={{ fontSize: '0.875rem' }}
-              >
-                Informações
-              </Typography>
-
-              <Box display="flex" mb={2} gap={2} rowGap={0.5} flexWrap="wrap">
-                {Number(property.bedrooms) > 0 && (
-                  <Tooltip
-                    title="Quartos"
+                {property && property.items.length > 0 ? (
+                  property.items.map((item, i) => (
+                    <Image
+                      key={i}
+                      src={item.img}
+                      alt="foto do imovel"
+                      width={1920}
+                      height={1080}
+                      loading="lazy"
+                      style={{
+                        backgroundSize: 'contain',
+                        backgroundRepeat: 'no-repeat',
+                        backgroundPosition: 'center',
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'contain',
+                      }}
+                    />
+                  ))
+                ) : (
+                  <Box
                     sx={{
+                      background: '#17375F',
                       display: 'flex',
                       alignItems: 'center',
-                      gap: 1,
+                      justifyContent: 'center',
+                      height: '100%',
                     }}
                   >
-                    <Box>
-                      <Bed size={25} weight="bold" />
-                      <Typography variant="body1" sx={{ fontSize: '1.25rem' }}>
-                        {property.bedrooms}
-                      </Typography>
-                    </Box>
-                  </Tooltip>
+                    <Image src={logo} alt="logo" width={200} height={200} />
+                  </Box>
                 )}
+              </Carousel>
+            </Box>
 
-                {Number(property.suites) > 0 && (
-                  <Tooltip
-                    title="Suites"
-                    sx={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 1,
-                    }}
+            <Grid
+              container
+              spacing={2}
+              sx={{ mt: 1, px: { xs: 2, sm: 2, md: 0 } }}
+            >
+              <Grid item md={8.5} sm={12} xs={12}>
+                <Card variant="outlined" sx={{ p: 2, mb: 2 }}>
+                  <Box display="flex" flexDirection="column">
+                    <Typography
+                      variant="h1"
+                      fontWeight="bold"
+                      color="primary"
+                      sx={{ fontSize: '2.125rem' }}
+                    >
+                      {property?.name}
+                    </Typography>
+                    <Typography variant="body2">
+                      {`${property?.city} - ${property?.neighborhood} / ${property?.street}, ${property?.numberAddress}`}
+                    </Typography>
+                  </Box>
+
+                  <Typography
+                    variant="body1"
+                    mt={2}
+                    fontWeight="bold"
+                    color="primary"
+                    sx={{ fontSize: '0.875rem' }}
                   >
-                    <Box>
-                      <Bathtub size={25} weight="bold" />
-                      <Typography variant="body1" sx={{ fontSize: '1.25rem' }}>
-                        {property.suites}
-                      </Typography>
-                    </Box>
-                  </Tooltip>
-                )}
+                    Informações
+                  </Typography>
 
-                {Number(property.bathrooms) > 0 && (
-                  <Tooltip
-                    title="Banheiros"
-                    sx={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 1,
-                    }}
+                  <Box
+                    display="flex"
+                    mb={2}
+                    gap={2}
+                    rowGap={0.5}
+                    flexWrap="wrap"
                   >
-                    <Box>
-                      <Toilet size={25} weight="bold" />
-                      <Typography variant="body1" sx={{ fontSize: '1.25rem' }}>
-                        {property.bathrooms}
-                      </Typography>
-                    </Box>
-                  </Tooltip>
-                )}
+                    {Number(property.bedrooms) > 0 && (
+                      <Tooltip
+                        title="Quartos"
+                        sx={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: 1,
+                        }}
+                      >
+                        <Box>
+                          <Bed size={25} weight="bold" />
+                          <Typography
+                            variant="body1"
+                            sx={{ fontSize: '1.25rem' }}
+                          >
+                            {property.bedrooms}
+                          </Typography>
+                        </Box>
+                      </Tooltip>
+                    )}
 
-                {Number(property.parkingSpots) > 0 && (
-                  <Tooltip
-                    title="Garagem"
-                    sx={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 1,
-                    }}
+                    {Number(property.suites) > 0 && (
+                      <Tooltip
+                        title="Suites"
+                        sx={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: 1,
+                        }}
+                      >
+                        <Box>
+                          <Bathtub size={25} weight="bold" />
+                          <Typography
+                            variant="body1"
+                            sx={{ fontSize: '1.25rem' }}
+                          >
+                            {property.suites}
+                          </Typography>
+                        </Box>
+                      </Tooltip>
+                    )}
+
+                    {Number(property.bathrooms) > 0 && (
+                      <Tooltip
+                        title="Banheiros"
+                        sx={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: 1,
+                        }}
+                      >
+                        <Box>
+                          <Toilet size={25} weight="bold" />
+                          <Typography
+                            variant="body1"
+                            sx={{ fontSize: '1.25rem' }}
+                          >
+                            {property.bathrooms}
+                          </Typography>
+                        </Box>
+                      </Tooltip>
+                    )}
+
+                    {Number(property.parkingSpots) > 0 && (
+                      <Tooltip
+                        title="Garagem"
+                        sx={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: 1,
+                        }}
+                      >
+                        <Box>
+                          <Car size={25} weight="bold" />
+                          <Typography
+                            variant="body1"
+                            sx={{ fontSize: '1.25rem' }}
+                          >
+                            {property.parkingSpots}
+                          </Typography>
+                        </Box>
+                      </Tooltip>
+                    )}
+
+                    {Number(property.totalArea) > 0 && (
+                      <Tooltip
+                        title="Area total"
+                        sx={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: 1,
+                        }}
+                      >
+                        <Box>
+                          <LiaRulerCombinedSolid size={25} />
+                          <Typography
+                            variant="body1"
+                            sx={{ fontSize: '1.25rem' }}
+                          >
+                            {property.totalArea} M²
+                          </Typography>
+                        </Box>
+                      </Tooltip>
+                    )}
+
+                    {Number(property.privateArea) > 0 && (
+                      <Tooltip
+                        title="Area do terreno"
+                        sx={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: 1,
+                        }}
+                      >
+                        <Box>
+                          <BiArea size={25} />
+                          <Typography
+                            variant="body1"
+                            sx={{ fontSize: '1.25rem' }}
+                          >
+                            {property.privateArea} M²
+                          </Typography>
+                        </Box>
+                      </Tooltip>
+                    )}
+                  </Box>
+
+                  <Typography
+                    variant="body1"
+                    fontWeight="bold"
+                    color="primary"
+                    sx={{ fontSize: '0.875rem' }}
                   >
-                    <Box>
-                      <Car size={25} weight="bold" />
-                      <Typography variant="body1" sx={{ fontSize: '1.25rem' }}>
-                        {property.parkingSpots}
-                      </Typography>
-                    </Box>
-                  </Tooltip>
-                )}
+                    Resumo
+                  </Typography>
 
-                {Number(property.totalArea) > 0 && (
-                  <Tooltip
-                    title="Area total"
-                    sx={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 1,
-                    }}
+                  <Typography
+                    variant="body1"
+                    mb={2}
+                    sx={{ wordBreak: 'break-word' }}
                   >
-                    <Box>
-                      <LiaRulerCombinedSolid size={25} />
-                      <Typography variant="body1" sx={{ fontSize: '1.25rem' }}>
-                        {property.totalArea} M²
-                      </Typography>
-                    </Box>
-                  </Tooltip>
-                )}
+                    {property?.summary}
+                  </Typography>
 
-                {Number(property.privateArea) > 0 && (
-                  <Tooltip
-                    title="Area do terreno"
-                    sx={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 1,
-                    }}
-                  >
-                    <Box>
-                      <BiArea size={25} />
-                      <Typography variant="body1" sx={{ fontSize: '1.25rem' }}>
-                        {property.privateArea} M²
-                      </Typography>
-                    </Box>
-                  </Tooltip>
-                )}
-              </Box>
-
-              <Typography
-                variant="body1"
-                fontWeight="bold"
-                color="primary"
-                sx={{ fontSize: '0.875rem' }}
-              >
-                Resumo
-              </Typography>
-
-              <Typography
-                variant="body1"
-                mb={2}
-                sx={{ wordBreak: 'break-word' }}
-              >
-                {property?.summary}
-              </Typography>
-
-              {/* <Typography variant="subtitle2" fontWeight="bold" color="primary">
+                  {/* <Typography variant="subtitle2" fontWeight="bold" color="primary">
                 Saiba mais
               </Typography> */}
 
-              <Box mb={2}>
-                {property && (
-                  <Box
-                    className="ql-editor"
-                    sx={{
-                      ul: {
-                        paddingLeft: '20px',
-                      },
-                    }}
-                  >
-                    <div
-                      dangerouslySetInnerHTML={{
-                        __html: property?.description,
-                      }}
-                    />
+                  <Box mb={2}>
+                    {property && (
+                      <Box
+                        className="ql-editor"
+                        sx={{
+                          ul: {
+                            paddingLeft: '20px',
+                          },
+                        }}
+                      >
+                        <div
+                          dangerouslySetInnerHTML={{
+                            __html: property?.description,
+                          }}
+                        />
+                      </Box>
+                    )}
                   </Box>
-                )}
-              </Box>
-            </Card>
-          </Grid>
+                </Card>
+              </Grid>
 
-          <Grid item md={3.5} sm={12} xs={12}>
-            <Card variant="outlined" sx={{ p: 2, mb: 2 }}>
-              <Box
-                display="flex"
-                alignItems="center"
-                justifyContent="space-between"
-                sx={{ borderBottom: '1px solid #eee', pb: 2 }}
-              >
-                <Typography
-                  variant="h2"
-                  color="primary"
-                  fontWeight="bold"
-                  sx={{ fontSize: '1.25rem' }}
-                >
-                  Venda
-                </Typography>
-                <Typography
-                  variant="h2"
-                  color="primary"
-                  fontWeight="bold"
-                  sx={{ fontSize: '1.25rem' }}
-                >
-                  {property.value}
-                </Typography>
-              </Box>
-
-              <Typography variant="h3" sx={{ mt: 2, fontSize: '0.875rem' }}>
-                Corretores
-              </Typography>
-
-              <Box display="flex" flexDirection="column" gap={2} mt={1}>
-                {['Rio do Sul'].includes(property.city) && (
+              <Grid item md={3.5} sm={12} xs={12}>
+                <Card variant="outlined" sx={{ p: 2, mb: 2 }}>
                   <Box
                     display="flex"
                     alignItems="center"
                     justifyContent="space-between"
                     sx={{ borderBottom: '1px solid #eee', pb: 2 }}
                   >
-                    <Box display="flex" alignItems="center" gap={2}>
-                      <Avatar
-                        sx={{ width: '50px', height: '50px' }}
-                        variant="square"
-                        src={adrianaAvatar.src}
-                      />
-
-                      <Box display="flex" flexDirection="column">
-                        <Typography variant="h4" sx={{ fontSize: '1rem' }}>
-                          Adriana
-                        </Typography>
-                        <Typography variant="caption">CRECI: 48879</Typography>
-                      </Box>
-                    </Box>
-                    <Button
-                      color="success"
-                      variant="contained"
-                      onClick={() =>
-                        window.open(
-                          `https://api.whatsapp.com/send?phone=5547997798081&&text=Olá, vim pelo site, gostaria de mais informações, do imóvel (https://www.aurosimobiliaria.com.br/imoveis/${property.id})`,
-                        )
-                      }
+                    <Typography
+                      variant="h2"
+                      color="primary"
+                      fontWeight="bold"
+                      sx={{ fontSize: '1.25rem' }}
                     >
-                      <WhatsappLogo size={20} weight="fill" />
-                      <Typography variant="caption" ml={1}>
-                        Whatsapp
-                      </Typography>
-                    </Button>
-                  </Box>
-                )}
-
-                {['Rio do Sul', 'Aurora'].includes(property.city) && (
-                  <Box
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="space-between"
-                    sx={{ borderBottom: '1px solid #eee', pb: 2 }}
-                  >
-                    <Box display="flex" alignItems="center" gap={2}>
-                      <Avatar
-                        sx={{ width: '50px', height: '50px' }}
-                        variant="square"
-                        src={renatoAvatar.src}
-                      />
-                      <Box display="flex" flexDirection="column">
-                        <Typography variant="h4" sx={{ fontSize: '1rem' }}>
-                          Renato
-                        </Typography>
-                        <Typography variant="caption">CRECI: 37802</Typography>
-                      </Box>
-                    </Box>
-                    <Button
-                      color="success"
-                      variant="contained"
-                      onClick={() =>
-                        window.open(
-                          `https://api.whatsapp.com/send?phone=5547999008090&text=Olá, vim pelo site, gostaria de mais informações, do imóvel (https://www.aurosimobiliaria.com.br/imoveis/${property.id}v)`,
-                        )
-                      }
+                      Venda
+                    </Typography>
+                    <Typography
+                      variant="h2"
+                      color="primary"
+                      fontWeight="bold"
+                      sx={{ fontSize: '1.25rem' }}
                     >
-                      <WhatsappLogo size={20} weight="fill" />
-                      <Typography variant="caption" ml={1}>
-                        Whatsapp
-                      </Typography>
-                    </Button>
+                      {property.value}
+                    </Typography>
                   </Box>
-                )}
 
-                {['Aurora', 'Balneário Camboriú'].includes(property.city) && (
-                  <Box
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="space-between"
-                    sx={{ borderBottom: '1px solid #eee', pb: 2 }}
-                  >
-                    <Box display="flex" alignItems="center" gap={2}>
-                      <Avatar
-                        sx={{ width: '50px', height: '50px' }}
-                        variant="square"
-                        src={rodrigoAvatar.src}
-                      />
-                      <Box display="flex" flexDirection="column">
-                        <Typography variant="h4" sx={{ fontSize: '1rem' }}>
-                          Rodrigo
-                        </Typography>
-                        <Typography variant="caption">CRECI: 52831</Typography>
-                      </Box>
-                    </Box>
-                    <Button
-                      color="success"
-                      variant="contained"
-                      onClick={() =>
-                        window.open(
-                          `https://api.whatsapp.com/send?phone=5547999990607&text=Olá, vim pelo site, gostaria de mais informações, do imóvel (https://www.aurosimobiliaria.com.br/imoveis/${property.id})`,
-                        )
-                      }
-                    >
-                      <WhatsappLogo size={20} weight="fill" />
-                      <Typography variant="caption" ml={1}>
-                        Whatsapp
-                      </Typography>
-                    </Button>
-                  </Box>
-                )}
+                  <Typography variant="h3" sx={{ mt: 2, fontSize: '0.875rem' }}>
+                    Corretores
+                  </Typography>
 
-                {['Balneário Camboriú'].includes(property.city) && (
-                  <Box
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="space-between"
-                  >
-                    <Box display="flex" alignItems="center" gap={2}>
-                      <Avatar
-                        sx={{ width: '50px', height: '50px' }}
-                        variant="square"
-                        src={jonathanAvatar.src}
-                      />
-                      <Box display="flex" flexDirection="column">
-                        <Typography variant="h4" sx={{ fontSize: '1rem' }}>
-                          Jonathan
-                        </Typography>
-                        <Typography variant="caption">CRECI: 27584</Typography>
-                      </Box>
-                    </Box>
-                    <Button
-                      color="success"
-                      variant="contained"
-                      onClick={() =>
-                        window.open(
-                          `https://api.whatsapp.com/send?phone=5547988163739&text=Olá, vim pelo site, gostaria de mais informações, do imóvel (https://www.aurosimobiliaria.com.br/imoveis/${property.id})`,
-                        )
-                      }
-                    >
-                      <WhatsappLogo size={20} weight="fill" />
-                      <Typography variant="caption" ml={1}>
-                        Whatsapp
-                      </Typography>
-                    </Button>
-                  </Box>
-                )}
-
-                {property.city !== 'Balneário Camboriú' &&
-                  property.city !== 'Aurora' &&
-                  property.city !== 'Rio do Sul' && (
-                    <>
+                  <Box display="flex" flexDirection="column" gap={2} mt={1}>
+                    {['Rio do Sul'].includes(property.city) && (
                       <Box
                         display="flex"
                         alignItems="center"
@@ -520,7 +400,7 @@ function Property({ property }: { property: Property }) {
                           variant="contained"
                           onClick={() =>
                             window.open(
-                              `https://api.whatsapp.com/send?phone=5547997798081&text=Olá, vim pelo site, gostaria de mais informações, do imóvel (https://www.aurosimobiliaria.com.br/imoveis/${property.id})`,
+                              `https://api.whatsapp.com/send?phone=5547997798081&&text=Olá, vim pelo site, gostaria de mais informações, do imóvel (https://www.aurosimobiliaria.com.br/imoveis/${property.id})`,
                             )
                           }
                         >
@@ -530,6 +410,9 @@ function Property({ property }: { property: Property }) {
                           </Typography>
                         </Button>
                       </Box>
+                    )}
+
+                    {['Rio do Sul', 'Aurora'].includes(property.city) && (
                       <Box
                         display="flex"
                         alignItems="center"
@@ -556,7 +439,7 @@ function Property({ property }: { property: Property }) {
                           variant="contained"
                           onClick={() =>
                             window.open(
-                              `https://api.whatsapp.com/send?phone=5547999008090&text=Olá, vim pelo site, gostaria de mais informações, do imóvel (https://www.aurosimobiliaria.com.br/imoveis/${property.id})`,
+                              `https://api.whatsapp.com/send?phone=5547999008090&text=Olá, vim pelo site, gostaria de mais informações, do imóvel (https://www.aurosimobiliaria.com.br/imoveis/${property.id}v)`,
                             )
                           }
                         >
@@ -566,44 +449,50 @@ function Property({ property }: { property: Property }) {
                           </Typography>
                         </Button>
                       </Box>
+                    )}
 
-                      <Box
-                        display="flex"
-                        alignItems="center"
-                        justifyContent="space-between"
-                        sx={{ borderBottom: '1px solid #eee', pb: 2 }}
-                      >
-                        <Box display="flex" alignItems="center" gap={2}>
-                          <Avatar
-                            sx={{ width: '50px', height: '50px' }}
-                            variant="square"
-                            src={rodrigoAvatar.src}
-                          />
-                          <Box display="flex" flexDirection="column">
-                            <Typography variant="h4" sx={{ fontSize: '1rem' }}>
-                              Rodrigo
-                            </Typography>
-                            <Typography variant="caption">
-                              CRECI: 52831
-                            </Typography>
+                    {['Aurora', 'Balneário Camboriú'].includes(
+                      property.city,
+                    ) && (
+                        <Box
+                          display="flex"
+                          alignItems="center"
+                          justifyContent="space-between"
+                          sx={{ borderBottom: '1px solid #eee', pb: 2 }}
+                        >
+                          <Box display="flex" alignItems="center" gap={2}>
+                            <Avatar
+                              sx={{ width: '50px', height: '50px' }}
+                              variant="square"
+                              src={rodrigoAvatar.src}
+                            />
+                            <Box display="flex" flexDirection="column">
+                              <Typography variant="h4" sx={{ fontSize: '1rem' }}>
+                                Rodrigo
+                              </Typography>
+                              <Typography variant="caption">
+                                CRECI: 52831
+                              </Typography>
+                            </Box>
                           </Box>
+                          <Button
+                            color="success"
+                            variant="contained"
+                            onClick={() =>
+                              window.open(
+                                `https://api.whatsapp.com/send?phone=5547999990607&text=Olá, vim pelo site, gostaria de mais informações, do imóvel (https://www.aurosimobiliaria.com.br/imoveis/${property.id})`,
+                              )
+                            }
+                          >
+                            <WhatsappLogo size={20} weight="fill" />
+                            <Typography variant="caption" ml={1}>
+                              Whatsapp
+                            </Typography>
+                          </Button>
                         </Box>
-                        <Button
-                          color="success"
-                          variant="contained"
-                          onClick={() =>
-                            window.open(
-                              `https://api.whatsapp.com/send?phone=5547999990607&&text=Olá, vim pelo site, gostaria de mais informações, do imóvel (https://www.aurosimobiliaria.com.br/imoveis/${property.id})`,
-                            )
-                          }
-                        >
-                          <WhatsappLogo size={20} weight="fill" />
-                          <Typography variant="caption" ml={1}>
-                            Whatsapp
-                          </Typography>
-                        </Button>
-                      </Box>
+                      )}
 
+                    {['Balneário Camboriú'].includes(property.city) && (
                       <Box
                         display="flex"
                         alignItems="center"
@@ -639,27 +528,182 @@ function Property({ property }: { property: Property }) {
                           </Typography>
                         </Button>
                       </Box>
-                    </>
-                  )}
-              </Box>
-            </Card>
-          </Grid>
-        </Grid>
-      </Box>
+                    )}
 
-      <Footer />
+                    {property.city !== 'Balneário Camboriú' &&
+                      property.city !== 'Aurora' &&
+                      property.city !== 'Rio do Sul' && (
+                        <>
+                          <Box
+                            display="flex"
+                            alignItems="center"
+                            justifyContent="space-between"
+                            sx={{ borderBottom: '1px solid #eee', pb: 2 }}
+                          >
+                            <Box display="flex" alignItems="center" gap={2}>
+                              <Avatar
+                                sx={{ width: '50px', height: '50px' }}
+                                variant="square"
+                                src={adrianaAvatar.src}
+                              />
+
+                              <Box display="flex" flexDirection="column">
+                                <Typography
+                                  variant="h4"
+                                  sx={{ fontSize: '1rem' }}
+                                >
+                                  Adriana
+                                </Typography>
+                                <Typography variant="caption">
+                                  CRECI: 48879
+                                </Typography>
+                              </Box>
+                            </Box>
+                            <Button
+                              color="success"
+                              variant="contained"
+                              onClick={() =>
+                                window.open(
+                                  `https://api.whatsapp.com/send?phone=5547997798081&text=Olá, vim pelo site, gostaria de mais informações, do imóvel (https://www.aurosimobiliaria.com.br/imoveis/${property.id})`,
+                                )
+                              }
+                            >
+                              <WhatsappLogo size={20} weight="fill" />
+                              <Typography variant="caption" ml={1}>
+                                Whatsapp
+                              </Typography>
+                            </Button>
+                          </Box>
+                          <Box
+                            display="flex"
+                            alignItems="center"
+                            justifyContent="space-between"
+                            sx={{ borderBottom: '1px solid #eee', pb: 2 }}
+                          >
+                            <Box display="flex" alignItems="center" gap={2}>
+                              <Avatar
+                                sx={{ width: '50px', height: '50px' }}
+                                variant="square"
+                                src={renatoAvatar.src}
+                              />
+                              <Box display="flex" flexDirection="column">
+                                <Typography
+                                  variant="h4"
+                                  sx={{ fontSize: '1rem' }}
+                                >
+                                  Renato
+                                </Typography>
+                                <Typography variant="caption">
+                                  CRECI: 37802
+                                </Typography>
+                              </Box>
+                            </Box>
+                            <Button
+                              color="success"
+                              variant="contained"
+                              onClick={() =>
+                                window.open(
+                                  `https://api.whatsapp.com/send?phone=5547999008090&text=Olá, vim pelo site, gostaria de mais informações, do imóvel (https://www.aurosimobiliaria.com.br/imoveis/${property.id})`,
+                                )
+                              }
+                            >
+                              <WhatsappLogo size={20} weight="fill" />
+                              <Typography variant="caption" ml={1}>
+                                Whatsapp
+                              </Typography>
+                            </Button>
+                          </Box>
+
+                          <Box
+                            display="flex"
+                            alignItems="center"
+                            justifyContent="space-between"
+                            sx={{ borderBottom: '1px solid #eee', pb: 2 }}
+                          >
+                            <Box display="flex" alignItems="center" gap={2}>
+                              <Avatar
+                                sx={{ width: '50px', height: '50px' }}
+                                variant="square"
+                                src={rodrigoAvatar.src}
+                              />
+                              <Box display="flex" flexDirection="column">
+                                <Typography
+                                  variant="h4"
+                                  sx={{ fontSize: '1rem' }}
+                                >
+                                  Rodrigo
+                                </Typography>
+                                <Typography variant="caption">
+                                  CRECI: 52831
+                                </Typography>
+                              </Box>
+                            </Box>
+                            <Button
+                              color="success"
+                              variant="contained"
+                              onClick={() =>
+                                window.open(
+                                  `https://api.whatsapp.com/send?phone=5547999990607&&text=Olá, vim pelo site, gostaria de mais informações, do imóvel (https://www.aurosimobiliaria.com.br/imoveis/${property.id})`,
+                                )
+                              }
+                            >
+                              <WhatsappLogo size={20} weight="fill" />
+                              <Typography variant="caption" ml={1}>
+                                Whatsapp
+                              </Typography>
+                            </Button>
+                          </Box>
+
+                          <Box
+                            display="flex"
+                            alignItems="center"
+                            justifyContent="space-between"
+                          >
+                            <Box display="flex" alignItems="center" gap={2}>
+                              <Avatar
+                                sx={{ width: '50px', height: '50px' }}
+                                variant="square"
+                                src={jonathanAvatar.src}
+                              />
+                              <Box display="flex" flexDirection="column">
+                                <Typography
+                                  variant="h4"
+                                  sx={{ fontSize: '1rem' }}
+                                >
+                                  Jonathan
+                                </Typography>
+                                <Typography variant="caption">
+                                  CRECI: 27584
+                                </Typography>
+                              </Box>
+                            </Box>
+                            <Button
+                              color="success"
+                              variant="contained"
+                              onClick={() =>
+                                window.open(
+                                  `https://api.whatsapp.com/send?phone=5547988163739&text=Olá, vim pelo site, gostaria de mais informações, do imóvel (https://www.aurosimobiliaria.com.br/imoveis/${property.id})`,
+                                )
+                              }
+                            >
+                              <WhatsappLogo size={20} weight="fill" />
+                              <Typography variant="caption" ml={1}>
+                                Whatsapp
+                              </Typography>
+                            </Button>
+                          </Box>
+                        </>
+                      )}
+                  </Box>
+                </Card>
+              </Grid>
+            </Grid>
+          </Box>
+          <Footer />
+        </>
+      )}
     </Box>
   )
-}
-
-export async function getStaticProps({ params }: { params: { id: string } }) {
-  const response = await api.get(`/imovel/${params.id}`)
-
-  return {
-    props: {
-      property: response.data,
-    },
-  }
 }
 
 export default Property
