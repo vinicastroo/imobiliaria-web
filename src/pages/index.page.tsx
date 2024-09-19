@@ -333,8 +333,9 @@ function BannerHome() {
                   <InputLabel id="demo-simple-select-label">Bairro</InputLabel>
                   <Select
                     // error={Boolean(errors.type_id)}
-                    label="Bairro"
+                    label="Bairros"
                     title="Bairros"
+                    aria-labelledby="Bairros"
                     {...register('neighborhood')}
                   >
                     <MenuItem>Selecione</MenuItem>
