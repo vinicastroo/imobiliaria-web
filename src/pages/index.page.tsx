@@ -460,7 +460,7 @@ function Recent() {
                 },
               }}
             >
-              <Link href={`/imoveis/${property.id}`} target="_blank">
+              <Link href={`/imoveis/${property.id}`}>
                 <Card
                   variant="outlined"
                   sx={{

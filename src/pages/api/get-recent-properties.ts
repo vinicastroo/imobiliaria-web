@@ -1,4 +1,5 @@
 import api from '@/services/api'
+import type { Properties } from './get-properties'
 
 interface GetRecentProperties {
   properties: {
@@ -30,6 +31,7 @@ interface GetRecentProperties {
     files: {
       id: string
       path: string
+      fileName: string
     }[]
   }[]
 }
@@ -38,5 +40,23 @@ export async function getRecentProperties() {
     `/imovel?limit=6&visible=true`,
   )
 
-  return response.data
+  let formattedData: Properties[] = []
+  if (response.data.properties.length > 0) {
+    formattedData = response.data.properties.map((property) => {
+      const newPathsFiles = property.files.map((file) => {
+        return {
+          ...file,
+          path: `https://d2wss3tmei5yh1.cloudfront.net/${file.fileName}`,
+        }
+      })
+      return {
+        ...property,
+        files: newPathsFiles,
+      }
+    })
+  }
+
+  return {
+    properties: formattedData,
+  }
 }

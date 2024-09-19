@@ -8,10 +8,11 @@ import {
   Typography,
 } from '@mui/material'
 
-import rodrigoAvatar from '@/assets/digo.jpeg'
-import jonathanAvatar from '@/assets/jonathan.jpeg'
+import rodrigoAvatar from '@/assets/digo.png'
+import jonathanAvatar from '@/assets/jonathan.png'
 import renatoAvatar from '@/assets/renato.jpeg'
-import adrianaAvatar from '@/assets/adriana.jpeg'
+import adrianaAvatar from '@/assets/adriana.png'
+import venancioAvatar from '@/assets/venancio.png'
 
 import Image from 'next/image'
 import {
@@ -105,7 +106,7 @@ function Property() {
                 NextIcon={<CaretRight />}
                 height={600}
               >
-                {property && property.items.length > 0 ? (
+                {property && property.items && property.items.length > 0 ? (
                   property.items.map((item, i) => (
                     <Image
                       key={i}
@@ -387,7 +388,7 @@ function Property() {
                       >
                         <Box display="flex" alignItems="center" gap={2}>
                           <Avatar
-                            sx={{ width: '50px', height: '50px' }}
+                            sx={{ width: 56, height: 56 }}
                             variant="square"
                             src={adrianaAvatar.src}
                             alt=""
@@ -420,43 +421,90 @@ function Property() {
                     )}
 
                     {['Rio do Sul', 'Aurora'].includes(property.city) && (
-                      <Box
-                        display="flex"
-                        alignItems="center"
-                        justifyContent="space-between"
-                        sx={{ borderBottom: '1px solid #eee', pb: 2 }}
-                      >
-                        <Box display="flex" alignItems="center" gap={2}>
-                          <Avatar
-                            sx={{ width: '50px', height: '50px' }}
-                            variant="square"
-                            src={renatoAvatar.src}
-                            alt=""
-                          />
-                          <Box display="flex" flexDirection="column">
-                            <Typography variant="h4" sx={{ fontSize: '1rem' }}>
-                              Renato
-                            </Typography>
-                            <Typography variant="caption">
-                              CRECI: 37802
-                            </Typography>
-                          </Box>
-                        </Box>
-                        <Button
-                          color="success"
-                          variant="contained"
-                          onClick={() =>
-                            window.open(
-                              `https://api.whatsapp.com/send?phone=5547999008090&text=Olá, vim pelo site, gostaria de mais informações, do imóvel (https://www.aurosimobiliaria.com.br/imoveis/${property.id}v)`,
-                            )
-                          }
+                      <>
+                        <Box
+                          display="flex"
+                          alignItems="center"
+                          justifyContent="space-between"
+                          sx={{ borderBottom: '1px solid #eee', pb: 2 }}
                         >
-                          <WhatsappLogo size={20} weight="fill" />
-                          <Typography variant="caption" ml={1}>
-                            Whatsapp
-                          </Typography>
-                        </Button>
-                      </Box>
+                          <Box display="flex" alignItems="center" gap={2}>
+                            <Avatar
+                              sx={{ width: 56, height: 56 }}
+                              variant="square"
+                              src={renatoAvatar.src}
+                              alt=""
+                            />
+                            <Box display="flex" flexDirection="column">
+                              <Typography
+                                variant="h4"
+                                sx={{ fontSize: '1rem' }}
+                              >
+                                Renato
+                              </Typography>
+                              <Typography variant="caption">
+                                CRECI: 37802
+                              </Typography>
+                            </Box>
+                          </Box>
+                          <Button
+                            color="success"
+                            variant="contained"
+                            onClick={() =>
+                              window.open(
+                                `https://api.whatsapp.com/send?phone=5547999008090&text=Olá, vim pelo site, gostaria de mais informações, do imóvel (https://www.aurosimobiliaria.com.br/imoveis/${property.id}v)`,
+                              )
+                            }
+                          >
+                            <WhatsappLogo size={20} weight="fill" />
+                            <Typography variant="caption" ml={1}>
+                              Whatsapp
+                            </Typography>
+                          </Button>
+                        </Box>
+
+                        <Box
+                          display="flex"
+                          alignItems="center"
+                          justifyContent="space-between"
+                          sx={{ borderBottom: '1px solid #eee', pb: 2 }}
+                        >
+                          <Box display="flex" alignItems="center" gap={2}>
+                            <Avatar
+                              sx={{ width: 56, height: 56 }}
+                              variant="square"
+                              alt=""
+                              src={venancioAvatar.src}
+                            />
+
+                            <Box display="flex" flexDirection="column">
+                              <Typography
+                                variant="h4"
+                                sx={{ fontSize: '1rem' }}
+                              >
+                                Venancio
+                              </Typography>
+                              <Typography variant="caption">
+                                CRECI: 62629
+                              </Typography>
+                            </Box>
+                          </Box>
+                          <Button
+                            color="success"
+                            variant="contained"
+                            onClick={() =>
+                              window.open(
+                                `https://api.whatsapp.com/send?phone=5547997798081&text=Olá, vim pelo site, gostaria de mais informações, do imóvel (https://www.aurosimobiliaria.com.br/imoveis/${property.id})`,
+                              )
+                            }
+                          >
+                            <WhatsappLogo size={20} weight="fill" />
+                            <Typography variant="caption" ml={1}>
+                              Whatsapp
+                            </Typography>
+                          </Button>
+                        </Box>
+                      </>
                     )}
 
                     {auroraBc.includes(property.city) && (
@@ -468,7 +516,7 @@ function Property() {
                       >
                         <Box display="flex" alignItems="center" gap={2}>
                           <Avatar
-                            sx={{ width: '50px', height: '50px' }}
+                            sx={{ width: 56, height: 56 }}
                             variant="square"
                             alt=""
                             src={rodrigoAvatar.src}
@@ -507,7 +555,7 @@ function Property() {
                       >
                         <Box display="flex" alignItems="center" gap={2}>
                           <Avatar
-                            sx={{ width: '50px', height: '50px' }}
+                            sx={{ width: 56, height: 56 }}
                             variant="square"
                             src={jonathanAvatar.src}
                             alt=""
@@ -550,7 +598,7 @@ function Property() {
                           >
                             <Box display="flex" alignItems="center" gap={2}>
                               <Avatar
-                                sx={{ width: '50px', height: '50px' }}
+                                sx={{ width: 56, height: 56 }}
                                 variant="square"
                                 alt=""
                                 src={adrianaAvatar.src}
@@ -591,8 +639,8 @@ function Property() {
                           >
                             <Box display="flex" alignItems="center" gap={2}>
                               <Avatar
-                                sx={{ width: '50px', height: '50px' }}
-                                variant="square"
+                                sx={{ width: 56, height: 56 }}
+                                variant="rounded"
                                 src={renatoAvatar.src}
                                 alt=""
                               />
@@ -632,7 +680,7 @@ function Property() {
                           >
                             <Box display="flex" alignItems="center" gap={2}>
                               <Avatar
-                                sx={{ width: '50px', height: '50px' }}
+                                sx={{ width: 56, height: 56 }}
                                 variant="square"
                                 src={rodrigoAvatar.src}
                                 alt=""
@@ -664,7 +712,47 @@ function Property() {
                               </Typography>
                             </Button>
                           </Box>
+                          <Box
+                            display="flex"
+                            alignItems="center"
+                            justifyContent="space-between"
+                            sx={{ borderBottom: '1px solid #eee', pb: 2 }}
+                          >
+                            <Box display="flex" alignItems="center" gap={2}>
+                              <Avatar
+                                sx={{ width: 56, height: 56 }}
+                                variant="square"
+                                alt=""
+                                src={venancioAvatar.src}
+                              />
 
+                              <Box display="flex" flexDirection="column">
+                                <Typography
+                                  variant="h4"
+                                  sx={{ fontSize: '1rem' }}
+                                >
+                                  Venancio
+                                </Typography>
+                                <Typography variant="caption">
+                                  CRECI: 62629
+                                </Typography>
+                              </Box>
+                            </Box>
+                            <Button
+                              color="success"
+                              variant="contained"
+                              onClick={() =>
+                                window.open(
+                                  `https://api.whatsapp.com/send?phone=5547997798081&text=Olá, vim pelo site, gostaria de mais informações, do imóvel (https://www.aurosimobiliaria.com.br/imoveis/${property.id})`,
+                                )
+                              }
+                            >
+                              <WhatsappLogo size={20} weight="fill" />
+                              <Typography variant="caption" ml={1}>
+                                Whatsapp
+                              </Typography>
+                            </Button>
+                          </Box>
                           <Box
                             display="flex"
                             alignItems="center"
@@ -672,7 +760,7 @@ function Property() {
                           >
                             <Box display="flex" alignItems="center" gap={2}>
                               <Avatar
-                                sx={{ width: '50px', height: '50px' }}
+                                sx={{ width: 56, height: 56 }}
                                 variant="square"
                                 src={jonathanAvatar.src}
                                 alt=""

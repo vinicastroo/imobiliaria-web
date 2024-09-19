@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import api from '@/services/api'
 
 export interface Property {
@@ -29,16 +30,26 @@ export interface Property {
   files: {
     id: string
     path: string
+    fileName: string
   }[]
 }
 
 export async function getProperty(id: string) {
-  const response = await api.get<Property>(`/imovel/${id}`)
-  const data = response.data
+  if (id) {
+    const response = await api.get<Property>(`/imovel/${id}`)
+    const data = response.data
 
-  const condition = data && data.files.length > 0
+    const condition = data && data.files.length > 0
 
-  const items = condition ? data?.files.map((file) => ({ img: file.path })) : []
+    const baseUrl = `https://d2wss3tmei5yh1.cloudfront.net`
+    const items = condition
+      ? data?.files.map((file) => ({
+        img: `${baseUrl}/${file.fileName}`,
+      }))
+      : []
 
-  return { ...data, items }
+    return { ...data, items }
+  }
+
+  return undefined
 }

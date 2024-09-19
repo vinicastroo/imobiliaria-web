@@ -40,7 +40,6 @@ export default function Login() {
         if (req.ok) {
           router.push('/admin')
         } else {
-          console.log(req.error)
           toast('Email / Senha não combinam !', { type: 'error' })
         }
       })

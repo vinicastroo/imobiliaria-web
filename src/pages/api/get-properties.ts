@@ -1,37 +1,39 @@
 import api from '@/services/api'
 
-export interface GetPropertiesResponse {
-  properties: {
+export interface Properties {
+  id: string
+  name: string
+  summary: string
+  description: string
+  value: string
+  bedrooms: string
+  bathrooms: string
+  parkingSpots: string
+  suites: string
+  totalArea: string
+  privateArea: string
+  createdAt: string
+  cep: string
+  state: string
+  city: string
+  neighborhood: string
+  street: string
+  numberAddress: string
+  longitude: string
+  latitude: string
+  type_property: {
     id: string
-    name: string
-    summary: string
     description: string
-    value: string
-    bedrooms: string
-    bathrooms: string
-    parkingSpots: string
-    suites: string
-    totalArea: string
-    privateArea: string
     createdAt: string
-    cep: string
-    state: string
-    city: string
-    neighborhood: string
-    street: string
-    numberAddress: string
-    longitude: string
-    latitude: string
-    type_property: {
-      id: string
-      description: string
-      createdAt: string
-    }
-    files: {
-      id: string
-      path: string
-    }[]
+  }
+  files: {
+    id: string
+    path: string
+    fileName: string
   }[]
+}
+export interface GetPropertiesResponse {
+  properties: Properties[]
   totalPages: number
 }
 
@@ -75,6 +77,24 @@ export async function getProperties({
       visible: true,
     },
   })
+  let formattedData: Properties[] = []
+  if (response.data.properties.length > 0) {
+    formattedData = response.data.properties.map((property) => {
+      const newPathsFiles = property.files.map((file) => {
+        return {
+          ...file,
+          path: `https://d2wss3tmei5yh1.cloudfront.net/${file.fileName}`,
+        }
+      })
+      return {
+        ...property,
+        files: newPathsFiles,
+      }
+    })
+  }
 
-  return response.data
+  return {
+    properties: formattedData,
+    totalPages: response.data.totalPages,
+  }
 }

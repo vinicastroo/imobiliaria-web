@@ -208,6 +208,7 @@ function Filter() {
                 >
                   <MenuItem value="">Selecione</MenuItem>
                   {types &&
+                    types.length > 0 &&
                     types.map((type) => (
                       <MenuItem key={type.id} value={type.description}>
                         {type.description}
@@ -235,6 +236,7 @@ function Filter() {
                 >
                   <MenuItem value="">Selecione</MenuItem>
                   {cities &&
+                    cities.length > 0 &&
                     cities.map((city) => (
                       <MenuItem key={city.city} value={city.city}>
                         {city.city}
@@ -261,6 +263,7 @@ function Filter() {
                 >
                   <MenuItem value="">Selecione</MenuItem>
                   {neighborhoods &&
+                    neighborhoods.length > 0 &&
                     neighborhoods.map((neighborhood) => (
                       <MenuItem
                         key={neighborhood.neighborhood}
@@ -533,7 +536,7 @@ function Properties() {
                     },
                   }}
                 >
-                  <Link href={`/imoveis/${property.id}`} target="_blank">
+                  <Link href={`/imoveis/${property.id}`}>
                     <Card
                       variant="outlined"
                       sx={{
