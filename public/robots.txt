@@ -2,4 +2,4 @@
 User-Agent: *
 Allow: /
 Disallow: /login/
-Sitemap: https://www.aurosimobiliaria.com.br/sitemap.xml
+Sitemap: https://www.aurosimobiliaria.com.br/sitemap
