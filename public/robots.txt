@@ -1,4 +1,5 @@
+# Allow all crawlers
 User-Agent: *
 Allow: /
-Disallow: /private/
+Disallow: /login/
 Sitemap: https://www.aurosimobiliaria.com.br/sitemap.xml
