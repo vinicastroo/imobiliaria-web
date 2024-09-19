@@ -107,8 +107,7 @@ function Property() {
                       key={i}
                       src={item.img}
                       alt="foto do imovel"
-                      width={1920}
-                      height={1080}
+                      height={600}
                       loading="lazy"
                       style={{
                         backgroundSize: 'contain',
@@ -386,6 +385,7 @@ function Property() {
                             sx={{ width: '50px', height: '50px' }}
                             variant="square"
                             src={adrianaAvatar.src}
+                            alt=""
                           />
 
                           <Box display="flex" flexDirection="column">
@@ -426,6 +426,7 @@ function Property() {
                             sx={{ width: '50px', height: '50px' }}
                             variant="square"
                             src={renatoAvatar.src}
+                            alt=""
                           />
                           <Box display="flex" flexDirection="column">
                             <Typography variant="h4" sx={{ fontSize: '1rem' }}>
@@ -464,6 +465,7 @@ function Property() {
                           <Avatar
                             sx={{ width: '50px', height: '50px' }}
                             variant="square"
+                            alt=""
                             src={rodrigoAvatar.src}
                           />
                           <Box display="flex" flexDirection="column">
@@ -503,6 +505,7 @@ function Property() {
                             sx={{ width: '50px', height: '50px' }}
                             variant="square"
                             src={jonathanAvatar.src}
+                            alt=""
                           />
                           <Box display="flex" flexDirection="column">
                             <Typography variant="h4" sx={{ fontSize: '1rem' }}>
@@ -544,6 +547,7 @@ function Property() {
                               <Avatar
                                 sx={{ width: '50px', height: '50px' }}
                                 variant="square"
+                                alt=""
                                 src={adrianaAvatar.src}
                               />
 
@@ -585,6 +589,7 @@ function Property() {
                                 sx={{ width: '50px', height: '50px' }}
                                 variant="square"
                                 src={renatoAvatar.src}
+                                alt=""
                               />
                               <Box display="flex" flexDirection="column">
                                 <Typography
@@ -625,6 +630,7 @@ function Property() {
                                 sx={{ width: '50px', height: '50px' }}
                                 variant="square"
                                 src={rodrigoAvatar.src}
+                                alt=""
                               />
                               <Box display="flex" flexDirection="column">
                                 <Typography
@@ -664,6 +670,7 @@ function Property() {
                                 sx={{ width: '50px', height: '50px' }}
                                 variant="square"
                                 src={jonathanAvatar.src}
+                                alt=""
                               />
                               <Box display="flex" flexDirection="column">
                                 <Typography
