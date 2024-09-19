@@ -83,7 +83,10 @@ function Property() {
             <title>{`Auros | ${property.name}`}</title>
 
             <meta name="description" content={property?.summary} />
-            <meta property="og:image" content={property?.items[0].img} />
+            <meta
+              property="og:image"
+              content="https://www.aurosimobiliaria.com.br/logo.png"
+            />
           </Head>
 
           <MenubarHome />
