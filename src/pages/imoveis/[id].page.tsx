@@ -83,10 +83,6 @@ function Property() {
             <title>{`Auros | ${property.name}`}</title>
 
             <meta name="description" content={property?.summary} />
-            <meta
-              property="og:image"
-              content={property?.items.length > 0 ? property?.items[0].img : ''}
-            />
           </Head>
 
           <MenubarHome />
@@ -111,6 +107,7 @@ function Property() {
                       key={i}
                       src={item.img}
                       alt="foto do imovel"
+                      width={1200}
                       height={600}
                       loading="lazy"
                       style={{
