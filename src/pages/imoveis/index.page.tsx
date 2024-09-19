@@ -901,6 +901,11 @@ export default function Home() {
           Auros Corretora Imobiliária | Imóveis em Rio do Sul e Balneário
           Camboriú
         </title>
+
+        <meta
+          property="og:image"
+          content="https://www.aurosimobiliaria.com.br/logo.png"
+        />
       </Head>
 
       <Box>
