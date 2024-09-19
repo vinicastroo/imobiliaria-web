@@ -477,7 +477,6 @@ function Recent() {
                         height={250}
                         alt="Foto do imóvel"
                         quality={100}
-                        style={{ objectFit: 'cover', width: '100%' }}
                       />
                     </CardMedia>
                   ) : (

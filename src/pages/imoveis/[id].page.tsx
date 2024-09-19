@@ -144,7 +144,7 @@ function Property() {
             <Grid
               container
               spacing={2}
-              sx={{ mt: 1, px: { xs: 2, sm: 2, md: 0 } }}
+              sx={{ mt: 1, px: { xs: 2, sm: 2, md: 0 }, mb: 4 }}
             >
               <Grid item md={8.5} sm={12} xs={12}>
                 <Card variant="outlined" sx={{ p: 2, mb: 2 }}>
