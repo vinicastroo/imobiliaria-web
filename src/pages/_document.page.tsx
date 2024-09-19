@@ -41,10 +41,6 @@ export default function MyDocument({ emotionStyleTags }: MyDocumentProps) {
           property="og:description"
           content="Descubra uma variedade de imóveis em Rio do Sul e Balneário Camboriú com a Auros Corretora Imobiliária. Desde apartamentos compactos até propriedades de luxo, encontre a casa dos seus sonhos."
         />
-        <meta
-          property="og:image"
-          content="https://www.aurosimobiliaria.com.br/logo.png"
-        />
 
         <meta property="twitter:card" content="summary_large_image" />
         <meta
