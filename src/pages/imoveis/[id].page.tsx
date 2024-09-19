@@ -83,6 +83,7 @@ function Property() {
             <title>{`Auros | ${property.name}`}</title>
 
             <meta name="description" content={property?.summary} />
+            <meta property="og:image" content={property?.items[0].img} />
           </Head>
 
           <MenubarHome />
