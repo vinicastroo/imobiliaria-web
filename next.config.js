@@ -11,6 +11,7 @@ const nextConfig = {
     ],
     loader: 'default',
   },
+  swcMinify: true,
 }
 
 module.exports = nextConfig
