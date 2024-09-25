@@ -474,7 +474,7 @@ function Recent() {
                     <CardMedia>
                       <Image
                         src={property.files[0].path}
-                        width={500}
+                        width={400}
                         height={250}
                         alt="Foto do imóvel"
                         quality={100}
