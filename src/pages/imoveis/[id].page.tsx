@@ -108,7 +108,7 @@ function Property() {
               >
                 {property && property.items && property.items.length > 0 ? (
                   property.items.map((item, i) => (
-                    <Image
+                    <img
                       key={i}
                       src={item.img}
                       alt="foto do imovel"
