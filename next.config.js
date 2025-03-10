@@ -10,6 +10,7 @@ const nextConfig = {
       'd2wss3tmei5yh1.cloudfront.net',
     ],
     loader: 'default',
+    unoptimized: false,
   },
   swcMinify: true,
 }
