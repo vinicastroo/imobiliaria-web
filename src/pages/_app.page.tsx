@@ -11,7 +11,9 @@ import Head from 'next/head'
 import createEmotionCache from '@/createEmotionCache'
 import { QueryClientProvider } from '@tanstack/react-query'
 import { query } from '@/lib/react-query'
-// import { GoogleAnalytics } from '@next/third-parties/google'
+import Script from 'next/script'
+import { GoogleTagManager } from '@next/third-parties/google'
+
 const theme = createTheme({
   palette: {
     primary: {
@@ -58,7 +60,22 @@ export default function App(props: MyAppProps) {
             <Component {...pageProps} />
           </QueryClientProvider>
           <ToastContainer autoClose={2000} />
-          {/* <GoogleAnalytics gaId="G-EBJQ0S2YY6" /> */}
+
+          <GoogleTagManager gtmId="AW-16855847377" />
+
+          <Script id="facebook-pixel" strategy="afterInteractive">
+            {`!function(f,b,e,v,n,t,s)
+              {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+              n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+              if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+              n.queue=[];t=b.createElement(e);t.async=!0;
+              t.src=v;s=b.getElementsByTagName(e)[0];
+              s.parentNode.insertBefore(t,s)}(window, document,'script',
+              'https://connect.facebook.net/en_US/fbevents.js');
+              fbq('init', '1081492213995645');
+              fbq('track', 'PageView');
+        `}
+          </Script>
 
           {/* <CookieConsent
               location="bottom"
