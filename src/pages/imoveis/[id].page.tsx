@@ -442,7 +442,7 @@ function Property() {
                                 variant="h4"
                                 sx={{ fontSize: '1rem' }}
                               >
-                                Michele Stahnke
+                                Michele
                               </Typography>
                               <Typography variant="caption">
                                 CRECI: 21553-F
@@ -654,7 +654,7 @@ function Property() {
                                 variant="h4"
                                 sx={{ fontSize: '1rem' }}
                               >
-                                Michele Stahnke
+                                Michele
                               </Typography>
                               <Typography variant="caption">
                                 CRECI: 21553-F
@@ -905,7 +905,7 @@ function Property() {
                                   variant="h4"
                                   sx={{ fontSize: '1rem' }}
                                 >
-                                  Michele Stahnke
+                                  Michele
                                 </Typography>
                                 <Typography variant="caption">
                                   CRECI: 21553-F
