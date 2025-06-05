@@ -445,7 +445,7 @@ function Property() {
                                 Michele
                               </Typography>
                               <Typography variant="caption">
-                                CRECI: 21553-F
+                                CRECI: 21553
                               </Typography>
                             </Box>
                           </Box>
@@ -657,7 +657,7 @@ function Property() {
                                 Michele
                               </Typography>
                               <Typography variant="caption">
-                                CRECI: 21553-F
+                                CRECI: 21553
                               </Typography>
                             </Box>
                           </Box>
@@ -908,7 +908,7 @@ function Property() {
                                   Michele
                                 </Typography>
                                 <Typography variant="caption">
-                                  CRECI: 21553-F
+                                  CRECI: 21553
                                 </Typography>
                               </Box>
                             </Box>
