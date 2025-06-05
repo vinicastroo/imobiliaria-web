@@ -10,9 +10,10 @@ import {
 
 import rodrigoAvatar from '@/assets/digo.png'
 import jonathanAvatar from '@/assets/jonathan.png'
-import renatoAvatar from '@/assets/renato.jpeg'
+import renatoAvatar from '@/assets/renato2.jpg'
 import adrianaAvatar from '@/assets/adriana.png'
 import venancioAvatar from '@/assets/venancio.png'
+import micheleAvatar from '@/assets/michele.png'
 
 import Image from 'next/image'
 import {
@@ -380,44 +381,90 @@ function Property() {
 
                   <Box display="flex" flexDirection="column" gap={2} mt={1}>
                     {['Rio do Sul'].includes(property.city) && (
-                      <Box
-                        display="flex"
-                        alignItems="center"
-                        justifyContent="space-between"
-                        sx={{ borderBottom: '1px solid #eee', pb: 2 }}
-                      >
-                        <Box display="flex" alignItems="center" gap={2}>
-                          <Avatar
-                            sx={{ width: 56, height: 56 }}
-                            variant="square"
-                            src={adrianaAvatar.src}
-                            alt=""
-                          />
-
-                          <Box display="flex" flexDirection="column">
-                            <Typography variant="h4" sx={{ fontSize: '1rem' }}>
-                              Adriana
-                            </Typography>
-                            <Typography variant="caption">
-                              CRECI: 48879
-                            </Typography>
-                          </Box>
-                        </Box>
-                        <Button
-                          color="success"
-                          variant="contained"
-                          onClick={() =>
-                            window.open(
-                              `https://api.whatsapp.com/send?phone=5547997798081&&text=Olá, vim pelo site, gostaria de mais informações, do imóvel (https://www.aurosimobiliaria.com.br/imoveis/${property.id})`,
-                            )
-                          }
+                      <>
+                        <Box
+                          display="flex"
+                          alignItems="center"
+                          justifyContent="space-between"
+                          sx={{ borderBottom: '1px solid #eee', pb: 2 }}
                         >
-                          <WhatsappLogo size={20} weight="fill" />
-                          <Typography variant="caption" ml={1}>
-                            Whatsapp
-                          </Typography>
-                        </Button>
-                      </Box>
+                          <Box display="flex" alignItems="center" gap={2}>
+                            <Avatar
+                              sx={{ width: 56, height: 56 }}
+                              variant="square"
+                              src={adrianaAvatar.src}
+                              alt=""
+                            />
+
+                            <Box display="flex" flexDirection="column">
+                              <Typography
+                                variant="h4"
+                                sx={{ fontSize: '1rem' }}
+                              >
+                                Adriana
+                              </Typography>
+                              <Typography variant="caption">
+                                CRECI: 48879
+                              </Typography>
+                            </Box>
+                          </Box>
+                          <Button
+                            color="success"
+                            variant="contained"
+                            onClick={() =>
+                              window.open(
+                                `https://api.whatsapp.com/send?phone=5547997798081&&text=Olá, vim pelo site, gostaria de mais informações, do imóvel (https://www.aurosimobiliaria.com.br/imoveis/${property.id})`,
+                              )
+                            }
+                          >
+                            <WhatsappLogo size={20} weight="fill" />
+                            <Typography variant="caption" ml={1}>
+                              Whatsapp
+                            </Typography>
+                          </Button>
+                        </Box>
+                        <Box
+                          display="flex"
+                          alignItems="center"
+                          justifyContent="space-between"
+                          sx={{ borderBottom: '1px solid #eee', pb: 2 }}
+                        >
+                          <Box display="flex" alignItems="center" gap={2}>
+                            <Avatar
+                              sx={{ width: 56, height: 56 }}
+                              variant="square"
+                              src={micheleAvatar.src}
+                              alt=""
+                            />
+
+                            <Box display="flex" flexDirection="column">
+                              <Typography
+                                variant="h4"
+                                sx={{ fontSize: '1rem' }}
+                              >
+                                Michele Stahnke
+                              </Typography>
+                              <Typography variant="caption">
+                                CRECI: 21553-F
+                              </Typography>
+                            </Box>
+                          </Box>
+                          <Button
+                            color="success"
+                            variant="contained"
+                            onClick={() =>
+                              window.open(
+                                `https://api.whatsapp.com/send?phone=5547992426980&&text=Olá, vim pelo site, gostaria de mais informações, do imóvel (https://www.aurosimobiliaria.com.br/imoveis/${property.id})`,
+                              )
+                            }
+                          >
+                            <WhatsappLogo size={20} weight="fill" />
+                            <Typography variant="caption" ml={1}>
+                              Whatsapp
+                            </Typography>
+                          </Button>
+                        </Box>
+                      </>
                     )}
 
                     {['Rio do Sul', 'Aurora'].includes(property.city) && (
@@ -548,42 +595,88 @@ function Property() {
                     )}
 
                     {['Balneário Camboriú'].includes(property.city) && (
-                      <Box
-                        display="flex"
-                        alignItems="center"
-                        justifyContent="space-between"
-                      >
-                        <Box display="flex" alignItems="center" gap={2}>
-                          <Avatar
-                            sx={{ width: 56, height: 56 }}
-                            variant="square"
-                            src={jonathanAvatar.src}
-                            alt=""
-                          />
-                          <Box display="flex" flexDirection="column">
-                            <Typography variant="h4" sx={{ fontSize: '1rem' }}>
-                              Jonathan
-                            </Typography>
-                            <Typography variant="caption">
-                              CRECI: 27584
-                            </Typography>
-                          </Box>
-                        </Box>
-                        <Button
-                          color="success"
-                          variant="contained"
-                          onClick={() =>
-                            window.open(
-                              `https://api.whatsapp.com/send?phone=5547988163739&text=Olá, vim pelo site, gostaria de mais informações, do imóvel (https://www.aurosimobiliaria.com.br/imoveis/${property.id})`,
-                            )
-                          }
+                      <>
+                        <Box
+                          display="flex"
+                          alignItems="center"
+                          justifyContent="space-between"
                         >
-                          <WhatsappLogo size={20} weight="fill" />
-                          <Typography variant="caption" ml={1}>
-                            Whatsapp
-                          </Typography>
-                        </Button>
-                      </Box>
+                          <Box display="flex" alignItems="center" gap={2}>
+                            <Avatar
+                              sx={{ width: 56, height: 56 }}
+                              variant="square"
+                              src={jonathanAvatar.src}
+                              alt=""
+                            />
+                            <Box display="flex" flexDirection="column">
+                              <Typography
+                                variant="h4"
+                                sx={{ fontSize: '1rem' }}
+                              >
+                                Jonathan
+                              </Typography>
+                              <Typography variant="caption">
+                                CRECI: 27584
+                              </Typography>
+                            </Box>
+                          </Box>
+                          <Button
+                            color="success"
+                            variant="contained"
+                            onClick={() =>
+                              window.open(
+                                `https://api.whatsapp.com/send?phone=5547988163739&text=Olá, vim pelo site, gostaria de mais informações, do imóvel (https://www.aurosimobiliaria.com.br/imoveis/${property.id})`,
+                              )
+                            }
+                          >
+                            <WhatsappLogo size={20} weight="fill" />
+                            <Typography variant="caption" ml={1}>
+                              Whatsapp
+                            </Typography>
+                          </Button>
+                        </Box>
+                        <Box
+                          display="flex"
+                          alignItems="center"
+                          justifyContent="space-between"
+                          sx={{ borderBottom: '1px solid #eee', pb: 2 }}
+                        >
+                          <Box display="flex" alignItems="center" gap={2}>
+                            <Avatar
+                              sx={{ width: 56, height: 56 }}
+                              variant="square"
+                              src={micheleAvatar.src}
+                              alt=""
+                            />
+
+                            <Box display="flex" flexDirection="column">
+                              <Typography
+                                variant="h4"
+                                sx={{ fontSize: '1rem' }}
+                              >
+                                Michele Stahnke
+                              </Typography>
+                              <Typography variant="caption">
+                                CRECI: 21553-F
+                              </Typography>
+                            </Box>
+                          </Box>
+                          <Button
+                            color="success"
+                            variant="contained"
+                            onClick={() =>
+                              window.open(
+                                `https://api.whatsapp.com/send?phone=5547992426980&&text=Olá, vim pelo site, gostaria de mais informações, do imóvel (https://www.aurosimobiliaria.com.br/imoveis/${property.id})`,
+                              )
+                            }
+                          >
+                            <WhatsappLogo size={20} weight="fill" />
+                            <Typography variant="caption" ml={1}>
+                              Whatsapp
+                            </Typography>
+                          </Button>
+                        </Box>
+                      </>
                     )}
 
                     {property.city !== 'Balneário Camboriú' &&
@@ -783,6 +876,48 @@ function Property() {
                               onClick={() =>
                                 window.open(
                                   `https://api.whatsapp.com/send?phone=5547988163739&text=Olá, vim pelo site, gostaria de mais informações, do imóvel (https://www.aurosimobiliaria.com.br/imoveis/${property.id})`,
+                                )
+                              }
+                            >
+                              <WhatsappLogo size={20} weight="fill" />
+                              <Typography variant="caption" ml={1}>
+                                Whatsapp
+                              </Typography>
+                            </Button>
+                          </Box>
+
+                          <Box
+                            display="flex"
+                            alignItems="center"
+                            justifyContent="space-between"
+                            sx={{ borderBottom: '1px solid #eee', pb: 2 }}
+                          >
+                            <Box display="flex" alignItems="center" gap={2}>
+                              <Avatar
+                                sx={{ width: 56, height: 56 }}
+                                variant="square"
+                                src={micheleAvatar.src}
+                                alt=""
+                              />
+
+                              <Box display="flex" flexDirection="column">
+                                <Typography
+                                  variant="h4"
+                                  sx={{ fontSize: '1rem' }}
+                                >
+                                  Michele Stahnke
+                                </Typography>
+                                <Typography variant="caption">
+                                  CRECI: 21553-F
+                                </Typography>
+                              </Box>
+                            </Box>
+                            <Button
+                              color="success"
+                              variant="contained"
+                              onClick={() =>
+                                window.open(
+                                  `https://api.whatsapp.com/send?phone=5547992426980&&text=Olá, vim pelo site, gostaria de mais informações, do imóvel (https://www.aurosimobiliaria.com.br/imoveis/${property.id})`,
                                 )
                               }
                             >
