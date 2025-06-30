@@ -90,7 +90,7 @@ function Filter() {
 
   const onSubmit = useCallback(
     async (data: SchemaQuestion) => {
-      const params = new URLSearchParams(searchParams)
+      const params = new URLSearchParams(searchParams.toString())
       if (data.type && data.type !== 'undefined') {
         params.set('tipoImovel', data.type)
       } else {
@@ -451,7 +451,7 @@ function Properties() {
   const pathname = usePathname()
 
   const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
-    const params = new URLSearchParams(searchParams)
+    const params = new URLSearchParams(searchParams.toString())
     params.set('page', value.toString())
     const search = params.toString()
     const query = search ? `?${search}` : ''

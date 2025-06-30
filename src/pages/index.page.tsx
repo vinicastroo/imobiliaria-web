@@ -91,6 +91,7 @@ function BannerHome() {
     queryKey: ['cities'],
     queryFn: () => getCities(),
   })
+
   const { data: types } = useQuery({
     queryKey: ['types'],
     queryFn: () => getTypes(),
@@ -105,7 +106,6 @@ function BannerHome() {
 
   return (
     <>
-
       <form onSubmit={handleSubmit(onSubmit)}>
         <Box
           sx={{
@@ -332,7 +332,9 @@ function BannerHome() {
                     sx={{ background: '#fff', borderRadius: 1 }}
                     fullWidth
                   >
-                    <InputLabel id="demo-simple-select-label">Bairro</InputLabel>
+                    <InputLabel id="demo-simple-select-label">
+                      Bairro
+                    </InputLabel>
                     <Select
                       // error={Boolean(errors.type_id)}
                       label="Bairros"
