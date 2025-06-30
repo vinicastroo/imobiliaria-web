@@ -104,276 +104,279 @@ function BannerHome() {
   })
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <Box
-        sx={{
-          width: '100%',
-          height: '100vh',
-          backgroundSize: 'cover',
-          position: 'relative',
-          backgroundRepeat: 'no-repeat',
-          backgroundPositionY: '-80px',
-          p: 2,
-        }}
-      >
-        <Box>
-          <Image
-            src={bg}
-            alt=""
-            height={isSmallScreen ? 650 : 950}
-            quality={100}
-            style={{
-              position: 'absolute',
-              zIndex: -1,
-              top: 0,
-              left: 0,
-              height: '100vh',
-              width: '100%',
-              backgroundSize: 'cover',
-              objectFit: 'cover',
-            }}
-          />
-        </Box>
+    <>
 
+      <form onSubmit={handleSubmit(onSubmit)}>
         <Box
-          display="flex"
-          justifyContent="space-between"
-          alignItems="center"
           sx={{
             width: '100%',
-            maxWidth: '1200px',
-            margin: '0 auto',
-            position: 'absolute',
-            top: 0,
-            right: 0,
-            left: 0,
-            py: 1,
-            gap: 2,
-            flexDirection: { xs: 'column', sm: 'column', md: 'row' },
-            px: { xs: 2, sm: 1, md: 0 },
-            a: {
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            },
-          }}
-        >
-          <Link href="/">
-            <Image
-              src={logo}
-              alt="logo"
-              width={isSmallScreen ? 80 : 120}
-              height={isSmallScreen ? 80 : 120}
-            />
-          </Link>
-
-          <Box
-            sx={{
-              display: 'flex',
-              gap: 3,
-              a: { color: 'white', textDecoration: 'none' },
-              'a:hover': { opacity: 0.7 },
-            }}
-          >
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              <Link
-                href="https://api.whatsapp.com/send?phone=5547988163739&text=Olá, vim pelo site, gostaria de mais informações"
-                aria-label="Link para o WhatsApp"
-                title="Link para o WhatsApp"
-              >
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                  <WhatsappLogo size={20} weight="fill" />
-                </Box>
-              </Link>
-
-              <Link
-                href="https://www.instagram.com/auroscorretoraimobiliaria/"
-                aria-label="Link para o Instagram"
-                title="Link para o Instagram"
-              >
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                  <InstagramLogo size={20} weight="fill" />
-                </Box>
-              </Link>
-
-              <Link
-                href="https://www.facebook.com/AurosCorretoraImob?locale=pt_BR"
-                aria-label="Link para o Facebook"
-                title="Link para o Facebook"
-              >
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                  <FacebookLogo size={20} weight="fill" />
-                </Box>
-              </Link>
-            </Box>
-
-            <Link href="/imoveis">
-              <Typography variant="body1">Imóveis</Typography>
-            </Link>
-            <Link href="#contact">
-              <Typography variant="body1">Entre em contato</Typography>
-            </Link>
-          </Box>
-        </Box>
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            height: '100%',
+            height: '100vh',
+            backgroundSize: 'cover',
+            position: 'relative',
+            backgroundRepeat: 'no-repeat',
+            backgroundPositionY: '-80px',
             p: 2,
           }}
         >
+          <Box>
+            <Image
+              src={bg}
+              alt=""
+              height={isSmallScreen ? 650 : 950}
+              quality={100}
+              style={{
+                position: 'absolute',
+                zIndex: -1,
+                top: 0,
+                left: 0,
+                height: '100vh',
+                width: '100%',
+                backgroundSize: 'cover',
+                objectFit: 'cover',
+              }}
+            />
+          </Box>
+
+          <Box
+            display="flex"
+            justifyContent="space-between"
+            alignItems="center"
+            sx={{
+              width: '100%',
+              maxWidth: '1200px',
+              margin: '0 auto',
+              position: 'absolute',
+              top: 0,
+              right: 0,
+              left: 0,
+              py: 1,
+              gap: 2,
+              flexDirection: { xs: 'column', sm: 'column', md: 'row' },
+              px: { xs: 2, sm: 1, md: 0 },
+              a: {
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              },
+            }}
+          >
+            <Link href="/">
+              <Image
+                src={logo}
+                alt="logo"
+                width={isSmallScreen ? 80 : 120}
+                height={isSmallScreen ? 80 : 120}
+              />
+            </Link>
+
+            <Box
+              sx={{
+                display: 'flex',
+                gap: 3,
+                a: { color: 'white', textDecoration: 'none' },
+                'a:hover': { opacity: 0.7 },
+              }}
+            >
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <Link
+                  href="https://api.whatsapp.com/send?phone=5547988163739&text=Olá, vim pelo site, gostaria de mais informações"
+                  aria-label="Link para o WhatsApp"
+                  title="Link para o WhatsApp"
+                >
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <WhatsappLogo size={20} weight="fill" />
+                  </Box>
+                </Link>
+
+                <Link
+                  href="https://www.instagram.com/auroscorretoraimobiliaria/"
+                  aria-label="Link para o Instagram"
+                  title="Link para o Instagram"
+                >
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <InstagramLogo size={20} weight="fill" />
+                  </Box>
+                </Link>
+
+                <Link
+                  href="https://www.facebook.com/AurosCorretoraImob?locale=pt_BR"
+                  aria-label="Link para o Facebook"
+                  title="Link para o Facebook"
+                >
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <FacebookLogo size={20} weight="fill" />
+                  </Box>
+                </Link>
+              </Box>
+
+              <Link href="/imoveis">
+                <Typography variant="body1">Imóveis</Typography>
+              </Link>
+              <Link href="#contact">
+                <Typography variant="body1">Entre em contato</Typography>
+              </Link>
+            </Box>
+          </Box>
           <Box
             sx={{
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
               justifyContent: 'center',
-              gap: 5,
-              margin: 'auto 0',
-              maxWidth: '1200px',
-              width: '100%',
+              height: '100%',
+              p: 2,
             }}
           >
-            <Typography
-              variant="h1"
-              textAlign="center"
-              color="#fff"
-              fontWeight="400"
-              style={{
-                fontSize: isSmallScreen ? '1.5rem' : '3rem',
-              }}
-            >
-              Assim como o ouro é valioso, seu novo lar será um tesouro
-              inestimável
-            </Typography>
-
-            <Card
-              variant="outlined"
+            <Box
               sx={{
-                p: 3,
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: 5,
+                margin: 'auto 0',
+                maxWidth: '1200px',
                 width: '100%',
-
-                background: {
-                  md: 'rgba(255, 255, 255,0.1)',
-                },
-                boxShadow: {
-                  md: '0 1px 30px rgba(0, 0, 0, 0.5)',
-                },
-                backdropFilter: {
-                  md: 'blur(3px)',
-                },
-                '-webkit-backdrop-filter': {
-                  md: 'blur(3px)',
-                },
               }}
             >
-              <Box
-                sx={{
-                  display: 'flex',
-                  flexDirection: { xs: 'column', md: 'row' },
+              <Typography
+                variant="h1"
+                textAlign="center"
+                color="#fff"
+                fontWeight="400"
+                style={{
+                  fontSize: isSmallScreen ? '1.5rem' : '3rem',
                 }}
-                gap={3}
               >
-                <FormControl
-                  sx={{ background: '#fff', borderRadius: 1 }}
-                  size={isSmallScreen ? 'small' : 'medium'}
-                  fullWidth
-                >
-                  <InputLabel id="neightboor-select-label">
-                    Tipo Imóvel
-                  </InputLabel>
-                  <Select
-                    // error={Boolean(errors.type_id)}
-                    labelId="neightboor-select-label"
-                    label="Tipo Imóvel"
-                    {...register('type_id')}
-                  >
-                    <MenuItem>Selecione</MenuItem>
-                    {types &&
-                      types.length > 0 &&
-                      types.map((type) => (
-                        <MenuItem key={type.id} value={type.description}>
-                          {type.description}
-                        </MenuItem>
-                      ))}
-                  </Select>
-                </FormControl>
+                Assim como o ouro é valioso, seu novo lar será um tesouro
+                inestimável
+              </Typography>
 
-                <FormControl
-                  size={isSmallScreen ? 'small' : 'medium'}
-                  sx={{ background: '#fff', borderRadius: 1 }}
-                  fullWidth
-                >
-                  <InputLabel id="neightboor-select-label">Cidade</InputLabel>
-                  <Select
-                    // error={Boolean(errors.type_id)}
-                    labelId="neightboor-select-label"
-                    label="Cidade"
-                    {...register('city')}
-                  >
-                    <MenuItem>Selecione</MenuItem>
-                    {cities &&
-                      cities.length > 0 &&
-                      cities.map((city) => (
-                        <MenuItem key={city.city} value={city.city}>
-                          {city.city}
-                        </MenuItem>
-                      ))}
-                  </Select>
-                </FormControl>
+              <Card
+                variant="outlined"
+                sx={{
+                  p: 3,
+                  width: '100%',
 
-                <FormControl
-                  size={isSmallScreen ? 'small' : 'medium'}
-                  sx={{ background: '#fff', borderRadius: 1 }}
-                  fullWidth
-                >
-                  <InputLabel id="demo-simple-select-label">Bairro</InputLabel>
-                  <Select
-                    // error={Boolean(errors.type_id)}
-                    label="Bairros"
-                    title="Bairros"
-                    aria-labelledby="Bairros"
-                    {...register('neighborhood')}
-                  >
-                    <MenuItem>Selecione</MenuItem>
-                    {neighborhoods &&
-                      neighborhoods.length > 0 &&
-                      neighborhoods.map((neighborhood) => (
-                        <MenuItem
-                          key={neighborhood.neighborhood}
-                          value={neighborhood.neighborhood}
-                        >
-                          {neighborhood.neighborhood}
-                        </MenuItem>
-                      ))}
-                  </Select>
-                </FormControl>
-                <Button
-                  variant="contained"
+                  background: {
+                    md: 'rgba(255, 255, 255,0.1)',
+                  },
+                  boxShadow: {
+                    md: '0 1px 30px rgba(0, 0, 0, 0.5)',
+                  },
+                  backdropFilter: {
+                    md: 'blur(3px)',
+                  },
+                  '-webkit-backdrop-filter': {
+                    md: 'blur(3px)',
+                  },
+                }}
+              >
+                <Box
                   sx={{
-                    color: '#fff',
                     display: 'flex',
-                    alignItems: 'center',
-                    gap: 1,
+                    flexDirection: { xs: 'column', md: 'row' },
                   }}
-                  color="primary"
-                  size={isSmallScreen ? 'medium' : 'large'}
-                  type="submit"
-                  fullWidth
-                  disabled={isLoading}
+                  gap={3}
                 >
-                  <Search />
-                  Buscar
-                </Button>
-              </Box>
-            </Card>
+                  <FormControl
+                    sx={{ background: '#fff', borderRadius: 1 }}
+                    size={isSmallScreen ? 'small' : 'medium'}
+                    fullWidth
+                  >
+                    <InputLabel id="neightboor-select-label">
+                      Tipo Imóvel
+                    </InputLabel>
+                    <Select
+                      // error={Boolean(errors.type_id)}
+                      labelId="neightboor-select-label"
+                      label="Tipo Imóvel"
+                      {...register('type_id')}
+                    >
+                      <MenuItem>Selecione</MenuItem>
+                      {types &&
+                        types.length > 0 &&
+                        types.map((type) => (
+                          <MenuItem key={type.id} value={type.description}>
+                            {type.description}
+                          </MenuItem>
+                        ))}
+                    </Select>
+                  </FormControl>
+
+                  <FormControl
+                    size={isSmallScreen ? 'small' : 'medium'}
+                    sx={{ background: '#fff', borderRadius: 1 }}
+                    fullWidth
+                  >
+                    <InputLabel id="neightboor-select-label">Cidade</InputLabel>
+                    <Select
+                      // error={Boolean(errors.type_id)}
+                      labelId="neightboor-select-label"
+                      label="Cidade"
+                      {...register('city')}
+                    >
+                      <MenuItem>Selecione</MenuItem>
+                      {cities &&
+                        cities.length > 0 &&
+                        cities.map((city) => (
+                          <MenuItem key={city.city} value={city.city}>
+                            {city.city}
+                          </MenuItem>
+                        ))}
+                    </Select>
+                  </FormControl>
+
+                  <FormControl
+                    size={isSmallScreen ? 'small' : 'medium'}
+                    sx={{ background: '#fff', borderRadius: 1 }}
+                    fullWidth
+                  >
+                    <InputLabel id="demo-simple-select-label">Bairro</InputLabel>
+                    <Select
+                      // error={Boolean(errors.type_id)}
+                      label="Bairros"
+                      title="Bairros"
+                      aria-labelledby="Bairros"
+                      {...register('neighborhood')}
+                    >
+                      <MenuItem>Selecione</MenuItem>
+                      {neighborhoods &&
+                        neighborhoods.length > 0 &&
+                        neighborhoods.map((neighborhood) => (
+                          <MenuItem
+                            key={neighborhood.neighborhood}
+                            value={neighborhood.neighborhood}
+                          >
+                            {neighborhood.neighborhood}
+                          </MenuItem>
+                        ))}
+                    </Select>
+                  </FormControl>
+                  <Button
+                    variant="contained"
+                    sx={{
+                      color: '#fff',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 1,
+                    }}
+                    color="primary"
+                    size={isSmallScreen ? 'medium' : 'large'}
+                    type="submit"
+                    fullWidth
+                    disabled={isLoading}
+                  >
+                    <Search />
+                    Buscar
+                  </Button>
+                </Box>
+              </Card>
+            </Box>
           </Box>
         </Box>
-      </Box>
-    </form>
+      </form>
+    </>
   )
 }
 
@@ -849,6 +852,8 @@ export default function Home() {
           property="og:image"
           content="https://www.aurosimobiliaria.com.br/logo.png"
         />
+
+        <link rel="canonical" href="https://aurosimobiliaria.com.br" />
       </Head>
 
       <Box>

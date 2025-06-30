@@ -89,6 +89,8 @@ function Property() {
               property="og:image"
               content="https://www.aurosimobiliaria.com.br/logo.png"
             />
+
+            <link rel="canonical" href={`https://aurosimobiliaria.com.br/imoveis${params.id}`} />
           </Head>
 
           <MenubarHome />

@@ -79,7 +79,7 @@ export function MenubarHome() {
           <Link href="/imoveis">
             <Typography variant="body2">Imóveis</Typography>
           </Link>
-          <Link href="/contato">
+          <Link href="/#contato">
             <Typography variant="body2">Entre em contato</Typography>
           </Link>
         </Box>
