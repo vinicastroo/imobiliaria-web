@@ -2,6 +2,7 @@ import api from '@/services/api'
 
 export interface Properties {
   id: string
+  slug: string
   name: string
   summary: string
   description: string

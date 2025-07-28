@@ -4,14 +4,16 @@ const EXTERNAL_DATA_URL = 'https://aurosimobiliaria.com.br'
 
 interface Posts {
   id: string
+  slug: string
 }
 function generateSiteMap(posts: Posts[]) {
   const postsString = posts
     .map(
-      ({ id }) =>
-        `<url> <loc>${`${EXTERNAL_DATA_URL}/imoveis/${id}`}</loc><lastmod>${new Date().toISOString()}</lastmod> </url>`,
+      ({ slug }) =>
+        `<url> <loc>${`${EXTERNAL_DATA_URL}/imoveis/${slug}`}</loc><lastmod>${new Date().toISOString()}</lastmod> </url>`,
     )
     .join('')
+
   return `<?xml version="1.0" encoding="UTF-8"?>
    <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
      <url>

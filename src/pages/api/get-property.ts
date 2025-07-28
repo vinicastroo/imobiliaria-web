@@ -34,9 +34,9 @@ export interface Property {
   }[]
 }
 
-export async function getProperty(id: string) {
-  if (id) {
-    const response = await api.get<Property>(`/imovel/${id}`)
+export async function getProperty(slug: string) {
+  if (slug) {
+    const response = await api.get<Property>(`/imovel/slug/${slug}`)
     const data = response.data
 
     const condition = data && data.files.length > 0

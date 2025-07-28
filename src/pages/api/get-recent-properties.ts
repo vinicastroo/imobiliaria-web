@@ -5,6 +5,7 @@ interface GetRecentProperties {
   properties: {
     id: string
     name: string
+    slug: string
     summary: string
     description: string
     value: string

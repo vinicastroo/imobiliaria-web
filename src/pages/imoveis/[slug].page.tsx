@@ -72,8 +72,8 @@ function Property() {
   const params = useParams()
 
   const { data: property } = useQuery({
-    queryKey: ['cities'],
-    queryFn: () => getProperty(String(params.id)),
+    queryKey: ['property'],
+    queryFn: () => getProperty(String(params.slug)),
   })
 
   const auroraBc = ['Aurora', 'Balneário Camboriú']
@@ -92,7 +92,7 @@ function Property() {
 
             <link
               rel="canonical"
-              href={`https://aurosimobiliaria.com.br/imoveis${params.id}`}
+              href={`https://aurosimobiliaria.com.br/imoveis${params.slug}`}
             />
           </Head>
 

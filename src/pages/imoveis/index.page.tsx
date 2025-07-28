@@ -523,7 +523,7 @@ function Properties() {
               !isLoading &&
               result.properties.map((property) => (
                 <Grid
-                  key={property.id}
+                  key={property.slug}
                   item
                   md={4}
                   sm={12}
@@ -536,7 +536,7 @@ function Properties() {
                     },
                   }}
                 >
-                  <Link href={`/imoveis/${property.id}`} target="_blank">
+                  <Link href={`/imoveis/${property.slug}`} target="_blank">
                     <Card
                       variant="outlined"
                       sx={{
