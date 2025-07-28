@@ -70,6 +70,7 @@ interface TypeProperty {
 interface Property {
   id: string
   name: string
+  slug: string // Added slug to the interface
   summary: string
   description: string
   value: string
@@ -108,6 +109,7 @@ export default function EditarImoveis() {
 
   const createSchema = z.object({
     name: z.string({ required_error: 'Nome é obrigatório' }),
+    slug: z.string({ required_error: 'Slug é obrigatório' }), // Added slug to the Zod schema
     value: z.string({ required_error: 'Valor é obrigatório' }),
     summary: z.string({ required_error: 'Resumo é obrigatório' }),
     type_id: z.string({ required_error: 'Tipo do imóvel é obrigatório' }),
@@ -167,7 +169,27 @@ export default function EditarImoveis() {
       if (response && editor) {
         setProperty(response.data)
         editor.commands.setContent(response.data.description)
+        // Set default values for the form fields
+        setValue('name', response.data.name)
+        setValue('slug', response.data.slug) // Set default value for slug
+        setValue('value', response.data.value)
+        setValue('summary', response.data.summary)
+        setValue('type_id', response.data.type_property.id)
         setValue('description', response.data.description)
+        setValue('bedrooms', response.data.bedrooms)
+        setValue('bathrooms', response.data.bathrooms)
+        setValue('suites', response.data.suites)
+        setValue('parkingSpots', response.data.parkingSpots)
+        setValue('totalArea', response.data.totalArea)
+        setValue('privateArea', response.data.privateArea)
+        setValue('cep', response.data.cep)
+        setValue('state', response.data.state)
+        setValue('city', response.data.city)
+        setValue('neighborhood', response.data.neighborhood)
+        setValue('street', response.data.street)
+        setValue('number', response.data.numberAddress)
+        setValue('latitude', response.data.latitude)
+        setValue('longitude', response.data.longitude)
       }
     }
   }, [id, setValue, editor])
@@ -198,11 +220,6 @@ export default function EditarImoveis() {
 
     if (property) {
       try {
-        // if (files.length === 0) {
-        //   toast.error('Para continuar precisar ter ao menos uma imagem')
-        //   return
-        // }
-
         const paths = await Promise.all(
           files.map(async (fileItem) => {
             const formData = new FormData()
@@ -216,7 +233,10 @@ export default function EditarImoveis() {
           }),
         )
 
+
         if (paths) {
+
+          console.log(data)
           const response = await api.put(`/imovel/${property.id}`, {
             ...data,
             files: paths,
@@ -253,18 +273,6 @@ export default function EditarImoveis() {
 
     loadByCEP()
   }, [cep, setValue])
-
-  // useEffect(() => {
-  //   if (property) {
-  //     setValue('type_id', property.type_property.id)
-  //     setValue('city', property.city)
-  //     setValue('neighborhood', property.neighborhood)
-  //     setValue('state', property.state)
-  //     setValue('street', property.street)
-  //     setValue('latitude', property.latitude)
-  //     setValue('longitude', property.longitude)
-  //   }
-  // }, [property, setValue])
 
   const NumericFormatWithRef = forwardRef((props, ref) => (
     <NumericFormat
@@ -340,6 +348,27 @@ export default function EditarImoveis() {
     },
     [loadProperty, property],
   )
+
+  // Function to generate a slug from the name
+  const generateSlug = (name: string) => {
+    return name
+      .toLowerCase()
+      .normalize('NFD') // Normalize to decompose accented characters
+      .replace(/[\u0300-\u036f]/g, '') // Remove diacritical marks
+      .trim()
+      .replace(/\s+/g, '-') // Replace spaces with hyphens
+      .replace(/[^\w-]+/g, '') // Remove non-alphanumeric characters except hyphens
+  }
+
+  // Effect to automatically update the slug when the name changes
+  useEffect(() => {
+    const subscription = watch((value, { name }) => {
+      if (name === 'name' && value.name) {
+        setValue('slug', generateSlug(value.name));
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, [watch, setValue]);
 
   if (status === 'unauthenticated') {
     router.push('/login')
@@ -433,31 +462,23 @@ export default function EditarImoveis() {
                     ))}
                   </Box>
                   <Box sx={{ mt: 2, maxHeight: '400px' }}>
-                    {/* <Typography variant="caption">
-                      * Ao cadastrar novas imagens, as atuais serão apagadas
-                    </Typography> */}
                     <FilePondStyled
                       allowMultiple={true}
                       allowReorder={true}
                       allowImageCrop={true}
-                      // allowFileSizeValidation={true}
                       allowFileTypeValidation={true}
                       imageCropAspectRatio="16:9"
                       onupdatefiles={onFileChange}
                       onreorderfiles={onFileChange}
                       labelFileTypeNotAllowed="Tipo de arquivo não permitido"
                       files={files}
-                      // maxFileSize="3.5mb"
-                      // labelMaxFileSize="O tamanho maximo toltal dos arquivos permitido é de 5MB"
                       acceptedFileTypes={['image/*']}
-                      server={null} // Não usar a opção de servidor interno do FilePond, pois estamos enviando para um backend personalizado
+                      server={null}
                       labelIdle='Arraste e solte seus arquivos ou <span class="filepond--label-action">Navegue</span>'
                     />
                   </Box>
                 </Card>
                 <Card variant="outlined" sx={{ p: 3, mt: 2 }}>
-                  {/* <FileInput onFileSelect={handleFileSelect} /> */}
-
                   <Typography variant="body2">Dados Gerais</Typography>
 
                   <Box sx={{ display: 'flex', gap: 2, mt: 2 }}>
@@ -479,7 +500,28 @@ export default function EditarImoveis() {
                         />
                       )}
                     />
+
+                    <Controller
+                      name="slug"
+                      control={control}
+                      defaultValue={property.slug}
+                      render={({ field: { ref, ...field } }) => (
+                        <TextField
+                          variant="outlined"
+                          fullWidth
+                          label="Apelido no link"
+                          required
+                          size="small"
+                          error={Boolean(errors.slug)}
+                          helperText={errors.slug?.message}
+                          inputRef={ref}
+                          {...field}
+                        />
+                      )}
+                    />
                   </Box>
+
+
 
                   <Box sx={{ display: 'flex', gap: 2, mt: 2 }}>
                     <Controller

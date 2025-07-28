@@ -71,6 +71,7 @@ export default function CriarImoveis() {
 
   const createSchema = z.object({
     name: z.string({ required_error: 'Nome é obrigatório' }),
+    slug: z.string({ required_error: 'Slug é obrigatório' }), // Novo campo slug
     value: z.string({ required_error: 'Valor é obrigatório' }),
     summary: z.string({ required_error: 'Resumo é obrigatório' }),
     type_id: z.string({ required_error: 'Tipo do imóvel é obrigatório' }),
@@ -197,6 +198,27 @@ export default function CriarImoveis() {
     loadByCEP()
   }, [cep, setValue])
 
+  // Função para gerar o slug a partir do nome
+  const generateSlug = (name: string) => {
+    return name
+      .toLowerCase()
+      .normalize('NFD') // Normaliza para decompor caracteres acentuados
+      .replace(/[\u0300-\u036f]/g, '') // Remove os caracteres diacríticos
+      .trim()
+      .replace(/\s+/g, '-') // Substitui espaços por hífens
+      .replace(/[^\w-]+/g, '') // Remove caracteres não alfanuméricos exceto hífens
+  }
+
+  // Observa a mudança no campo "name" para gerar o slug automaticamente
+  useEffect(() => {
+    const subscription = watch((value, { name }) => {
+      if (name === 'name' && value.name) {
+        setValue('slug', generateSlug(value.name));
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, [watch, setValue]);
+
   const NumericFormatWithRef = forwardRef((props, ref) => (
     <NumericFormat
       {...props}
@@ -294,7 +316,26 @@ export default function CriarImoveis() {
                       />
                     )}
                   />
+
+                  <Controller
+                    name="slug"
+                    control={control}
+                    render={({ field: { ref, ...field } }) => (
+                      <TextField
+                        variant="outlined"
+                        fullWidth
+                        label="Apelido no link"
+                        required
+                        size="small"
+                        error={Boolean(errors.slug)}
+                        helperText={errors.slug?.message}
+                        inputRef={ref}
+                        {...field}
+                      />
+                    )}
+                  />
                 </Box>
+
 
                 <Box sx={{ display: 'flex', gap: 2, mt: 2 }}>
                   <Controller

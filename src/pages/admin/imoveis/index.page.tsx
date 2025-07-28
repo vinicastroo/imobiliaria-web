@@ -55,6 +55,7 @@ interface Property {
   longitude: string
   latitude: string
   visible: boolean
+  slug: string // Adicionado a coluna de slug
   type_property: {
     id: string
     description: string
@@ -99,7 +100,7 @@ export default function Property() {
   const handleClickMenu = (
     event: React.MouseEvent<HTMLElement>,
     id: string,
-  ) => {
+  ) => { 
     setPropertySelected(id)
     setAnchorEl(event.currentTarget)
   }
@@ -176,6 +177,11 @@ export default function Property() {
     {
       field: 'name',
       headerName: 'Nome',
+      flex: 1,
+    },
+    {
+      field: 'slug', // Nova coluna de slug
+      headerName: 'Slug',
       flex: 1,
     },
     {
