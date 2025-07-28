@@ -233,10 +233,7 @@ export default function EditarImoveis() {
           }),
         )
 
-
         if (paths) {
-
-          console.log(data)
           const response = await api.put(`/imovel/${property.id}`, {
             ...data,
             files: paths,
@@ -364,11 +361,11 @@ export default function EditarImoveis() {
   useEffect(() => {
     const subscription = watch((value, { name }) => {
       if (name === 'name' && value.name) {
-        setValue('slug', generateSlug(value.name));
+        setValue('slug', generateSlug(value.name))
       }
-    });
-    return () => subscription.unsubscribe();
-  }, [watch, setValue]);
+    })
+    return () => subscription.unsubscribe()
+  }, [watch, setValue])
 
   if (status === 'unauthenticated') {
     router.push('/login')
@@ -520,8 +517,6 @@ export default function EditarImoveis() {
                       )}
                     />
                   </Box>
-
-
 
                   <Box sx={{ display: 'flex', gap: 2, mt: 2 }}>
                     <Controller

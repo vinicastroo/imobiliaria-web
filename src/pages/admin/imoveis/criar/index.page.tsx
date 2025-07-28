@@ -213,11 +213,11 @@ export default function CriarImoveis() {
   useEffect(() => {
     const subscription = watch((value, { name }) => {
       if (name === 'name' && value.name) {
-        setValue('slug', generateSlug(value.name));
+        setValue('slug', generateSlug(value.name))
       }
-    });
-    return () => subscription.unsubscribe();
-  }, [watch, setValue]);
+    })
+    return () => subscription.unsubscribe()
+  }, [watch, setValue])
 
   const NumericFormatWithRef = forwardRef((props, ref) => (
     <NumericFormat
@@ -335,7 +335,6 @@ export default function CriarImoveis() {
                     )}
                   />
                 </Box>
-
 
                 <Box sx={{ display: 'flex', gap: 2, mt: 2 }}>
                   <Controller

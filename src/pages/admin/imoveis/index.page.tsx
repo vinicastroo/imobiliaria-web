@@ -100,7 +100,7 @@ export default function Property() {
   const handleClickMenu = (
     event: React.MouseEvent<HTMLElement>,
     id: string,
-  ) => { 
+  ) => {
     setPropertySelected(id)
     setAnchorEl(event.currentTarget)
   }
