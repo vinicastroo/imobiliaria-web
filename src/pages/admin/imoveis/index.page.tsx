@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { Menubar } from '@/components/Menubar'
 import { Eye, EyeSlash, PencilSimple, Plus, TrashSimple } from 'phosphor-react'
@@ -75,10 +76,13 @@ export default function Property() {
   const [propertyIdSelected, setPropertySelected] = useState('')
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
 
-  // Novos estados para ordenação e filtro
   const [sortModel, setSortModel] = useState<GridSortModel>([
-    { field: 'createdAt', sort: 'desc' }
+    {
+      field: 'createdAt',
+      sort: 'desc',
+    },
   ])
+
   const [filterModel, setFilterModel] = useState<GridFilterModel>({ items: [] })
 
   const loadProperties = useCallback(async () => {
@@ -93,7 +97,7 @@ export default function Property() {
       params.order = sortModel[0].sort
     }
     // Filtros
-    filterModel.items.forEach(item => {
+    filterModel.items.forEach((item: any) => {
       if (item.value) {
         params[item.columnField] = item.value
       }
@@ -162,12 +166,6 @@ export default function Property() {
     setPropertySelected(id)
     setOpenModalDelete(true)
   }
-
-  const handleCloseDeleteType = () => {
-    setOpenModalDelete(false)
-    loadProperties()
-  }
-  
 
   const columns: GridColDef[] = [
     {
@@ -331,10 +329,16 @@ export default function Property() {
                 onPageChange={(newPage) => setPage(newPage)}
                 sortingMode="server"
                 sortModel={sortModel}
-                onSortModelChange={(model) => { setSortModel(model); setPage(0) }}
+                onSortModelChange={(model) => {
+                  setSortModel(model)
+                  setPage(0)
+                }}
                 filterMode="server"
                 filterModel={filterModel}
-                onFilterModelChange={(model) => { setFilterModel(model); setPage(0) }}
+                onFilterModelChange={(model) => {
+                  setFilterModel(model)
+                  setPage(0)
+                }}
                 sx={{ borderColor: 'transparent' }}
                 localeText={ptBR.components.MuiDataGrid.defaultProps.localeText}
               />
@@ -344,10 +348,16 @@ export default function Property() {
       </Content>
       <ModalDeleteProperty
         open={openModalDelete}
-        handleClose={() => { setOpenModalDelete(false); loadProperties() }}
+        handleClose={() => {
+          setOpenModalDelete(false)
+          loadProperties()
+        }}
         id={propertyIdSelected}
       />
-      <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={loading}>
+      <Backdrop
+        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={loading}
+      >
         <CircularProgress color="inherit" />
       </Backdrop>
     </Container>
