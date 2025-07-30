@@ -1,8 +1,7 @@
+
 import { Menubar } from '@/components/Menubar'
 import { Eye, EyeSlash, PencilSimple, Plus, TrashSimple } from 'phosphor-react'
-
 import { Content } from './styles'
-
 import Container from '@/components/Container'
 import {
   Button,
@@ -10,25 +9,25 @@ import {
   Grid,
   Typography,
   Box,
-  // IconButton,
   Backdrop,
   CircularProgress,
   IconButton,
   Menu,
   MenuItem,
 } from '@mui/material'
-
-import { DataGrid, GridColDef, ptBR } from '@mui/x-data-grid'
-
-// import DeleteIcon from '@mui/icons-material/Delete'
-
+import {
+  DataGrid,
+  GridColDef,
+  GridSortModel,
+  GridFilterModel,
+  ptBR,
+} from '@mui/x-data-grid'
 import { useCallback, useEffect, useState } from 'react'
 import { BackLink } from '@/components/BackLink'
 import api from '@/services/api'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useSession } from 'next-auth/react'
-
 import MoreVertIcon from '@mui/icons-material/MoreVert'
 import { toast } from 'react-toastify'
 import { ModalDeleteProperty } from './ModalDeleteProperty'
@@ -55,7 +54,7 @@ interface Property {
   longitude: string
   latitude: string
   visible: boolean
-  slug: string // Adicionado a coluna de slug
+  slug: string
   type_property: {
     id: string
     description: string
@@ -74,24 +73,38 @@ export default function Property() {
   const [openModalDelete, setOpenModalDelete] = useState(false)
   const [properties, setProperties] = useState<Property[]>([])
   const [propertyIdSelected, setPropertySelected] = useState('')
-
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+
+  // Novos estados para ordenação e filtro
+  const [sortModel, setSortModel] = useState<GridSortModel>([
+    { field: 'createdAt', sort: 'desc' }
+  ])
+  const [filterModel, setFilterModel] = useState<GridFilterModel>({ items: [] })
 
   const loadProperties = useCallback(async () => {
     setLoading(true)
-
-    const response = await api.get(`/imovel`, {
-      params: {
-        page: page + 1,
-        pageSize: 10,
-      },
+    const params: any = {
+      page: page + 1,
+      pageSize: 10,
+    }
+    // Ordenação
+    if (sortModel[0]?.field && sortModel[0]?.sort) {
+      params.orderBy = sortModel[0].field
+      params.order = sortModel[0].sort
+    }
+    // Filtros
+    filterModel.items.forEach(item => {
+      if (item.value) {
+        params[item.columnField] = item.value
+      }
     })
+    const response = await api.get('/imovel', { params })
     if (response) {
       setProperties(response.data.properties)
       setTotal(response.data.totalPages)
     }
     setLoading(false)
-  }, [page])
+  }, [page, sortModel, filterModel])
 
   useEffect(() => {
     loadProperties()
@@ -154,6 +167,7 @@ export default function Property() {
     setOpenModalDelete(false)
     loadProperties()
   }
+  
 
   const columns: GridColDef[] = [
     {
@@ -288,16 +302,13 @@ export default function Property() {
       <Head>
         <title>Auros | Imóveis</title>
       </Head>
-
       <Menubar />
       <Content>
         <BackLink />
-
         <Box display="flex" justifyContent="space-between">
           <Typography variant="h4" color="primary">
             Gerenciamento de Imóveis
           </Typography>
-
           <Button
             variant="contained"
             sx={{ color: '#fff' }}
@@ -307,42 +318,36 @@ export default function Property() {
             Criar Imóvel
           </Button>
         </Box>
-
         <Grid container mt={2} spacing={2}>
           <Grid item md={12}>
-            <Grid container spacing={2}>
-              <Grid item md={12} sm={12}>
-                <Card variant="outlined" sx={{ height: 'auto', width: '100%' }}>
-                  <DataGrid
-                    autoHeight
-                    rows={properties}
-                    columns={columns}
-                    pageSize={10}
-                    rowCount={total}
-                    onPageChange={(newPage) => setPage(newPage)}
-                    page={page}
-                    paginationMode="server"
-                    sx={{ borderColor: 'transparent' }}
-                    localeText={
-                      ptBR.components.MuiDataGrid.defaultProps.localeText
-                    }
-                  />
-                </Card>
-              </Grid>
-            </Grid>
+            <Card variant="outlined" sx={{ width: '100%' }}>
+              <DataGrid
+                autoHeight
+                rows={properties}
+                columns={columns}
+                pageSize={10}
+                rowCount={total}
+                page={page}
+                onPageChange={(newPage) => setPage(newPage)}
+                sortingMode="server"
+                sortModel={sortModel}
+                onSortModelChange={(model) => { setSortModel(model); setPage(0) }}
+                filterMode="server"
+                filterModel={filterModel}
+                onFilterModelChange={(model) => { setFilterModel(model); setPage(0) }}
+                sx={{ borderColor: 'transparent' }}
+                localeText={ptBR.components.MuiDataGrid.defaultProps.localeText}
+              />
+            </Card>
           </Grid>
         </Grid>
       </Content>
-
       <ModalDeleteProperty
         open={openModalDelete}
-        handleClose={handleCloseDeleteType}
+        handleClose={() => { setOpenModalDelete(false); loadProperties() }}
         id={propertyIdSelected}
       />
-      <Backdrop
-        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        open={loading}
-      >
+      <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={loading}>
         <CircularProgress color="inherit" />
       </Backdrop>
     </Container>
