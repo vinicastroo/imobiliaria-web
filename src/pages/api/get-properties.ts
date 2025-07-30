@@ -72,7 +72,7 @@ export async function getProperties({
       privateArea,
       suites,
       totalArea,
-      type,
+      type_property: type,
       page,
       pageSize: 12,
       visible: true,
