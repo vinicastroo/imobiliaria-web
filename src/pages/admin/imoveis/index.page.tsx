@@ -21,6 +21,7 @@ import {
   GridColDef,
   GridSortModel,
   GridFilterModel,
+  GridPaginationModel,
   ptBR,
 } from '@mui/x-data-grid'
 import { useCallback, useEffect, useState } from 'react'
@@ -64,60 +65,67 @@ interface Property {
 }
 
 export default function Property() {
-  const route = useRouter()
-  const { status } = useSession()
   const router = useRouter()
+  const { status } = useSession()
 
-  const [page, setPage] = useState(0)
-  const [total, setTotal] = useState(0)
+  const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
+    page: 0,
+    pageSize: 10,
+  })
+  const [rowCount, setRowCount] = useState(0)
   const [loading, setLoading] = useState(false)
   const [openModalDelete, setOpenModalDelete] = useState(false)
   const [properties, setProperties] = useState<Property[]>([])
   const [propertyIdSelected, setPropertySelected] = useState('')
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
-
   const [sortModel, setSortModel] = useState<GridSortModel>([
     {
       field: 'createdAt',
       sort: 'desc',
     },
   ])
-
   const [filterModel, setFilterModel] = useState<GridFilterModel>({ items: [] })
 
   const loadProperties = useCallback(async () => {
     setLoading(true)
     const params: any = {
-      page: page + 1,
-      pageSize: 10,
+      page: paginationModel.page + 1,
+      pageSize: paginationModel.pageSize,
     }
-    // Ordenação
+
     if (sortModel[0]?.field && sortModel[0]?.sort) {
       params.orderBy = sortModel[0].field
       params.order = sortModel[0].sort
     }
-    // Filtros
-    filterModel.items.forEach((item: any) => {
-      if (item.value) {
-        params[item.columnField] = item.value
-      }
-    })
-    const response = await api.get('/imovel', { params })
-    if (response) {
-      setProperties(response.data.properties)
-      setTotal(response.data.totalPages)
+
+    if (filterModel.items.length > 0) {
+      filterModel.items.forEach((item) => {
+        if (item.value) {
+          // Use 'item.field' em vez de 'item.columnField'
+          params[`filter[${item.field}]`] = item.value;
+        }
+      });
     }
-    setLoading(false)
-  }, [page, sortModel, filterModel])
+
+    try {
+      const response = await api.get('/imovel', { params })
+      if (response) {
+        setProperties(response.data.properties)
+        setRowCount(response.data.totalCount)
+      }
+    } catch (error) {
+      toast.error('Ocorreu um erro ao carregar os imóveis.')
+    } finally {
+      setLoading(false)
+    }
+  }, [paginationModel, sortModel, filterModel])
 
   useEffect(() => {
     loadProperties()
   }, [loadProperties])
 
-  const handleClickMenu = (
-    event: React.MouseEvent<HTMLElement>,
-    id: string,
-  ) => {
+  // Handlers do menu e modais (não alterados, mantidos para completude)
+  const handleClickMenu = (event: React.MouseEvent<HTMLElement>, id: string) => {
     setPropertySelected(id)
     setAnchorEl(event.currentTarget)
   }
@@ -125,43 +133,28 @@ export default function Property() {
     setPropertySelected('')
     setAnchorEl(null)
   }
-
   const handleActivePromotion = useCallback(async () => {
     if (propertyIdSelected) {
       try {
-        await api
-          .patch(`/imovel/${propertyIdSelected}`, {
-            visible: true,
-          })
-          .then(() => {
-            toast.success('Imóvel ativado com sucesso!')
-            loadProperties()
-          })
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        await api.patch(`/imovel/${propertyIdSelected}`, { visible: true })
+        toast.success('Imóvel ativado com sucesso!')
+        loadProperties()
       } catch (error: any) {
         toast.error(error.response?.data.message)
       }
     }
   }, [loadProperties, propertyIdSelected])
-
   const handleDesactivePromotion = useCallback(async () => {
     if (propertyIdSelected) {
       try {
-        await api
-          .patch(`/imovel/${propertyIdSelected}`, {
-            visible: false,
-          })
-          .then(() => {
-            toast.success('Imóvel desativado com sucesso!')
-            loadProperties()
-          })
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        await api.patch(`/imovel/${propertyIdSelected}`, { visible: false })
+        toast.success('Imóvel desativado com sucesso!')
+        loadProperties()
       } catch (error: any) {
         toast.error(error.response?.data.message)
       }
     }
   }, [loadProperties, propertyIdSelected])
-
   const handleOpenDeleteProperty = (id: string) => {
     setPropertySelected(id)
     setOpenModalDelete(true)
@@ -173,27 +166,17 @@ export default function Property() {
       headerName: '#',
       flex: 1,
       minWidth: 300,
-      renderCell: (params) => {
-        return params.row.id
-      },
+      renderCell: (params) => params.row.id,
     },
     {
       field: 'type_property',
       headerName: 'Tipo de Imóvel',
       flex: 1,
-      renderCell: (params) => {
-        const typeProperty = params.row.type_property
-        return typeProperty ? typeProperty.description : '-'
-      },
+      renderCell: (params) => params.row.type_property?.description || '-',
     },
     {
       field: 'name',
       headerName: 'Nome',
-      flex: 1,
-    },
-    {
-      field: 'slug', // Nova coluna de slug
-      headerName: 'Slug',
       flex: 1,
     },
     {
@@ -202,12 +185,19 @@ export default function Property() {
       flex: 1,
     },
     {
+      field: 'slug',
+      headerName: 'Slug',
+      flex: 1,
+    },
+    {
       field: 'city',
       headerName: 'Cidade',
+      flex: 1,
     },
     {
       field: 'neighborhood',
       headerName: 'Bairro',
+      flex: 1,
     },
     {
       field: 'street',
@@ -217,14 +207,14 @@ export default function Property() {
     {
       field: 'visible',
       headerName: 'Situação',
-      renderCell: ({ row }) => {
-        return row.visible ? 'Ativo' : 'Desativo'
-      },
+      renderCell: ({ row }) => (row.visible ? 'Ativo' : 'Desativo'),
     },
     {
       field: 'action',
       headerName: '',
       align: 'right',
+      sortable: false,
+      filterable: false,
       renderCell: ({ row }) => {
         return (
           <div>
@@ -243,9 +233,7 @@ export default function Property() {
                 sx={{ width: '100%' }}
               >
                 <MenuItem
-                  onClick={() => {
-                    router.push(`/admin/imoveis/editar/${row.id}`)
-                  }}
+                  onClick={() => router.push(`/admin/imoveis/editar/${row.id}`)}
                   sx={{ color: '#333', width: '100%' }}
                 >
                   <PencilSimple />
@@ -253,9 +241,7 @@ export default function Property() {
                 </MenuItem>
                 {row.visible && (
                   <MenuItem
-                    onClick={() => {
-                      handleDesactivePromotion()
-                    }}
+                    onClick={() => handleDesactivePromotion()}
                     sx={{ color: '#333', width: '100%' }}
                   >
                     <EyeSlash />
@@ -264,9 +250,7 @@ export default function Property() {
                 )}
                 {!row.visible && (
                   <MenuItem
-                    onClick={() => {
-                      handleActivePromotion()
-                    }}
+                    onClick={() => handleActivePromotion()}
                     sx={{ color: '#333', width: '100%' }}
                   >
                     <Eye />
@@ -274,9 +258,7 @@ export default function Property() {
                   </MenuItem>
                 )}
                 <MenuItem
-                  onClick={() => {
-                    handleOpenDeleteProperty(String(row.id))
-                  }}
+                  onClick={() => handleOpenDeleteProperty(String(row.id))}
                   sx={{ color: '#333', width: '100%' }}
                 >
                   <TrashSimple />
@@ -311,7 +293,7 @@ export default function Property() {
             variant="contained"
             sx={{ color: '#fff' }}
             endIcon={<Plus />}
-            onClick={() => route.push('/admin/imoveis/criar')}
+            onClick={() => router.push('/admin/imoveis/criar')}
           >
             Criar Imóvel
           </Button>
@@ -323,22 +305,18 @@ export default function Property() {
                 autoHeight
                 rows={properties}
                 columns={columns}
-                pageSize={10}
-                rowCount={total}
-                page={page}
-                onPageChange={(newPage) => setPage(newPage)}
+                rowCount={rowCount}
+                loading={loading}
+                paginationMode="server"
                 sortingMode="server"
-                sortModel={sortModel}
-                onSortModelChange={(model) => {
-                  setSortModel(model)
-                  setPage(0)
-                }}
                 filterMode="server"
+                onPaginationModelChange={setPaginationModel}
+                onSortModelChange={setSortModel}
+                onFilterModelChange={setFilterModel}
+                paginationModel={paginationModel}
+                sortModel={sortModel}
                 filterModel={filterModel}
-                onFilterModelChange={(model) => {
-                  setFilterModel(model)
-                  setPage(0)
-                }}
+                pageSizeOptions={[10, 25, 50]}
                 sx={{ borderColor: 'transparent' }}
                 localeText={ptBR.components.MuiDataGrid.defaultProps.localeText}
               />
