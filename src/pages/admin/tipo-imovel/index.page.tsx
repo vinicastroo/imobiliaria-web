@@ -136,8 +136,6 @@ export default function TipoImovel() {
                     autoHeight
                     rows={types}
                     columns={columns}
-                    pageSize={10}
-                    rowsPerPageOptions={[10]}
                     sx={{ borderColor: 'transparent' }}
                     localeText={
                       ptBR.components.MuiDataGrid.defaultProps.localeText

@@ -102,9 +102,9 @@ export default function Property() {
       filterModel.items.forEach((item) => {
         if (item.value) {
           // Use 'item.field' em vez de 'item.columnField'
-          params[`filter[${item.field}]`] = item.value;
+          params[`filter[${item.field}]`] = item.value
         }
-      });
+      })
     }
 
     try {
@@ -125,14 +125,16 @@ export default function Property() {
   }, [loadProperties])
 
   // Handlers do menu e modais (não alterados, mantidos para completude)
-  const handleClickMenu = (event: React.MouseEvent<HTMLElement>, id: string) => {
+  const handleClickMenu = (event: any, id: string) => {
     setPropertySelected(id)
     setAnchorEl(event.currentTarget)
   }
+
   const handleClose = () => {
     setPropertySelected('')
     setAnchorEl(null)
   }
+
   const handleActivePromotion = useCallback(async () => {
     if (propertyIdSelected) {
       try {
