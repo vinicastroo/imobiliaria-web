@@ -108,7 +108,7 @@ export default function Property() {
     }
 
     try {
-      const response = await api.get('/imovel', { params })
+      const response = await api.get('/imovel/todos', { params })
       if (response) {
         setProperties(response.data.properties)
         setRowCount(response.data.totalCount)
