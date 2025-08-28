@@ -39,6 +39,7 @@ import { useParams } from 'next/navigation'
 interface Property {
   id: string
   name: string
+  slug: string
   summary: string
   description: string
   value: string
@@ -418,7 +419,7 @@ function Property() {
                             variant="contained"
                             onClick={() =>
                               window.open(
-                                `https://api.whatsapp.com/send?phone=5547997798081&&text=Olá, vim pelo site, gostaria de mais informações, do imóvel (https://www.aurosimobiliaria.com.br/imoveis/${property.id})`,
+                                `https://api.whatsapp.com/send?phone=5547997798081&&text=Olá, vim pelo site, gostaria de mais informações, do imóvel (https://www.aurosimobiliaria.com.br/imoveis/${property.slug})`,
                               )
                             }
                           >
@@ -459,7 +460,7 @@ function Property() {
                             variant="contained"
                             onClick={() =>
                               window.open(
-                                `https://api.whatsapp.com/send?phone=5547992426980&&text=Olá, vim pelo site, gostaria de mais informações, do imóvel (https://www.aurosimobiliaria.com.br/imoveis/${property.id})`,
+                                `https://api.whatsapp.com/send?phone=5547992426980&&text=Olá, vim pelo site, gostaria de mais informações, do imóvel (https://www.aurosimobiliaria.com.br/imoveis/${property.slug})`,
                               )
                             }
                           >
@@ -504,7 +505,7 @@ function Property() {
                             variant="contained"
                             onClick={() =>
                               window.open(
-                                `https://api.whatsapp.com/send?phone=5547999008090&text=Olá, vim pelo site, gostaria de mais informações, do imóvel (https://www.aurosimobiliaria.com.br/imoveis/${property.id}v)`,
+                                `https://api.whatsapp.com/send?phone=5547999008090&text=Olá, vim pelo site, gostaria de mais informações, do imóvel (https://www.aurosimobiliaria.com.br/imoveis/${property.slug}v)`,
                               )
                             }
                           >
@@ -546,7 +547,7 @@ function Property() {
                             variant="contained"
                             onClick={() =>
                               window.open(
-                                `https://api.whatsapp.com/send?phone=55474792642915&text=Olá, vim pelo site, gostaria de mais informações, do imóvel (https://www.aurosimobiliaria.com.br/imoveis/${property.id})`,
+                                `https://api.whatsapp.com/send?phone=55474792642915&text=Olá, vim pelo site, gostaria de mais informações, do imóvel (https://www.aurosimobiliaria.com.br/imoveis/${property.slug})`,
                               )
                             }
                           >
@@ -587,7 +588,7 @@ function Property() {
                           variant="contained"
                           onClick={() =>
                             window.open(
-                              `https://api.whatsapp.com/send?phone=5547999990607&text=Olá, vim pelo site, gostaria de mais informações, do imóvel (https://www.aurosimobiliaria.com.br/imoveis/${property.id})`,
+                              `https://api.whatsapp.com/send?phone=5547999990607&text=Olá, vim pelo site, gostaria de mais informações, do imóvel (https://www.aurosimobiliaria.com.br/imoveis/${property.slug})`,
                             )
                           }
                         >
@@ -630,7 +631,7 @@ function Property() {
                             variant="contained"
                             onClick={() =>
                               window.open(
-                                `https://api.whatsapp.com/send?phone=5547988163739&text=Olá, vim pelo site, gostaria de mais informações, do imóvel (https://www.aurosimobiliaria.com.br/imoveis/${property.id})`,
+                                `https://api.whatsapp.com/send?phone=5547988163739&text=Olá, vim pelo site, gostaria de mais informações, do imóvel (https://www.aurosimobiliaria.com.br/imoveis/${property.slug})`,
                               )
                             }
                           >
@@ -671,7 +672,7 @@ function Property() {
                             variant="contained"
                             onClick={() =>
                               window.open(
-                                `https://api.whatsapp.com/send?phone=5547992426980&&text=Olá, vim pelo site, gostaria de mais informações, do imóvel (https://www.aurosimobiliaria.com.br/imoveis/${property.id})`,
+                                `https://api.whatsapp.com/send?phone=5547992426980&&text=Olá, vim pelo site, gostaria de mais informações, do imóvel (https://www.aurosimobiliaria.com.br/imoveis/${property.slug})`,
                               )
                             }
                           >
@@ -719,7 +720,7 @@ function Property() {
                               variant="contained"
                               onClick={() =>
                                 window.open(
-                                  `https://api.whatsapp.com/send?phone=5547997798081&text=Olá, vim pelo site, gostaria de mais informações, do imóvel (https://www.aurosimobiliaria.com.br/imoveis/${property.id})`,
+                                  `https://api.whatsapp.com/send?phone=5547997798081&text=Olá, vim pelo site, gostaria de mais informações, do imóvel (https://www.aurosimobiliaria.com.br/imoveis/${property.slug})`,
                                 )
                               }
                             >
@@ -759,7 +760,7 @@ function Property() {
                               variant="contained"
                               onClick={() =>
                                 window.open(
-                                  `https://api.whatsapp.com/send?phone=5547999008090&text=Olá, vim pelo site, gostaria de mais informações, do imóvel (https://www.aurosimobiliaria.com.br/imoveis/${property.id})`,
+                                  `https://api.whatsapp.com/send?phone=5547999008090&text=Olá, vim pelo site, gostaria de mais informações, do imóvel (https://www.aurosimobiliaria.com.br/imoveis/${property.slug})`,
                                 )
                               }
                             >
@@ -800,7 +801,7 @@ function Property() {
                               variant="contained"
                               onClick={() =>
                                 window.open(
-                                  `https://api.whatsapp.com/send?phone=5547999990607&&text=Olá, vim pelo site, gostaria de mais informações, do imóvel (https://www.aurosimobiliaria.com.br/imoveis/${property.id})`,
+                                  `https://api.whatsapp.com/send?phone=5547999990607&&text=Olá, vim pelo site, gostaria de mais informações, do imóvel (https://www.aurosimobiliaria.com.br/imoveis/${property.slug})`,
                                 )
                               }
                             >
@@ -841,7 +842,7 @@ function Property() {
                               variant="contained"
                               onClick={() =>
                                 window.open(
-                                  `https://api.whatsapp.com/send?phone=55474792642915&text=Olá, vim pelo site, gostaria de mais informações, do imóvel (https://www.aurosimobiliaria.com.br/imoveis/${property.id})`,
+                                  `https://api.whatsapp.com/send?phone=55474792642915&text=Olá, vim pelo site, gostaria de mais informações, do imóvel (https://www.aurosimobiliaria.com.br/imoveis/${property.slug})`,
                                 )
                               }
                             >
@@ -880,7 +881,7 @@ function Property() {
                               variant="contained"
                               onClick={() =>
                                 window.open(
-                                  `https://api.whatsapp.com/send?phone=5547988163739&text=Olá, vim pelo site, gostaria de mais informações, do imóvel (https://www.aurosimobiliaria.com.br/imoveis/${property.id})`,
+                                  `https://api.whatsapp.com/send?phone=5547988163739&text=Olá, vim pelo site, gostaria de mais informações, do imóvel (https://www.aurosimobiliaria.com.br/imoveis/${property.slug})`,
                                 )
                               }
                             >
@@ -922,7 +923,7 @@ function Property() {
                               variant="contained"
                               onClick={() =>
                                 window.open(
-                                  `https://api.whatsapp.com/send?phone=5547992426980&&text=Olá, vim pelo site, gostaria de mais informações, do imóvel (https://www.aurosimobiliaria.com.br/imoveis/${property.id})`,
+                                  `https://api.whatsapp.com/send?phone=5547992426980&&text=Olá, vim pelo site, gostaria de mais informações, do imóvel (https://www.aurosimobiliaria.com.br/imoveis/${property.slug})`,
                                 )
                               }
                             >
