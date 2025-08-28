@@ -115,10 +115,10 @@ function Property() {
               >
                 {property && property.items && property.items.length > 0 ? (
                   property.items.map((item, i) => (
-                    <img
+                    <Image
                       key={i}
                       src={item.img}
-                      alt="foto do imovel"
+                      alt={`foto do imóvel em ${property.name}, ${property.city}`}
                       width={1200}
                       height={600}
                       loading="lazy"
