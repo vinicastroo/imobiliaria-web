@@ -30,16 +30,20 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { BackLink } from '@/components/back-link'
 import { MenuBarTiptap } from '@/components/menu-bar-tip-tap'
 import { MultiFileInput } from '@/components/multi-file-input'
-import { RealtorSorter } from '@/components/realtor-sorter' // <--- IMPORTANTE: Importe o componente que criamos
+import { RealtorSorter } from '@/components/realtor-sorter'
 
 import api from '@/services/api'
 import brasilAPi from '@/services/brasilAPi'
 
-// Schema Zod (Mantido igual)
+// --- CORREÇÃO 1: Schema Flexível para Código ---
+// Aceita string (legado) OU número (novo incremental)
 const createSchema = z.object({
   name: z.string().min(1, 'Nome é obrigatório'),
   slug: z.string().min(1, 'Slug é obrigatório'),
-  code: z.number().min(1, 'Código é obrigatório'),
+
+  // Alterado para aceitar String ou Number, evitando erro de NaN
+  code: z.union([z.string(), z.number()]),
+
   value: z.string().min(1, 'Valor é obrigatório'),
   summary: z.string().min(1, 'Resumo é obrigatório'),
   type_id: z.string().min(1, 'Tipo do imóvel é obrigatório'),
@@ -80,7 +84,7 @@ interface Property {
   id: string
   name: string
   slug: string
-  code: string
+  code: string | number // Tipagem flexível
   summary: string
   description: string
   value: string
@@ -108,7 +112,7 @@ interface Property {
     fileName: string
     thumb?: boolean
   }[]
-  realtors: Realtor[] // Assumindo que a API já retorna ordenado
+  realtors: Realtor[]
   enterprise?: {
     id: string
     name: string
@@ -143,7 +147,6 @@ export default function EditarImovelPage() {
     }
   })
 
-  // Configuração Tiptap
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -182,7 +185,13 @@ export default function EditarImovelPage() {
       // Preencher formulário
       setValue('name', propData.name)
       setValue('slug', propData.slug)
-      setValue('code', Number(propData.code))
+
+      // --- CORREÇÃO 2: Carregamento Seguro do Código ---
+      // Se for número, carrega número. Se for texto, carrega texto.
+      // Isso evita o NaN que estava travando seu formulário.
+      const isNum = !isNaN(Number(propData.code))
+      setValue('code', isNum ? Number(propData.code) : propData.code)
+
       setValue('value', propData.value)
       setValue('summary', propData.summary)
       setValue('type_id', propData.type_property.id)
@@ -203,9 +212,8 @@ export default function EditarImovelPage() {
       setValue('longitude', propData.longitude)
       setValue('enterpriseId', propData.enterprise?.id)
 
-      // Preenche os corretores JÁ NA ORDEM QUE VIERAM DO BACKEND
+      // Carrega Corretores
       if (propData.realtors && propData.realtors.length > 0) {
-        // Assume que a API já retorna ordenado pelo campo 'order' da tabela pivô
         setValue('realtorIds', propData.realtors.map(r => r.id))
       } else {
         setValue('realtorIds', [])
@@ -273,6 +281,9 @@ export default function EditarImovelPage() {
   const onSubmit = async (data: SchemaQuestion) => {
     setIsSubmitting(true)
     try {
+      // Debug: Verifique no console se os corretores estão aqui
+      console.log("Enviando dados:", data)
+
       let paths: { path: string, fileName: string }[] = []
 
       if (newFiles.length > 0) {
@@ -281,9 +292,10 @@ export default function EditarImovelPage() {
             const formData = new FormData()
             formData.append('files', fileItem.file as Blob)
             const res = await api.post('/files/upload', formData)
+            // Ajuste conforme o retorno da sua API
             return {
-              path: res.data.paths[0].path, // Ajuste conforme retorno exato da sua API
-              fileName: res.data.paths[0].fileName
+              path: res.data.paths[0]?.path || res.data.paths[0],
+              fileName: res.data.paths[0]?.fileName || fileItem.file.name
             }
           })
         )
@@ -364,7 +376,13 @@ export default function EditarImovelPage() {
                       <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
                           <Label>Código do Imóvel</Label>
-                          <Input {...register('code')} placeholder="Ex: APV123" />
+                          {/* Campo de Código: Se for número, pode estar desabilitado ou editável */}
+                          <Input
+                            {...register('code')}
+                            placeholder="Ex: APV123"
+                            disabled={typeof property.code === 'number'} // Se for novo (número), bloqueia edição
+                            className={typeof property.code === 'number' ? "bg-gray-100 font-bold" : ""}
+                          />
                           {errors.code && <span className="text-xs text-red-500">{errors.code.message}</span>}
                         </div>
                         <div className="space-y-2">
@@ -460,7 +478,7 @@ export default function EditarImovelPage() {
                     </CardContent>
                   </Card>
 
-                  {/* --- CARD DE CORRETORES ATUALIZADO (Ordenável e com Foto) --- */}
+                  {/* --- CARD DE CORRETORES --- */}
                   <Card className='py-6'>
                     <CardHeader>
                       <CardTitle>Corretores Responsáveis</CardTitle>
@@ -483,7 +501,7 @@ export default function EditarImovelPage() {
 
                 </div>
 
-                {/* COLUNA DIREITA (Mantida igual ao código anterior) */}
+                {/* COLUNA DIREITA (Mantida) */}
                 <div className="md:col-span-1 space-y-6">
                   <Card className='py-6'>
                     <CardHeader><CardTitle>Características</CardTitle></CardHeader>

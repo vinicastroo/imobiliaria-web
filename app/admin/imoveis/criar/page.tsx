@@ -1,20 +1,20 @@
 "use client"
 
-import { useState, useEffect, forwardRef } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { toast } from 'sonner'
 import { NumericFormat } from 'react-number-format'
-import { Bed, Bath, CarFront, Ruler, Loader2, Image as ImageIcon, FileText, User } from 'lucide-react'
+import { Bed, Bath, CarFront, Ruler, Loader2, Image as ImageIcon, FileText } from 'lucide-react'
 
 // --- TIPTAP (Editor) ---
-// Adicionei EditorContent aqui
 import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import TextAlign from '@tiptap/extension-text-align'
-import MenuBar from '@/components/menu-bar-editor'
+// Ajuste o import conforme o nome do seu componente (usei o mesmo do Editar)
+import { MenuBarTiptap } from '@/components/menu-bar-tip-tap'
 
 import type { FilePondFile } from 'filepond'
 
@@ -29,15 +29,16 @@ import { Separator } from '@/components/ui/separator'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { BackLink } from '@/components/back-link'
 import { MultiFileInput } from '@/components/multi-file-input'
+import { RealtorSorter } from '@/components/realtor-sorter'
 
 import api from '@/services/api'
 import brasilAPi from '@/services/brasilAPi'
-import { RealtorSorter } from '@/components/realtor-sorter'
 
+// Schema Zod (Sem o campo 'code', pois é autoincrement)
 const createSchema = z.object({
   name: z.string().min(1, 'Nome é obrigatório'),
   slug: z.string().min(1, 'Slug é obrigatório'),
-  code: z.string().min(1, 'Código do imóvel é obrigatório'),
+  // code: Removido, o banco gera automático
   value: z.string().min(1, 'Valor é obrigatório'),
   summary: z.string().min(1, 'Resumo é obrigatório'),
   type_id: z.string().min(1, 'Tipo do imóvel é obrigatório'),
@@ -93,7 +94,13 @@ export default function CriarImovelPage() {
   } = useForm<SchemaQuestion>({
     resolver: zodResolver(createSchema),
     defaultValues: {
-      realtorIds: []
+      realtorIds: [],
+      bedrooms: "0",
+      bathrooms: "0",
+      suites: "0",
+      parkingSpots: "0",
+      totalArea: "0",
+      privateArea: "0"
     }
   })
 
@@ -113,8 +120,7 @@ export default function CriarImovelPage() {
     content: '',
     editorProps: {
       attributes: {
-        class: 'prose prose-sm max-w-none min-h-[200px] p-3 focus:outline-none text-gray-700',
-        spellcheck: 'false',
+        class: 'min-h-[200px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 prose prose-sm max-w-none',
       },
     },
     immediatelyRender: false,
@@ -123,6 +129,7 @@ export default function CriarImovelPage() {
     },
   })
 
+  // Gera Slug automaticamente
   const name = watch('name')
   useEffect(() => {
     if (name) {
@@ -139,6 +146,7 @@ export default function CriarImovelPage() {
     }
   }, [name, setValue])
 
+  // Busca CEP
   const cep = watch('cep')
   useEffect(() => {
     if (cep && cep.length >= 8) {
@@ -163,15 +171,21 @@ export default function CriarImovelPage() {
 
     setIsSubmitting(true)
     try {
+      // Upload das imagens
       const paths = await Promise.all(
         files.map(async (fileItem) => {
           const formData = new FormData()
           formData.append('files', fileItem.file as Blob)
           const res = await api.post('/files/upload', formData)
-          return res.data.paths[0]
+          // Garante estrutura correta
+          return {
+            path: res.data.paths[0]?.path || res.data.paths[0],
+            fileName: res.data.paths[0]?.fileName || fileItem.file.name
+          }
         })
       )
 
+      // Envia para API (sem o campo code, o backend gera)
       await api.post('/imovel', { ...data, files: paths })
 
       toast.success('Imóvel criado com sucesso!')
@@ -227,6 +241,7 @@ export default function CriarImovelPage() {
             <TabsContent value="geral">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
 
+                {/* COLUNA ESQUERDA */}
                 <div className="md:col-span-2 space-y-6">
                   <Card className='py-6'>
                     <CardHeader><CardTitle>Informações do Imóvel</CardTitle></CardHeader>
@@ -236,14 +251,13 @@ export default function CriarImovelPage() {
                       {errors.name && <span className="text-xs text-red-500">{errors.name.message}</span>}
 
                       <div className="grid grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                          <Label>Código do Imóvel</Label>
-                          <Input {...register('code')} placeholder="Ex: APV123" />
-                          {errors.code && <span className="text-xs text-red-500">{errors.code.message}</span>}
-                        </div>
-                        <div className="space-y-2">
+                        {/* REMOVIDO O CAMPO CÓDIGO 
+                           Motivo: Banco gera automaticamente (1000, 1001...) 
+                        */}
+                        <div className="space-y-2 col-span-2">
                           <Label>Slug (URL)</Label>
                           <Input {...register('slug')} />
+                          {errors.slug && <span className="text-xs text-red-500">{errors.slug.message}</span>}
                         </div>
                       </div>
 
@@ -321,53 +335,41 @@ export default function CriarImovelPage() {
                         {errors.summary && <span className="text-xs text-red-500">{errors.summary.message}</span>}
                       </div>
 
-                      {/* --- TIPTAP EDITOR (SEM STYLED COMPONENTS) --- */}
                       <div className="space-y-2">
                         <Label>Descrição Completa</Label>
-
-                        <div className={`border rounded-md ${errors.description ? 'border-red-500' : 'border-gray-200'} bg-white overflow-hidden`}>
-                          {/* MenuBar no topo */}
-                          <div className="border-b bg-gray-50 p-2">
-                            <MenuBar editor={editor} />
-                          </div>
-
-                          {/* Conteúdo do Editor */}
+                        <div className={`border rounded-md ${errors.description ? 'border-red-500' : 'border-gray-200'} bg-white overflow-hidden focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2`}>
+                          <MenuBarTiptap editor={editor} />
                           <EditorContent editor={editor} />
                         </div>
-
                         {errors.description && <span className="text-xs text-red-500">{errors.description.message}</span>}
                       </div>
 
                     </CardContent>
                   </Card>
 
-                  {/* Card Corretores */}
+                  {/* Card Corretores (Com Sorter) */}
                   <Card className='py-6'>
                     <CardHeader>
                       <CardTitle>Corretores Responsáveis</CardTitle>
                       <p className="text-sm text-gray-500">Selecione quem está atendendo este imóvel</p>
                     </CardHeader>
                     <CardContent>
-                      {realtors.length === 0 ? (
-                        <p className="text-sm text-gray-500 italic">Nenhum corretor cadastrado.</p>
-                      ) : (
-                        <Controller
-                          name="realtorIds"
-                          control={control}
-                          render={({ field }) => (
-                            <RealtorSorter
-                              allRealtors={realtors}
-                              selectedIds={field.value || []}
-                              onChange={field.onChange}
-                            />
-                          )}
-                        />
-                      )}
+                      <Controller
+                        name="realtorIds"
+                        control={control}
+                        render={({ field }) => (
+                          <RealtorSorter
+                            allRealtors={realtors}
+                            selectedIds={field.value || []}
+                            onChange={field.onChange}
+                          />
+                        )}
+                      />
                     </CardContent>
                   </Card>
                 </div>
 
-                {/* Coluna Direita */}
+                {/* COLUNA DIREITA */}
                 <div className="md:col-span-1 space-y-6">
                   <Card className='py-6'>
                     <CardHeader><CardTitle>Características</CardTitle></CardHeader>
