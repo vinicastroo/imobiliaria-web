@@ -29,11 +29,10 @@ import { Separator } from '@/components/ui/separator'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { BackLink } from '@/components/back-link'
 import { MultiFileInput } from '@/components/multi-file-input'
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Checkbox } from "@/components/ui/checkbox"
 
 import api from '@/services/api'
 import brasilAPi from '@/services/brasilAPi'
+import { RealtorSorter } from '@/components/realtor-sorter'
 
 const createSchema = z.object({
   name: z.string().min(1, 'Nome é obrigatório'),
@@ -352,40 +351,17 @@ export default function CriarImovelPage() {
                       {realtors.length === 0 ? (
                         <p className="text-sm text-gray-500 italic">Nenhum corretor cadastrado.</p>
                       ) : (
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                          {realtors.map((realtor) => (
-                            <div
-                              key={realtor.id}
-                              className="flex items-center space-x-3 border p-3 rounded-lg hover:bg-gray-50 transition-colors"
-                            >
-                              <Controller
-                                name="realtorIds"
-                                control={control}
-                                render={({ field }) => (
-                                  <Checkbox
-                                    id={`realtor-${realtor.id}`}
-                                    checked={field.value?.includes(realtor.id)}
-                                    onCheckedChange={(checked) => {
-                                      return checked
-                                        ? field.onChange([...(field.value || []), realtor.id])
-                                        : field.onChange((field.value || []).filter((value) => value !== realtor.id))
-                                    }}
-                                  />
-                                )}
-                              />
-                              <Avatar className="h-10 w-10 border">
-                                <AvatarImage src={realtor.avatar} />
-                                <AvatarFallback><User size={16} /></AvatarFallback>
-                              </Avatar>
-                              <div className="flex flex-col">
-                                <Label htmlFor={`realtor-${realtor.id}`} className="cursor-pointer font-medium">
-                                  {realtor.name}
-                                </Label>
-                                <span className="text-xs text-gray-500">CRECI: {realtor.creci}</span>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
+                        <Controller
+                          name="realtorIds"
+                          control={control}
+                          render={({ field }) => (
+                            <RealtorSorter
+                              allRealtors={realtors}
+                              selectedIds={field.value || []}
+                              onChange={field.onChange}
+                            />
+                          )}
+                        />
                       )}
                     </CardContent>
                   </Card>

@@ -78,13 +78,13 @@ export function HeroSection() {
 
         <nav className="flex flex-col md:flex-row items-center gap-6 text-white font-medium">
           <div className="flex gap-4">
-            <Link href="https://wa.me/..." target="_blank" className="hover:opacity-80 transition-opacity">
+            <Link href="https://api.whatsapp.com/send?phone=5547988163739&&text=Olá, vim pelo site" target="_blank" className="hover:opacity-80 transition-opacity">
               <WhatsappLogo size={20} />
             </Link>
-            <Link href="https://instagram.com/..." target="_blank" className="hover:opacity-80 transition-opacity">
+            <Link href="https://www.instagram.com/auroscorretoraimobiliaria/" target="_blank" className="hover:opacity-80 transition-opacity">
               <Instagram size={16} />
             </Link>
-            <Link href="https://facebook.com/..." target="_blank" className="hover:opacity-80 transition-opacity">
+            <Link href="https://www.facebook.com/AurosCorretoraImob?locale=pt_BR" target="_blank" className="hover:opacity-80 transition-opacity">
               <Facebook size={16} />
             </Link>
           </div>

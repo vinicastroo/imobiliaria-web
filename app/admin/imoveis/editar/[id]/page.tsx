@@ -12,7 +12,7 @@ import StarterKit from '@tiptap/starter-kit'
 import TextAlign from '@tiptap/extension-text-align'
 import {
   Bed, Bath, CarFront, Ruler, Loader2,
-  Image as ImageIcon, FileText, Trash2, Star, User
+  Image as ImageIcon, FileText, Trash2, Star
 } from 'lucide-react'
 import Image from 'next/image'
 
@@ -30,15 +30,16 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { BackLink } from '@/components/back-link'
 import { MenuBarTiptap } from '@/components/menu-bar-tip-tap'
 import { MultiFileInput } from '@/components/multi-file-input'
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { RealtorSorter } from '@/components/realtor-sorter' // <--- IMPORTANTE: Importe o componente que criamos
 
 import api from '@/services/api'
 import brasilAPi from '@/services/brasilAPi'
 
+// Schema Zod (Mantido igual)
 const createSchema = z.object({
   name: z.string().min(1, 'Nome é obrigatório'),
   slug: z.string().min(1, 'Slug é obrigatório'),
-  code: z.string().min(1, 'Código é obrigatório'), // <--- CAMPO CÓDIGO
+  code: z.string().min(1, 'Código é obrigatório'),
   value: z.string().min(1, 'Valor é obrigatório'),
   summary: z.string().min(1, 'Resumo é obrigatório'),
   type_id: z.string().min(1, 'Tipo do imóvel é obrigatório'),
@@ -58,6 +59,7 @@ const createSchema = z.object({
   latitude: z.string().min(1, 'Latitude obrigatória'),
   longitude: z.string().min(1, 'Longitude obrigatória'),
   realtorIds: z.array(z.string()).optional(),
+  enterpriseId: z.string().optional(),
 })
 
 type SchemaQuestion = z.infer<typeof createSchema>
@@ -106,7 +108,11 @@ interface Property {
     fileName: string
     thumb?: boolean
   }[]
-  realtors: Realtor[]
+  realtors: Realtor[] // Assumindo que a API já retorna ordenado
+  enterprise?: {
+    id: string
+    name: string
+  }
 }
 
 export default function EditarImovelPage() {
@@ -117,6 +123,7 @@ export default function EditarImovelPage() {
   const [property, setProperty] = useState<Property | null>(null)
   const [types, setTypes] = useState<TypeProperty[]>([])
   const [allRealtors, setAllRealtors] = useState<Realtor[]>([])
+  const [enterprises, setEnterprises] = useState<{ id: string, name: string }[]>([])
 
   const [newFiles, setNewFiles] = useState<FilePondFile[]>([])
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -131,8 +138,12 @@ export default function EditarImovelPage() {
     formState: { errors },
   } = useForm<SchemaQuestion>({
     resolver: zodResolver(createSchema),
+    defaultValues: {
+      realtorIds: []
+    }
   })
 
+  // Configuração Tiptap
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -154,14 +165,16 @@ export default function EditarImovelPage() {
   const loadProperty = useCallback(async () => {
     try {
       setLoadingData(true)
-      const [typesRes, realtorsRes, propertyRes] = await Promise.all([
+      const [typesRes, realtorsRes, propertyRes, enterprisesRes] = await Promise.all([
         api.get('/tipo-imovel'),
         api.get('/corretor'),
-        api.get(`/imovel/${id}`)
+        api.get(`/imovel/${id}`),
+        api.get('/empreendimento')
       ])
 
       setTypes(typesRes.data)
       setAllRealtors(realtorsRes.data)
+      setEnterprises(enterprisesRes.data)
 
       const propData: Property = propertyRes.data
       setProperty(propData)
@@ -169,7 +182,7 @@ export default function EditarImovelPage() {
       // Preencher formulário
       setValue('name', propData.name)
       setValue('slug', propData.slug)
-      setValue('code', propData.code) // <--- Preenche o Código
+      setValue('code', propData.code)
       setValue('value', propData.value)
       setValue('summary', propData.summary)
       setValue('type_id', propData.type_property.id)
@@ -188,10 +201,14 @@ export default function EditarImovelPage() {
       setValue('number', propData.numberAddress)
       setValue('latitude', propData.latitude)
       setValue('longitude', propData.longitude)
+      setValue('enterpriseId', propData.enterprise?.id)
 
-      // Preenche os corretores já selecionados
-      if (propData.realtors) {
+      // Preenche os corretores JÁ NA ORDEM QUE VIERAM DO BACKEND
+      if (propData.realtors && propData.realtors.length > 0) {
+        // Assume que a API já retorna ordenado pelo campo 'order' da tabela pivô
         setValue('realtorIds', propData.realtors.map(r => r.id))
+      } else {
+        setValue('realtorIds', [])
       }
 
       if (editor) {
@@ -237,14 +254,8 @@ export default function EditarImovelPage() {
   }
 
   // Watchers
-  const name = watch('name')
-  // OBS: Na edição, removemos o useEffect que força o slug ser igual ao nome,
-  // para permitir que o usuário mantenha um slug antigo ou edite manualmente.
-
   const cep = watch('cep')
   useEffect(() => {
-    // Só busca CEP se o usuário digitar algo novo (diferente do carregado)
-    // Para simplificar, mantemos a lógica, mas idealmente verificamos se mudou.
     if (cep && cep.length >= 8 && cep !== property?.cep) {
       brasilAPi.get(`/api/cep/v2/${cep}`).then((res) => {
         setValue('city', res.data.city)
@@ -271,8 +282,8 @@ export default function EditarImovelPage() {
             formData.append('files', fileItem.file as Blob)
             const res = await api.post('/files/upload', formData)
             return {
-              path: res.data.paths[0],
-              fileName: fileItem.file.name
+              path: res.data.paths[0].path, // Ajuste conforme retorno exato da sua API
+              fileName: res.data.paths[0].fileName
             }
           })
         )
@@ -351,20 +362,18 @@ export default function EditarImovelPage() {
                       {errors.name && <span className="text-xs text-red-500">{errors.name.message}</span>}
 
                       <div className="grid grid-cols-2 gap-4">
-                        {/* --- CAMPO CÓDIGO (Editável) --- */}
                         <div className="space-y-2">
                           <Label>Código do Imóvel</Label>
                           <Input {...register('code')} placeholder="Ex: APV123" />
                           {errors.code && <span className="text-xs text-red-500">{errors.code.message}</span>}
                         </div>
-
-                        {/* --- CAMPO SLUG (Editável) --- */}
                         <div className="space-y-2">
                           <Label>Slug (URL)</Label>
                           <Input {...register('slug')} />
                           {errors.slug && <span className="text-xs text-red-500">{errors.slug.message}</span>}
                         </div>
                       </div>
+
 
                       <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
@@ -410,6 +419,27 @@ export default function EditarImovelPage() {
                       </div>
 
                       <div className="space-y-2">
+                        <Label>Empreendimento <span className='text-xs'>(Opcional)</span></Label>
+                        <Controller
+                          name="enterpriseId"
+                          control={control}
+                          render={({ field }) => (
+                            <Select onValueChange={field.onChange} value={field.value || undefined}>
+                              <SelectTrigger className='w-full'>
+                                <SelectValue placeholder="Selecione um empreendimento" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="none_value">-- Nenhum --</SelectItem>
+                                {enterprises.map((ent) => (
+                                  <SelectItem key={ent.id} value={ent.id}>{ent.name}</SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          )}
+                        />
+                      </div>
+
+                      <div className="space-y-2">
                         <Label>Resumo</Label>
                         <Textarea
                           {...register('summary')}
@@ -430,52 +460,31 @@ export default function EditarImovelPage() {
                     </CardContent>
                   </Card>
 
-                  {/* --- CARD DE CORRETORES (Com Checkboxes) --- */}
+                  {/* --- CARD DE CORRETORES ATUALIZADO (Ordenável e com Foto) --- */}
                   <Card className='py-6'>
                     <CardHeader>
                       <CardTitle>Corretores Responsáveis</CardTitle>
-                      <p className="text-sm text-gray-500">Selecione quem está atendendo este imóvel</p>
+                      <p className="text-sm text-gray-500">Selecione e ordene quem está atendendo este imóvel.</p>
                     </CardHeader>
                     <CardContent>
-                      {allRealtors.length === 0 ? (
-                        <p className="text-sm text-gray-500 italic">Nenhum corretor cadastrado.</p>
-                      ) : (
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                          {allRealtors.map((realtor) => (
-                            <div
-                              key={realtor.id}
-                              className="flex items-center space-x-3 border p-3 rounded-lg hover:bg-gray-50 transition-colors"
-                            >
-                              <input
-                                type="checkbox"
-                                id={`realtor-${realtor.id}`}
-                                value={realtor.id}
-                                className="h-4 w-4 rounded border-gray-300 text-[#17375F] focus:ring-[#17375F]"
-                                {...register('realtorIds')}
-                              />
-
-                              <Avatar className="h-10 w-10 border">
-                                <AvatarImage src={realtor.avatar} />
-                                <AvatarFallback><User size={16} /></AvatarFallback>
-                              </Avatar>
-
-                              <div className="flex flex-col">
-                                <Label htmlFor={`realtor-${realtor.id}`} className="cursor-pointer font-medium">
-                                  {realtor.name}
-                                </Label>
-                                <span className="text-xs text-gray-500">CRECI: {realtor.creci}</span>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      )}
+                      <Controller
+                        name="realtorIds"
+                        control={control}
+                        render={({ field }) => (
+                          <RealtorSorter
+                            allRealtors={allRealtors}
+                            selectedIds={field.value || []}
+                            onChange={field.onChange}
+                          />
+                        )}
+                      />
                     </CardContent>
                   </Card>
+
                 </div>
 
-                {/* COLUNA DIREITA */}
+                {/* COLUNA DIREITA (Mantida igual ao código anterior) */}
                 <div className="md:col-span-1 space-y-6">
-                  {/* ... (Mantém Cards de Características e Localização IGUAIS) ... */}
                   <Card className='py-6'>
                     <CardHeader><CardTitle>Características</CardTitle></CardHeader>
                     <CardContent className="grid grid-cols-2 gap-4">
