@@ -39,7 +39,7 @@ import brasilAPi from '@/services/brasilAPi'
 const createSchema = z.object({
   name: z.string().min(1, 'Nome é obrigatório'),
   slug: z.string().min(1, 'Slug é obrigatório'),
-  code: z.string().min(1, 'Código é obrigatório'),
+  code: z.number().min(1, 'Código é obrigatório'),
   value: z.string().min(1, 'Valor é obrigatório'),
   summary: z.string().min(1, 'Resumo é obrigatório'),
   type_id: z.string().min(1, 'Tipo do imóvel é obrigatório'),
@@ -182,7 +182,7 @@ export default function EditarImovelPage() {
       // Preencher formulário
       setValue('name', propData.name)
       setValue('slug', propData.slug)
-      setValue('code', propData.code)
+      setValue('code', Number(propData.code))
       setValue('value', propData.value)
       setValue('summary', propData.summary)
       setValue('type_id', propData.type_property.id)
