@@ -1,148 +1,36 @@
-# Auros – Real Estate Internal Management System
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-Auros is an internal web platform for **real estate agencies**, built with **Next.js** and **React**.  
-It centralizes property management, clients, contracts, media uploads, and internal workflows into a single system.
+## Getting Started
 
----
+First, run the development server:
 
-## 🚀 Tech Stack
-
-- **Next.js 13**
-- **React 18**
-- **TypeScript**
-- **Prisma**
-- **NextAuth**
-- **React Query (@tanstack/react-query)**
-- **MUI (Material UI)** & **MUI DataGrid**
-- **Emotion (CSS-in-JS)**
-- **Axios**
-- **React Hook Form** + **Zod**
-- **FilePond** with multiple plugins
-- **Tiptap Rich Text Editor**
-- **React Toastify**
-- **date-fns**
-
----
-
-## 🏢 Use Case
-
-This project is built as an **internal management system** for real estate operations:
-
-- Manage **properties**, **clients**, **visits**, and **negotiations**
-- Upload and organize **media** (images, documents, contracts)
-- Handle **leads** and track their status
-- Provide dashboards for agents and admins
-- Centralize internal notes and communication
-- Automate workflows for real estate activities
-
----
-
-## 📦 Project Setup
-
-### 1. Install dependencies
-```bash
-npm install
-```
-
-### 2. Run development server
 ```bash
 npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
 ```
 
-App typically runs at:
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-```bash
-http://localhost:3000
-```
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-### 3. Build for production
-```bash
-npm run build
-```
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-### 4. Start production server
-```bash
-npm start
-```
+## Learn More
 
-### 5. Run linter
-```bash
-npm run lint
-```
+To learn more about Next.js, take a look at the following resources:
 
----
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-## 🔧 Environment Variables
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-Create a `.env.local` file with your configuration.  
-Example:
+## Deploy on Vercel
 
-```bash
-DATABASE_URL="postgresql://user:password@localhost:5432/auros"
-NEXTAUTH_URL="http://localhost:3000"
-NEXTAUTH_SECRET="your-secret"
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-LOGGING_SERVICE_API_KEY="your-logging-api-key"
-```
-
-> Adjust to match your infrastructure and Prisma schema.
-
----
-
-## 📁 Project Structure (simplified)
-
-```bash
-.
-├── prisma/
-│   └── schema.prisma          # Database schema
-├── src/
-│   ├── app/ or pages/         # Application routes
-│   ├── components/            # UI building blocks
-│   ├── modules/               # Feature modules (properties, clients, etc.)
-│   ├── hooks/                 # Custom hooks
-│   ├── services/              # API & integrations
-│   ├── styles/                # Global and theme styles
-│   └── utils/                 # Helpers & utilities
-├── public/
-├── package.json
-└── README.md
-```
-
----
-
-## ✨ Core Features
-
-- 🏠 **Property Management**  
-  Register, edit, search, and archive property listings.
-
-- 👥 **Client & Lead Management**  
-  Track leads, clients, contacts, and negotiation status.
-
-- 📂 **Media Uploads (FilePond)**  
-  Upload photos, documents, and floor plans.
-
-- 📝 **Rich Text Notes (Tiptap)**  
-  Internal notes and detailed descriptions.
-
-- 🔐 **Authentication (NextAuth)**  
-  Roles, sessions, and protected routes.
-
-- 🔄 **Smart Data Fetching**  
-  React Query for caching, invalidation, and performance.
-
-- 📊 **Dashboards for Teams**  
-  KPIs, property performance, and agent statistics.
-
----
-
-## 🧪 Code Quality
-
-- **ESLint** (with Rocketseat config)
-- **Prettier** integration
-- Enforces clean structure and consistent formatting
-
----
-
-## 📜 License
-
-Licença MIT - consulte a página [LICENÇA](https://opensource.org/licenses/MIT) para obter detalhes.
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
