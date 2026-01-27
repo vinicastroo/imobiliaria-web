@@ -10,7 +10,15 @@ import { Card, CardFooter } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Badge } from '@/components/ui/badge'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
-import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination'
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from '@/components/ui/pagination'
 
 import { getProperties } from '@/app/api/get-properties'
 import logo from '@/public/logo-auros-minimalist.svg'
@@ -65,12 +73,44 @@ export function PropertyList() {
     queryFn: () => getProperties({ page, ...filters }),
   })
 
-  const totalPages = result ? Math.ceil(result.totalPages / 12) || 1 : 1
+  // Calcula o total de páginas (assumindo 12 itens por página)
+  const itemsPerPage = 12
+  const totalPages = result ? Math.ceil(result.totalPages / itemsPerPage) || 1 : 1
 
   const handlePageChange = (newPage: number) => {
+    if (newPage < 1 || newPage > totalPages) return
+
     const params = new URLSearchParams(searchParams.toString())
     params.set('page', newPage.toString())
+
     router.push(`${pathname}?${params.toString()}`)
+
+    // Opcional: Rolar para o topo da lista ao mudar de página
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
+  // Lógica para gerar os números das páginas com "..."
+  const getPaginationItems = () => {
+    const items = []
+    const maxVisiblePages = 5 // Quantas páginas mostrar no total (ex: 1 ... 4 5 6 ... 10)
+
+    if (totalPages <= maxVisiblePages) {
+      // Se houver poucas páginas, mostre todas
+      for (let i = 1; i <= totalPages; i++) items.push(i)
+    } else {
+      // Lógica para muitas páginas
+      if (page <= 3) {
+        // Perto do início: 1 2 3 ... 10
+        items.push(1, 2, 3, '...', totalPages)
+      } else if (page >= totalPages - 2) {
+        // Perto do fim: 1 ... 8 9 10
+        items.push(1, '...', totalPages - 2, totalPages - 1, totalPages)
+      } else {
+        // No meio: 1 ... 4 5 6 ... 10
+        items.push(1, '...', page - 1, page, page + 1, '...', totalPages)
+      }
+    }
+    return items
   }
 
   return (
@@ -78,7 +118,9 @@ export function PropertyList() {
       {/* Header com contagem */}
       <div className="flex justify-between items-center">
         <h2 className="text-lg font-bold text-gray-700">
-          {result ? `${result.totalPages} ${result.totalPages === 1 ? 'Imóvel encontrado' : 'Imóveis encontrados'}` : 'Carregando...'}
+          {result
+            ? `${result.totalPages || result.totalPages /* Ajuste conforme retorno da sua API */} ${result.totalPages === 1 ? 'Imóvel encontrado' : 'Imóveis encontrados'}`
+            : 'Carregando...'}
         </h2>
       </div>
 
@@ -158,32 +200,58 @@ export function PropertyList() {
         ))}
       </div>
 
-      {/* Paginação */}
+      {/* Paginação Refatorada */}
       {totalPages > 1 && (
-        <Pagination className="mt-8">
+        <Pagination className="my-8 select-none">
           <PaginationContent>
-            {page > 1 && (
-              <PaginationItem>
-                <PaginationPrevious
-                  onClick={() => handlePageChange(page - 1)}
-                  className="cursor-pointer"
-                />
-              </PaginationItem>
-            )}
 
-            {/* Lógica simples de paginação (pode ser expandida) */}
+            {/* Botão Anterior */}
             <PaginationItem>
-              <PaginationLink isActive>{page}</PaginationLink>
+              <PaginationPrevious
+                onClick={() => handlePageChange(page - 1)}
+                aria-disabled={page <= 1}
+                tabIndex={page <= 1 ? -1 : 0}
+                className={page <= 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
+              >
+                Anterior
+              </PaginationPrevious>
             </PaginationItem>
 
-            {page < totalPages && (
-              <PaginationItem>
-                <PaginationNext
-                  onClick={() => handlePageChange(page + 1)}
-                  className="cursor-pointer"
-                />
-              </PaginationItem>
-            )}
+            {/* Números das Páginas */}
+            {getPaginationItems().map((item, index) => {
+              if (item === '...') {
+                return (
+                  <PaginationItem key={`ellipsis-${index}`}>
+                    <PaginationEllipsis />
+                  </PaginationItem>
+                )
+              }
+
+              return (
+                <PaginationItem key={item}>
+                  <PaginationLink
+                    isActive={page === item}
+                    onClick={() => handlePageChange(item as number)}
+                    className="cursor-pointer"
+                  >
+                    {item}
+                  </PaginationLink>
+                </PaginationItem>
+              )
+            })}
+
+            {/* Botão Próxima */}
+            <PaginationItem>
+              <PaginationNext
+                onClick={() => handlePageChange(page + 1)}
+                aria-disabled={page >= totalPages}
+                tabIndex={page >= totalPages ? -1 : 0}
+                className={page >= totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"}
+              >
+                Próxima
+              </PaginationNext>
+            </PaginationItem>
+
           </PaginationContent>
         </Pagination>
       )}

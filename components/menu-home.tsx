@@ -1,6 +1,8 @@
+'use client'
 import Image from 'next/image'
 import Link from 'next/link'
-import { Facebook, Instagram, MessageCircle } from 'lucide-react' // Usando Lucide para manter padrão Shadcn
+import { Facebook, Instagram } from 'lucide-react' // Usando Lucide para manter padrão Shadcn
+import { WhatsappLogo } from '@phosphor-icons/react'
 
 export function MenubarHome() {
   return (
@@ -28,7 +30,7 @@ export function MenubarHome() {
               aria-label="WhatsApp"
               className="text-white hover:text-gray-300 transition-colors"
             >
-              <MessageCircle size={24} />
+              <WhatsappLogo size={20} />
             </Link>
 
             <Link
@@ -36,7 +38,7 @@ export function MenubarHome() {
               aria-label="Instagram"
               className="text-white hover:text-gray-300 transition-colors"
             >
-              <Instagram size={24} />
+              <Instagram size={16} />
             </Link>
 
             <Link
@@ -44,7 +46,7 @@ export function MenubarHome() {
               aria-label="Facebook"
               className="text-white hover:text-gray-300 transition-colors"
             >
-              <Facebook size={24} />
+              <Facebook size={16} />
             </Link>
           </div>
 

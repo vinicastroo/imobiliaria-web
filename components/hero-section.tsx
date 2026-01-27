@@ -18,6 +18,7 @@ import { Label } from '@/components/ui/label'
 import { getCities } from '@/app/api/get-cities'
 import { getTypes } from '@/app/api/get-types'
 import { getNeighborhoods } from '@/app/api/get-neighborhoods'
+import { WhatsappLogo } from '@phosphor-icons/react'
 
 
 const createSchema = z.object({
@@ -78,7 +79,7 @@ export function HeroSection() {
         <nav className="flex flex-col md:flex-row items-center gap-6 text-white font-medium">
           <div className="flex gap-4">
             <Link href="https://wa.me/..." target="_blank" className="hover:opacity-80 transition-opacity">
-              <Phone size={16} />
+              <WhatsappLogo size={20} />
             </Link>
             <Link href="https://instagram.com/..." target="_blank" className="hover:opacity-80 transition-opacity">
               <Instagram size={16} />
