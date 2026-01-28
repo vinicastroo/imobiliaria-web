@@ -109,13 +109,13 @@ export function RealtorSorter({ allRealtors, selectedIds, onChange }: RealtorSor
             </span>
 
             <div className="flex items-center gap-1">
-              <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => moveUp(index)} disabled={index === 0}>
+              <Button size="icon" variant="ghost" type="button" className="h-8 w-8" onClick={() => moveUp(index)} disabled={index === 0}>
                 <ArrowUp size={14} />
               </Button>
-              <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => moveDown(index)} disabled={index === selectedRealtors.length - 1}>
+              <Button size="icon" variant="ghost" type="button" className="h-8 w-8" onClick={() => moveDown(index)} disabled={index === selectedRealtors.length - 1}>
                 <ArrowDown size={14} />
               </Button>
-              <Button size="icon" variant="ghost" className="h-8 w-8 text-red-500 hover:bg-red-50 hover:text-red-600" onClick={() => handleRemove(realtor.id)}>
+              <Button size="icon" variant="ghost" type="button" className="h-8 w-8 text-red-500 hover:bg-red-50 hover:text-red-600" onClick={() => handleRemove(realtor.id)}>
                 <X size={14} />
               </Button>
             </div>
