@@ -74,7 +74,7 @@ export default function TipoImovelPage() {
           </div>
         </div>
 
-        <div className="rounded-md border bg-white">
+        <div className="rounded-md border bg-white py-3 px-4">
           <Table>
             <TableHeader>
               <TableRow>

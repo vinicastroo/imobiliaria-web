@@ -65,8 +65,7 @@ export default function CorretoresPage() {
       </div>
 
       <Card className='py-6'>
-        <CardHeader><CardTitle className="flex gap-2 items-center"><User /> Lista de Corretores</CardTitle></CardHeader>
-        <CardContent>
+          <CardContent>
           <Table>
             <TableHeader>
               <TableRow>

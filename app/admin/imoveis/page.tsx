@@ -58,7 +58,7 @@ export default function AdminImoveisPage() {
 
   // 4. Configuração das Opções de Filtro
   const filterOptions: FilterOption[] = [
-    { id: "code", label: "Código", type: "text" },
+    { id: "code", label: "Código", type: "number" },
     { id: "name", label: "Nome", type: "text" },
     { id: "city", label: "Cidade", type: "text" },
     { id: "slug", label: "Slug", type: "text" },
@@ -173,17 +173,12 @@ export default function AdminImoveisPage() {
           filterOptions={filterOptions}
           onFilterChange={(columnId, value) => {
             setFilterColumn(columnId)
-            // Se o select retornou o valor de reset, limpamos a string
             const newValue = value === "ALL_VALUES_RESET" ? "" : value
             setFilterValue(newValue)
 
-            // Retorna para a primeira página ao filtrar
             setPagination(prev => ({ ...prev, pageIndex: 0 }))
           }}
-          // filterValue é usado internamente pelo DataTable para preencher o input, 
-          // mas como controlamos o estado aqui, podemos não passar ou passar para sincronia.
-          // O componente DataTable que criamos gerencia o valor do input visualmente, 
-          // mas a busca real é feita pelo 'debouncedFilter' aqui no pai.
+
           filterValue={filterValue}
           setFilterValue={setFilterValue}
         />
