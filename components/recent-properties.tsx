@@ -103,7 +103,7 @@ export function RecentProperties() {
               </CardContent>
 
               <CardFooter className="flex items-center justify-between border-t py-4">
-                <span className="text-xl font-bold text-[#17375F]">{property.value}</span>
+                <span className="text-xl font-bold text-[#17375F]">{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(Number(property.value))}</span>
                 <Badge className="bg-[#17375F] hover:bg-[#122b4a]">Venda</Badge>
               </CardFooter>
             </Card>

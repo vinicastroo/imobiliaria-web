@@ -193,7 +193,7 @@ export function PropertyList() {
 
               {/* Footer / Preço */}
               <CardFooter className="border-t p-4 flex justify-end bg-gray-50/50">
-                <span className="text-xl font-bold text-[#17375F]">{property.value}</span>
+                <span className="text-xl font-bold text-[#17375F]">{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(Number(property.value))}</span>
               </CardFooter>
             </Card>
           </Link>
