@@ -19,19 +19,17 @@ export function RealtorsCard({ realtor, property }: { realtor: Realtor; property
         </div>
       </div>
 
-      <Button
-        className="w-full bg-green-600 hover:bg-green-700 text-white gap-2 mt-1"
-        asChild
+
+      <a
+        href={`https://api.whatsapp.com/send?phone=${realtor.phone}&text=Olá, tenho interesse no imóvel: ${property.name}, código: ${property.code}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="w-full bg-[#ecfbd5] opacity-100 py-2 rounded-full text-sm hover:gap-4 transition-all duration-300  text-[#046d4c] gap-2 mt-1 font-bold flex items-center justify-center"
       >
-        <a
-          href={`https://api.whatsapp.com/send?phone=${realtor.phone}&text=Olá, tenho interesse no imóvel: ${property.name}, código: ${property.code}`}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <WhatsappLogo size={32} weight="fill" />
-          Falar no WhatsApp
-        </a>
-      </Button>
+        <WhatsappLogo size={24} weight="duotone" />
+        Falar no WhatsApp
+      </a>
+
     </div>
   )
 }

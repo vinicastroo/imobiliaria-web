@@ -3,11 +3,23 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
-import { Loader2 } from 'lucide-react'
+import { Loader2, Trash2 } from 'lucide-react'
+import { toast } from 'sonner' // Se você usa Sonner, senão troque por console.log ou alert
 
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
+import { Button } from '@/components/ui/button' // Botão do Shadcn
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
 
 import api from '@/services/api'
 
@@ -25,29 +37,45 @@ export default function AdminDashboard() {
   const [clients, setClients] = useState<ClientProps[]>([])
   const [loading, setLoading] = useState(true)
 
-  // useEffect(() => {
-  //   if (status === 'unauthenticated') {
-  //     router.push('/login')
-  //   }
-  // }, [status, router])
+  // Estado para controlar qual cliente será excluído (para o Modal)
+  const [clientToDelete, setClientToDelete] = useState<string | null>(null)
+  const [isDeleting, setIsDeleting] = useState(false)
+
+  const loadClients = async () => {
+    try {
+      setLoading(true)
+      const response = await api.get('/clientes')
+      setClients(response.data)
+    } catch (error) {
+      console.error("Erro ao carregar clientes", error)
+      toast.error("Erro ao carregar clientes")
+    } finally {
+      setLoading(false)
+    }
+  }
 
   useEffect(() => {
-    const loadClients = async () => {
-      // if (status !== 'authenticated') return
-
-      try {
-        setLoading(true)
-        const response = await api.get('/clientes')
-        setClients(response.data)
-      } catch (error) {
-        console.error("Erro ao carregar clientes", error)
-      } finally {
-        setLoading(false)
-      }
-    }
-
     loadClients()
   }, [status])
+
+  const handleDeleteClient = async () => {
+    if (!clientToDelete) return
+
+    try {
+      setIsDeleting(true)
+      await api.delete(`/clientes/${clientToDelete}`)
+
+      setClients((prev) => prev.filter((c) => c.id !== clientToDelete))
+
+      toast.success("Cliente removido com sucesso!")
+    } catch (error) {
+      console.error("Erro ao deletar", error)
+      toast.error("Erro ao remover cliente")
+    } finally {
+      setIsDeleting(false)
+      setClientToDelete(null) // Fecha o modal
+    }
+  }
 
   if (status === 'loading') {
     return (
@@ -56,8 +84,6 @@ export default function AdminDashboard() {
       </div>
     )
   }
-
-  // if (status === 'unauthenticated') return null
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
@@ -92,9 +118,26 @@ export default function AdminDashboard() {
                         </span>
                       </div>
                     </AccordionTrigger>
+
                     <AccordionContent className="bg-gray-50/50 p-4 border-t text-gray-600">
-                      <p className="font-medium text-xs text-gray-400 uppercase mb-1">Observação:</p>
-                      {client.description || "Sem descrição."}
+                      <div className="flex flex-col gap-4">
+                        <div>
+                          <p className="font-medium text-xs text-gray-400 uppercase mb-1">Observação:</p>
+                          <p className="text-sm">{client.description || "Sem descrição."}</p>
+                        </div>
+
+                        <div className="flex justify-end pt-2 border-t mt-2">
+                          <Button
+                            variant="destructive"
+                            size="sm"
+                            className="gap-2"
+                            onClick={() => setClientToDelete(client.id)}
+                          >
+                            <Trash2 size={16} />
+                            Excluir Cliente
+                          </Button>
+                        </div>
+                      </div>
                     </AccordionContent>
                   </AccordionItem>
                 ))}
@@ -103,6 +146,32 @@ export default function AdminDashboard() {
           </CardContent>
         </Card>
       </main>
+
+      {/* MODAL DE CONFIRMAÇÃO DE EXCLUSÃO */}
+      <AlertDialog open={!!clientToDelete} onOpenChange={() => setClientToDelete(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Tem certeza absoluta?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Essa ação não pode ser desfeita. Isso excluirá permanentemente o cliente da base de dados.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isDeleting}>Cancelar</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={(e) => {
+                e.preventDefault() // Impede fechar automático para mostrar loading se quiser
+                handleDeleteClient()
+              }}
+              className="bg-red-600 hover:bg-red-700 focus:ring-red-600"
+              disabled={isDeleting}
+            >
+              {isDeleting ? <Loader2 className="h-4 w-4 animate-spin" /> : "Sim, excluir"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
     </div>
   )
 }

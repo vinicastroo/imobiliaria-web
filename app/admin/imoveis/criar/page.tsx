@@ -270,7 +270,7 @@ export default function CriarImovelPage() {
                             render={({ field: { onChange, value } }) => (
                               <NumericFormat
                                 value={value}
-                                onValueChange={(v) => onChange(v.value)}
+                                onValueChange={(v) => onChange(v.formattedValue)}
                                 prefix="R$ "
                                 thousandSeparator="."
                                 decimalSeparator=","

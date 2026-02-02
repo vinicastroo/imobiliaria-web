@@ -54,7 +54,11 @@ export const getColumns = ({ onToggleStatus, onDelete }: ColumnsProps): ColumnDe
   {
     accessorKey: "slug",
     header: "Slug",
-    cell: ({ row }) => <span className="text-xs text-gray-500">{row.getValue("slug")}</span>,
+    cell: ({ row }) => (
+      <div className="max-w-[150px] overflow-x-hidden px-2 py-1 rounded">
+        <span className="text-xs text-gray-500 ">{row.getValue("slug")}</span>
+      </div>
+    ),
   },
 
   {
@@ -71,7 +75,7 @@ export const getColumns = ({ onToggleStatus, onDelete }: ColumnsProps): ColumnDe
     cell: ({ row }) => {
       const isVisible = row.getValue("visible")
       return (
-        <span className={`px-2 py-1 rounded text-xs font-semibold ${isVisible ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+        <span className={`px-2 py-1 rounded-full text-xs font-semibold ${isVisible ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
           {isVisible ? 'Ativo' : 'Inativo'}
         </span>
       )
@@ -117,7 +121,7 @@ export const getColumns = ({ onToggleStatus, onDelete }: ColumnsProps): ColumnDe
               onClick={() => onDelete(property.id)}
               className="text-red-600 focus:text-red-600 focus:bg-red-50"
             >
-              <Trash2 className="mr-2 h-4 w-4" /> Excluir
+              <Trash2 className="mr-2 h-4 w-4 text-red-600" /> Excluir
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

@@ -1,25 +1,31 @@
 import axios from 'axios'
-// import { getSession } from 'next-auth/react'
+import { getSession } from 'next-auth/react'
 
-// const baseURL = process.env.SOME_API_URL || 'http://localhost:3333'
-const baseURL = 'https://imobiliaria-api.vercel.app'
+const baseURL = process.env.NEXT_PUBLIC_API_URL || 'https://imobiliaria-api.vercel.app'
 
-const ApiClient = () => {
-  const defaultOptions = {
-    baseURL,
+const api = axios.create({
+  baseURL,
+  headers: {
+    'x-agency-id': process.env.NEXT_PUBLIC_AGENCY_ID 
+  }
+})
+
+api.interceptors.request.use(async (config) => {
+  if (typeof window !== 'undefined') {
+    const session = await getSession()
+
+    if (session?.user) {
+      config.headers['x-user-id'] = session.user.id
+
+      if (session.user.agencyId) {
+        config.headers['x-agency-id'] = session.user.agencyId
+      }
+    }
   }
 
-  const instance = axios.create(defaultOptions)
+  return config
+}, (error) => {
+  return Promise.reject(error)
+})
 
-  // instance.interceptors.request.use(async (request) => {
-  //   const session = await getSession()
-  //   if (session) {
-  //     request.headers.userId = session.user.id
-  //   }
-  //   return request
-  // })
-
-  return instance
-}
-
-export default ApiClient()
+export default api

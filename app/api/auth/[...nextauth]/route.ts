@@ -1,53 +1,96 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import NextAuth from 'next-auth'
-import CredentialsProvider from 'next-auth/providers/credentials'
+import NextAuth, { NextAuthOptions } from "next-auth"
+import CredentialsProvider from "next-auth/providers/credentials"
 
-// 1. Atribua a configuração a uma variável 'handler'
-const handler = NextAuth({
+// A URL da sua API Fastify
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3333"
+
+const authOptions: NextAuthOptions = {
+  // Configuração de Sessão usando JWT (obrigatório para Credentials com API externa)
+  session: {
+    strategy: "jwt",
+    maxAge: 30 * 24 * 60 * 60, 
+  },
+
+  // Página de login customizada
+  pages: {
+    signIn: "/login",
+  },
+
   providers: [
     CredentialsProvider({
-      name: 'credentials',
-      type: 'credentials',
+      name: "credentials",
       credentials: {
-        email: { label: 'email', type: 'text' },
-        password: { label: 'password', type: 'password' },
+        email: { label: "Email", type: "email" },
+        password: { label: "Senha", type: "password" },
       },
-      authorize(credentials) {
-        if (
-          credentials?.email !== process.env.AUROS_EMAIL ||
-          credentials?.password !== process.env.AUROS_PASSWORD
-        ) {
-          throw new Error('invalid credentials')
+      // AQUI CONECTAMOS COM O FASTIFY
+      async authorize(credentials) {
+        if (!credentials?.email || !credentials?.password) {
+          return null
         }
 
-        return { id: '1', name: 'Auros', email: 'auros@admin.com' }
+        try {
+          // 1. Faz o POST para sua rota /sessions no Fastify
+          const res = await fetch(`${API_URL}/sessions`, {
+            method: "POST",
+            body: JSON.stringify({
+              email: credentials.email,
+              password: credentials.password,
+            }),
+            headers: { "Content-Type": "application/json" },
+          })
+
+          const data = await res.json()
+
+          // 2. Se a API retornar erro (400, 401, etc)
+          if (!res.ok) {
+            // Você pode lançar erro para mostrar toast no front
+            throw new Error(data.message || "Credenciais inválidas")
+          }
+
+          // 3. Se deu certo, retorna o usuário
+          // O objeto 'data.user' deve conter: { id, name, email, role, agencyId }
+          return data.user
+
+        } catch (error) {
+          console.error("Erro no authorize:", error)
+          return null
+        }
       },
     }),
   ],
-  pages: {
-    signIn: '/login',
-  },
+
   callbacks: {
+    // PASSO 1: Salvar dados do backend no Token JWT
+    // Esse callback roda sempre que um token é criado ou atualizado
     async jwt({ token, user }) {
       if (user) {
-        token.user = user
+        // 'user' só existe na primeira vez (login).
+        // Aqui persistimos os dados customizados dentro do token criptografado
+        token.id = user.id
+        token.role = user.role
+        token.agencyId = user.agencyId
       }
       return token
     },
+
+    // PASSO 2: Expor dados do Token para o Frontend (useSession)
+    // Esse callback roda sempre que o front chama getSession() ou useSession()
     async session({ session, token }) {
-      // Ajuste para não perder a tipagem se possível, mas mantendo seu 'any'
-      if (token?.user) {
-        // Cuidado: aqui você está substituindo a sessão inteira pelo objeto user?
-        // O padrão geralmente é: session.user = token.user
-        session = token.user as any
+      if (token) {
+        session.user = {
+          ...session.user, // Mantém name, email e image padrões
+          id: token.id as string,
+          role: token.role as string, // Ex: OWNER, REALTOR
+          agencyId: token.agencyId as string, // O ID da Imobiliária
+        }
       }
       return session
     },
   },
-  // Adicione isso se estiver usando em desenvolvimento para ver logs melhores
-  debug: process.env.NODE_ENV === 'development',
-  secret: process.env.NEXTAUTH_SECRET, // Certifique-se de ter essa var no .env
-})
+  secret: process.env.NEXTAUTH_SECRET, // Defina isso no .env (openssl rand -base64 32)
+}
 
-// 2. Exporte GET e POST usando o handler
+const handler = NextAuth(authOptions)
+
 export { handler as GET, handler as POST }

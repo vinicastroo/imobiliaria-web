@@ -57,7 +57,7 @@ export function HeroSection() {
   }
 
   return (
-    <section className="relative w-full h-screen flex flex-col p-4">
+    <section className="relative w-full h-screen flex flex-col p-4 z-10">
       {/* Background Image */}
       <div className="absolute inset-0 -z-10">
         <Image

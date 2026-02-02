@@ -1,0 +1,66 @@
+import api from '@/services/api'
+import { MetadataRoute } from 'next'
+
+// Defina a URL base do seu site (em produção)
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.aurosimobiliaria.com.br'
+
+interface Property {
+  slug: string
+  updatedAt?: string
+  createdAt: string
+}
+
+async function getAllProperties() {
+  try {
+    const response = await api.get('imovel/todos?limit=1000&visible=true')
+
+    if (!response.data) {
+      throw new Error('Falha ao buscar imóveis para o sitemap')
+    }
+
+    return response.data.properties || []
+  } catch (error) {
+    console.error(error)
+    return []
+  }
+}
+
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const properties = await getAllProperties()
+
+  const propertiesUrls = properties.map((property: Property) => ({
+    url: `${BASE_URL}/imoveis/${property.slug}`,
+    lastModified: new Date(property.updatedAt || property.createdAt),
+    changeFrequency: 'weekly' as const,
+    priority: 0.8,
+  }))
+
+  const staticRoutes = [
+    {
+      url: BASE_URL,
+      lastModified: new Date(),
+      changeFrequency: 'daily' as const,
+      priority: 1,
+    },
+    {
+      url: `${BASE_URL}/imoveis`,
+      lastModified: new Date(),
+      changeFrequency: 'daily' as const,
+      priority: 0.9,
+    },
+    {
+      url: `${BASE_URL}/contato`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly' as const,
+      priority: 0.5,
+    },
+    {
+      url: `${BASE_URL}/sobre`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly' as const,
+      priority: 0.5,
+    },
+  ]
+
+  return [...staticRoutes, ...propertiesUrls]
+}

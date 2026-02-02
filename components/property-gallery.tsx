@@ -1,5 +1,6 @@
 "use client"
 
+import * as React from "react"
 import Image from 'next/image'
 import {
   Carousel,
@@ -7,41 +8,92 @@ import {
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
+  type CarouselApi,
 } from "@/components/ui/carousel"
 import logo from '@/public/logo-auros-minimalist.svg'
+import { cn } from "@/lib/utils"
 
 interface GalleryItem {
   img: string
 }
 
-export function PropertyGallery({ items, propertyName }: { items: GalleryItem[], propertyName: string }) {
+export function PropertyGallery({ items, propertyName, isRecentProperty, path }: { items: GalleryItem[], propertyName: string, isRecentProperty?: boolean, path?: string }) {
+  const [api, setApi] = React.useState<CarouselApi>()
+  const [current, setCurrent] = React.useState(0)
+  const [count, setCount] = React.useState(0)
+
+  React.useEffect(() => {
+    if (!api) return
+
+    setCount(api.scrollSnapList().length)
+    setCurrent(api.selectedScrollSnap() + 1)
+
+    api.on("select", () => {
+      setCurrent(api.selectedScrollSnap() + 1)
+    })
+  }, [api])
+
   if (!items || items.length === 0) {
     return (
-      <div className="w-full h-[400px] md:h-[600px] bg-[#17375F] flex items-center justify-center rounded-lg">
+      <div className={`w-full ${isRecentProperty ? 'h-[200px] md:h-[300px]' : 'h-[400px] md:h-[600px]'} bg-[#17375F] flex items-center justify-center rounded-lg`}>
         <Image src={logo} alt="Auros Logo" width={200} height={200} className="opacity-50" />
       </div>
     )
   }
 
   return (
-    <Carousel className="w-full" opts={{ loop: true }}>
-      <CarouselContent>
-        {items.map((item, index) => (
-          <CarouselItem key={index} className="relative w-full h-[300px] md:h-[600px]">
-            <div className="w-full h-full relative rounded-lg overflow-hidden bg-gray-100">
-              <Image
-                src={item.img}
-                alt={`${propertyName} - Foto ${index + 1}`}
-                fill
-                className="object-contain md:object-cover"
-                priority={index === 0}
-              />
-            </div>
-          </CarouselItem>
+    // Adicionado 'group' aqui para controlar os filhos no hover
+    <div className="relative w-full group">
+      <Carousel className="w-full" opts={{ loop: true }} setApi={setApi}>
+        <CarouselContent>
+          {items.map((item, index) => (
+            <CarouselItem key={index} className={`relative w-full ${isRecentProperty ? 'h-[200px] md:h-[300px]' : 'h-[400px] md:h-[600px]'}`} onClick={() => {
+              if (isRecentProperty && path) {
+                window.open(path, '_blank')
+              }
+            }}>
+              <div className="w-full h-full relative rounded-lg overflow-hidden bg-gray-100">
+                <Image
+                  src={item.img}
+                  alt={`${propertyName} - Foto ${index + 1}`}
+                  fill
+                  className="object-contain md:object-cover hover:scale-105 cursor-pointer transition-scale duration-300"
+                  priority={index === 0}
+                />
+                <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-black/60 to-transparent pointer-events-none" />
+              </div>
+            </CarouselItem>
+          ))}
+        </CarouselContent>
+
+        {/* Setas com opacity-0 e group-hover:opacity-100 */}
+        <CarouselPrevious className="left-4 bg-white/80 hover:bg-white border-none opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity duration-300" />
+        <CarouselNext className="right-4 bg-white/80 hover:bg-white border-none opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity duration-300" />
+      </Carousel>
+
+      {/* Container das bolinhas com opacity-0 e group-hover:opacity-100 */}
+      <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-2 z-10 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity duration-300">
+        {Array.from({ length: count }).map((_, index) => (
+          <button
+            key={index}
+            onClick={() => api?.scrollTo(index)}
+            className={cn(
+              `${isRecentProperty ? 'h-2 w-2' : 'h-2.5 w-2.5'} rounded-full transition-all duration-300 shadow-sm`,
+              index + 1 === current
+                ? "bg-white scale-110 w-6"
+                : "bg-white/40 hover:bg-white/80"
+            )}
+            aria-label={`Ir para imagem ${index + 1}`}
+          />
         ))}
-      </CarouselContent>
-      <CarouselPrevious className="left-2" />
-      <CarouselNext className="right-2" />
-    </Carousel>
+      </div>
+
+      {/* Contador numérico (também segue a mesma lógica de hover) */}
+      {!isRecentProperty && (
+        <div className="absolute bottom-4 right-4 bg-black/60 text-white text-xs px-3 py-1 rounded-full z-10 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          {current} / {count}
+        </div>
+      )}
+    </div>
   )
 }

@@ -1,12 +1,12 @@
 import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import { BedDouble, Bath, CarFront, Ruler, MapPin, } from 'lucide-react'
+import { BedDouble, Bath, CarFront, Ruler, MapPin, FileText, Grid2X2, } from 'lucide-react'
 
 import { MenubarHome } from '@/components/menu-home'
 import Footer from '@/components/footer'
 import { PropertyGallery } from '@/components/property-gallery'
-// REMOVIDO: import { getRealtorsForCity } from '@/data/realtors' 
-import { getProperty } from '@/app/api/get-property'
+import { RecommendedCarousel, RecommendedProperty } from '@/components/recommended-carousel'
+import { getProperty, type Property } from '@/app/api/get-property'
 
 import { Card, CardContent } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
@@ -15,9 +15,17 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import PropertyGoogleMap from '@/components/property-google-map'
 import { RealtorsCard } from './realtors-card'
 import type { Realtor } from '@/data/realtors'
+import api from '@/services/api'
+import type { Properties } from '@/app/api/get-properties'
+import RentJourney from '@/components/rent-journet'
+import { CopyLinkButton } from '@/components/copy-link-button'
+import { PropertyDescription } from '@/components/property-description'
 
 interface PageProps {
   params: Promise<{ slug: string }>
+}
+export interface GetPropertiesResponse {
+  properties: Properties[]
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
@@ -29,6 +37,40 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     description: property.summary,
     alternates: { canonical: `https://aurosimobiliaria.com.br/imoveis/${property.slug}` },
     openGraph: { images: property.files?.[0]?.path || "https://www.aurosimobiliaria.com.br/logo.png" }
+  }
+}
+
+async function getRecommendedProperties(city: string, currentId: string): Promise<RecommendedProperty[]> {
+  try {
+
+    // Busca 5 imóveis da mesma cidade
+    const response = await api.get<GetPropertiesResponse>(`/imovel/todos?filter[city]=${encodeURIComponent(city)}&pageSize=5&visible=true`)
+    const data = response.data
+
+    const allProperties = data.properties || []
+
+    const filtered = allProperties.filter((p: Property) => p.id !== currentId)
+
+    const cloudFrontUrl = `https://d2wss3tmei5yh1.cloudfront.net`
+
+    return filtered.map((prop: Property) => ({
+      id: prop.id,
+      name: prop.name,
+      slug: prop.slug,
+      value: prop.value,
+      city: prop.city,
+      neighborhood: prop.neighborhood,
+      bedrooms: prop.bedrooms,
+      parkingSpots: prop.parkingSpots,
+      totalArea: prop.totalArea,
+      coverImage: prop.files && prop.files.length > 0
+        ? `${cloudFrontUrl}/${prop.files[0].fileName}`
+        : undefined
+    }))
+
+  } catch (error) {
+    console.error("Erro ao buscar recomendados:", error)
+    return []
   }
 }
 
@@ -45,7 +87,7 @@ const FeatureItem = ({ icon: Icon, value, label, suffix = "" }: FeatureItemProps
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
-          <div className="flex items-center gap-2 bg-gray-50 px-3 py-2 rounded-md">
+          <div className="flex items-center gap-2 bg-[#17375F]/5 px-3 py-2 rounded-md">
             <Icon size={24} className="text-[#17375F]" />
             <span className="text-lg font-bold text-gray-700">{value}{suffix}</span>
           </div>
@@ -67,6 +109,7 @@ export default async function PropertyPage({ params }: PageProps) {
   // A API já retorna os corretores vinculados dentro de property.realtors
   // Garantimos que seja um array, caso venha null
   const realtors = property.realtors || []
+  const recommended = await getRecommendedProperties(property.city, property.id)
 
   return (
     <main className="min-h-screen bg-white">
@@ -103,7 +146,7 @@ export default async function PropertyPage({ params }: PageProps) {
                       )}
                     </div>
                     <div>
-                      {/* Exibe o Code se existir, senão exibe ID parcial */}
+
                       <span className='text-xs bg-[#17375F] text-white px-4 py-1 rounded-full'>
                         Ref: {property.code || property.id.substring(0, 8).toUpperCase()}
                       </span>
@@ -122,6 +165,7 @@ export default async function PropertyPage({ params }: PageProps) {
                     <FeatureItem icon={Bath} value={property.bathrooms} label="Banheiros" />
                     <FeatureItem icon={CarFront} value={property.parkingSpots} label="Vagas" />
                     <FeatureItem icon={Ruler} value={property.totalArea} label="Área Total" suffix=" m²" />
+                    <FeatureItem icon={Grid2X2} value={property.privateArea} label="Área Privativa" suffix=" m²" />
                   </div>
                 </div>
 
@@ -134,15 +178,13 @@ export default async function PropertyPage({ params }: PageProps) {
                     {property.summary}
                   </p>
 
-                  <div
-                    className="prose prose-slate max-w-none prose-headings:text-[#17375F] prose-a:text-blue-600 prose-li:marker:text-[#17375F]"
-                    dangerouslySetInnerHTML={{ __html: property.description }}
-                  />
+                  <PropertyDescription description={property.description} />
                 </div>
 
                 {(property.latitude && property.longitude) && (
                   <>
-                    <Separator className="my-6" />
+                    <Separator className='my-10' />
+
                     <div className="space-y-4">
                       <h3 className="text-sm font-bold text-[#17375F] uppercase flex items-center gap-2">
                         <MapPin size={18} />
@@ -177,6 +219,7 @@ export default async function PropertyPage({ params }: PageProps) {
                   <span className="text-2xl font-bold text-[#17375F]">{property.value}</span>
                 </div>
 
+
                 {/* Lista de Corretores vindo da API */}
                 <div>
                   <h3 className="text-sm font-semibold text-gray-500 uppercase mb-4">Corretores Responsáveis</h3>
@@ -198,10 +241,19 @@ export default async function PropertyPage({ params }: PageProps) {
                     </div>
                   )}
                 </div>
+
+                <CopyLinkButton />
               </CardContent>
             </Card>
           </div>
         </div>
+
+        {recommended.length > 0 && (
+          <div className="mt-12">
+            <RentJourney />
+            <RecommendedCarousel properties={recommended} />
+          </div>
+        )}
       </div>
 
       <Footer />
