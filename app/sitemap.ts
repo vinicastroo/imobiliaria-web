@@ -44,7 +44,6 @@ async function getAllProperties() {
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const properties = await getAllProperties()
 
-  console.log(properties.length + ' imóveis encontrados para o sitemap.')
   const propertiesUrls = properties.map((property: Property) => ({
     url: `${BASE_URL}/imoveis/${property.slug}`,
     lastModified: new Date(property.updatedAt || property.createdAt),
