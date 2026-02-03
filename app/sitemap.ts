@@ -3,6 +3,7 @@ import { MetadataRoute } from 'next'
 
 // Defina a URL base do seu site (em produção)
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.aurosimobiliaria.com.br'
+const AGENCY_ID = process.env.NEXT_PUBLIC_AGENCY_ID
 
 interface Property {
   slug: string
@@ -11,16 +12,31 @@ interface Property {
 }
 
 async function getAllProperties() {
+  if (!AGENCY_ID) {
+    console.error('❌ AGENCY_ID não definido no .env. O Sitemap não pode ser gerado.')
+    return []
+  }
+
   try {
-    const response = await api.get('imovel/todos?limit=1000&visible=true')
+    const response = await api.get('imovel/todos', {
+      params: {
+        pageSize: 1000, // Tenta buscar até 1000 imóveis de uma vez
+        visible: 'true', // Apenas imóveis ativos no site
+      },
+      headers: {
+        'x-agency-id': AGENCY_ID
+      }
+    })
 
     if (!response.data) {
       throw new Error('Falha ao buscar imóveis para o sitemap')
     }
 
+
+    // A rota /todos retorna { properties: [], totalCount: ... }
     return response.data.properties || []
   } catch (error) {
-    console.error(error)
+    console.error('Erro ao gerar sitemap:', error)
     return []
   }
 }
@@ -28,6 +44,7 @@ async function getAllProperties() {
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const properties = await getAllProperties()
 
+  console.log(properties.length + ' imóveis encontrados para o sitemap.')
   const propertiesUrls = properties.map((property: Property) => ({
     url: `${BASE_URL}/imoveis/${property.slug}`,
     lastModified: new Date(property.updatedAt || property.createdAt),

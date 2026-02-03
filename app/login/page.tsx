@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import Image from 'next/image'
-import { useRouter } from 'next/navigation' // Atenção: navigation no App Router
+import { useRouter } from 'next/navigation'
 import { signIn } from 'next-auth/react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -13,9 +13,10 @@ import { Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Card, CardContent, CardHeader } from '@/components/ui/card'
+// Removemos o Card para um visual mais limpo "full height", mas você pode manter se preferir
+// import { Card, CardContent } from '@/components/ui/card' 
 
-import logo from '@/public/logo.svg'
+import logo from '@/public/logo-blue.svg'
 
 const loginSchema = z.object({
   email: z.string().min(1, 'Email é obrigatório').email('Formato de email inválido'),
@@ -63,30 +64,42 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen w-full flex flex-col gap-4 items-center justify-center bg-[#17375F] p-4">
-      <div className="relative w-48 h-24 mb-4">
-        <Image
-          src={logo}
-          alt="Logo Auros"
-          fill
-          className="object-contain"
-          priority
-        />
-      </div>
+    <div className="w-full lg:grid lg:min-h-screen lg:grid-cols-5">
 
-      <Card className="w-full max-w-[400px] shadow-lg py-6">
+      {/* LADO ESQUERDO: FORMULÁRIO (2 colunas de 5 = 40%) */}
+      <div className="flex items-center justify-center py-12 lg:col-span-2 bg-white">
+        <div className="mx-auto w-[350px] space-y-6">
 
-        <CardContent>
+          {/* Cabeçalho do Form */}
+          <div className="flex flex-col space-y-2 text-center items-center">
+            <div className="relative w-40 h-20 mb-2">
+              <Image
+                src={logo}
+                alt="Logo Auros"
+                fill
+                className="object-contain"
+                priority
+              />
+            </div>
+            <h1 className="text-2xl font-bold tracking-tight text-[#17375F]">
+              Acesso Administrativo
+            </h1>
+            <p className="text-sm text-muted-foreground">
+              Entre com suas credenciais para continuar
+            </p>
+          </div>
+
+          {/* Formulário */}
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <Input
                 id="email"
                 type="email"
-                placeholder="nome@exemplo.com"
+                placeholder="nome@auros.com.br"
                 {...register('email')}
                 className={errors.email ? "border-red-500" : ""}
+                disabled={isLoading}
               />
               {errors.email && (
                 <span className="text-xs text-red-500">{errors.email.message}</span>
@@ -94,13 +107,18 @@ export default function LoginPage() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="password">Senha</Label>
+              <div className="flex items-center justify-between">
+                <Label htmlFor="password">Senha</Label>
+                {/* Link opcional de esqueci a senha */}
+                {/* <a href="#" className="text-xs text-[#17375F] hover:underline">Esqueceu a senha?</a> */}
+              </div>
               <Input
                 id="password"
                 type="password"
                 placeholder="******"
                 {...register('password')}
                 className={errors.password ? "border-red-500" : ""}
+                disabled={isLoading}
               />
               {errors.password && (
                 <span className="text-xs text-red-500">{errors.password.message}</span>
@@ -109,7 +127,7 @@ export default function LoginPage() {
 
             <Button
               type="submit"
-              className="w-full bg-[#17375F] hover:bg-[#122b4a] mt-1"
+              className="w-full bg-[#17375F] hover:bg-[#122b4a] mt-4 h-11"
               disabled={isLoading}
             >
               {isLoading ? (
@@ -118,13 +136,47 @@ export default function LoginPage() {
                   Entrando...
                 </>
               ) : (
-                'Entrar'
+                'Acessar'
               )}
             </Button>
-
           </form>
-        </CardContent>
-      </Card>
+
+          {/* Rodapé do Form (Opcional) */}
+          {/* <p className="px-8 text-center text-sm text-muted-foreground">
+            Protegido por reCAPTCHA e sujeito à{' '}
+            <span className="underline underline-offset-4 hover:text-[#17375F] cursor-pointer">
+              Política de Privacidade
+            </span>
+            .
+          </p> */}
+        </div>
+      </div>
+
+      {/* LADO DIREITO: IMAGEM (3 colunas de 5 = 60%) */}
+      <div className="hidden bg-muted lg:block lg:col-span-3 relative">
+        {/* Imagem de Fundo (Substitua pela sua imagem real de um imóvel bonito) */}
+        <Image
+          src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+          alt="Imagem de Imóvel de Alto Padrão"
+          fill
+          className="object-cover"
+          priority
+        />
+
+        {/* Overlay (Camada escura transparente) para dar destaque */}
+        <div className="absolute inset-0 bg-[#17375F]/60 mix-blend-multiply" />
+
+        {/* Texto sobre a imagem (Opcional) */}
+        <div className="absolute bottom-10 left-10 z-20 text-white max-w-lg">
+          <blockquote className="space-y-2">
+            <p className="text-lg font-medium">
+              &ldquo;A tecnologia impulsionando o mercado imobiliário. Gerencie seus imóveis com eficiência e elegância.&rdquo;
+            </p>
+            {/* <footer className="text-sm opacity-80">Auros Imobiliária</footer> */}
+          </blockquote>
+        </div>
+      </div>
+
     </div>
   )
 }

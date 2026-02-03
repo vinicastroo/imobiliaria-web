@@ -249,6 +249,17 @@ export default function EditarImovelPage() {
     }
   }
 
+  const generateSlug = (text: string) => {
+    return text
+      .toString()
+      .toLowerCase()
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // Remove acentos
+      .trim()
+      .replace(/\s+/g, '-')     // Espaços viram hífens
+      .replace(/[^\w\-]+/g, '') // Remove caracteres especiais
+      .replace(/\-\-+/g, '-')   // Remove hífens duplicados
+  }
+
   const handleEditThumb = async (fileId: string) => {
     if (!property) return
     try {
@@ -370,7 +381,17 @@ export default function EditarImovelPage() {
                     <CardHeader><CardTitle>Informações do Imóvel</CardTitle></CardHeader>
                     <CardContent className="space-y-4">
                       <Label>Nome do Imóvel</Label>
-                      <Input {...register('name')} placeholder="Ex: Apartamento Vista Mar" />
+                      <Input
+                        {...register('name')}
+                        placeholder="Ex: Apartamento Vista Mar"
+                        onChange={(e) => {
+                          register('name').onChange(e)
+
+                          const newSlug = generateSlug(e.target.value)
+
+                          setValue('slug', newSlug, { shouldValidate: true })
+                        }}
+                      />
                       {errors.name && <span className="text-xs text-red-500">{errors.name.message}</span>}
 
                       <div className="grid grid-cols-2 gap-4">
