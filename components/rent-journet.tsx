@@ -25,10 +25,9 @@ const RentJourney = () => {
   ];
 
   return (
-    <section className="max-w-6xl mx-auto py-10 font-sans bg-white">
-      <div className="flex flex-col md:flex-row w-full justify-between gap-12 items-start">
+    <section className="max-w-6xl mx-auto py-10 font-sans bg-white flex justify-center">
+      <div className="flex flex-col md:flex-row w-full justify-between gap-8 lg:0">
 
-        {/* Lado Esquerdo: Texto e Imagem */}
         <div className="flex-1 space-y-8">
           <div className="space-y-4">
             <span className="border border-blue-950/90 text-blue-950/90 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
@@ -50,9 +49,9 @@ const RentJourney = () => {
         </div>
 
         {/* Lado Direito: Passos */}
-        <div className="flex-1 space-y-10">
+        <div className="flex-1 space-y-10 h-full flex flex-col justify-end items-center">
           {steps.map((step, index) => (
-            <div key={index} className="flex gap-6 items-start">
+            <div key={index} className="flex gap-6  h-full  ">
               <div className="flex-shrink-0 w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
                 {step.icon}
               </div>

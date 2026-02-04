@@ -1,10 +1,13 @@
 import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import { BedDouble, Bath, CarFront, Ruler, MapPin, FileText, Grid2X2, } from 'lucide-react'
+import { BedDouble, Bath, CarFront, Ruler, MapPin, Grid2X2 } from 'lucide-react'
 
 import { MenubarHome } from '@/components/menu-home'
 import Footer from '@/components/footer'
-import { PropertyGallery } from '@/components/property-gallery'
+// REMOVIDO: import { PropertyGallery } from '@/components/property-gallery'
+// ADICIONADO:
+import { PropertyImagesCarousel } from '@/components/property-images-carousel'
+
 import { RecommendedCarousel, RecommendedProperty } from '@/components/recommended-carousel'
 import { getProperty, type Property } from '@/app/api/get-property'
 
@@ -42,15 +45,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 async function getRecommendedProperties(city: string, currentId: string): Promise<RecommendedProperty[]> {
   try {
-
-    // Busca 5 imóveis da mesma cidade
     const response = await api.get<GetPropertiesResponse>(`/imovel/todos?filter[city]=${encodeURIComponent(city)}&pageSize=5&visible=true`)
     const data = response.data
-
     const allProperties = data.properties || []
-
     const filtered = allProperties.filter((p: Property) => p.id !== currentId)
-
     const cloudFrontUrl = `https://d2wss3tmei5yh1.cloudfront.net`
 
     return filtered.map((prop: Property) => ({
@@ -63,6 +61,12 @@ async function getRecommendedProperties(city: string, currentId: string): Promis
       bedrooms: prop.bedrooms,
       parkingSpots: prop.parkingSpots,
       totalArea: prop.totalArea,
+      files: prop.files,
+      suites: prop.suites,
+      bathrooms: prop.bathrooms,
+      privateArea: prop.privateArea,
+      type_property: prop.type_property,
+
       coverImage: prop.files && prop.files.length > 0
         ? `${cloudFrontUrl}/${prop.files[0].fileName}`
         : undefined
@@ -106,8 +110,6 @@ export default async function PropertyPage({ params }: PageProps) {
     notFound()
   }
 
-  // A API já retorna os corretores vinculados dentro de property.realtors
-  // Garantimos que seja um array, caso venha null
   const realtors = property.realtors || []
   const recommended = await getRecommendedProperties(property.city, property.id)
 
@@ -115,14 +117,17 @@ export default async function PropertyPage({ params }: PageProps) {
     <main className="min-h-screen bg-white">
       <MenubarHome />
 
-      <div className="max-w-[1200px] mx-auto p-4 space-y-8 py-20">
+      <div className="max-w-[1200px] mx-auto p-4 space-y-8 py-8 md:py-12"> {/* Ajustei padding */}
 
-        {/* Galeria */}
-        <PropertyGallery items={property.files.map(file => ({
-          id: file.id,
-          img: file.path,
-          fileName: file.fileName
-        }))} propertyName={property.name} />
+        {/* --- CARROSSEL DE IMAGENS (Substituindo Galeria) --- */}
+        <PropertyImagesCarousel
+          files={property.files.map(file => ({
+            id: file.id,
+            path: file.path,
+            fileName: file.fileName
+          }))}
+          propertyName={property.name}
+        />
 
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
 
@@ -146,7 +151,6 @@ export default async function PropertyPage({ params }: PageProps) {
                       )}
                     </div>
                     <div>
-
                       <span className='text-xs bg-[#17375F] text-white px-4 py-1 rounded-full'>
                         Ref: {property.code || property.id.substring(0, 8).toUpperCase()}
                       </span>
@@ -184,7 +188,6 @@ export default async function PropertyPage({ params }: PageProps) {
                 {(property.latitude && property.longitude) && (
                   <>
                     <Separator className='my-10' />
-
                     <div className="space-y-4">
                       <h3 className="text-sm font-bold text-[#17375F] uppercase flex items-center gap-2">
                         <MapPin size={18} />
@@ -219,11 +222,9 @@ export default async function PropertyPage({ params }: PageProps) {
                   <span className="text-2xl font-bold text-[#17375F]">{property.value}</span>
                 </div>
 
-
-                {/* Lista de Corretores vindo da API */}
+                {/* Lista de Corretores */}
                 <div>
                   <h3 className="text-sm font-semibold text-gray-500 uppercase mb-4">Corretores Responsáveis</h3>
-
                   {realtors.length > 0 ? (
                     <div className="space-y-4">
                       {realtors.map((realtor: Realtor) => (
@@ -235,7 +236,6 @@ export default async function PropertyPage({ params }: PageProps) {
                       ))}
                     </div>
                   ) : (
-                    // Fallback opcional caso não tenha corretor vinculado
                     <div className="text-sm text-gray-500 text-center py-4 border border-dashed rounded-md">
                       Entre em contato com a imobiliária.
                     </div>

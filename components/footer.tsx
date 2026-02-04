@@ -104,9 +104,9 @@ export default async function Footer() {
 
           {/* Coluna 5: Tabela CUB (Server Data) */}
           <div className="flex flex-col gap-1 items-center md:items-start text-center md:text-left w-full md:w-auto text-sm">
-            <h3 className="text-base font-semibold border-b border-white pb-1 mb-2 w-fit">
+            {/* <h3 className="text-base font-semibold border-b border-white pb-1 mb-2 w-fit">
               Tabela do CUB SC
-            </h3>
+            </h3> */}
             {/* {cubInformation ? (
               <>
                 <p>Mês/Ano: {cubInformation.monthYear}</p>

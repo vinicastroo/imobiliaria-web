@@ -3,18 +3,19 @@
 import { useRef } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { ChevronLeft, ChevronRight, BedDouble, Bath, CarFront, Ruler, LayoutGrid } from 'lucide-react'
+import { ChevronLeft, ChevronRight, BedDouble, Bath, CarFront, Ruler, LayoutGrid, Toilet, Grid2X2 } from 'lucide-react'
 
 // UI Components
-import { Card, CardFooter } from '@/components/ui/card'
+import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+} from "@/components/ui/carousel"
 
-// Importe sua logo aqui se necessário, ou use um placeholder
-// import logo from '@/public/logo-auros-minimalist.svg'
-
-// --- Interface dos dados que o PropertyPage vai passar ---
 export interface RecommendedProperty {
   id: string
   name: string
@@ -33,23 +34,23 @@ export interface RecommendedProperty {
   coverImage?: string
 }
 
-// --- Helper Component (Igual ao da sua lista) ---
-interface FeatureProps {
-  icon: React.ComponentType<{ size: number }>
-  value?: string | number
-  label: string
-  suffix?: string
+interface PropertyFeatureProps {
+  icon: React.ComponentType<{ size: number, className?: string }>;
+  value?: string | number;
+  label: string;
+  suffix?: string;
 }
 
-const Feature = ({ icon: Icon, value, label, suffix = "" }: FeatureProps) => {
+const PropertyFeature = ({ icon: Icon, value, label, suffix = "" }: PropertyFeatureProps) => {
+  // Verifica se tem valor válido (não é nulo, undefined ou '0')
   if (!value || value === '0' || value === 0) return null
   return (
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
-          <div className="flex items-center gap-1.5 text-gray-600">
-            <Icon size={16} />
-            <span className="text-sm font-medium">{value}{suffix}</span>
+          <div className="flex items-center gap-1 text-[#17375F] cursor-default bg-zinc-50 px-2 py-1 rounded-md border border-zinc-100 whitespace-nowrap">
+            <Icon size={16} className="text-[#17375F]" />
+            <span className="font-bold text-xs">{value}{suffix}</span>
           </div>
         </TooltipTrigger>
         <TooltipContent><p>{label}</p></TooltipContent>
@@ -73,102 +74,117 @@ export function RecommendedCarousel({ properties }: { properties: RecommendedPro
 
   if (!properties || properties.length === 0) return null
 
-  console.log('Recommended Properties:', properties)
   return (
     <div className="space-y-6 py-8">
-      {/* Cabeçalho do Carrossel */}
       <div className="flex items-center justify-between px-1">
         <h2 className="text-xl font-bold text-[#17375F]">Imóveis Semelhantes em {properties[0].city}</h2>
         <div className="flex gap-2">
-          <Button variant="outline" size="icon" onClick={() => scroll('left')} className="h-8 w-8 rounded-full">
+          <Button variant="outline" size="icon" onClick={() => scroll('left')} className="h-8 w-8 rounded-full border-zinc-200 text-[#17375F] hover:bg-[#17375F] hover:text-white">
             <ChevronLeft className="h-4 w-4" />
           </Button>
-          <Button variant="outline" size="icon" onClick={() => scroll('right')} className="h-8 w-8 rounded-full">
+          <Button variant="outline" size="icon" onClick={() => scroll('right')} className="h-8 w-8 rounded-full border-zinc-200 text-[#17375F] hover:bg-[#17375F] hover:text-white">
             <ChevronRight className="h-4 w-4" />
           </Button>
         </div>
       </div>
 
-      {/* Área de Scroll Horizontal */}
       <div
         ref={scrollRef}
         className="flex gap-6 overflow-x-auto pb-6 snap-x snap-mandatory scrollbar-none px-1"
         style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
       >
-        {properties.map(property => (
-          <Link
-            href={`/imoveis/${property.slug}`}
-            key={property.id}
-            className="min-w-[320px] max-w-[320px] snap-start group"
-          >
-            {/* INÍCIO DO CARD (Estrutura idêntica ao PropertyList) */}
-            <Card className="h-full overflow-hidden hover:shadow-md transition-all shadow-none duration-300 border-gray-200 flex flex-col bg-white">
+        {properties.map(property => {
 
-              {/* Imagem */}
-              <div className="relative h-[250px] w-full bg-[#17375F] flex items-center justify-center overflow-hidden rounded-t-xl">
-                {property.coverImage ? (
-                  <Image
-                    src={property.coverImage}
-                    alt={property.name}
-                    fill
-                    className="object-cover group-hover:scale-105 transition-transform duration-500"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  />
-                ) : (
-                  // Fallback se não tiver imagem (adicione sua logo aqui se quiser)
-                  <div className="text-white/50 text-sm">Sem imagem</div>
-                )}
-              </div>
+          // Lista completa de features (igual à listagem principal)
+          const featuresList = [
+            { icon: BedDouble, value: property.bedrooms, label: "Quartos" },
+            { icon: Bath, value: property.suites, label: "Suítes" },
+            { icon: Toilet, value: property.bathrooms, label: "Banheiros" },
+            { icon: CarFront, value: property.parkingSpots, label: "Vagas" },
+            { icon: LayoutGrid, value: property.totalArea, label: "Área Total", suffix: " m²" },
+            { icon: Grid2X2, value: property.privateArea, label: "Área Priv.", suffix: " m²" },
+          ].filter(item => item.value && item.value !== '0' && item.value !== 0);
 
-              {/* Conteúdo */}
-              <div className="flex-1 flex flex-col p-4">
-                <div className="mb-4">
-                  <h3 className="font-bold text-gray-900 line-clamp-1 text-lg" title={property.name}>
-                    {property.name}
-                  </h3>
-                  <p className="text-sm text-gray-500 line-clamp-1">
-                    {property.city} - {property.neighborhood}
-                  </p>
-                  {/* Summary (opcional, se vier da API) */}
-                  {property.summary && (
-                    <p className="text-xs text-gray-400 mt-2 line-clamp-2">
-                      {property.summary}
+          return (
+            <div
+              key={property.id}
+              className="min-w-[320px] max-w-[320px] snap-start"
+            >
+              <Card className="h-full overflow-hidden hover:shadow-lg transition-all shadow-none duration-300 border-zinc-200 py-0 flex flex-col bg-white group">
+
+                <Link href={`/imoveis/${property.slug}`} className="flex flex-col h-full hover:text-[#17375F] transition-colors">
+
+                  {/* Imagem */}
+                  <div className="relative h-[250px] w-full bg-gray-100 flex items-center justify-center overflow-hidden">
+                    {property.coverImage ? (
+                      <Image
+                        src={property.coverImage}
+                        alt={property.name}
+                        fill
+                        className="object-cover group-hover:scale-105 transition-transform duration-500"
+                        sizes="(max-width: 768px) 100vw, 320px"
+                      />
+                    ) : (
+                      <div className="text-gray-400 text-sm">Sem imagem</div>
+                    )}
+                    <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-black/40 to-transparent pointer-events-none" />
+                  </div>
+
+                  <CardHeader className="py-4">
+                    <h3 className="text-base font-bold text-zinc-800 line-clamp-1" title={property.name}>
+                      {property.name}
+                    </h3>
+                    <p className="text-xs text-zinc-500 line-clamp-1">
+                      {property.city} - {property.neighborhood}
                     </p>
-                  )}
-                </div>
+                    {/* Summary com altura fixa para alinhar cards */}
+                    {/* <p className="text-sm text-zinc-600 line-clamp-2 mt-2 h-10">
+                      {property.summary || ''}
+                    </p> */}
+                  </CardHeader>
 
-                {
-                  (property.bedrooms || property.suites || property.bathrooms || property.parkingSpots || property.totalArea || property.privateArea) ? (
-                    <div className="mt-auto">
-                      <p className="text-xs font-bold text-[#17375F] uppercase mb-2">Informações</p>
-                      <div className="flex flex-wrap gap-3">
-                        <Feature icon={BedDouble} value={property.bedrooms} label="Quartos" />
-                        <Feature icon={Bath} value={property.suites} label="Suítes" />
-                        <Feature icon={Bath} value={property.bathrooms} label="Banheiros" />
-                        <Feature icon={CarFront} value={property.parkingSpots} label="Vagas" />
-                        <Feature icon={LayoutGrid} value={property.totalArea} label="Área Total" suffix=" m²" />
-                        <Feature icon={Ruler} value={property.privateArea} label="Área Privativa" suffix=" m²" />
-                      </div>
-                    </div>
+                  {/* Carrossel de Features */}
+                  {featuresList.length > 0 ? (
+                    <CardContent className="w-full overflow-hidden py-2">
+                      <p className="text-xs font-semibold text-zinc-900 mb-2">Informações</p>
+                      <Carousel
+                        opts={{ align: "start", dragFree: true }}
+                        className="w-full select-none"
+                      >
+                        <CarouselContent className="-ml-2">
+                          {featuresList.map((feature, index) => (
+                            <CarouselItem key={index} className="pl-2 basis-auto">
+                              <PropertyFeature
+                                icon={feature.icon}
+                                value={feature.value}
+                                label={feature.label}
+                                suffix={feature.suffix}
+                              />
+                            </CarouselItem>
+                          ))}
+                        </CarouselContent>
+                      </Carousel>
+                    </CardContent>
                   ) : (
-                    <div className="mt-auto" />
-                  )
-                }
-
-                <div className="flex items-center gap-2 mt-4">
-                  <Badge variant="outline" className="font-normal text-xs">Venda</Badge>
-                  {property.type_property && (
-                    <Badge variant="outline" className="font-normal text-xs">{property.type_property.description}</Badge>
+                    // Espaço vazio para alinhar se não tiver features
+                    <div className="mt-auto h-[60px]" />
                   )}
-                </div>
-              </div>
 
-              <CardFooter className="border-t p-4 flex justify-end bg-gray-50/50">
-                <span className="text-xl font-bold text-[#17375F]">{property.value}</span>
-              </CardFooter>
-            </Card>
-          </Link>
-        ))}
+                  <div className="mt-auto">
+                    <CardFooter className="flex items-center justify-between border-t py-4 bg-gray-50/50">
+                      <span className="text-xl font-bold text-[#17375F]">{property.value}</span>
+                      <div className="flex gap-2">
+                        <Badge className="bg-[#17375F] hover:bg-[#122b4a]">Venda</Badge>
+
+                      </div>
+                    </CardFooter>
+                  </div>
+
+                </Link>
+              </Card>
+            </div>
+          )
+        })}
       </div>
     </div>
   )

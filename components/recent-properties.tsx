@@ -3,7 +3,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { useQuery } from '@tanstack/react-query'
-import { BedDouble, Bath, CarFront, Ruler, Grid2X2 } from 'lucide-react'
+import { BedDouble, Bath, CarFront, Ruler, Grid2X2, Toilet } from 'lucide-react'
 
 // UI Components
 import { Button } from '@/components/ui/button'
@@ -15,17 +15,12 @@ import {
   Carousel,
   CarouselContent,
   CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
 } from "@/components/ui/carousel"
 
 import { getRecentProperties } from '@/app/api/get-recent-properties'
 import square from '@/public/square.svg'
-import logoPlaceholder from '@/public/logo-auros-minimalist.svg'
 
-import React, { useState, useEffect, useCallback } from 'react'
-import { type CarouselApi } from "@/components/ui/carousel"
-import { cn } from "@/lib/utils" // Utilitário padrão do Shadcn
+import React from 'react'
 import { PropertyGallery } from './property-gallery'
 
 interface PropertyFeatureProps {
@@ -41,9 +36,9 @@ const PropertyFeature = ({ icon: Icon, value, label, suffix = "" }: PropertyFeat
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
-          <div className="flex items-center gap-1 text-[#17375F] cursor-default">
-            <Icon size={20} className="text-[#17375F]" />
-            <span className="font-bold text-sm">{value}{suffix}</span>
+          <div className="flex items-center gap-1 text-[#17375F] cursor-default bg-zinc-50 px-2 py-1 rounded-md border border-zinc-100 whitespace-nowrap">
+            <Icon size={16} className="text-[#17375F]" />
+            <span className="font-bold text-xs">{value}{suffix}</span>
           </div>
         </TooltipTrigger>
         <TooltipContent><p>{label}</p></TooltipContent>
@@ -59,7 +54,7 @@ export function RecentProperties() {
   })
 
   return (
-    <section className="relative w-full py-16 px-4 bg-zinc-50 flex flex-col items-center">
+    <section className="relative w-full py-16 px-4 bg-zinc-50 flex flex-col items-center overflow-hidden">
 
       {/* Background Decorativo */}
       <div className="absolute inset-0 -top-20 -left-20 opacity-40 pointer-events-none"
@@ -89,59 +84,80 @@ export function RecentProperties() {
         ))}
 
         {/* Cards de Imóveis */}
-        {data?.properties.map((property) => (
-          <Card key={property.slug} className="h-full overflow-hidden hover:shadow-lg transition-all shadow-none duration-300 border-zinc-200 py-0 flex flex-col bg-white group">
+        {data?.properties.map((property) => {
 
-            <PropertyGallery items={property.files.map(file => ({
-              id: file.id,
-              img: file.path,
-              fileName: file.fileName
+          // Filtra as features
+          const featuresList = [
+            { icon: BedDouble, value: property.bedrooms, label: "Quartos" },
+            { icon: Bath, value: property.suites, label: "Suítes" },
+            { icon: Toilet, value: property.bathrooms, label: "Banheiros" },
+            { icon: CarFront, value: property.parkingSpots, label: "Vagas" },
+            { icon: Ruler, value: property.totalArea, label: "Área Total", suffix: " m²" },
+            { icon: Grid2X2, value: property.privateArea, label: "Área Priv.", suffix: " m²" },
+          ].filter(item => item.value && item.value !== '0');
 
-            }))} path={`/imoveis/${property.slug}`} propertyName={property.name} isRecentProperty />
+          return (
+            <Card key={property.slug} className="h-full overflow-hidden group group-hover:shadow-lg transition-all shadow-none duration-300 border-zinc-200 py-0 flex flex-col bg-white group">
 
+              <PropertyGallery
+                items={property.files.map(file => ({
+                  id: file.id,
+                  img: file.path,
+                  fileName: file.fileName
+                }))}
+                path={`/imoveis/${property.slug}`}
+                propertyName={property.name}
+                isRecentProperty
+              />
 
-            {/* 2. Conteúdo do Card */}
-            <Link href={`/imoveis/${property.slug}`} target="_blank" className="hover:text-[#17375F] transition-colors block">
-              <CardHeader className="pb-2">
-                <h3 className="text-lg font-bold text-zinc-800 line-clamp-1" title={property.name}>
-                  {property.name}
-                </h3>
+              <Link href={`/imoveis/${property.slug}`} target="_blank" className="group-hover:text-[#17375F] transition-colors flex-1 flex flex-col">
+                <CardHeader className="pb-2">
+                  <h3 className="text-lg font-bold text-zinc-800 line-clamp-1" title={property.name}>
+                    {property.name}
+                  </h3>
+                  <p className="text-sm text-zinc-500">{property.city} - {property.neighborhood}</p>
+                  <p className="text-sm text-zinc-600 line-clamp-2 mt-2 h-10">{property.summary}</p>
+                </CardHeader>
 
-                <p className="text-sm text-zinc-500">{property.city} - {property.neighborhood}</p>
-                <p className="text-sm text-zinc-600 line-clamp-2 mt-2 h-10">{property.summary}</p>
-              </CardHeader>
-
-
-              {
-                (property.bedrooms || property.suites || property.bathrooms || property.parkingSpots || property.totalArea || property.privateArea) && (
-                  <CardContent className="flex-1">
-                    <p className="text-sm font-semibold text-zinc-900 mb-3">Informações</p>
-                    <div className="flex flex-wrap gap-4 mb-2">
-                      <PropertyFeature icon={BedDouble} value={property.bedrooms} label="Quartos" />
-                      <PropertyFeature icon={Bath} value={property.suites} label="Suítes" />
-                      <PropertyFeature icon={Bath} value={property.bathrooms} label="Banheiros" />
-                      <PropertyFeature icon={CarFront} value={property.parkingSpots} label="Vagas" />
-                      <PropertyFeature icon={Ruler} value={property.totalArea} label="Área Total" suffix=" m²" />
-                      <PropertyFeature icon={Grid2X2} value={property.privateArea} label="Área Privativa" suffix=" m²" />
-                    </div>
+                {featuresList.length > 0 && (
+                  <CardContent className="w-full py-2 relative z-50 "> {/* Adicionado 'relative' para posicionar botões */}
+                    <p className="text-sm font-semibold text-zinc-900 mb-2">Informações</p>
+                    <Carousel
+                      opts={{ align: "start", dragFree: true }}
+                      className="w-full select-none"
+                    >
+                      <CarouselContent className="-ml-2">
+                        {featuresList.map((feature, index) => (
+                          <CarouselItem key={index} className="pl-2 basis-auto">
+                            <PropertyFeature
+                              icon={feature.icon}
+                              value={feature.value}
+                              label={feature.label}
+                              suffix={feature.suffix}
+                            />
+                          </CarouselItem>
+                        ))}
+                      </CarouselContent>
+                    </Carousel>
                   </CardContent>
-                )
-              }
+                )}
 
-
-              <CardFooter className="flex items-center justify-between border-t py-4 bg-gray-50/50 mt-auto">
-                <span className="text-xl font-bold text-[#17375F]">{property.value}</span>
-                <Badge className="bg-[#17375F] hover:bg-[#122b4a]">Venda</Badge>
-              </CardFooter>
-            </Link>
-          </Card>
-        ))}
+                <div className="mt-auto">
+                  <CardFooter className="flex items-center justify-between border-t py-4 bg-gray-50/50">
+                    <span className="text-xl font-bold text-[#17375F]">{property.value}</span>
+                    <Badge className="bg-[#17375F] hover:bg-[#122b4a]">Venda</Badge>
+                  </CardFooter>
+                </div>
+              </Link>
+            </Card>
+          )
+        })}
       </div>
 
       {data && data.properties.length > 0 && (
         <Link href="/imoveis" className="mt-10">
           <Button variant="outline" size="lg" className="bg-[#17375F] text-white hover:bg-[#17375F]/80 hover:text-white cursor-pointer ">
-            Ver todos
+            Ver todos os imóveis
           </Button>
         </Link>
       )}

@@ -32,7 +32,6 @@ interface ClientProps {
 }
 
 export default function AdminDashboard() {
-  const router = useRouter()
   const { status } = useSession()
   const [clients, setClients] = useState<ClientProps[]>([])
   const [loading, setLoading] = useState(true)

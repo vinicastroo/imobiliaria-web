@@ -35,7 +35,7 @@ export function PropertyGallery({ items, propertyName, isRecentProperty, path }:
 
   if (!items || items.length === 0) {
     return (
-      <div className={`w-full ${isRecentProperty ? 'h-[200px] md:h-[300px]' : 'h-[400px] md:h-[600px]'} bg-[#17375F] flex items-center justify-center rounded-lg`}>
+      <div className={`relative w-full flex items-center justify-center bg-[#17375F] ${isRecentProperty ? 'h-[275px] md:h-[300px]' : 'h-[350px] lg:h-[700px] '}`}>
         <Image src={logo} alt="Auros Logo" width={200} height={200} className="opacity-50" />
       </div>
     )
@@ -47,31 +47,28 @@ export function PropertyGallery({ items, propertyName, isRecentProperty, path }:
       <Carousel className="w-full" opts={{ loop: true }} setApi={setApi}>
         <CarouselContent>
           {items.map((item, index) => (
-            <CarouselItem key={index} className={`relative w-full ${isRecentProperty ? 'h-[200px] md:h-[300px]' : 'h-[400px] md:h-[600px]'}`} onClick={() => {
+            <CarouselItem key={index} className={`relative w-full ${isRecentProperty ? 'h-[275px] md:h-[300px]' : 'h-[350px] lg:h-[500px] '}`} onClick={() => {
               if (isRecentProperty && path) {
                 window.open(path, '_blank')
               }
             }}>
-              <div className="w-full h-full relative rounded-lg overflow-hidden bg-gray-100">
+              <div className={`w-full h-full relative  ${isRecentProperty ? 'rounded-none' : 'rounded-lg'} overflow-hidden bg-gray-100`}>
                 <Image
                   src={item.img}
                   alt={`${propertyName} - Foto ${index + 1}`}
                   fill
-                  className="object-contain md:object-cover hover:scale-105 cursor-pointer transition-scale duration-300"
+                  className="object-cover group-hover:scale-105 cursor-pointer transition-scale duration-300"
                   priority={index === 0}
                 />
-                <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-black/60 to-transparent pointer-events-none" />
               </div>
             </CarouselItem>
           ))}
         </CarouselContent>
 
-        {/* Setas com opacity-0 e group-hover:opacity-100 */}
         <CarouselPrevious className="left-4 bg-white/80 hover:bg-white border-none opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity duration-300" />
         <CarouselNext className="right-4 bg-white/80 hover:bg-white border-none opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity duration-300" />
       </Carousel>
 
-      {/* Container das bolinhas com opacity-0 e group-hover:opacity-100 */}
       <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-2 z-10 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity duration-300">
         {Array.from({ length: count }).map((_, index) => (
           <button

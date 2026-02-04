@@ -18,7 +18,7 @@ async function getAllProperties() {
   }
 
   try {
-    const response = await api.get('imovel/todos', {
+    const response = await api.get('imovel', {
       params: {
         pageSize: 1000, // Tenta buscar até 1000 imóveis de uma vez
         visible: 'true', // Apenas imóveis ativos no site

@@ -94,7 +94,7 @@ export function PropertyFilter() {
   }
 
   return (
-    <Card className="w-full">
+    <Card className="w-full border-none shadow-none">
       <CardContent className="p-4 space-y-4">
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
 
