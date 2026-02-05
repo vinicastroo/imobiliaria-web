@@ -21,7 +21,6 @@ import {
 } from '@/components/ui/pagination'
 
 import { getProperties } from '@/app/api/get-properties'
-import logo from '@/public/logo-auros-minimalist.svg'
 import { PropertyGallery } from './property-gallery'
 
 // Helper component
@@ -74,8 +73,11 @@ export function PropertyList() {
     queryFn: () => getProperties({ page, ...filters }),
   })
 
-  const itemsPerPage = 12
-  const totalPages = result ? Math.ceil(result.totalPages / itemsPerPage) || 1 : 1
+  // CORREÇÃO 1: Usar totalPages direto da API (sem dividir novamente)
+  const totalPages = result?.totalPages || 1
+
+  // CORREÇÃO 2: Ler o totalCount para o texto do header
+  const totalCount = result?.totalCount || 0
 
   const handlePageChange = (newPage: number) => {
     if (newPage < 1 || newPage > totalPages) return
@@ -110,19 +112,17 @@ export function PropertyList() {
     <div className="w-full flex flex-col gap-6">
       {/* Header com contagem */}
       <div className="flex justify-between items-center">
-
-        {
-          result?.totalPages !== undefined && (
-            <h2 className="text-lg font-bold text-gray-700">
-              {`${result.totalPages || result.totalPages} ${result.totalPages === 1 ? 'Imóvel encontrado' : 'Imóveis encontrados'}`}
-            </h2>
-          )
-        }
+        {!isLoading && (
+          <h2 className="text-lg font-bold text-gray-700">
+            {/* CORREÇÃO 3: Exibir totalCount (ex: 130 Imóveis) e não totalPages */}
+            {`${totalCount} ${totalCount === 1 ? 'Imóvel encontrado' : 'Imóveis encontrados'}`}
+          </h2>
+        )}
       </div>
 
       {/* Loading Skeletons */}
       {isLoading && (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {Array.from({ length: 6 }).map((_, i) => (
             <div key={i} className="flex flex-col space-y-3">
               <Skeleton className="h-[250px] w-full rounded-xl" />
@@ -157,12 +157,11 @@ export function PropertyList() {
               isRecentProperty
             />
 
-
             {/* Conteúdo */}
-            <Link href={`/imoveis/${property.slug}`} target="_blank" className="group">
+            <Link href={`/imoveis/${property.slug}`} target="_blank" className="group flex flex-col flex-1">
               <div className="flex-1 flex flex-col p-4">
                 <div className="mb-4">
-                  <h3 className="font-bold text-gray-900 line-clamp-1 text-lg">{property.name}</h3>
+                  <h3 className="font-bold text-gray-900 line-clamp-1 text-lg group-hover:text-[#17375F] transition-colors">{property.name}</h3>
                   <p className="text-sm text-gray-500">{property.city} - {property.neighborhood}</p>
                   <p className="text-xs text-gray-400 mt-2 line-clamp-2">{property.summary}</p>
                 </div>
@@ -181,7 +180,9 @@ export function PropertyList() {
 
                 <div className="flex items-center gap-2 mt-4">
                   <Badge variant="outline" className="font-normal text-xs">Venda</Badge>
-                  <Badge variant="outline" className="font-normal text-xs">{property.type_property.description}</Badge>
+                  {property.type_property && (
+                    <Badge variant="outline" className="font-normal text-xs">{property.type_property.description}</Badge>
+                  )}
                 </div>
               </div>
 
@@ -190,11 +191,10 @@ export function PropertyList() {
               </CardFooter>
             </Link>
           </Card>
-
         ))}
       </div>
 
-      {/* Paginação Refatorada */}
+      {/* Paginação */}
       {
         totalPages > 1 && (
           <Pagination className="my-8 select-none">

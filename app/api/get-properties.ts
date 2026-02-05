@@ -34,9 +34,12 @@ export interface Properties {
     fileName: string
   }[]
 }
+
+// ADICIONADO: totalCount
 export interface GetPropertiesResponse {
   properties: Properties[]
   totalPages: number
+  totalCount: number
 }
 
 interface GetPropertiesProps {
@@ -51,6 +54,7 @@ interface GetPropertiesProps {
   totalArea?: string | null
   privateArea?: string | null
 }
+
 export async function getProperties({
   bathrooms,
   bedrooms,
@@ -98,5 +102,6 @@ export async function getProperties({
   return {
     properties: formattedData,
     totalPages: response.data.totalPages,
+    totalCount: response.data.totalCount || 0,
   }
 }
