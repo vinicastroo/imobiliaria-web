@@ -1,6 +1,14 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  experimental: {
+    optimizePackageImports: [
+      'lucide-react',
+      '@radix-ui/react-icons',
+      'date-fns',
+      '@tanstack/react-table',
+    ],
+  },
   images: {
     formats: ['image/avif', 'image/webp'],
 

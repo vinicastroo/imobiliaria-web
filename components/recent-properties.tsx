@@ -1,5 +1,6 @@
 "use client"
 
+import { memo } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useQuery } from '@tanstack/react-query'
@@ -30,7 +31,7 @@ interface PropertyFeatureProps {
   suffix?: string;
 }
 
-const PropertyFeature = ({ icon: Icon, value, label, suffix = "" }: PropertyFeatureProps) => {
+const PropertyFeature = memo(function PropertyFeature({ icon: Icon, value, label, suffix = "" }: PropertyFeatureProps) {
   if (!value || value === '0' || value === 0) return null
   return (
     <TooltipProvider>
@@ -45,7 +46,7 @@ const PropertyFeature = ({ icon: Icon, value, label, suffix = "" }: PropertyFeat
       </Tooltip>
     </TooltipProvider>
   )
-}
+})
 
 export function RecentProperties() {
   const { data, isLoading } = useQuery({

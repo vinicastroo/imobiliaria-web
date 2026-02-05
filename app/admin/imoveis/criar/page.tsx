@@ -105,9 +105,15 @@ export default function CriarImovelPage() {
   })
 
   useEffect(() => {
-    api.get('/tipo-imovel').then((res) => setTypes(res.data))
-    api.get('/corretor').then((res) => setRealtors(res.data))
-    api.get('/empreendimento').then(res => setEnterprises(res.data))
+    Promise.all([
+      api.get('/tipo-imovel'),
+      api.get('/corretor'),
+      api.get('/empreendimento')
+    ]).then(([typesRes, realtorsRes, enterprisesRes]) => {
+      setTypes(typesRes.data)
+      setRealtors(realtorsRes.data)
+      setEnterprises(enterprisesRes.data)
+    })
   }, [])
 
   const editor = useEditor({

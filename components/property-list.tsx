@@ -1,5 +1,6 @@
 "use client"
 
+import { memo } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter, useSearchParams, usePathname } from 'next/navigation'
@@ -23,7 +24,7 @@ import {
 import { getProperties } from '@/app/api/get-properties'
 import { PropertyGallery } from './property-gallery'
 
-// Helper component
+// Helper component - memoized to prevent unnecessary re-renders
 interface FeatureProps {
   icon: React.ComponentType<{ size: number }>
   value: string | number
@@ -31,7 +32,7 @@ interface FeatureProps {
   suffix?: string
 }
 
-const Feature = ({ icon: Icon, value, label, suffix = "" }: FeatureProps) => {
+const Feature = memo(function Feature({ icon: Icon, value, label, suffix = "" }: FeatureProps) {
   if (!Number(value)) return null
   return (
     <TooltipProvider>
@@ -46,7 +47,7 @@ const Feature = ({ icon: Icon, value, label, suffix = "" }: FeatureProps) => {
       </Tooltip>
     </TooltipProvider>
   )
-}
+})
 
 export function PropertyList() {
   const router = useRouter()
