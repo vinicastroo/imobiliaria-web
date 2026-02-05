@@ -186,9 +186,9 @@ export function PropertyList() {
                 </div>
               </div>
 
-              <CardFooter className="border-t p-4 flex justify-end bg-gray-50/50">
+              <div className="border-t p-4 flex justify-end bg-gray-50/50">
                 <span className="text-xl font-bold text-[#17375F]">{property.value}</span>
-              </CardFooter>
+              </div>
             </Link>
           </Card>
         ))}

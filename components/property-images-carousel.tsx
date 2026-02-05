@@ -86,6 +86,7 @@ export function PropertyImagesCarousel({ files, propertyName }: PropertyImagesCa
                   fill
                   className="object-cover object-center"
                   priority={index === 0}
+                  quality={100}
                 />
 
               </div>

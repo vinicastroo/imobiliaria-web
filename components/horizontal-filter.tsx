@@ -273,7 +273,7 @@ export function HorizontalFilter() {
             <PopoverTrigger asChild>
               <Button
                 variant="outline"
-                className={`rounded-full border-gray-300 h-10 gap-2 ${activeRoomFilters > 0 ? 'bg-[#17375F]/10 border-[#17375F] text-[#17375F]' : 'bg-white text-gray-600'}`}
+                className={`rounded-full border-gray-300 gap-2 ${activeRoomFilters > 0 ? 'bg-[#17375F]/10 border-[#17375F] text-[#17375F]' : 'bg-white text-gray-600'}`}
               >
                 Cômodos
                 {activeRoomFilters > 0 && (
@@ -323,7 +323,6 @@ export function HorizontalFilter() {
         </div>
 
         <div className="w-full md:w-auto flex items-center justify-end">
-          {/* BOTÃO "MAIS FILTROS" (MODAL COMPLETA) */}
           <Dialog>
             <DialogTrigger asChild>
               <Button variant="outline" className={`w-full md:w-auto rounded-full border-gray-300 h-10 gap-2 ml-auto md:ml-0 ${activeAdvancedFilters > 0 ? 'bg-[#17375F]/10 border-[#17375F] text-[#17375F]' : 'text-gray-600'}`}>
@@ -409,7 +408,7 @@ export function HorizontalFilter() {
 
                 {/* --- CÔMODOS --- */}
                 <div className="space-y-4">
-                  <Label className='text-base'>Cômodos</Label>
+                  <Label className='text-base text-popover-foreground'>Cômodos</Label>
                   <Controller
                     name="bedrooms"
                     control={control}
