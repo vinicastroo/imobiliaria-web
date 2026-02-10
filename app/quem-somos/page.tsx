@@ -104,7 +104,7 @@ export default function QuemSomosPage() {
                     <Target size={32} className="text-[#17375F]" />
                   </div>
                   <h3 className="text-xl font-bold text-[#17375F] mb-4">Missão</h3>
-                  <p className="text-gray-600 text-sm">Oferecer uma experiência imobiliária acolhedora, transparente e personalizada.</p>
+                  <p className="text-gray-600 text-sm">Oferecer uma experiência imobiliária acolhedora, transparente e personalizada, guiando cada cliente com dedicação e ética. Trabalhamos para transformar o sonho de um lar em realidade, garantindo um atendimento humano, cuidadoso e de excelência em todas as etapas do processo.</p>
                 </CardContent>
               </Card>
               <Card className="border-none shadow-lg bg-[#17375F] text-white">
@@ -113,7 +113,7 @@ export default function QuemSomosPage() {
                     <Telescope size={32} className="text-white" />
                   </div>
                   <h3 className="text-xl font-bold mb-4">Visão</h3>
-                  <p className="text-blue-100 text-sm">Ser referência no mercado imobiliário pela confiança e qualidade.</p>
+                  <p className="text-blue-100 text-sm">Ser referência no mercado imobiliário de Santa Catarina pela confiança, qualidade e relacionamento próximo com nossos clientes. Buscamos crescer de forma responsável, expandindo nossa presença e mantendo sempre o compromisso familiar que nos diferencia.</p>
                 </CardContent>
               </Card>
               <Card className="border-none shadow-lg">
@@ -122,11 +122,8 @@ export default function QuemSomosPage() {
                     <Heart size={32} className="text-[#17375F]" />
                   </div>
                   <h3 className="text-xl font-bold text-[#17375F] mb-4">Valores</h3>
-                  <ul className="text-sm text-gray-600 space-y-2 text-left w-full">
-                    <li className="flex items-start gap-2"><CheckCircle2 size={16} className="text-[#17375F] mt-0.5" /> Transparência e ética</li>
-                    <li className="flex items-start gap-2"><CheckCircle2 size={16} className="text-[#17375F] mt-0.5" /> Atendimento humanizado</li>
-                    <li className="flex items-start gap-2"><CheckCircle2 size={16} className="text-[#17375F] mt-0.5" /> Compromisso e união</li>
-                  </ul>
+                  <p className="text-blue-100 text-sm">Na Auros, atuamos com transparência, ética e responsabilidade em cada negociação, construindo relações baseadas na confiança e no respeito. Valorizamos o acolhimento e o atendimento humanizado, buscando compreender verdadeiramente as necessidades de cada cliente. Trabalhamos com compromisso, união e integridade, tratando cada sonho como nosso e buscando sempre a excelência em tudo o que fazemos, sem abrir mão dos princípios familiares que nos guiam.</p>
+                 
                 </CardContent>
               </Card>
             </div>
