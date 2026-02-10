@@ -4,7 +4,8 @@ import { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { signOut } from 'next-auth/react'
+import { signOut, useSession } from 'next-auth/react'
+import { usePlanFeature } from '@/hooks/use-plan-feature'
 import {
   Home,
   Tag,
@@ -13,7 +14,11 @@ import {
   ChevronLeft,
   type LucideIcon,
   UserRound,
-  Building
+  Building,
+  Users,
+  CreditCard,
+  Building2,
+  Settings,
 } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
@@ -30,6 +35,11 @@ import logo from '@/public/logo-auros.svg'
 export function Menubar() {
   const [isExpanded, setIsExpanded] = useState(false)
   const pathname = usePathname()
+  const { data: session } = useSession()
+  const isSuperAdmin = session?.user?.role === 'SUPER_ADMIN'
+  const isOwnerOrAdmin = session?.user?.role === 'OWNER' || isSuperAdmin
+  const hasEnterprises = usePlanFeature('enterprises')
+  const hasClients = usePlanFeature('clients')
 
   const toggleMenu = () => setIsExpanded(!isExpanded)
 
@@ -97,14 +107,55 @@ export function Menubar() {
             className="border-t border-muted"
             isExpanded={isExpanded}
           />
+          {hasEnterprises && (
+            <NavItem
+              href="/admin/empreendimentos"
+              icon={Building}
+              label="Empreendimentos"
+              isActive={pathname === '/admin/empreendimentos'}
+              className="border-t border-muted"
+              isExpanded={isExpanded}
+            />
+          )}
           <NavItem
-            href="/admin/empreendimentos"
-            icon={Building}
-            label="Empreendimentos"
-            isActive={pathname === '/admin/empreendimentos'}
+            href="/admin/usuarios"
+            icon={Users}
+            label="Usuários"
+            isActive={pathname === '/admin/usuarios'}
             className="border-t border-muted"
             isExpanded={isExpanded}
           />
+          {isOwnerOrAdmin && (
+            <NavItem
+              href="/admin/configuracoes"
+              icon={Settings}
+              label="Configurações"
+              isActive={pathname === '/admin/configuracoes'}
+              className="border-t border-muted"
+              isExpanded={isExpanded}
+            />
+          )}
+
+          {isSuperAdmin && (
+            <>
+              <div className="my-2 border-t border-gray-300" />
+              <NavItem
+                href="/admin/plans"
+                icon={CreditCard}
+                label="Planos"
+                isActive={pathname === '/admin/plans'}
+                isExpanded={isExpanded}
+              />
+              <NavItem
+                href="/admin/agencies"
+                icon={Building2}
+                label="Imobiliárias"
+                isActive={pathname === '/admin/agencies'}
+                className="border-t border-muted"
+                isExpanded={isExpanded}
+              />
+            </>
+          )}
         </nav>
       </div>
 

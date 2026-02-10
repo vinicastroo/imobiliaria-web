@@ -71,7 +71,7 @@ export function TypeDialog({ open: externalOpen, onOpenChange: setExternalOpen, 
       }
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['types-property'] })
+      queryClient.invalidateQueries({ queryKey: ['property-types'] })
       toast.success(typeToEdit ? 'Tipo atualizado!' : 'Tipo criado!')
       setIsOpen(false)
       reset()

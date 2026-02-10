@@ -38,7 +38,7 @@ export default function TipoImovelPage() {
   const [isEditOpen, setIsEditOpen] = useState(false)
 
   const { data: types, isLoading } = useQuery<TypeProperty[]>({
-    queryKey: ['types-property'],
+    queryKey: ['property-types'],
     queryFn: async () => {
       const response = await api.get('/tipo-imovel')
       return response.data

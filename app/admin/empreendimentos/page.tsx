@@ -19,6 +19,7 @@ import {
 } from '@/components/ui/table'
 import { Badge } from '@/components/ui/badge'
 import { BackLink } from '@/components/back-link'
+import { FeatureGate } from '@/components/feature-gate'
 
 // Modais
 import { EnterpriseDialog } from '@/components/enterprise-dialog'
@@ -77,6 +78,7 @@ export default function EmpreendimentosPage() {
   }
 
   return (
+    <FeatureGate feature="enterprises">
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <main className="flex-1 w-full max-w-[1200px] mx-auto p-4 md:p-8">
 
@@ -182,5 +184,6 @@ export default function EmpreendimentosPage() {
 
       </main>
     </div>
+    </FeatureGate>
   )
 }

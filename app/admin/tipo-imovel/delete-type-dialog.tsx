@@ -39,7 +39,7 @@ export function DeleteTypeDialog({ id, open, onOpenChange }: ModalDeleteTypeProp
       await api.delete(`/tipo-imovel/${id}`)
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['types-property'] }) // Atualiza a lista
+      queryClient.invalidateQueries({ queryKey: ['property-types'] })
       toast.success('Tipo imóvel excluído com sucesso!')
       onOpenChange(false) // Fecha o modal
     },

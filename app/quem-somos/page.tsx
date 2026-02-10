@@ -31,21 +31,28 @@ export default function QuemSomosPage() {
         <section className="py-16 md:py-24">
           <div className="container mx-auto px-4 max-w-6xl">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-              <div className="space-y-6 text-gray-600 leading-relaxed text-lg">
+              <div className="space-y-6 text-gray-600 leading-relaxed text-sm">
                 <h2 className="text-3xl font-bold text-[#17375F] mb-6">
                   A origem de um sonho familiar
                 </h2>
                 <p>
-                  A <strong>Auros</strong> é resultado de uma trajetória construída com trabalho, dedicação e espírito empreendedor. Nossa história tem origem com o casal <strong>Renato e Adriana Niehues</strong>, que há mais de 25 anos mantém o Restaurante Nascente como referência em Rio do Sul.
+                  A <strong>Auros</strong> é resultado de uma trajetória construída com trabalho, dedicação e espírito empreendedor. Nossa história tem origem com o casal <strong>Renato e Adriana Niehues</strong>, que há mais de 25 anos mantém o Restaurante Nascente como referência em Rio do Sul, sempre pautado pelo atendimento próximo, pela qualidade e pela confiança.
                 </p>
+
                 <p>
-                  Em 2016, o filho mais velho, <strong>Jonathan Niehues</strong>, iniciou sua trajetória no mercado imobiliário ao se tornar corretor e se mudar para Balneário Camboriú.
+                  Em 2016, o filho mais velho, <strong>Jonathan Niehues</strong>, iniciou sua trajetória no mercado imobiliário ao se tornar corretor e se mudar para Balneário Camboriú, adquirindo experiência, conhecimento e visão estratégica no setor. Sua caminhada profissional tornou-se uma importante inspiração para toda a família.
                 </p>
+
                 <p>
-                  Em 2020, impulsionados pelos desafios da pandemia, nasceu o projeto de criar uma imobiliária familiar baseada nos mesmos valores que sempre guiaram seus negócios.
+                  Em 2020, impulsionados pelos desafios da pandemia e pela necessidade de diversificar as fontes de renda, a família identificou no mercado imobiliário uma oportunidade de crescimento sólido. A partir dessa visão, nasceu o projeto de criar uma imobiliária familiar, baseada nos mesmos valores que sempre guiaram seus negócios.
                 </p>
+
+                <p>
+                  Assim, em 07 de fevereiro de 2023, foi fundada a Auros, em Rio do Sul – Santa Catarina, com o propósito de oferecer um atendimento transparente e de excelência. Com uma base sólida, parcerias confiáveis e uma equipe comprometida, a empresa consolidou sua atuação e, em 20 de dezembro de 2024, expandiu para Balneário Camboriú, fortalecendo ainda mais sua presença no mercado do Litoral Norte.
+                </p>
+
                 <div className="border-l-4 border-[#17375F] pl-4 italic text-gray-700 bg-gray-50 py-4 pr-4 rounded-r-md">
-                  &quot;Hoje, a Auros segue crescendo de forma estruturada, unindo tradição, inovação e compromisso.&quot;
+                  &quot;Hoje, a Auros segue crescendo de forma estruturada, unindo tradição, inovação e compromisso, mantendo viva a essência familiar que transforma cada atendimento em uma relação de confiança e cada negócio em uma conquista compartilhada.&quot;
                 </div>
               </div>
 
@@ -90,22 +97,23 @@ export default function QuemSomosPage() {
               <h2 className="text-3xl font-bold text-[#17375F]">Nossa Essência</h2>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <Card className="border-none shadow-lg">
+
+                <CardContent className="p-8 flex flex-col items-center text-center h-full">
+                  <div className="w-16 h-16 bg-[#17375F]/10 rounded-full flex items-center justify-center mb-6">
+                    <Target size={32} className="text-[#17375F]" />
+                  </div>
+                  <h3 className="text-xl font-bold text-[#17375F] mb-4">Missão</h3>
+                  <p className="text-gray-600 text-sm">Oferecer uma experiência imobiliária acolhedora, transparente e personalizada.</p>
+                </CardContent>
+              </Card>
               <Card className="border-none shadow-lg bg-[#17375F] text-white">
                 <CardContent className="p-8 flex flex-col items-center text-center h-full">
                   <div className="w-16 h-16 bg-white/10 rounded-full flex items-center justify-center mb-6">
-                    <Target size={32} />
+                    <Telescope size={32} className="text-white" />
                   </div>
-                  <h3 className="text-xl font-bold mb-4">Missão</h3>
-                  <p className="text-blue-100 text-sm">Oferecer uma experiência imobiliária acolhedora, transparente e personalizada.</p>
-                </CardContent>
-              </Card>
-              <Card className="border-none shadow-lg">
-                <CardContent className="p-8 flex flex-col items-center text-center h-full">
-                  <div className="w-16 h-16 bg-[#17375F]/10 rounded-full flex items-center justify-center mb-6">
-                    <Telescope size={32} className="text-[#17375F]" />
-                  </div>
-                  <h3 className="text-xl font-bold text-[#17375F] mb-4">Visão</h3>
-                  <p className="text-gray-600 text-sm">Ser referência no mercado imobiliário pela confiança e qualidade.</p>
+                  <h3 className="text-xl font-bold mb-4">Visão</h3>
+                  <p className="text-blue-100 text-sm">Ser referência no mercado imobiliário pela confiança e qualidade.</p>
                 </CardContent>
               </Card>
               <Card className="border-none shadow-lg">
@@ -123,7 +131,7 @@ export default function QuemSomosPage() {
               </Card>
             </div>
           </div>
-        </section>
+        </section >
 
         <section className="py-20 bg-gray-50">
           <div className="container mx-auto px-4 max-w-7xl">
