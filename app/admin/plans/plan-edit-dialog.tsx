@@ -35,10 +35,10 @@ const AVAILABLE_FEATURES = [
 
 const planEditSchema = z.object({
   name: z.string().min(1, 'Nome é obrigatório'),
-  defaultPrice: z.coerce.number().positive('Preço deve ser positivo'),
-  maxUsers: z.coerce.number().int().positive('Deve ser maior que 0'),
-  maxRealtors: z.coerce.number().int().positive('Deve ser maior que 0'),
-  maxProperties: z.coerce.number().int().positive('Deve ser maior que 0'),
+  defaultPrice: z.number().positive('Preço deve ser positivo'),
+  maxUsers: z.number().int().positive('Deve ser maior que 0'),
+  maxRealtors: z.number().int().positive('Deve ser maior que 0'),
+  maxProperties: z.number().int().positive('Deve ser maior que 0'),
   features: z.array(z.string()),
   active: z.boolean(),
 })
@@ -136,7 +136,7 @@ export function PlanEditDialog({ open, onOpenChange, planToEdit }: PlanEditDialo
               type="number"
               step="0.01"
               placeholder="0.00"
-              {...register('defaultPrice')}
+              {...register('defaultPrice', { valueAsNumber: true })}
             />
             {errors.defaultPrice && (
               <span className="text-xs text-red-500">{errors.defaultPrice.message}</span>
@@ -146,21 +146,21 @@ export function PlanEditDialog({ open, onOpenChange, planToEdit }: PlanEditDialo
           <div className="grid grid-cols-3 gap-4">
             <div className="space-y-2">
               <Label htmlFor="maxUsers">Max Usuários</Label>
-              <Input id="maxUsers" type="number" {...register('maxUsers')} />
+              <Input id="maxUsers" type="number" {...register('maxUsers', { valueAsNumber: true })} />
               {errors.maxUsers && (
                 <span className="text-xs text-red-500">{errors.maxUsers.message}</span>
               )}
             </div>
             <div className="space-y-2">
               <Label htmlFor="maxRealtors">Max Corretores</Label>
-              <Input id="maxRealtors" type="number" {...register('maxRealtors')} />
+              <Input id="maxRealtors" type="number" {...register('maxRealtors', { valueAsNumber: true })} />
               {errors.maxRealtors && (
                 <span className="text-xs text-red-500">{errors.maxRealtors.message}</span>
               )}
             </div>
             <div className="space-y-2">
               <Label htmlFor="maxProperties">Max Imóveis</Label>
-              <Input id="maxProperties" type="number" {...register('maxProperties')} />
+              <Input id="maxProperties" type="number" {...register('maxProperties', { valueAsNumber: true })} />
               {errors.maxProperties && (
                 <span className="text-xs text-red-500">{errors.maxProperties.message}</span>
               )}
