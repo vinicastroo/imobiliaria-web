@@ -3,6 +3,8 @@
 import { useRef } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
+import { useWatermark } from '@/hooks/use-watermark'
+import { WatermarkOverlay } from '@/components/watermark-overlay'
 import { ChevronLeft, ChevronRight, BedDouble, Bath, CarFront, Ruler, LayoutGrid, Toilet, Grid2X2 } from 'lucide-react'
 
 // UI Components
@@ -60,6 +62,7 @@ const PropertyFeature = ({ icon: Icon, value, label, suffix = "" }: PropertyFeat
 }
 
 export function RecommendedCarousel({ properties }: { properties: RecommendedProperty[] }) {
+  const { watermarkUrl } = useWatermark()
   const scrollRef = useRef<HTMLDivElement>(null)
 
   const scroll = (direction: 'left' | 'right') => {
@@ -117,13 +120,16 @@ export function RecommendedCarousel({ properties }: { properties: RecommendedPro
                   {/* Imagem */}
                   <div className="relative h-[250px] w-full bg-gray-100 flex items-center justify-center overflow-hidden">
                     {property.coverImage ? (
-                      <Image
-                        src={property.coverImage}
-                        alt={property.name}
-                        fill
-                        className="object-cover group-hover:scale-105 transition-transform duration-500"
-                        sizes="(max-width: 768px) 100vw, 320px"
-                      />
+                      <>
+                        <Image
+                          src={property.coverImage}
+                          alt={property.name}
+                          fill
+                          className="object-cover group-hover:scale-105 transition-transform duration-500"
+                          sizes="(max-width: 768px) 100vw, 320px"
+                        />
+                        {watermarkUrl && <WatermarkOverlay watermarkUrl={watermarkUrl} />}
+                      </>
                     ) : (
                       <div className="text-gray-400 text-sm">Sem imagem</div>
                     )}

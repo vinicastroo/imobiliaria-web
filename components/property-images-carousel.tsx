@@ -2,6 +2,8 @@
 
 import { useState, useEffect, useCallback } from "react"
 import Image from "next/image"
+import { useWatermark } from "@/hooks/use-watermark"
+import { WatermarkOverlay } from "@/components/watermark-overlay"
 import {
   Carousel,
   CarouselContent,
@@ -21,6 +23,7 @@ interface PropertyImagesCarouselProps {
 }
 
 export function PropertyImagesCarousel({ files, propertyName }: PropertyImagesCarouselProps) {
+  const { watermarkUrl } = useWatermark()
   const [api, setApi] = useState<CarouselApi>()
   const [current, setCurrent] = useState(0)
   const [count, setCount] = useState(0)
@@ -88,7 +91,7 @@ export function PropertyImagesCarousel({ files, propertyName }: PropertyImagesCa
                   priority={index === 0}
                   quality={100}
                 />
-
+                {watermarkUrl && <WatermarkOverlay watermarkUrl={watermarkUrl} />}
               </div>
             </CarouselItem>
           ))}

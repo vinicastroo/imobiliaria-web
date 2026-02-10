@@ -12,12 +12,15 @@ import {
 } from "@/components/ui/carousel"
 import logo from '@/public/logo-auros-minimalist.svg'
 import { cn } from "@/lib/utils"
+import { useWatermark } from "@/hooks/use-watermark"
+import { WatermarkOverlay } from "@/components/watermark-overlay"
 
 interface GalleryItem {
   img: string
 }
 
 export function PropertyGallery({ items, propertyName, isRecentProperty, path }: { items: GalleryItem[], propertyName: string, isRecentProperty?: boolean, path?: string }) {
+  const { watermarkUrl } = useWatermark()
   const [api, setApi] = React.useState<CarouselApi>()
   const [current, setCurrent] = React.useState(0)
   const [count, setCount] = React.useState(0)
@@ -60,6 +63,7 @@ export function PropertyGallery({ items, propertyName, isRecentProperty, path }:
                   className="object-cover group-hover:scale-105 cursor-pointer transition-scale duration-300"
                   priority={index === 0}
                 />
+                {watermarkUrl && <WatermarkOverlay watermarkUrl={watermarkUrl} />}
               </div>
             </CarouselItem>
           ))}
