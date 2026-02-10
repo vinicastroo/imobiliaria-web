@@ -44,7 +44,6 @@ export interface Property {
 
 export async function getProperty(slug: string) {
   if (slug) {
-    console.log(slug)
     const response = await api.get<Property>(`/imovel/slug/${slug}`)
     const data = response.data
 

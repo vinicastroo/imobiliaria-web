@@ -27,7 +27,7 @@ interface ImageCropModalProps {
 }
 
 const ASPECT_RATIO = 16 / 9
-const MIN_ZOOM = 1
+const MIN_ZOOM = 0.2
 const MAX_ZOOM = 3
 
 export function ImageCropModal({
@@ -96,6 +96,7 @@ export function ImageCropModal({
             crop={crop}
             zoom={zoom}
             aspect={ASPECT_RATIO}
+            restrictPosition={false}
             onCropChange={setCrop}
             onZoomChange={setZoom}
             onCropComplete={onCropComplete}
@@ -110,7 +111,7 @@ export function ImageCropModal({
             value={[zoom]}
             min={MIN_ZOOM}
             max={MAX_ZOOM}
-            step={0.1}
+            step={0.01}
             onValueChange={(values) => setZoom(values[0])}
             className="flex-1"
           />

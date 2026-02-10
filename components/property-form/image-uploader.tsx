@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback, useEffect } from 'react'
+import { useCallback } from 'react'
 import { useDropzone } from 'react-dropzone'
 import {
   DndContext,
@@ -197,14 +197,7 @@ export function ImageUploader({
     confirmCrop,
     skipCrop,
     dismissCrop,
-    revokeAllPreviews,
   } = useImageCropQueue(images, onImagesChange)
-
-  useEffect(() => {
-    return () => {
-      revokeAllPreviews()
-    }
-  }, [revokeAllPreviews])
 
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
