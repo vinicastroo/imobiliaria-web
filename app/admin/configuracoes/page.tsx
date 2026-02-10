@@ -359,19 +359,19 @@ export default function ConfiguracoesPage() {
                 <div className="p-4 bg-blue-50/50 rounded-lg border border-blue-100">
                   <p className="text-sm text-gray-500">Usuários</p>
                   <p className="text-xl font-bold text-[#17375F]">
-                    {agencyInfo.plan.maxUsers}
+                    {agencyInfo.plan.maxUsers < 0 ? 'Sem limite' : agencyInfo.plan.maxUsers}
                   </p>
                 </div>
                 <div className="p-4 bg-blue-50/50 rounded-lg border border-blue-100">
                   <p className="text-sm text-gray-500">Corretores</p>
                   <p className="text-xl font-bold text-[#17375F]">
-                    {agencyInfo.plan.maxRealtors}
+                    {agencyInfo.plan.maxRealtors < 0 ? 'Sem limite' : agencyInfo.plan.maxRealtors}
                   </p>
                 </div>
                 <div className="p-4 bg-blue-50/50 rounded-lg border border-blue-100">
                   <p className="text-sm text-gray-500">Imóveis</p>
                   <p className="text-xl font-bold text-[#17375F]">
-                    {agencyInfo.plan.maxProperties}
+                    {agencyInfo.plan.maxProperties < 0 ? 'Sem limite' : agencyInfo.plan.maxProperties}
                   </p>
                 </div>
               </div>

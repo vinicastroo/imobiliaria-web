@@ -1,12 +1,12 @@
 "use client"
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, type ReactNode } from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query'
 import { toast } from 'sonner'
-import { Loader2, Eye, EyeOff } from 'lucide-react'
+import { Loader2, Eye, EyeOff, UserPlus, Link2 } from 'lucide-react'
 
 import {
   Dialog,
@@ -75,6 +75,7 @@ interface CreateUserPayload {
   password?: string
   role: 'OWNER' | 'MANAGER' | 'REALTOR'
   createRealtor?: boolean
+  realtorId?: string
   creci?: string
   phone?: string
 }
@@ -91,6 +92,7 @@ interface ApiError {
 export function UserDialog({ open, onOpenChange, userToEdit }: UserDialogProps) {
   const queryClient = useQueryClient()
   const [showPassword, setShowPassword] = useState(false)
+  const [realtorMode, setRealtorMode] = useState<'new' | 'existing'>('new')
   const isEditing = !!userToEdit
 
   const {
@@ -115,7 +117,7 @@ export function UserDialog({ open, onOpenChange, userToEdit }: UserDialogProps) 
 
   const selectedRole = watch('role')
 
-  // Busca corretores disponíveis
+  // Busca corretores disponíveis (sem usuário vinculado)
   const { data: availableRealtors } = useQuery<Realtor[]>({
     queryKey: ['realtors-available'],
     queryFn: async () => {
@@ -134,6 +136,8 @@ export function UserDialog({ open, onOpenChange, userToEdit }: UserDialogProps) 
     },
     enabled: open && isEditing,
   })
+
+  const hasAvailableRealtors = (availableRealtors?.length ?? 0) > 0
 
   // Preenche o formulário ao editar
   useEffect(() => {
@@ -157,6 +161,7 @@ export function UserDialog({ open, onOpenChange, userToEdit }: UserDialogProps) 
         creci: '',
         phone: '',
       })
+      setRealtorMode('new')
     }
   }, [userToEdit, reset, open])
 
@@ -170,11 +175,14 @@ export function UserDialog({ open, onOpenChange, userToEdit }: UserDialogProps) 
         role: data.role,
       }
 
-      // Se o perfil é CORRETOR, cria também o registro de corretor
       if (data.role === 'REALTOR') {
-        payload.createRealtor = true
-        payload.creci = data.creci
-        payload.phone = data.phone
+        if (realtorMode === 'new') {
+          payload.createRealtor = true
+          payload.creci = data.creci
+          payload.phone = data.phone
+        } else if (data.realtorId && data.realtorId !== 'none') {
+          payload.realtorId = data.realtorId
+        }
       }
 
       const response = await api.post<User>('/usuarios', payload)
@@ -321,29 +329,89 @@ export function UserDialog({ open, onOpenChange, userToEdit }: UserDialogProps) 
           {!isEditing && selectedRole === 'REALTOR' && (
             <div className="space-y-4 p-4 bg-blue-50/50 rounded-lg border border-blue-100">
               <p className="text-sm text-[#17375F] font-medium">
-                Dados do Corretor
+                Perfil de Corretor
               </p>
-              <p className="text-xs text-gray-500">
-                Será criado automaticamente um perfil de corretor vinculado a este usuário.
-              </p>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="creci">CRECI</Label>
-                  <Input
-                    id="creci"
-                    placeholder="Ex: 12345-SC"
-                    {...register('creci')}
-                  />
+
+              {hasAvailableRealtors && (
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setRealtorMode('new')}
+                    className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm border transition-colors ${
+                      realtorMode === 'new'
+                        ? 'bg-[#17375F] text-white border-[#17375F]'
+                        : 'bg-white text-gray-600 border-gray-200 hover:border-gray-300'
+                    }`}
+                  >
+                    <UserPlus size={14} />
+                    Criar novo
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setRealtorMode('existing')}
+                    className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm border transition-colors ${
+                      realtorMode === 'existing'
+                        ? 'bg-[#17375F] text-white border-[#17375F]'
+                        : 'bg-white text-gray-600 border-gray-200 hover:border-gray-300'
+                    }`}
+                  >
+                    <Link2 size={14} />
+                    Associar existente
+                  </button>
                 </div>
+              )}
+
+              {realtorMode === 'new' ? (
+                <>
+                  <p className="text-xs text-gray-500">
+                    Será criado automaticamente um perfil de corretor vinculado a este usuário.
+                  </p>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="creci">CRECI</Label>
+                      <Input
+                        id="creci"
+                        placeholder="Ex: 12345-SC"
+                        {...register('creci')}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="phone">Telefone</Label>
+                      <Input
+                        id="phone"
+                        placeholder="(47) 99999-9999"
+                        {...register('phone')}
+                      />
+                    </div>
+                  </div>
+                </>
+              ) : (
                 <div className="space-y-2">
-                  <Label htmlFor="phone">Telefone</Label>
-                  <Input
-                    id="phone"
-                    placeholder="(47) 99999-9999"
-                    {...register('phone')}
+                  <Label>Corretor</Label>
+                  <Controller
+                    name="realtorId"
+                    control={control}
+                    render={({ field }) => (
+                      <Select onValueChange={field.onChange} value={field.value || 'none'}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Selecione um corretor" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="none">-- Selecione --</SelectItem>
+                          {(availableRealtors || []).map((realtor) => (
+                            <SelectItem key={realtor.id} value={realtor.id}>
+                              {realtor.name} ({realtor.creci})
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    )}
                   />
+                  <p className="text-xs text-gray-500">
+                    Vincule este usuário a um corretor já cadastrado.
+                  </p>
                 </div>
-              </div>
+              )}
             </div>
           )}
 
