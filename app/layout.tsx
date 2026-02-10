@@ -2,6 +2,8 @@ import type { Metadata } from "next"
 import { Montserrat } from "next/font/google"
 import { GoogleTagManager } from '@next/third-parties/google'
 import Script from 'next/script'
+import { getServerSession } from "next-auth"
+import { authOptions } from "@/lib/auth"
 import { Providers } from "./providers"
 import { Toaster } from "components/ui/sonner"
 import "./globals.css"
@@ -50,15 +52,17 @@ export const metadata: Metadata = {
   },
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const session = await getServerSession(authOptions)
+
   return (
     <html lang="pt-BR">
       <body className={`${montserrat.className} antialiased`}>
-        <Providers session={null}>
+        <Providers session={session}>
           {children}
           <Toaster />
         </Providers>
