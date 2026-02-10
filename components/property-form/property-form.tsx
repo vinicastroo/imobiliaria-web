@@ -1,5 +1,6 @@
 "use client"
 
+import { useEffect } from 'react'
 import { Controller } from 'react-hook-form'
 import { EditorContent } from '@tiptap/react'
 import { NumericFormat } from 'react-number-format'
@@ -33,6 +34,7 @@ import { BackLink } from '@/components/back-link'
 import { MenuBarTiptap } from '@/components/menu-bar-tip-tap'
 import { RealtorSorter } from '@/components/realtor-sorter'
 
+import { useSession } from 'next-auth/react'
 import { usePropertyOptions } from '@/hooks/use-property-options'
 import { usePropertyForm } from './use-property-form'
 import { ImageUploader } from './image-uploader'
@@ -45,6 +47,9 @@ interface PropertyFormProps {
 }
 
 export function PropertyForm({ mode, propertyId, defaultValues }: PropertyFormProps) {
+  const { data: session } = useSession()
+  const isRealtor = session?.user?.role === 'REALTOR'
+  const realtorProfileId = session?.user?.realtorProfileId
   const { types, realtors, enterprises } = usePropertyOptions()
 
   const {
@@ -63,6 +68,13 @@ export function PropertyForm({ mode, propertyId, defaultValues }: PropertyFormPr
     control,
     formState: { errors },
   } = form
+
+  // Auto-atribui o corretor logado quando é REALTOR
+  useEffect(() => {
+    if (isRealtor && realtorProfileId && mode === 'create') {
+      form.setValue('realtorIds', [realtorProfileId])
+    }
+  }, [isRealtor, realtorProfileId, mode, form])
 
   const isEdit = mode === 'edit'
   const title = isEdit ? 'Editar Imóvel' : 'Criar Novo Imóvel'
@@ -305,7 +317,8 @@ export function PropertyForm({ mode, propertyId, defaultValues }: PropertyFormPr
                   </CardContent>
                 </Card>
 
-                {/* Corretores */}
+                {/* Corretores - esconde para REALTOR (auto-atribuído) */}
+                {!isRealtor && (
                 <Card className="py-6">
                   <CardHeader>
                     <CardTitle>Corretores Responsáveis</CardTitle>
@@ -327,6 +340,7 @@ export function PropertyForm({ mode, propertyId, defaultValues }: PropertyFormPr
                     />
                   </CardContent>
                 </Card>
+                )}
               </div>
 
               {/* COLUNA DIREITA */}

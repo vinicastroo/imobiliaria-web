@@ -36,10 +36,11 @@ export function Menubar() {
   const [isExpanded, setIsExpanded] = useState(false)
   const pathname = usePathname()
   const { data: session } = useSession()
-  const isSuperAdmin = session?.user?.role === 'SUPER_ADMIN'
-  const isOwnerOrAdmin = session?.user?.role === 'OWNER' || isSuperAdmin
+  const userRole = session?.user?.role
+  const isSuperAdmin = userRole === 'SUPER_ADMIN'
+  const isOwnerOrAdmin = userRole === 'OWNER' || isSuperAdmin
+  const isRealtor = userRole === 'REALTOR'
   const hasEnterprises = usePlanFeature('enterprises')
-  const hasClients = usePlanFeature('clients')
 
   const toggleMenu = () => setIsExpanded(!isExpanded)
 
@@ -91,40 +92,44 @@ export function Menubar() {
             className="border-t border-muted"
             isExpanded={isExpanded}
           />
-          <NavItem
-            href="/admin/tipo-imovel"
-            icon={Tag}
-            label="Tipos de Imóvel"
-            isActive={pathname === '/admin/tipo-imovel'}
-            className="border-t border-muted"
-            isExpanded={isExpanded}
-          />
-          <NavItem
-            href="/admin/corretores"
-            icon={UserRound}
-            label="Corretores"
-            isActive={pathname === '/admin/corretores'}
-            className="border-t border-muted"
-            isExpanded={isExpanded}
-          />
-          {hasEnterprises && (
-            <NavItem
-              href="/admin/empreendimentos"
-              icon={Building}
-              label="Empreendimentos"
-              isActive={pathname === '/admin/empreendimentos'}
-              className="border-t border-muted"
-              isExpanded={isExpanded}
-            />
+          {!isRealtor && (
+            <>
+              <NavItem
+                href="/admin/tipo-imovel"
+                icon={Tag}
+                label="Tipos de Imóvel"
+                isActive={pathname === '/admin/tipo-imovel'}
+                className="border-t border-muted"
+                isExpanded={isExpanded}
+              />
+              <NavItem
+                href="/admin/corretores"
+                icon={UserRound}
+                label="Corretores"
+                isActive={pathname === '/admin/corretores'}
+                className="border-t border-muted"
+                isExpanded={isExpanded}
+              />
+              {hasEnterprises && (
+                <NavItem
+                  href="/admin/empreendimentos"
+                  icon={Building}
+                  label="Empreendimentos"
+                  isActive={pathname === '/admin/empreendimentos'}
+                  className="border-t border-muted"
+                  isExpanded={isExpanded}
+                />
+              )}
+              <NavItem
+                href="/admin/usuarios"
+                icon={Users}
+                label="Usuários"
+                isActive={pathname === '/admin/usuarios'}
+                className="border-t border-muted"
+                isExpanded={isExpanded}
+              />
+            </>
           )}
-          <NavItem
-            href="/admin/usuarios"
-            icon={Users}
-            label="Usuários"
-            isActive={pathname === '/admin/usuarios'}
-            className="border-t border-muted"
-            isExpanded={isExpanded}
-          />
           {isOwnerOrAdmin && (
             <NavItem
               href="/admin/configuracoes"

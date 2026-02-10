@@ -58,6 +58,7 @@ export const authOptions: NextAuthOptions = {
         token.agencyId = user.agencyId
         token.planId = user.planId
         token.features = user.features
+        token.realtorProfileId = user.realtorProfileId
       }
       return token
     },
@@ -71,6 +72,7 @@ export const authOptions: NextAuthOptions = {
           agencyId: (token.agencyId as string) ?? null,
           planId: (token.planId as string) ?? null,
           features: (token.features as string[]) ?? [],
+          realtorProfileId: (token.realtorProfileId as string) ?? null,
         }
       }
       return session

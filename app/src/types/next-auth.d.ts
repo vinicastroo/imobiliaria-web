@@ -7,6 +7,7 @@ declare module "next-auth" {
     agencyId: string | null
     planId: string | null
     features: string[]
+    realtorProfileId: string | null
   }
 
   interface Session {
@@ -16,6 +17,7 @@ declare module "next-auth" {
       agencyId: string | null
       planId: string | null
       features: string[]
+      realtorProfileId: string | null
     } & DefaultSession["user"]
   }
 }
@@ -27,5 +29,6 @@ declare module "next-auth/jwt" {
     agencyId: string | null
     planId: string | null
     features: string[]
+    realtorProfileId: string | null
   }
 }
