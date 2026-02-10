@@ -58,7 +58,7 @@ const teamMembers = [
   {
     id: 7,
     name: "Venâncio Schmöller",
-    role: "Corretor Imobiliário",
+    role: "Corretor Imobiliário &  avaliador imobiliário",
     image: "/venancio.jpeg",
     bio: "Dedicação e transparência para entender seus objetivos e realizar o sonho da casa própria."
   },
