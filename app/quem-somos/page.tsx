@@ -17,7 +17,7 @@ export default function QuemSomosPage() {
       <MenubarHome />
       <div className="min-h-screen bg-white font-sans">
 
-        <section className="bg-[#17375F] text-white py-20 relative overflow-hidden">
+        <section className="bg-[#17375F] text-white py-10 relative overflow-hidden">
           <div className="container mx-auto px-4 relative z-10 text-center space-y-4">
             <h1 className="text-4xl md:text-5xl font-bold tracking-tight">
               Nossa História
@@ -122,8 +122,8 @@ export default function QuemSomosPage() {
                     <Heart size={32} className="text-[#17375F]" />
                   </div>
                   <h3 className="text-xl font-bold text-[#17375F] mb-4">Valores</h3>
-                  <p className="text-blue-100 text-sm">Na Auros, atuamos com transparência, ética e responsabilidade em cada negociação, construindo relações baseadas na confiança e no respeito. Valorizamos o acolhimento e o atendimento humanizado, buscando compreender verdadeiramente as necessidades de cada cliente. Trabalhamos com compromisso, união e integridade, tratando cada sonho como nosso e buscando sempre a excelência em tudo o que fazemos, sem abrir mão dos princípios familiares que nos guiam.</p>
-                 
+                  <p className="text-gray-600 text-sm">Na Auros, atuamos com transparência, ética e responsabilidade, construindo relações de confiança e respeito. Valorizamos o acolhimento e o atendimento humanizado, compreendendo as reais necessidades de cada cliente. Com compromisso, união e integridade, buscamos excelência sem abrir mão dos princípios familiares que nos guiam.</p>
+
                 </CardContent>
               </Card>
             </div>
