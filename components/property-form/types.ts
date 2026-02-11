@@ -44,10 +44,10 @@ export interface PropertyData {
   numberAddress: string
   longitude: string
   latitude: string
-  type_property: {
+  type_property?: {
     id: string
     description: string
-  }
+  } | null
   files: PropertyFile[]
   realtors: Realtor[]
   enterprise?: {

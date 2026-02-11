@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useMemo, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { useForm, type Resolver } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -26,6 +26,40 @@ function generateSlug(text: string) {
     .replace(/^-|-$/g, '')
 }
 
+function mapPropertyToFormData(d: PropertyData, isEdit: boolean): PropertyFormData {
+  const formValues: PropertyFormData = {
+    name: d.name,
+    slug: d.slug,
+    value: d.value,
+    summary: d.summary,
+    type_id: d.type_property?.id ?? '',
+    description: d.description,
+    bedrooms: d.bedrooms,
+    bathrooms: d.bathrooms,
+    suites: d.suites,
+    parkingSpots: d.parkingSpots,
+    totalArea: d.totalArea,
+    privateArea: d.privateArea,
+    cep: d.cep,
+    state: d.state,
+    city: d.city,
+    neighborhood: d.neighborhood,
+    street: d.street,
+    number: d.numberAddress,
+    latitude: d.latitude,
+    longitude: d.longitude,
+    enterpriseId: d.enterprise?.id ?? '',
+    realtorIds: d.realtors?.length > 0 ? d.realtors.map((r) => r.id) : [],
+  }
+
+  if (isEdit) {
+    const isNum = !isNaN(Number(d.code))
+    formValues.code = isNum ? Number(d.code) : d.code
+  }
+
+  return formValues
+}
+
 interface UsePropertyFormOptions {
   mode: 'create' | 'edit'
   propertyId?: string
@@ -39,9 +73,16 @@ export function usePropertyForm({ mode, propertyId, defaultValues }: UseProperty
 
   const isEdit = mode === 'edit'
 
+  const formValues = useMemo(
+    () => defaultValues ? mapPropertyToFormData(defaultValues, isEdit) : undefined,
+    [defaultValues, isEdit],
+  )
+
   const form = useForm<PropertyFormData>({
     resolver: zodResolver(propertySchema) as Resolver<PropertyFormData>,
     defaultValues: {
+      type_id: '',
+      enterpriseId: '',
       realtorIds: [],
       bedrooms: '0',
       bathrooms: '0',
@@ -50,6 +91,8 @@ export function usePropertyForm({ mode, propertyId, defaultValues }: UseProperty
       totalArea: '0',
       privateArea: '0',
     },
+    values: formValues,
+    resetOptions: { keepDirtyValues: true },
   })
 
   const { setValue, watch } = form
@@ -72,13 +115,19 @@ export function usePropertyForm({ mode, propertyId, defaultValues }: UseProperty
     },
   })
 
-  // Auto-generate slug from name
+  // Auto-generate slug from name (only in create mode)
   const name = watch('name')
+  const isFirstRender = useRef(true)
   useEffect(() => {
+    if (isEdit && isFirstRender.current) {
+      isFirstRender.current = false
+      return
+    }
+    isFirstRender.current = false
     if (name) {
       setValue('slug', generateSlug(name))
     }
-  }, [name, setValue])
+  }, [name, setValue, isEdit])
 
   // CEP lookup
   const cep = watch('cep')
@@ -91,57 +140,19 @@ export function usePropertyForm({ mode, propertyId, defaultValues }: UseProperty
     if (data.longitude) setValue('longitude', data.longitude)
   })
 
-  // Populate form with existing data (edit mode)
-  const populateForm = useCallback(() => {
+  // Sync CEP lookup, editor and images when defaultValues arrive
+  useEffect(() => {
     if (!defaultValues) return
 
-    const d = defaultValues
+    setInitialCep(defaultValues.cep)
 
-    setValue('name', d.name)
-    setValue('slug', d.slug)
-    setValue('value', d.value)
-    setValue('summary', d.summary)
-    setValue('type_id', d.type_property.id)
-    setValue('description', d.description)
-    setValue('bedrooms', d.bedrooms)
-    setValue('bathrooms', d.bathrooms)
-    setValue('suites', d.suites)
-    setValue('parkingSpots', d.parkingSpots)
-    setValue('totalArea', d.totalArea)
-    setValue('privateArea', d.privateArea)
-    setValue('cep', d.cep)
-    setValue('state', d.state)
-    setValue('city', d.city)
-    setValue('neighborhood', d.neighborhood)
-    setValue('street', d.street)
-    setValue('number', d.numberAddress)
-    setValue('latitude', d.latitude)
-    setValue('longitude', d.longitude)
-    setValue('enterpriseId', d.enterprise?.id)
-
-    if (isEdit) {
-      const isNum = !isNaN(Number(d.code))
-      setValue('code', isNum ? Number(d.code) : d.code)
-    }
-
-    if (d.realtors?.length > 0) {
-      setValue('realtorIds', d.realtors.map((r) => r.id))
-    } else {
-      setValue('realtorIds', [])
-    }
-
-    // Set initial CEP so the lookup doesn't re-fire
-    setInitialCep(d.cep)
-
-    // Load existing images
-    const existingImages: ImageItem[] = d.files.map((f) => ({
+    const existingImages: ImageItem[] = defaultValues.files.map((f) => ({
       type: 'existing' as const,
       id: f.id,
       path: f.path,
       fileName: f.fileName,
       thumb: f.thumb,
     }))
-    // Sort so thumb (cover) comes first
     existingImages.sort((a, b) => {
       if (a.type === 'existing' && b.type === 'existing') {
         return (b.thumb ? 1 : 0) - (a.thumb ? 1 : 0)
@@ -149,11 +160,7 @@ export function usePropertyForm({ mode, propertyId, defaultValues }: UseProperty
       return 0
     })
     setImages(existingImages)
-  }, [defaultValues, setValue, isEdit, setInitialCep])
-
-  useEffect(() => {
-    populateForm()
-  }, [populateForm])
+  }, [defaultValues, setInitialCep])
 
   // Sync editor content when defaultValues arrive
   useEffect(() => {

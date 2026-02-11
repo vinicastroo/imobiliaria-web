@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Controller } from 'react-hook-form'
 import { EditorContent } from '@tiptap/react'
 import { NumericFormat } from 'react-number-format'
@@ -66,8 +66,19 @@ export function PropertyForm({ mode, propertyId, defaultValues }: PropertyFormPr
   const {
     register,
     control,
+    setValue,
     formState: { errors },
   } = form
+
+  const [typeId, setTypeId] = useState(defaultValues?.type_property?.id ?? '')
+  const [selectedEnterpriseId, setSelectedEnterpriseId] = useState(defaultValues?.enterprise?.id ?? '')
+  const [prevDefaultValues, setPrevDefaultValues] = useState(defaultValues)
+
+  if (defaultValues !== prevDefaultValues) {
+    setPrevDefaultValues(defaultValues)
+    setTypeId(defaultValues?.type_property?.id ?? '')
+    setSelectedEnterpriseId(defaultValues?.enterprise?.id ?? '')
+  }
 
   // Auto-atribui o corretor logado quando é REALTOR
   useEffect(() => {
@@ -222,27 +233,24 @@ export function PropertyForm({ mode, propertyId, defaultValues }: PropertyFormPr
 
                       <div className="space-y-2">
                         <Label>Tipo</Label>
-                        <Controller
-                          name="type_id"
-                          control={control}
-                          render={({ field }) => (
-                            <Select
-                              onValueChange={field.onChange}
-                              value={field.value}
-                            >
-                              <SelectTrigger className="w-full">
-                                <SelectValue placeholder="Selecione" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                {types.map((t) => (
-                                  <SelectItem key={t.id} value={t.id}>
-                                    {t.description}
-                                  </SelectItem>
-                                ))}
-                              </SelectContent>
-                            </Select>
-                          )}
-                        />
+                        <Select
+                          onValueChange={(val) => {
+                            setTypeId(val)
+                            setValue('type_id', val, { shouldDirty: true })
+                          }}
+                          value={typeId || undefined}
+                        >
+                          <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Selecione" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {types.map((t) => (
+                              <SelectItem key={t.id} value={t.id}>
+                                {t.description}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
                         {errors.type_id && (
                           <span className="text-xs text-red-500">
                             {errors.type_id.message}
@@ -256,30 +264,28 @@ export function PropertyForm({ mode, propertyId, defaultValues }: PropertyFormPr
                         Empreendimento{' '}
                         <span className="text-xs">(Opcional)</span>
                       </Label>
-                      <Controller
-                        name="enterpriseId"
-                        control={control}
-                        render={({ field }) => (
-                          <Select
-                            onValueChange={field.onChange}
-                            value={field.value || undefined}
-                          >
-                            <SelectTrigger className="w-full">
-                              <SelectValue placeholder="Selecione um empreendimento" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="none_value">
-                                -- Nenhum --
-                              </SelectItem>
-                              {enterprises.map((ent) => (
-                                <SelectItem key={ent.id} value={ent.id}>
-                                  {ent.name}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                        )}
-                      />
+                      <Select
+                        onValueChange={(val) => {
+                          const v = val === 'none_value' ? '' : val
+                          setSelectedEnterpriseId(v)
+                          setValue('enterpriseId', v, { shouldDirty: true })
+                        }}
+                        value={selectedEnterpriseId || undefined}
+                      >
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="Selecione um empreendimento" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="none_value">
+                            -- Nenhum --
+                          </SelectItem>
+                          {enterprises.map((ent) => (
+                            <SelectItem key={ent.id} value={ent.id}>
+                              {ent.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     </div>
 
                     <div className="space-y-2">
