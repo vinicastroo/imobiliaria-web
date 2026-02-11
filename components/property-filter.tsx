@@ -54,12 +54,21 @@ export function PropertyFilter() {
 
   const city = watch('city')
 
-  const { data: cities } = useQuery({ queryKey: ['cities'], queryFn: getCities })
-  const { data: types } = useQuery({ queryKey: ['types'], queryFn: getTypes })
+  const { data: cities } = useQuery({
+    queryKey: ['cities'],
+    queryFn: getCities,
+    staleTime: 60 * 60 * 1000,
+  })
+  const { data: types } = useQuery({
+    queryKey: ['types'],
+    queryFn: getTypes,
+    staleTime: 60 * 60 * 1000,
+  })
   const { data: neighborhoods } = useQuery({
     queryKey: ['neighborhoods', city],
     queryFn: () => getNeighborhoods({ city }),
-    enabled: !!city
+    enabled: !!city,
+    staleTime: 30 * 60 * 1000,
   })
 
   const onSubmit = (data: SchemaQuestion) => {

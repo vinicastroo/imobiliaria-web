@@ -1,3 +1,5 @@
+import { cache } from 'react'
+import { unstable_cache } from 'next/cache'
 import api from 'services/api'
 
 export interface Property {
@@ -42,8 +44,9 @@ export interface Property {
   }[]
 }
 
-export async function getProperty(slug: string) {
-  if (slug) {
+// unstable_cache: cache persistente entre requests (revalida a cada 5min)
+const getCachedProperty = unstable_cache(
+  async (slug: string) => {
     const response = await api.get<Property>(`/imovel/slug/${slug}`)
     const data = response.data
 
@@ -57,7 +60,14 @@ export async function getProperty(slug: string) {
       : []
 
     return { ...data, items }
-  }
+  },
+  ['property'],
+  { revalidate: 300, tags: ['properties'] } // 5 minutos
+)
 
-  return undefined
-}
+// React cache(): deduplica chamadas com o mesmo slug no mesmo request
+// (ex: generateMetadata + page render chamam getProperty com o mesmo slug)
+export const getProperty = cache(async (slug: string) => {
+  if (!slug) return undefined
+  return getCachedProperty(slug)
+})

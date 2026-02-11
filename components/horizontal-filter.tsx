@@ -104,14 +104,22 @@ export function HorizontalFilter() {
   const currentSuite = searchParams.get('suites') || ''
   const currentParking = searchParams.get('garagem') || ''
 
-  // --- QUERIES GERAIS ---
-  const { data: cities } = useQuery({ queryKey: ['cities'], queryFn: getCities })
-  const { data: types } = useQuery({ queryKey: ['types'], queryFn: getTypes })
-  // Query de bairros para o filtro horizontal (baseado na URL)
+  // --- QUERIES GERAIS (com cache longo para dados estáticos) ---
+  const { data: cities } = useQuery({
+    queryKey: ['cities'],
+    queryFn: getCities,
+    staleTime: 60 * 60 * 1000, // 1 hora
+  })
+  const { data: types } = useQuery({
+    queryKey: ['types'],
+    queryFn: getTypes,
+    staleTime: 60 * 60 * 1000, // 1 hora
+  })
   const { data: neighborhoods } = useQuery({
     queryKey: ['neighborhoods', currentCity],
     queryFn: () => getNeighborhoods({ city: currentCity }),
-    enabled: !!currentCity
+    enabled: !!currentCity,
+    staleTime: 30 * 60 * 1000, // 30 minutos
   })
 
   // --- FUNÇÃO DE ATUALIZAÇÃO DIRETA (Barra Horizontal) ---
@@ -173,7 +181,8 @@ export function HorizontalFilter() {
   const { data: formNeighborhoods } = useQuery({
     queryKey: ['neighborhoods', formCity],
     queryFn: () => getNeighborhoods({ city: formCity }),
-    enabled: !!formCity
+    enabled: !!formCity,
+    staleTime: 30 * 60 * 1000, // 30 minutos
   })
 
   // Quando mudar a cidade no form, limpa o bairro no form

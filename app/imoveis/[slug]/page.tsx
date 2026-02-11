@@ -1,11 +1,10 @@
 import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
+import { unstable_cache } from 'next/cache'
 import { BedDouble, Bath, CarFront, Ruler, MapPin, Grid2X2 } from 'lucide-react'
 
 import { MenubarHome } from '@/components/menu-home'
 import Footer from '@/components/footer'
-// REMOVIDO: import { PropertyGallery } from '@/components/property-gallery'
-// ADICIONADO:
 import { PropertyImagesCarousel } from '@/components/property-images-carousel'
 
 import { RecommendedCarousel, RecommendedProperty } from '@/components/recommended-carousel'
@@ -31,52 +30,153 @@ export interface GetPropertiesResponse {
   properties: Properties[]
 }
 
+function parsePrice(value: string): number {
+  const cleaned = value.replace(/[^\d,]/g, "").replace(",", ".")
+  return Number(cleaned) || 0
+}
+
+function buildPropertyJsonLd(property: Property) {
+  const price = parsePrice(property.value)
+  const images = property.files.map((f) => f.path)
+
+  const jsonLd: Record<string, unknown> = {
+    "@context": "https://schema.org",
+    "@type": "RealEstateListing",
+    name: property.name,
+    description: property.summary,
+    url: `https://aurosimobiliaria.com.br/imoveis/${property.slug}`,
+    image: images,
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: property.street
+        ? `${property.street}, ${property.numberAddress}`
+        : undefined,
+      addressLocality: property.city,
+      addressRegion: property.state || "SC",
+      addressCountry: "BR",
+      neighborhood: property.neighborhood,
+    },
+  }
+
+  if (property.latitude && property.longitude) {
+    jsonLd.geo = {
+      "@type": "GeoCoordinates",
+      latitude: Number(property.latitude),
+      longitude: Number(property.longitude),
+    }
+  }
+
+  if (price > 0) {
+    jsonLd.offers = {
+      "@type": "Offer",
+      price,
+      priceCurrency: "BRL",
+      availability: "https://schema.org/InStock",
+    }
+  }
+
+  return jsonLd
+}
+
+function buildBreadcrumbJsonLd(propertyName: string, slug: string) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: "https://aurosimobiliaria.com.br",
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Imóveis",
+        item: "https://aurosimobiliaria.com.br/imoveis",
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: propertyName,
+        item: `https://aurosimobiliaria.com.br/imoveis/${slug}`,
+      },
+    ],
+  }
+}
+
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params
   const property = await getProperty(slug)
   if (!property) return { title: 'Imóvel não encontrado' }
+
+  const ogImage = property.files?.[0]?.path || "https://www.aurosimobiliaria.com.br/logo.png"
+
   return {
     title: `Auros | ${property.name}`,
     description: property.summary,
     alternates: { canonical: `https://aurosimobiliaria.com.br/imoveis/${property.slug}` },
-    openGraph: { images: property.files?.[0]?.path || "https://www.aurosimobiliaria.com.br/logo.png" }
+    openGraph: {
+      title: property.name,
+      description: property.summary,
+      url: `https://aurosimobiliaria.com.br/imoveis/${property.slug}`,
+      type: "website",
+      images: [
+        {
+          url: ogImage,
+          width: 1200,
+          height: 630,
+          alt: property.name,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: property.name,
+      description: property.summary,
+      images: [ogImage],
+    },
   }
 }
 
-async function getRecommendedProperties(city: string, currentId: string): Promise<RecommendedProperty[]> {
-  try {
-    const response = await api.get<GetPropertiesResponse>(`/imovel/todos?filter[city]=${encodeURIComponent(city)}&pageSize=5&visible=true`)
-    const data = response.data
-    const allProperties = data.properties || []
-    const filtered = allProperties.filter((p: Property) => p.id !== currentId)
-    const cloudFrontUrl = `https://d2wss3tmei5yh1.cloudfront.net`
+const getRecommendedProperties = unstable_cache(
+  async (city: string, currentId: string): Promise<RecommendedProperty[]> => {
+    try {
+      const response = await api.get<GetPropertiesResponse>(`/imovel/todos?filter[city]=${encodeURIComponent(city)}&pageSize=5&visible=true`)
+      const data = response.data
+      const allProperties = data.properties || []
+      const filtered = allProperties.filter((p: Property) => p.id !== currentId)
+      const cloudFrontUrl = `https://d2wss3tmei5yh1.cloudfront.net`
 
-    return filtered.map((prop: Property) => ({
-      id: prop.id,
-      name: prop.name,
-      slug: prop.slug,
-      value: prop.value,
-      city: prop.city,
-      neighborhood: prop.neighborhood,
-      bedrooms: prop.bedrooms,
-      parkingSpots: prop.parkingSpots,
-      totalArea: prop.totalArea,
-      files: prop.files,
-      suites: prop.suites,
-      bathrooms: prop.bathrooms,
-      privateArea: prop.privateArea,
-      type_property: prop.type_property,
+      return filtered.map((prop: Property) => ({
+        id: prop.id,
+        name: prop.name,
+        slug: prop.slug,
+        value: prop.value,
+        city: prop.city,
+        neighborhood: prop.neighborhood,
+        bedrooms: prop.bedrooms,
+        parkingSpots: prop.parkingSpots,
+        totalArea: prop.totalArea,
+        files: prop.files,
+        suites: prop.suites,
+        bathrooms: prop.bathrooms,
+        privateArea: prop.privateArea,
+        type_property: prop.type_property,
 
-      coverImage: prop.files && prop.files.length > 0
-        ? `${cloudFrontUrl}/${prop.files[0].fileName}`
-        : undefined
-    }))
+        coverImage: prop.files && prop.files.length > 0
+          ? `${cloudFrontUrl}/${prop.files[0].fileName}`
+          : undefined
+      }))
 
-  } catch (error) {
-    console.error("Erro ao buscar recomendados:", error)
-    return []
-  }
-}
+    } catch (error) {
+      console.error("Erro ao buscar recomendados:", error)
+      return []
+    }
+  },
+  ['recommended-properties'],
+  { revalidate: 1800, tags: ['properties'] } // 30 minutos
+)
 
 interface FeatureItemProps {
   icon: React.ComponentType<{ size?: number; className?: string }>
@@ -113,13 +213,23 @@ export default async function PropertyPage({ params }: PageProps) {
   const realtors = property.realtors || []
   const recommended = await getRecommendedProperties(property.city, property.id)
 
+  const propertyJsonLd = buildPropertyJsonLd(property)
+  const breadcrumbJsonLd = buildBreadcrumbJsonLd(property.name, property.slug)
+
   return (
     <main className="min-h-screen bg-white">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(propertyJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
       <MenubarHome />
 
-      <div className="max-w-[1200px] mx-auto p-4 space-y-8 py-8 md:py-12"> {/* Ajustei padding */}
+      <div className="max-w-[1200px] mx-auto p-4 space-y-8 py-8 md:py-12">
 
-        {/* --- CARROSSEL DE IMAGENS (Substituindo Galeria) --- */}
         <PropertyImagesCarousel
           files={property.files.map(file => ({
             id: file.id,
