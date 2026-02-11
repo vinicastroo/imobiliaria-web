@@ -47,19 +47,23 @@ export interface Property {
 // unstable_cache: cache persistente entre requests (revalida a cada 5min)
 const getCachedProperty = unstable_cache(
   async (slug: string) => {
-    const response = await api.get<Property>(`/imovel/slug/${slug}`)
-    const data = response.data
+    try {
+      const response = await api.get<Property>(`/imovel/slug/${slug}`)
+      const data = response.data
 
-    const condition = data && data.files.length > 0
+      if (!data) return undefined
 
-    const baseUrl = `https://d2wss3tmei5yh1.cloudfront.net`
-    const items = condition
-      ? data?.files.map((file) => ({
-        img: `${baseUrl}/${file.fileName}`,
-      }))
-      : []
+      const baseUrl = `https://d2wss3tmei5yh1.cloudfront.net`
+      const items = data.files.length > 0
+        ? data.files.map((file) => ({
+          img: `${baseUrl}/${file.fileName}`,
+        }))
+        : []
 
-    return { ...data, items }
+      return { ...data, items }
+    } catch {
+      return undefined
+    }
   },
   ['property'],
   { revalidate: 300, tags: ['properties'] } // 5 minutos
