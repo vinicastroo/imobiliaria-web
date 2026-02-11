@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import Image from 'next/image'
+import { useRouter } from 'next/navigation'
 import {
   Carousel,
   CarouselContent,
@@ -19,8 +20,16 @@ interface GalleryItem {
   img: string
 }
 
-export function PropertyGallery({ items, propertyName, isRecentProperty, path }: { items: GalleryItem[], propertyName: string, isRecentProperty?: boolean, path?: string }) {
+interface PropertyGalleryProps {
+  items: GalleryItem[]
+  propertyName: string
+  isRecentProperty?: boolean
+  path?: string
+}
+
+export function PropertyGallery({ items, propertyName, isRecentProperty, path }: PropertyGalleryProps) {
   const { watermarkUrl } = useWatermark()
+  const router = useRouter()
   const [api, setApi] = React.useState<CarouselApi>()
   const [current, setCurrent] = React.useState(0)
   const [count, setCount] = React.useState(0)
@@ -31,9 +40,17 @@ export function PropertyGallery({ items, propertyName, isRecentProperty, path }:
     setCount(api.scrollSnapList().length)
     setCurrent(api.selectedScrollSnap() + 1)
 
-    api.on("select", () => {
-      setCurrent(api.selectedScrollSnap() + 1)
-    })
+    const onSelect = () => {
+      React.startTransition(() => {
+        setCurrent(api.selectedScrollSnap() + 1)
+      })
+    }
+
+    api.on("select", onSelect)
+
+    return () => {
+      api.off("select", onSelect)
+    }
   }, [api])
 
   if (!items || items.length === 0) {
@@ -52,7 +69,7 @@ export function PropertyGallery({ items, propertyName, isRecentProperty, path }:
           {items.map((item, index) => (
             <CarouselItem key={index} className={`relative w-full ${isRecentProperty ? 'h-[275px] md:h-[300px]' : 'h-[350px] lg:h-[500px] '}`} onClick={() => {
               if (isRecentProperty && path) {
-                window.open(path, '_blank')
+                router.push(path)
               }
             }}>
               <div className={`w-full h-full relative  ${isRecentProperty ? 'rounded-none' : 'rounded-lg'} overflow-hidden bg-gray-100`}>
@@ -60,6 +77,7 @@ export function PropertyGallery({ items, propertyName, isRecentProperty, path }:
                   src={item.img}
                   alt={`${propertyName} - Foto ${index + 1}`}
                   fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 400px"
                   className="object-cover group-hover:scale-105 cursor-pointer transition-scale duration-300"
                   priority={index === 0}
                 />
