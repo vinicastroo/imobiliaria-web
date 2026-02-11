@@ -1,6 +1,5 @@
 import type { Metadata } from "next"
 import { Montserrat } from "next/font/google"
-import { GoogleTagManager } from '@next/third-parties/google'
 import Script from 'next/script'
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
@@ -62,14 +61,62 @@ export default async function RootLayout({
   return (
     <html lang="pt-BR">
       <body className={`${montserrat.className} antialiased`}>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "RealEstateAgent",
+              name: "Auros Corretora Imobiliária",
+              url: "https://aurosimobiliaria.com.br",
+              logo: "https://aurosimobiliaria.com.br/logo-full.svg",
+              email: "aurosimobiliaria@gmail.com",
+              telephone: ["+55-47-99900-8090", "+55-47-98816-3739"],
+              address: [
+                {
+                  "@type": "PostalAddress",
+                  streetAddress: "R. XV de Novembro, 1751 - sala 02",
+                  addressLocality: "Rio do Sul",
+                  addressRegion: "SC",
+                  addressCountry: "BR",
+                  neighborhood: "Laranjeiras",
+                },
+                {
+                  "@type": "PostalAddress",
+                  streetAddress: "Rua 2000, 121, La Belle Tour Résidence - sala 11",
+                  addressLocality: "Balneário Camboriú",
+                  addressRegion: "SC",
+                  addressCountry: "BR",
+                  neighborhood: "Centro",
+                },
+              ],
+              sameAs: [
+                "https://www.instagram.com/auroscorretoraimobiliaria/",
+                "https://www.facebook.com/AurosCorretoraImob",
+              ],
+            }),
+          }}
+        />
+
         <Providers session={session}>
           {children}
           <Toaster />
         </Providers>
 
-        <GoogleTagManager gtmId="AW-16855847377" />
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=AW-16855847377"
+          strategy="lazyOnload"
+        />
+        <Script id="google-ads" strategy="lazyOnload">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'AW-16855847377');
+          `}
+        </Script>
 
-        <Script id="facebook-pixel" strategy="afterInteractive">
+        <Script id="facebook-pixel" strategy="lazyOnload">
           {`
             !function(f,b,e,v,n,t,s)
             {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
