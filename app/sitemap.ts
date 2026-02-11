@@ -71,7 +71,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.5,
     },
     {
-      url: `${BASE_URL}/sobre`,
+      url: `${BASE_URL}/quem-somos`,
       lastModified: new Date(),
       changeFrequency: 'monthly' as const,
       priority: 0.5,
