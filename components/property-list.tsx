@@ -159,7 +159,7 @@ export function PropertyList() {
             />
 
             {/* Conteúdo */}
-            <Link href={`/imoveis/${property.slug}`} target="_blank" className="group flex flex-col flex-1">
+            <Link href={`/imoveis/${property.slug}`} className="group flex flex-col flex-1">
               <div className="flex-1 flex flex-col p-4">
                 <div className="mb-4">
                   <h3 className="font-bold text-gray-900 line-clamp-1 text-lg group-hover:text-[#17375F] transition-colors">{property.name}</h3>

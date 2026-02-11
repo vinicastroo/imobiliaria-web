@@ -87,6 +87,7 @@ export function PropertyImagesCarousel({ files, propertyName }: PropertyImagesCa
                   src={file.path}
                   alt={`${propertyName} - Imagem ${index + 1}`}
                   fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 100vw, 1200px"
                   className="object-cover object-center"
                   priority={index === 0}
                   quality={100}
