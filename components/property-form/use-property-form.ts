@@ -10,6 +10,7 @@ import TextAlign from '@tiptap/extension-text-align'
 import { toast } from 'sonner'
 
 import api from '@/services/api'
+import { revalidateProperties } from '@/app/actions/revalidate-properties'
 import { useCepLookup } from '@/hooks/use-cep-lookup'
 import { propertySchema, type PropertyFormData } from './property-schema'
 import type { ImageItem, PropertyData } from './types'
@@ -229,6 +230,7 @@ export function usePropertyForm({ mode, propertyId, defaultValues }: UseProperty
         toast.success('Imóvel atualizado com sucesso!')
       }
 
+      await revalidateProperties()
       router.push('/admin/imoveis')
     } catch (error) {
       console.error(error)

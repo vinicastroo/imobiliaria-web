@@ -5,6 +5,7 @@ import { toast } from 'sonner'
 import { Loader2 } from 'lucide-react'
 import { AxiosError } from 'axios'
 import api from '@/services/api'
+import { revalidateProperties } from '@/app/actions/revalidate-properties'
 
 import {
   AlertDialog,
@@ -30,6 +31,7 @@ export function ModalDeleteProperty({ id, open, handleClose }: PropsModal) {
     try {
       setIsDeleting(true)
       await api.delete(`/imovel/${id}`)
+      await revalidateProperties()
 
       toast.success('Imóvel excluído com sucesso!')
 

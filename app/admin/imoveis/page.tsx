@@ -9,6 +9,7 @@ import { toast } from 'sonner'
 import { useDebounce } from 'use-debounce'
 
 import api from '@/services/api'
+import { revalidateProperties } from '@/app/actions/revalidate-properties'
 // Importamos a tipagem FilterOption do componente atualizado
 import { DataTable, FilterOption } from '@/components/data-table'
 import { getColumns } from './columns'
@@ -108,8 +109,9 @@ export default function AdminImoveisPage() {
     mutationFn: async ({ id, currentStatus }: { id: string, currentStatus: boolean }) => {
       await api.patch(`/imovel/${id}`, { visible: !currentStatus })
     },
-    onSuccess: () => {
+    onSuccess: async () => {
       queryClient.invalidateQueries({ queryKey: ['admin-properties'] })
+      await revalidateProperties()
       toast.success("Status atualizado com sucesso!")
     },
     onError: (error: AxiosError<{ message: string }>) => {
