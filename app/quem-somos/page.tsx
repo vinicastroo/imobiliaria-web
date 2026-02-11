@@ -1,6 +1,15 @@
-// REMOVA O "use client" DAQUI!
+import { Metadata } from 'next'
 import Image from 'next/image'
-import { Target, Telescope, Heart, CheckCircle2, Phone } from 'lucide-react'
+import { Target, Telescope, Heart, Phone } from 'lucide-react'
+
+export const metadata: Metadata = {
+  title: 'Quem Somos | Auros Corretora Imobiliária',
+  description:
+    'Conheça a história, missão e equipe da Auros Corretora Imobiliária. Tradição familiar com mais de 25 anos e presença em Rio do Sul e Balneário Camboriú.',
+  alternates: {
+    canonical: 'https://aurosimobiliaria.com.br/quem-somos',
+  },
+}
 
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'

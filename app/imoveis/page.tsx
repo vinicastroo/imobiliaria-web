@@ -7,14 +7,39 @@ import { HorizontalFilter } from '@/components/horizontal-filter'
 
 export const metadata: Metadata = {
   title: 'Auros Corretora Imobiliária | Imóveis',
+  description:
+    'Busque e filtre imóveis à venda em Rio do Sul e Balneário Camboriú. Apartamentos, casas, terrenos e muito mais com a Auros Corretora Imobiliária.',
   alternates: {
     canonical: 'https://aurosimobiliaria.com.br/imoveis',
   },
 }
 
+const breadcrumbJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    {
+      "@type": "ListItem",
+      position: 1,
+      name: "Home",
+      item: "https://aurosimobiliaria.com.br",
+    },
+    {
+      "@type": "ListItem",
+      position: 2,
+      name: "Imóveis",
+      item: "https://aurosimobiliaria.com.br/imoveis",
+    },
+  ],
+}
+
 export default function ImoveisPage() {
   return (
     <main className="min-h-screen flex flex-col bg-gray-50 font-sans">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
       <MenubarHome />
 
       <section className="bg-white border-b border-gray-200 sticky top-0 z-30 shadow-none">
@@ -26,6 +51,7 @@ export default function ImoveisPage() {
       </section>
 
       <div className="flex-1 w-full max-w-[1280px] mx-auto px-4 md:px-6 py-8">
+        <h1 className="sr-only">Imóveis à Venda em Rio do Sul e Balneário Camboriú</h1>
 
         <Suspense
           fallback={

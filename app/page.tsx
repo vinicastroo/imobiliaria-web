@@ -6,6 +6,8 @@ import Footer from '@/components/footer'
 
 export const metadata: Metadata = {
   title: 'Auros Corretora - Imobiliária em Rio do Sul e Balneário Camboriú',
+  description:
+    'A Auros Corretora Imobiliária oferece os melhores imóveis à venda em Rio do Sul e Balneário Camboriú. Apartamentos, casas, terrenos e salas comerciais com atendimento personalizado.',
   alternates: {
     canonical: 'https://aurosimobiliaria.com.br',
   },
