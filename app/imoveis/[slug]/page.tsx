@@ -110,7 +110,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const property = await getProperty(slug)
   if (!property) return { title: 'Imóvel não encontrado' }
 
-  const ogImage = property.files?.[0]?.path || "https://www.aurosimobiliaria.com.br/logo.png"
+  const ogImage = property.files?.[0]?.path || "https://aurosimobiliaria.com.br/logo.png"
 
   return {
     title: `Auros | ${property.name}`,

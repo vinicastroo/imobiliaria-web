@@ -35,11 +35,10 @@ export const metadata: Metadata = {
   // Configuração do Open Graph (Facebook/WhatsApp/LinkedIn)
   openGraph: {
     type: "website",
-    url: "https://www.aurosimobiliaria.com.br/",
+    url: "https://aurosimobiliaria.com.br/",
     title: "Auros Corretora Imobiliária",
     description: "Descubra uma variedade de imóveis em Rio do Sul e Balneário Camboriú com a Auros Corretora Imobiliária.",
-    // Se você tiver a imagem, adicione aqui:
-    // images: [{ url: "https://www.aurosimobiliaria.com.br/og-image.jpg" }],
+    // images: [{ url: "https://aurosimobiliaria.com.br/og-image.jpg" }],
   },
 
   // Configuração do Twitter Card
@@ -47,7 +46,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Auros Corretora Imobiliária",
     description: "Descubra uma variedade de imóveis em Rio do Sul e Balneário Camboriú com a Auros Corretora Imobiliária.",
-    images: ["https://www.aurosimobiliaria.com.br/logo.png"], // Peguei do seu código antigo
+    images: ["https://aurosimobiliaria.com.br/logo.png"],
   },
 }
 

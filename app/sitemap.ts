@@ -2,7 +2,7 @@ import api from '@/services/api'
 import { MetadataRoute } from 'next'
 
 // Defina a URL base do seu site (em produção)
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.aurosimobiliaria.com.br'
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://aurosimobiliaria.com.br'
 const AGENCY_ID = process.env.NEXT_PUBLIC_AGENCY_ID
 
 interface Property {

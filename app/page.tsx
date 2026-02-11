@@ -12,7 +12,7 @@ export const metadata: Metadata = {
     canonical: 'https://aurosimobiliaria.com.br',
   },
   openGraph: {
-    images: ['https://www.aurosimobiliaria.com.br/logo.png'],
+    images: ['https://aurosimobiliaria.com.br/logo.png'],
   },
 }
 
