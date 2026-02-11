@@ -15,31 +15,31 @@ import { cn } from "@/lib/utils" // Para classes condicionais (padrão shadcn)
 
 const historyImages = [
   {
-    src: "/auros-1.png",
+    src: "/auros-1.jpg",
     alt: "Equipe Auros",
   },
   {
-    src: "/auros-2.png",
+    src: "/auros-2.jpg",
     alt: "Equipe Auros",
   },
   {
-    src: "/auros-3.png",
+    src: "/auros-3.jpg",
     alt: "Equipe Auros",
   },
   {
-    src: "/auros-4.png",
+    src: "/auros-4.jpg",
     alt: "Equipe Auros",
   },
   {
-    src: "/auros-5.png",
+    src: "/auros-5.jpg",
     alt: "Equipe Auros",
   },
   {
-    src: "/auros-6.png",
+    src: "/auros-6.jpg",
     alt: "Equipe Auros",
   },
   {
-    src: "/auros-7.png",
+    src: "/auros-7.jpg",
     alt: "Equipe Auros",
   },
 ]
