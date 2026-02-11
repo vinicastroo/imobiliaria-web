@@ -12,6 +12,7 @@ export function HeroSection() {
           alt="Vista aérea de imóveis em Rio do Sul e Balneário Camboriú"
           fill
           priority
+          fetchPriority="high"
           sizes="100vw"
           className="object-cover"
         />
