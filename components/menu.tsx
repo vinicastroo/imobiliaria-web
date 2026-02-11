@@ -16,6 +16,7 @@ import {
   UserRound,
   Building,
   Users,
+  UserCheck,
   CreditCard,
   Building2,
   Settings,
@@ -41,6 +42,7 @@ export function Menubar() {
   const isOwnerOrAdmin = userRole === 'OWNER' || isSuperAdmin
   const isRealtor = userRole === 'REALTOR'
   const hasEnterprises = usePlanFeature('enterprises')
+  const hasClients = usePlanFeature('clients')
 
   const toggleMenu = () => setIsExpanded(!isExpanded)
 
@@ -110,6 +112,16 @@ export function Menubar() {
                 className="border-t border-muted"
                 isExpanded={isExpanded}
               />
+              {hasClients && (
+                <NavItem
+                  href="/admin/clientes"
+                  icon={UserCheck}
+                  label="Clientes"
+                  isActive={pathname === '/admin/clientes'}
+                  className="border-t border-muted"
+                  isExpanded={isExpanded}
+                />
+              )}
               {hasEnterprises && (
                 <NavItem
                   href="/admin/empreendimentos"

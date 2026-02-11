@@ -29,7 +29,7 @@ export function ContactSection() {
 
   const onSubmit = async (data: ContactFormData) => {
     try {
-      await api.post('/clientes', data)
+      await api.post('/clientes', { ...data, origin: 'WEBSITE' })
       toast.success('Contato enviado com sucesso!')
       reset()
     } catch (error) {
