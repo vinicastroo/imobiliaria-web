@@ -1,7 +1,7 @@
 "use client"
 
 import { ColumnDef } from "@tanstack/react-table"
-import { MoreHorizontal, Pencil, Eye, EyeOff, Trash2 } from "lucide-react"
+import { MoreHorizontal, Pencil, Eye, EyeOff, Trash2, Star, StarOff } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -22,6 +22,7 @@ export interface Property {
   neighborhood: string
   street: string
   visible: boolean
+  highlighted: boolean
   type_property: {
     description: string
   }
@@ -29,15 +30,23 @@ export interface Property {
 
 interface ColumnsProps {
   onToggleStatus: (id: string, currentStatus: boolean) => void
+  onToggleHighlighted: (id: string, currentHighlighted: boolean) => void
   onDelete: (id: string) => void
 }
 
 // Função para criar colunas injetando funções de ação
-export const getColumns = ({ onToggleStatus, onDelete }: ColumnsProps): ColumnDef<Property>[] => [
+export const getColumns = ({ onToggleStatus, onToggleHighlighted, onDelete }: ColumnsProps): ColumnDef<Property>[] => [
   {
     accessorKey: "code",
     header: "Código",
     cell: ({ row }) => <span className="text-xs text-blue-900 font-bold px-3 py-2 rounded-full">{row.getValue("code")}</span>,
+  },
+  {
+    accessorKey: "highlighted",
+    header: "",
+    cell: ({ row }) => row.getValue("highlighted")
+      ? <Star className="h-4 w-4 text-yellow-400 fill-yellow-400" />
+      : null,
   },
   {
     accessorKey: "type_property.description",
@@ -111,6 +120,18 @@ export const getColumns = ({ onToggleStatus, onDelete }: ColumnsProps): ColumnDe
               ) : (
                 <>
                   <Eye className="mr-2 h-4 w-4" /> Ativar
+                </>
+              )}
+            </DropdownMenuItem>
+
+            <DropdownMenuItem onClick={() => onToggleHighlighted(property.id, property.highlighted)}>
+              {property.highlighted ? (
+                <>
+                  <StarOff className="mr-2 h-4 w-4" /> Remover destaque
+                </>
+              ) : (
+                <>
+                  <Star className="mr-2 h-4 w-4" /> Destacar
                 </>
               )}
             </DropdownMenuItem>

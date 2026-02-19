@@ -8,6 +8,9 @@ export interface Properties {
   summary: string
   description: string
   value: string
+  highlighted: boolean
+  priceOnRequest: boolean
+  pricePrefix: boolean
   bedrooms: string
   bathrooms: string
   parkingSpots: string

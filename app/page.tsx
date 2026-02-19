@@ -1,5 +1,6 @@
 import { Metadata } from 'next'
 import { HeroSection } from '@/components/hero-section'
+import { HighlightedProperties } from '@/components/highlighted-properties'
 import { RecentProperties } from '@/components/recent-properties'
 import { ContactSection } from '@/components/contact-section'
 import Footer from '@/components/footer'
@@ -20,6 +21,7 @@ export default function Home() {
   return (
     <main className="flex flex-col min-h-screen">
       <HeroSection />
+      <HighlightedProperties />
       <RecentProperties />
       <ContactSection />
       <Footer />

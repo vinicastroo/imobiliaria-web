@@ -11,9 +11,9 @@ interface GetPropertiesResponse {
   properties: ApiProperty[]
 }
 
-export async function getRecentProperties() {
+export async function getHighlightedProperties() {
   const response = await api.get<GetPropertiesResponse>('/imovel', {
-    params: { highlighted: false, visible: true, pageSize: 6 },
+    params: { highlighted: true, visible: true, pageSize: 3 },
   })
 
   const properties = response.data.properties.map((property) => ({

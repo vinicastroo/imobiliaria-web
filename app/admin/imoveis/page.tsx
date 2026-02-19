@@ -28,6 +28,7 @@ interface Property {
   street: string
   type_property: { description: string }
   visible: boolean
+  highlighted: boolean
   createdAt: string
 }
 
@@ -119,9 +120,28 @@ export default function AdminImoveisPage() {
     }
   })
 
+  // 7. Mutation para Destacar/Remover destaque
+  const toggleHighlightedMutation = useMutation({
+    mutationFn: async ({ id, currentHighlighted }: { id: string, currentHighlighted: boolean }) => {
+      await api.patch(`/imovel/${id}/highlighted`, { highlighted: !currentHighlighted })
+    },
+    onSuccess: async () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-properties'] })
+      await revalidateProperties()
+      toast.success("Destaque atualizado com sucesso!")
+    },
+    onError: (error: AxiosError<{ message: string; error: string }>) => {
+      toast.error(error.response?.data?.error || error.response?.data?.message || "Erro ao atualizar destaque")
+    }
+  })
+
   // Handlers de Ação
   const handleToggleStatus = (id: string, currentStatus: boolean) => {
     toggleStatusMutation.mutate({ id, currentStatus })
+  }
+
+  const handleToggleHighlighted = (id: string, currentHighlighted: boolean) => {
+    toggleHighlightedMutation.mutate({ id, currentHighlighted })
   }
 
   const handleDeleteClick = (id: string) => {
@@ -138,6 +158,7 @@ export default function AdminImoveisPage() {
   // Definição das colunas
   const columns = getColumns({
     onToggleStatus: handleToggleStatus,
+    onToggleHighlighted: handleToggleHighlighted,
     onDelete: handleDeleteClick
   })
 
