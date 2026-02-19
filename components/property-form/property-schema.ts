@@ -24,6 +24,9 @@ export const propertySchema = z.object({
   longitude: z.string().min(1, 'Longitude obrigatória'),
   realtorIds: z.array(z.string()).optional(),
   enterpriseId: z.string().optional(),
+  priceOnRequest: z.boolean().default(false),
+  pricePrefix: z.boolean().default(false),
+  highlighted: z.boolean().default(false),
 })
 
 export type PropertyFormData = z.infer<typeof propertySchema>

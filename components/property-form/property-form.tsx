@@ -20,6 +20,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Switch } from '@/components/ui/switch'
 import { Textarea } from '@/components/ui/textarea'
 import {
   Select,
@@ -67,6 +68,7 @@ export function PropertyForm({ mode, propertyId, defaultValues }: PropertyFormPr
     register,
     control,
     setValue,
+    watch,
     formState: { errors },
   } = form
 
@@ -256,6 +258,39 @@ export function PropertyForm({ mode, propertyId, defaultValues }: PropertyFormPr
                             {errors.type_id.message}
                           </span>
                         )}
+                      </div>
+                    </div>
+
+                    <div className="flex flex-wrap gap-6">
+                      <div className="flex items-center gap-2">
+                        <Switch
+                          id="priceOnRequest"
+                          checked={watch('priceOnRequest')}
+                          onCheckedChange={(v) => setValue('priceOnRequest', v, { shouldDirty: true })}
+                        />
+                        <Label htmlFor="priceOnRequest" className="cursor-pointer font-normal">
+                          Exibir como <strong>Sob consulta</strong>
+                        </Label>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Switch
+                          id="pricePrefix"
+                          checked={watch('pricePrefix')}
+                          onCheckedChange={(v) => setValue('pricePrefix', v, { shouldDirty: true })}
+                        />
+                        <Label htmlFor="pricePrefix" className="cursor-pointer font-normal">
+                          Adicionar <strong>Até</strong> antes do valor
+                        </Label>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Switch
+                          id="highlighted"
+                          checked={watch('highlighted')}
+                          onCheckedChange={(v) => setValue('highlighted', v, { shouldDirty: true })}
+                        />
+                        <Label htmlFor="highlighted" className="cursor-pointer font-normal">
+                          Imóvel em <strong>Destaque</strong>
+                        </Label>
                       </div>
                     </div>
 

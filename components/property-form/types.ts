@@ -44,6 +44,9 @@ export interface PropertyData {
   numberAddress: string
   longitude: string
   latitude: string
+  priceOnRequest: boolean
+  pricePrefix: boolean
+  highlighted: boolean
   type_property?: {
     id: string
     description: string

@@ -66,7 +66,7 @@ function buildPropertyJsonLd(property: Property) {
     }
   }
 
-  if (price > 0) {
+  if (!property.priceOnRequest && price > 0) {
     jsonLd.offers = {
       "@type": "Offer",
       price,
@@ -153,6 +153,8 @@ const getRecommendedProperties = unstable_cache(
         name: prop.name,
         slug: prop.slug,
         value: prop.value,
+        priceOnRequest: prop.priceOnRequest,
+        pricePrefix: prop.pricePrefix,
         city: prop.city,
         neighborhood: prop.neighborhood,
         bedrooms: prop.bedrooms,
@@ -329,7 +331,13 @@ export default async function PropertyPage({ params }: PageProps) {
                   <Badge variant="secondary" className="text-lg px-4 py-1 bg-[#17375F]/10 text-[#17375F]">
                     Venda
                   </Badge>
-                  <span className="text-2xl font-bold text-[#17375F]">{property.value}</span>
+                  <span className="text-2xl font-bold text-[#17375F]">
+                    {property.priceOnRequest
+                      ? 'Sob consulta'
+                      : property.pricePrefix
+                        ? `Até ${property.value}`
+                        : property.value}
+                  </span>
                 </div>
 
                 {/* Lista de Corretores */}

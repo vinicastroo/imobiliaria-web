@@ -10,6 +10,8 @@ export interface Property {
   summary: string
   description: string
   value: string
+  priceOnRequest: boolean
+  pricePrefix: boolean
   bedrooms: string
   bathrooms: string
   parkingSpots: string

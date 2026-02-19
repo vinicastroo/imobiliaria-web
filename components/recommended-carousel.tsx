@@ -18,6 +18,8 @@ export interface RecommendedProperty {
   name: string
   slug: string
   value: string
+  priceOnRequest: boolean
+  pricePrefix: boolean
   city: string
   neighborhood: string
   summary?: string
@@ -165,7 +167,13 @@ export function RecommendedCarousel({ properties }: { properties: RecommendedPro
 
                     <div className="mt-auto">
                       <CardFooter className="flex items-center justify-between border-t py-4 bg-gray-50/50">
-                        <span className="text-xl font-bold text-[#17375F]">{property.value}</span>
+                        <span className="text-xl font-bold text-[#17375F]">
+                          {property.priceOnRequest
+                            ? 'Sob consulta'
+                            : property.pricePrefix
+                              ? `Até ${property.value}`
+                              : property.value}
+                        </span>
                         <div className="flex gap-2">
                           <Badge className="bg-[#17375F] hover:bg-[#122b4a]">Venda</Badge>
 

@@ -51,6 +51,9 @@ function mapPropertyToFormData(d: PropertyData, isEdit: boolean): PropertyFormDa
     longitude: d.longitude,
     enterpriseId: d.enterprise?.id ?? '',
     realtorIds: d.realtors?.length > 0 ? d.realtors.map((r) => r.id) : [],
+    priceOnRequest: d.priceOnRequest ?? false,
+    pricePrefix: d.pricePrefix ?? false,
+    highlighted: d.highlighted ?? false,
   }
 
   if (isEdit) {
@@ -91,6 +94,9 @@ export function usePropertyForm({ mode, propertyId, defaultValues }: UseProperty
       parkingSpots: '0',
       totalArea: '0',
       privateArea: '0',
+      priceOnRequest: false,
+      pricePrefix: false,
+      highlighted: false,
     },
     values: formValues,
     resetOptions: { keepDirtyValues: true },
