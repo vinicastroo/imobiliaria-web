@@ -27,6 +27,7 @@ export const propertySchema = z.object({
   priceOnRequest: z.boolean().default(false),
   pricePrefix: z.boolean().default(false),
   highlighted: z.boolean().default(false),
+  transactionType: z.enum(['VENDA', 'ALUGUEL']).default('VENDA'),
 })
 
 export type PropertyFormData = z.infer<typeof propertySchema>

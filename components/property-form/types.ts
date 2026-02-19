@@ -47,6 +47,7 @@ export interface PropertyData {
   priceOnRequest: boolean
   pricePrefix: boolean
   highlighted: boolean
+  transactionType: 'VENDA' | 'ALUGUEL'
   type_property?: {
     id: string
     description: string

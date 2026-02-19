@@ -145,16 +145,17 @@ const getRecommendedProperties = unstable_cache(
       const response = await api.get<GetPropertiesResponse>(`/imovel/todos?filter[city]=${encodeURIComponent(city)}&pageSize=5&visible=true`)
       const data = response.data
       const allProperties = data.properties || []
-      const filtered = allProperties.filter((p: Property) => p.id !== currentId)
+      const filtered = allProperties.filter((p: Properties) => p.id !== currentId)
       const cloudFrontUrl = `https://d2wss3tmei5yh1.cloudfront.net`
 
-      return filtered.map((prop: Property) => ({
+      return filtered.map((prop: Properties) => ({
         id: prop.id,
         name: prop.name,
         slug: prop.slug,
         value: prop.value,
         priceOnRequest: prop.priceOnRequest,
         pricePrefix: prop.pricePrefix,
+        transactionType: prop.transactionType,
         city: prop.city,
         neighborhood: prop.neighborhood,
         bedrooms: prop.bedrooms,
@@ -328,15 +329,15 @@ export default async function PropertyPage({ params }: PageProps) {
             <Card className="border-gray-200 shadow-sm sticky top-4">
               <CardContent className="p-6 space-y-6">
                 <div className="flex justify-between items-center border-b pb-4">
-                  <Badge variant="secondary" className="text-lg px-4 py-1 bg-[#17375F]/10 text-[#17375F]">
-                    Venda
+                  <Badge variant="secondary" className={`text-lg px-4 py-1 ${property.transactionType === 'ALUGUEL' ? 'bg-emerald-100 text-emerald-700' : 'bg-[#17375F]/10 text-[#17375F]'}`}>
+                    {property.transactionType === 'ALUGUEL' ? 'Aluguel' : 'Venda'}
                   </Badge>
                   <span className="text-2xl font-bold text-[#17375F]">
                     {property.priceOnRequest
                       ? 'Sob consulta'
                       : property.pricePrefix
-                        ? `Até ${property.value}`
-                        : property.value}
+                        ? `Até ${property.value}${property.transactionType === 'ALUGUEL' ? '/mês' : ''}`
+                        : `${property.value}${property.transactionType === 'ALUGUEL' ? '/mês' : ''}`}
                   </span>
                 </div>
 

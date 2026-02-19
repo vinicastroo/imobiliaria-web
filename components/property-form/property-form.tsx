@@ -234,6 +234,22 @@ export function PropertyForm({ mode, propertyId, defaultValues }: PropertyFormPr
                       </div>
 
                       <div className="space-y-2">
+                        <Label>Negociação</Label>
+                        <Select
+                          onValueChange={(val) => setValue('transactionType', val as 'VENDA' | 'ALUGUEL', { shouldDirty: true })}
+                          value={watch('transactionType')}
+                        >
+                          <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Selecione" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="VENDA">Venda</SelectItem>
+                            <SelectItem value="ALUGUEL">Aluguel</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      <div className="space-y-2">
                         <Label>Tipo</Label>
                         <Select
                           onValueChange={(val) => {

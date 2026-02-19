@@ -54,6 +54,7 @@ function mapPropertyToFormData(d: PropertyData, isEdit: boolean): PropertyFormDa
     priceOnRequest: d.priceOnRequest ?? false,
     pricePrefix: d.pricePrefix ?? false,
     highlighted: d.highlighted ?? false,
+    transactionType: d.transactionType ?? 'VENDA',
   }
 
   if (isEdit) {
@@ -97,6 +98,7 @@ export function usePropertyForm({ mode, propertyId, defaultValues }: UseProperty
       priceOnRequest: false,
       pricePrefix: false,
       highlighted: false,
+      transactionType: 'VENDA' as const,
     },
     values: formValues,
     resetOptions: { keepDirtyValues: true },

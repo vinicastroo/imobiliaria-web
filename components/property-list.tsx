@@ -180,7 +180,9 @@ export function PropertyList() {
                 </div>
 
                 <div className="flex items-center gap-2 mt-4">
-                  <Badge variant="outline" className="font-normal text-xs">Venda</Badge>
+                  <Badge variant="outline" className={`font-normal text-xs ${property.transactionType === 'ALUGUEL' ? 'text-emerald-600 border-emerald-600' : ''}`}>
+                    {property.transactionType === 'ALUGUEL' ? 'Aluguel' : 'Venda'}
+                  </Badge>
                   {property.type_property && (
                     <Badge variant="outline" className="font-normal text-xs">{property.type_property.description}</Badge>
                   )}
@@ -192,8 +194,8 @@ export function PropertyList() {
                   {property.priceOnRequest
                     ? 'Sob consulta'
                     : property.pricePrefix
-                      ? `Até ${property.value}`
-                      : property.value}
+                      ? `Até ${property.value}${property.transactionType === 'ALUGUEL' ? '/mês' : ''}`
+                      : `${property.value}${property.transactionType === 'ALUGUEL' ? '/mês' : ''}`}
                 </span>
               </div>
             </Link>

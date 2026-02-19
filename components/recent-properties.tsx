@@ -135,10 +135,12 @@ export function RecentProperties() {
                         {property.priceOnRequest
                           ? 'Sob consulta'
                           : property.pricePrefix
-                            ? `Até ${property.value}`
-                            : property.value}
+                            ? `Até ${property.value}${property.transactionType === 'ALUGUEL' ? '/mês' : ''}`
+                            : `${property.value}${property.transactionType === 'ALUGUEL' ? '/mês' : ''}`}
                       </span>
-                      <Badge className="bg-[#17375F] hover:bg-[#122b4a]">Venda</Badge>
+                      <Badge className={property.transactionType === 'ALUGUEL' ? 'bg-emerald-600 hover:bg-emerald-700' : 'bg-[#17375F] hover:bg-[#122b4a]'}>
+                        {property.transactionType === 'ALUGUEL' ? 'Aluguel' : 'Venda'}
+                      </Badge>
                     </CardFooter>
                   </div>
                 </Link>
