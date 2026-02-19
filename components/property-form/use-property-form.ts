@@ -55,6 +55,7 @@ function mapPropertyToFormData(d: PropertyData, isEdit: boolean): PropertyFormDa
     pricePrefix: d.pricePrefix ?? false,
     highlighted: d.highlighted ?? false,
     transactionType: d.transactionType ?? 'VENDA',
+    applyWatermark: d.applyWatermark ?? true,
   }
 
   if (isEdit) {
@@ -85,7 +86,7 @@ export function usePropertyForm({ mode, propertyId, defaultValues }: UseProperty
 
   const form = useForm<PropertyFormData>({
     resolver: zodResolver(propertySchema) as Resolver<PropertyFormData>,
-    defaultValues: {
+    defaultValues: formValues ?? {
       type_id: '',
       enterpriseId: '',
       realtorIds: [],
@@ -99,6 +100,7 @@ export function usePropertyForm({ mode, propertyId, defaultValues }: UseProperty
       pricePrefix: false,
       highlighted: false,
       transactionType: 'VENDA' as const,
+      applyWatermark: true,
     },
     values: formValues,
     resetOptions: { keepDirtyValues: true },

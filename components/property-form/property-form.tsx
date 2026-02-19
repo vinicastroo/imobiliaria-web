@@ -1,7 +1,6 @@
 "use client"
 
-import { useEffect, useState } from 'react'
-import { Controller } from 'react-hook-form'
+import { useEffect } from 'react'
 import { EditorContent } from '@tiptap/react'
 import { NumericFormat } from 'react-number-format'
 import {
@@ -37,6 +36,7 @@ import { RealtorSorter } from '@/components/realtor-sorter'
 
 import { useSession } from 'next-auth/react'
 import { usePropertyOptions } from '@/hooks/use-property-options'
+import { useWatermark } from '@/hooks/use-watermark'
 import { usePropertyForm } from './use-property-form'
 import { ImageUploader } from './image-uploader'
 import type { PropertyData } from './types'
@@ -49,6 +49,7 @@ interface PropertyFormProps {
 
 export function PropertyForm({ mode, propertyId, defaultValues }: PropertyFormProps) {
   const { data: session } = useSession()
+  const { watermarkUrl } = useWatermark()
   const isRealtor = session?.user?.role === 'REALTOR'
   const realtorProfileId = session?.user?.realtorProfileId
   const { types, realtors, enterprises } = usePropertyOptions()
@@ -66,21 +67,10 @@ export function PropertyForm({ mode, propertyId, defaultValues }: PropertyFormPr
 
   const {
     register,
-    control,
     setValue,
     watch,
     formState: { errors },
   } = form
-
-  const [typeId, setTypeId] = useState(defaultValues?.type_property?.id ?? '')
-  const [selectedEnterpriseId, setSelectedEnterpriseId] = useState(defaultValues?.enterprise?.id ?? '')
-  const [prevDefaultValues, setPrevDefaultValues] = useState(defaultValues)
-
-  if (defaultValues !== prevDefaultValues) {
-    setPrevDefaultValues(defaultValues)
-    setTypeId(defaultValues?.type_property?.id ?? '')
-    setSelectedEnterpriseId(defaultValues?.enterprise?.id ?? '')
-  }
 
   // Auto-atribui o corretor logado quando é REALTOR
   useEffect(() => {
@@ -211,22 +201,27 @@ export function PropertyForm({ mode, propertyId, defaultValues }: PropertyFormPr
                     <div className="grid grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <Label>Valor</Label>
-                        <Controller
-                          name="value"
-                          control={control}
-                          render={({ field: { onChange, value } }) => (
+                        {watch('priceOnRequest') ? (
+                          <div className="flex h-9 items-center rounded-md border border-input bg-muted px-3 text-sm text-muted-foreground">
+                            Sob consulta
+                          </div>
+                        ) : (
+                          <div className="flex items-center gap-2">
                             <NumericFormat
-                              value={value}
-                              onValueChange={(v) => onChange(v.formattedValue)}
+                              value={watch('value')}
+                              onValueChange={(v) => setValue('value', v.formattedValue, { shouldValidate: true, shouldDirty: true })}
                               prefix="R$ "
                               thousandSeparator="."
                               decimalSeparator=","
                               customInput={Input}
                               placeholder="R$ 0,00"
                             />
-                          )}
-                        />
-                        {errors.value && (
+                            {watch('transactionType') === 'ALUGUEL' && (
+                              <span className="text-sm text-muted-foreground whitespace-nowrap">/mês</span>
+                            )}
+                          </div>
+                        )}
+                        {!watch('priceOnRequest') && errors.value && (
                           <span className="text-xs text-red-500">
                             {errors.value.message}
                           </span>
@@ -252,11 +247,8 @@ export function PropertyForm({ mode, propertyId, defaultValues }: PropertyFormPr
                       <div className="space-y-2">
                         <Label>Tipo</Label>
                         <Select
-                          onValueChange={(val) => {
-                            setTypeId(val)
-                            setValue('type_id', val, { shouldDirty: true })
-                          }}
-                          value={typeId || undefined}
+                          onValueChange={(val) => setValue('type_id', val, { shouldDirty: true })}
+                          value={watch('type_id') || undefined}
                         >
                           <SelectTrigger className="w-full">
                             <SelectValue placeholder="Selecione" />
@@ -288,11 +280,12 @@ export function PropertyForm({ mode, propertyId, defaultValues }: PropertyFormPr
                           Exibir como <strong>Sob consulta</strong>
                         </Label>
                       </div>
-                      <div className="flex items-center gap-2">
+                      <div className={`flex items-center gap-2 ${watch('priceOnRequest') ? 'opacity-40 pointer-events-none' : ''}`}>
                         <Switch
                           id="pricePrefix"
                           checked={watch('pricePrefix')}
                           onCheckedChange={(v) => setValue('pricePrefix', v, { shouldDirty: true })}
+                          disabled={watch('priceOnRequest')}
                         />
                         <Label htmlFor="pricePrefix" className="cursor-pointer font-normal">
                           Adicionar <strong>Até</strong> antes do valor
@@ -316,12 +309,8 @@ export function PropertyForm({ mode, propertyId, defaultValues }: PropertyFormPr
                         <span className="text-xs">(Opcional)</span>
                       </Label>
                       <Select
-                        onValueChange={(val) => {
-                          const v = val === 'none_value' ? '' : val
-                          setSelectedEnterpriseId(v)
-                          setValue('enterpriseId', v, { shouldDirty: true })
-                        }}
-                        value={selectedEnterpriseId || undefined}
+                        onValueChange={(val) => setValue('enterpriseId', val === 'none_value' ? '' : val, { shouldDirty: true })}
+                        value={watch('enterpriseId') || undefined}
                       >
                         <SelectTrigger className="w-full">
                           <SelectValue placeholder="Selecione um empreendimento" />
@@ -384,16 +373,10 @@ export function PropertyForm({ mode, propertyId, defaultValues }: PropertyFormPr
                     </p>
                   </CardHeader>
                   <CardContent>
-                    <Controller
-                      name="realtorIds"
-                      control={control}
-                      render={({ field }) => (
-                        <RealtorSorter
-                          allRealtors={realtors}
-                          selectedIds={field.value || []}
-                          onChange={field.onChange}
-                        />
-                      )}
+                    <RealtorSorter
+                      allRealtors={realtors}
+                      selectedIds={watch('realtorIds') || []}
+                      onChange={(ids) => setValue('realtorIds', ids, { shouldDirty: true })}
                     />
                   </CardContent>
                 </Card>
@@ -509,7 +492,29 @@ export function PropertyForm({ mode, propertyId, defaultValues }: PropertyFormPr
                   reordenar.
                 </p>
               </CardHeader>
-              <CardContent>
+              <CardContent className="space-y-6">
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    <Switch
+                      id="applyWatermark"
+                      checked={watch('applyWatermark')}
+                      onCheckedChange={(v) => setValue('applyWatermark', v, { shouldDirty: true })}
+                    />
+                    <Label htmlFor="applyWatermark" className="cursor-pointer font-normal">
+                      Aplicar <strong>marca d&apos;água</strong> nas imagens
+                    </Label>
+                  </div>
+                  {!watermarkUrl && (
+                    <p className="text-xs text-muted-foreground">
+                      Você ainda não cadastrou a sua marca d&apos;água.{' '}
+                      <Link href="/admin/configuracoes" className="text-[#17375F] underline underline-offset-2 hover:opacity-80">
+                        Clique aqui
+                      </Link>{' '}
+                      para configurá-la.
+                    </p>
+                  )}
+                </div>
+
                 <ImageUploader
                   images={images}
                   onImagesChange={setImages}

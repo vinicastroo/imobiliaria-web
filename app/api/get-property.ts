@@ -13,6 +13,7 @@ export interface Property {
   priceOnRequest: boolean
   pricePrefix: boolean
   transactionType: 'VENDA' | 'ALUGUEL'
+  applyWatermark: boolean
   bedrooms: string
   bathrooms: string
   parkingSpots: string

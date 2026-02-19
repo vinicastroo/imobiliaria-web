@@ -48,6 +48,7 @@ export interface PropertyData {
   pricePrefix: boolean
   highlighted: boolean
   transactionType: 'VENDA' | 'ALUGUEL'
+  applyWatermark: boolean
   type_property?: {
     id: string
     description: string

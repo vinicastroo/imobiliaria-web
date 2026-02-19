@@ -20,9 +20,10 @@ interface PropertyImagesCarouselProps {
     fileName: string
   }[]
   propertyName: string
+  applyWatermark?: boolean
 }
 
-export function PropertyImagesCarousel({ files, propertyName }: PropertyImagesCarouselProps) {
+export function PropertyImagesCarousel({ files, propertyName, applyWatermark = true }: PropertyImagesCarouselProps) {
   const { watermarkUrl } = useWatermark()
   const [api, setApi] = useState<CarouselApi>()
   const [current, setCurrent] = useState(0)
@@ -92,7 +93,7 @@ export function PropertyImagesCarousel({ files, propertyName }: PropertyImagesCa
                   priority={index === 0}
                   quality={100}
                 />
-                {watermarkUrl && <WatermarkOverlay watermarkUrl={watermarkUrl} />}
+                {applyWatermark && watermarkUrl && <WatermarkOverlay watermarkUrl={watermarkUrl} />}
               </div>
             </CarouselItem>
           ))}

@@ -32,6 +32,7 @@ export interface RecommendedProperty {
   privateArea?: string | number
   type_property?: { description: string }
   coverImage?: string
+  applyWatermark?: boolean
 }
 
 interface PropertyFeatureProps {
@@ -124,7 +125,7 @@ export function RecommendedCarousel({ properties }: { properties: RecommendedPro
                             className="object-cover group-hover:scale-105 transition-transform duration-500"
                             sizes="(max-width: 768px) 100vw, 320px"
                           />
-                          {watermarkUrl && <WatermarkOverlay watermarkUrl={watermarkUrl} />}
+                          {(property.applyWatermark !== false) && watermarkUrl && <WatermarkOverlay watermarkUrl={watermarkUrl} />}
                         </>
                       ) : (
                         <div className="text-gray-400 text-sm">Sem imagem</div>

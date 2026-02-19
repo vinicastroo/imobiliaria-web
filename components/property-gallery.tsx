@@ -25,9 +25,10 @@ interface PropertyGalleryProps {
   propertyName: string
   isRecentProperty?: boolean
   path?: string
+  applyWatermark?: boolean
 }
 
-export function PropertyGallery({ items, propertyName, isRecentProperty, path }: PropertyGalleryProps) {
+export function PropertyGallery({ items, propertyName, isRecentProperty, path, applyWatermark = true }: PropertyGalleryProps) {
   const { watermarkUrl } = useWatermark()
   const router = useRouter()
   const [api, setApi] = React.useState<CarouselApi>()
@@ -81,7 +82,7 @@ export function PropertyGallery({ items, propertyName, isRecentProperty, path }:
                   className="object-cover group-hover:scale-105 cursor-pointer transition-scale duration-300"
                   priority={index === 0}
                 />
-                {watermarkUrl && <WatermarkOverlay watermarkUrl={watermarkUrl} />}
+                {applyWatermark && watermarkUrl && <WatermarkOverlay watermarkUrl={watermarkUrl} />}
               </div>
             </CarouselItem>
           ))}

@@ -28,6 +28,7 @@ export const propertySchema = z.object({
   pricePrefix: z.boolean().default(false),
   highlighted: z.boolean().default(false),
   transactionType: z.enum(['VENDA', 'ALUGUEL']).default('VENDA'),
+  applyWatermark: z.boolean().default(true),
 })
 
 export type PropertyFormData = z.infer<typeof propertySchema>

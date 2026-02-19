@@ -166,6 +166,7 @@ const getRecommendedProperties = unstable_cache(
         bathrooms: prop.bathrooms,
         privateArea: prop.privateArea,
         type_property: prop.type_property,
+        applyWatermark: prop.applyWatermark,
 
         coverImage: prop.files && prop.files.length > 0
           ? `${cloudFrontUrl}/${prop.files[0].fileName}`
@@ -240,6 +241,7 @@ export default async function PropertyPage({ params }: PageProps) {
             fileName: file.fileName
           }))}
           propertyName={property.name}
+          applyWatermark={property.applyWatermark}
         />
 
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8">

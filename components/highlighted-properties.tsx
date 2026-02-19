@@ -101,6 +101,7 @@ export function HighlightedProperties() {
                   path={`/imoveis/${property.slug}`}
                   propertyName={property.name}
                   isRecentProperty
+                  applyWatermark={property.applyWatermark}
                 />
 
                 <Link href={`/imoveis/${property.slug}`} className="group-hover:text-[#17375F] transition-colors flex-1 flex flex-col">
