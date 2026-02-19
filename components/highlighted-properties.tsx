@@ -149,14 +149,6 @@ export function HighlightedProperties() {
             )
           })}
         </div>
-
-        {data && data.properties.length > 0 && (
-          <Link href="/imoveis" className="mt-10">
-            <Button variant="outline" size="lg" className="bg-[#17375F] text-white hover:bg-[#17375F]/80 hover:text-white cursor-pointer">
-              Ver todos os imóveis
-            </Button>
-          </Link>
-        )}
       </section>
     </TooltipProvider>
   )
