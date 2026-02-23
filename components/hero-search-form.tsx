@@ -23,7 +23,11 @@ const searchSchema = z.object({
 
 type SearchFormData = z.infer<typeof searchSchema>
 
-export function HeroSearchForm() {
+interface HeroSearchFormProps {
+  primaryColor?: string
+}
+
+export function HeroSearchForm({ primaryColor }: HeroSearchFormProps) {
   const router = useRouter()
 
   const { control, watch, handleSubmit, formState: { isLoading } } = useForm<SearchFormData>({
@@ -121,7 +125,7 @@ export function HeroSearchForm() {
           </div>
 
           <div className="flex items-end w-full md:w-auto">
-            <Button size="lg" className="cursor-pointer w-full md:w-auto text-lg gap-2 bg-[#17375F] hover:bg-[#122b4a] px-14 py-3" disabled={isLoading}>
+            <Button size="lg" className="cursor-pointer w-full md:w-auto text-lg gap-2 px-14 py-3 hover:opacity-90 transition-opacity" style={{ backgroundColor: primaryColor ?? '#17375F' }} disabled={isLoading}>
               <Search size={20} />
               <span className="text-base md:hidden">Buscar Imóveis</span>
               <span className="hidden text-base md:inline">Buscar</span>

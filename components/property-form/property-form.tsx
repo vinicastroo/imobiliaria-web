@@ -33,12 +33,15 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { BackLink } from '@/components/back-link'
 import { MenuBarTiptap } from '@/components/menu-bar-tip-tap'
 import { RealtorSorter } from '@/components/realtor-sorter'
+import { Skeleton } from '@/components/ui/skeleton'
 
 import { useSession } from 'next-auth/react'
 import { usePropertyOptions } from '@/hooks/use-property-options'
 import { useWatermark } from '@/hooks/use-watermark'
+import { useInfrastructures } from '@/hooks/use-infrastructures'
 import { usePropertyForm } from './use-property-form'
 import { ImageUploader } from './image-uploader'
+import { InfrastructurePicker } from './infrastructure-picker'
 import type { PropertyData } from './types'
 
 interface PropertyFormProps {
@@ -53,6 +56,7 @@ export function PropertyForm({ mode, propertyId, defaultValues }: PropertyFormPr
   const isRealtor = session?.user?.role === 'REALTOR'
   const realtorProfileId = session?.user?.realtorProfileId
   const { types, realtors, enterprises } = usePropertyOptions()
+  const { infrastructures, isLoading: isLoadingInfrastructures } = useInfrastructures()
 
   const {
     form,
@@ -381,6 +385,30 @@ export function PropertyForm({ mode, propertyId, defaultValues }: PropertyFormPr
                   </CardContent>
                 </Card>
                 )}
+
+                <Card className="py-6">
+                  <CardHeader>
+                    <CardTitle>Infraestrutura</CardTitle>
+                    <p className="text-sm text-gray-500">
+                      Selecione os itens disponíveis neste imóvel
+                    </p>
+                  </CardHeader>
+                  <CardContent>
+                    {isLoadingInfrastructures ? (
+                      <div className="flex flex-wrap gap-2">
+                        {Array.from({ length: 6 }).map((_, i) => (
+                          <Skeleton key={i} className="h-8 w-24 rounded-full" />
+                        ))}
+                      </div>
+                    ) : (
+                      <InfrastructurePicker
+                        items={infrastructures}
+                        selected={watch('infrastructureIds') ?? []}
+                        onChange={(ids) => setValue('infrastructureIds', ids, { shouldDirty: true })}
+                      />
+                    )}
+                  </CardContent>
+                </Card>
               </div>
 
               {/* COLUNA DIREITA */}

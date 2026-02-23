@@ -1,13 +1,15 @@
 import type { Metadata } from "next"
 import { Montserrat } from "next/font/google"
-import Script from 'next/script'
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
-import { Providers } from "./providers"
+import { getTenantVisualConfig, getGoogleFontsUrl } from "@/lib/visual-config"
+import { Providers } from "@/app/providers"
 import { Toaster } from "components/ui/sonner"
 import "./globals.css"
 
-// Configuração da fonte (Substitui os <link> do Google Fonts)
+// Montserrat is the platform base font — loaded statically via next/font.
+// It registers --font-montserrat CSS variable; globals.css body rule applies it
+// via var(--font-body, var(--font-montserrat, system-ui)).
 const montserrat = Montserrat({
   subsets: ["latin"],
   weight: ["300", "400", "500", "700"],
@@ -15,39 +17,12 @@ const montserrat = Montserrat({
   display: 'swap',
 })
 
-// Aqui migramos todas as tags <meta> do seu antigo _document
 export const metadata: Metadata = {
-  title: "Auros Corretora Imobiliária",
-  description: "Descubra uma variedade de imóveis em Rio do Sul e Balneário Camboriú com a Auros Corretora Imobiliária. Desde apartamentos compactos até propriedades de luxo, encontre a casa dos seus sonhos.",
-  keywords: [
-    "corretora imobiliária",
-    "imóveis",
-    "Rio do Sul",
-    "Imobiliária em Rio do Sul",
-    "Balneário Camboriú",
-    "Imobiliária em Balneário Camboriú",
-    "compra de imóveis",
-    "venda de imóveis",
-    "mercado imobiliário"
-  ],
-  authors: [{ name: "Auros Corretora Imobiliária" }],
-
-  // Configuração do Open Graph (Facebook/WhatsApp/LinkedIn)
-  openGraph: {
-    type: "website",
-    url: "https://aurosimobiliaria.com.br/",
-    title: "Auros Corretora Imobiliária",
-    description: "Descubra uma variedade de imóveis em Rio do Sul e Balneário Camboriú com a Auros Corretora Imobiliária.",
-    // images: [{ url: "https://aurosimobiliaria.com.br/og-image.jpg" }],
+  title: {
+    template: '%s',
+    default: 'Portal Imobiliário',
   },
-
-  // Configuração do Twitter Card
-  twitter: {
-    card: "summary_large_image",
-    title: "Auros Corretora Imobiliária",
-    description: "Descubra uma variedade de imóveis em Rio do Sul e Balneário Camboriú com a Auros Corretora Imobiliária.",
-    images: ["https://aurosimobiliaria.com.br/logo.png"],
-  },
+  description: 'Portal imobiliário.',
 }
 
 export default async function RootLayout({
@@ -55,80 +30,48 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  const session = await getServerSession(authOptions)
+  const [session, visualConfig] = await Promise.all([
+    getServerSession(authOptions),
+    getTenantVisualConfig(),
+  ])
+
+  const fontLink = getGoogleFontsUrl(visualConfig.fontFamily)
+
+  // CSS custom-property overrides injected before any component styles,
+  // so --primary and --secondary are always resolved to the tenant's values.
+  const tenantCssOverrides = [
+    `--primary: ${visualConfig.primaryColor};`,
+    `--secondary: ${visualConfig.secondaryColor};`,
+    visualConfig.fontFamily !== 'Montserrat'
+      ? `--font-body: '${visualConfig.fontFamily}', sans-serif;`
+      : '',
+  ].filter(Boolean).join(' ')
 
   return (
-    <html lang="pt-BR">
-      <body className={`${montserrat.className} antialiased`}>
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "RealEstateAgent",
-              name: "Auros Corretora Imobiliária",
-              url: "https://aurosimobiliaria.com.br",
-              logo: "https://aurosimobiliaria.com.br/logo-full.svg",
-              email: "aurosimobiliaria@gmail.com",
-              telephone: ["+55-47-99900-8090", "+55-47-98816-3739"],
-              address: [
-                {
-                  "@type": "PostalAddress",
-                  streetAddress: "R. XV de Novembro, 1751 - sala 02",
-                  addressLocality: "Rio do Sul",
-                  addressRegion: "SC",
-                  addressCountry: "BR",
-                  neighborhood: "Laranjeiras",
-                },
-                {
-                  "@type": "PostalAddress",
-                  streetAddress: "Rua 2000, 121, La Belle Tour Résidence - sala 11",
-                  addressLocality: "Balneário Camboriú",
-                  addressRegion: "SC",
-                  addressCountry: "BR",
-                  neighborhood: "Centro",
-                },
-              ],
-              sameAs: [
-                "https://www.instagram.com/auroscorretoraimobiliaria/",
-                "https://www.facebook.com/AurosCorretoraImob",
-              ],
-            }),
-          }}
-        />
+    // montserrat.variable registers --font-montserrat without forcing it on body,
+    // letting globals.css font-family fallback chain work correctly.
+    <html lang="pt-BR" className={montserrat.variable}>
+      <head>
+        {fontLink && (
+          <link rel="preconnect" href="https://fonts.googleapis.com" />
+        )}
+        {fontLink && (
+          <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        )}
+        {fontLink && (
+          <link rel="stylesheet" href={fontLink} />
+        )}
+      </head>
+      <body className="antialiased">
+        {/* Tenant CSS variable overrides — rendered server-side, no layout shift */}
+        {tenantCssOverrides && (
+          <style dangerouslySetInnerHTML={{ __html: `:root { ${tenantCssOverrides} }` }} />
+        )}
 
         <Providers session={session}>
           {children}
           <Toaster />
         </Providers>
-
-        <Script
-          src="https://www.googletagmanager.com/gtag/js?id=AW-16855847377"
-          strategy="lazyOnload"
-        />
-        <Script id="google-ads" strategy="lazyOnload">
-          {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', 'AW-16855847377');
-          `}
-        </Script>
-
-        <Script id="facebook-pixel" strategy="lazyOnload">
-          {`
-            !function(f,b,e,v,n,t,s)
-            {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-            n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-            if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-            n.queue=[];t=b.createElement(e);t.async=!0;
-            t.src=v;s=b.getElementsByTagName(e)[0];
-            s.parentNode.insertBefore(t,s)}(window, document,'script',
-            'https://connect.facebook.net/en_US/fbevents.js');
-            fbq('init', '1081492213995645');
-            fbq('track', 'PageView');
-          `}
-        </Script>
       </body>
     </html>
   )

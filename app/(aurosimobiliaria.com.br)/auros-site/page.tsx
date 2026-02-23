@@ -1,9 +1,9 @@
 import { Metadata } from 'next'
-import { HeroSection } from '@/components/hero-section'
+import { HeroSection } from './_components/hero-section'
 import { HighlightedProperties } from '@/components/highlighted-properties'
 import { RecentProperties } from '@/components/recent-properties'
 import { ContactSection } from '@/components/contact-section'
-import Footer from '@/components/footer'
+import Footer from './_components/footer'
 
 export const metadata: Metadata = {
   title: 'Auros Corretora - Imobiliária em Rio do Sul e Balneário Camboriú',

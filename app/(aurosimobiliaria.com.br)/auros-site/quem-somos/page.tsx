@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
-import Footer from '@/components/footer'
+import Footer from '../_components/footer'
 import { MenubarHome } from '@/components/menu-home'
 // Importe o novo componente cliente
 import { TeamCarousel } from '@/components/team-carousel'

@@ -1,5 +1,6 @@
 import { cache } from 'react'
 import { unstable_cache } from 'next/cache'
+import { cookies } from 'next/headers'
 import api from 'services/api'
 
 export interface Property {
@@ -49,10 +50,13 @@ export interface Property {
 }
 
 // unstable_cache: cache persistente entre requests (revalida a cada 5min)
+// agencyId is included as a parameter so Next.js scopes the cache per tenant
 const getCachedProperty = unstable_cache(
-  async (slug: string) => {
+  async (agencyId: string, slug: string) => {
     try {
-      const response = await api.get<Property>(`/imovel/slug/${slug}`)
+      const response = await api.get<Property>(`/imovel/slug/${slug}`, {
+        headers: { 'x-agency-id': agencyId },
+      })
       const data = response.data
 
       if (!data) return undefined
@@ -77,5 +81,7 @@ const getCachedProperty = unstable_cache(
 // (ex: generateMetadata + page render chamam getProperty com o mesmo slug)
 export const getProperty = cache(async (slug: string) => {
   if (!slug) return undefined
-  return getCachedProperty(slug)
+  const cookieStore = await cookies()
+  const agencyId = cookieStore.get('__tenant__')?.value ?? process.env.NEXT_PUBLIC_AGENCY_ID ?? ''
+  return getCachedProperty(agencyId, slug)
 })

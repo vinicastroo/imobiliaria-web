@@ -222,7 +222,7 @@ export function PlanEditDialog({ open, onOpenChange, planToEdit }: PlanEditDialo
             </Button>
             <Button
               type="submit"
-              className="bg-[#17375F] hover:bg-[#122b4a]"
+              className="bg-primary hover:bg-primary/90"
               disabled={mutation.isPending}
             >
               {mutation.isPending ? (

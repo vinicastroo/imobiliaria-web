@@ -19,6 +19,16 @@ api.interceptors.request.use(async (config) => {
 
       if (session.user.agencyId) {
         config.headers['x-agency-id'] = session.user.agencyId
+      } else {
+        // SUPER_ADMIN has no agency — remove the env-based default header
+        delete config.headers['x-agency-id']
+      }
+    } else {
+      // Public page (no session): resolve tenant from __tenant__ cookie
+      const match = document.cookie.match(/(?:^|;\s*)__tenant__=([^;]*)/)
+      const tenantId = match ? decodeURIComponent(match[1]) : null
+      if (tenantId) {
+        config.headers['x-agency-id'] = tenantId
       }
     }
   }

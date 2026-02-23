@@ -1,6 +1,6 @@
 import { Suspense } from 'react'
 import { Metadata } from 'next'
-import Footer from '@/components/footer'
+import Footer from '../_components/footer'
 import { PropertyList } from '@/components/property-list'
 import { MenubarHome } from '@/components/menu-home'
 import { HorizontalFilter } from '@/components/horizontal-filter'

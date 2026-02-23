@@ -50,7 +50,7 @@ export default function PlansPage() {
 
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div>
-              <h1 className="text-2xl font-bold text-[#17375F]">Gestão de Planos</h1>
+              <h1 className="text-2xl font-bold text-primary">Gestão de Planos</h1>
               <p className="text-gray-500">Visualize e edite os planos da plataforma.</p>
             </div>
           </div>
@@ -104,7 +104,7 @@ export default function PlansPage() {
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="h-8 w-8 text-blue-900 hover:text-blue-700 hover:bg-blue-50"
+                        className="h-8 w-8 text-primary hover:text-primary/80 hover:bg-primary/5"
                         onClick={() => handleOpenEdit(plan)}
                         title="Editar"
                       >

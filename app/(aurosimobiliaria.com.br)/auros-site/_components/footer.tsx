@@ -1,33 +1,10 @@
 import Image from 'next/image'
 import Link from 'next/link'
-import { MapPin, Mail, Phone, Facebook, Instagram } from 'lucide-react' // Usando Lucide para consistência
-import api from 'services/api'
-
-
-
-// Definição do tipo de dados
-interface CubProps {
-  monthYear: string
-  cubValue: string
-  monthPercentage: string
-  yearPercentage: string
-  twelveMonthsPercentage: string
-}
-
-// Função de busca de dados (Roda no servidor)
-// async function getCubInformation(): Promise<CubProps | null> {
-//   try {
-//     // const response = await api.get('/cub-information')
-//     return [{ monthYear: "01/2024", cubValue: "R$ 1.200,00", monthPercentage: "+2%", yearPercentage: "+15%", twelveMonthsPercentage: "+35%" }]
-//   } catch (error) {
-//     console.error("Erro ao buscar CUB:", error)
-//     return null
-//   }
-// }
+import { MapPin, Mail, Phone, Facebook, Instagram } from 'lucide-react'
+import { getTenantVisualConfig } from '@/lib/visual-config'
 
 export default async function Footer() {
-  // A busca acontece aqui, antes de renderizar o HTML
-  // const cubInformation = await getCubInformation()
+  const { logoUrl } = await getTenantVisualConfig()
 
   return (
     <footer className="flex flex-col">
@@ -37,7 +14,7 @@ export default async function Footer() {
 
           {/* Coluna 1: Logo */}
           <div className="flex items-center justify-center">
-            <Image src="/logo-full.svg" alt="Auros Logo" width={160} height={160} className="w-40" />
+            <Image src={logoUrl ?? '/logo-full.svg'} alt="Auros Logo" width={160} height={160} className="w-40" />
           </div>
 
           {/* Coluna 2: Rio do Sul */}
@@ -100,24 +77,6 @@ export default async function Footer() {
               <Mail size={18} />
               <span>aurosimobiliaria@gmail.com</span>
             </Link>
-          </div>
-
-          {/* Coluna 5: Tabela CUB (Server Data) */}
-          <div className="flex flex-col gap-1 items-center md:items-start text-center md:text-left w-full md:w-auto text-sm">
-            {/* <h3 className="text-base font-semibold border-b border-white pb-1 mb-2 w-fit">
-              Tabela do CUB SC
-            </h3> */}
-            {/* {cubInformation ? (
-              <>
-                <p>Mês/Ano: {cubInformation.monthYear}</p>
-                <p>CUB SC (R$/m²): {cubInformation.cubValue}</p>
-                <p>Mês (%): {cubInformation.monthPercentage}</p>
-                <p>Ano (%): {cubInformation.yearPercentage}</p>
-                <p>12 meses (%): {cubInformation.twelveMonthsPercentage}</p>
-              </>
-            ) : (
-              <p className="opacity-70 text-xs">Informações indisponíveis</p>
-            )} */}
           </div>
 
         </div>

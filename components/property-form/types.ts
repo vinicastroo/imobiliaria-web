@@ -59,6 +59,10 @@ export interface PropertyData {
     id: string
     name: string
   }
+  infrastructures?: Array<{
+    infrastructureId: string
+    infrastructure: { id: string; name: string }
+  }>
 }
 
 export type ImageItem =

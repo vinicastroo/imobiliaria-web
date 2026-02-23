@@ -28,6 +28,21 @@ import type { AdminPlan, AgencyCreateResponse } from '@/types/admin'
 
 const onboardingSchema = z.object({
   agencyName: z.string().min(1, 'Nome da imobiliária é obrigatório'),
+  slug: z
+    .string()
+    .toLowerCase()
+    .regex(/^[a-z0-9-]*$/, 'Apenas letras minúsculas, números e hífens')
+    .optional()
+    .or(z.literal('')),
+  customDomain: z
+    .string()
+    .toLowerCase()
+    .regex(
+      /^([a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)+)?$/,
+      'Domínio inválido (ex: imoveisgilli.com.br)'
+    )
+    .optional()
+    .or(z.literal('')),
   cnpj: z
     .string()
     .transform((val) => val.replace(/\D/g, ''))
@@ -61,6 +76,7 @@ export function AgencyOnboardingForm({ onSuccess }: AgencyOnboardingFormProps) {
   const queryClient = useQueryClient()
   const [showPassword, setShowPassword] = useState(false)
   const [hasCustomPrice, setHasCustomPrice] = useState(false)
+  const [manualBilling, setManualBilling] = useState(false)
 
   const {
     register,
@@ -73,6 +89,8 @@ export function AgencyOnboardingForm({ onSuccess }: AgencyOnboardingFormProps) {
     resolver: zodResolver(onboardingSchema),
     defaultValues: {
       agencyName: '',
+      slug: '',
+      customDomain: '',
       cnpj: '',
       userName: '',
       email: '',
@@ -116,7 +134,9 @@ export function AgencyOnboardingForm({ onSuccess }: AgencyOnboardingFormProps) {
       const payload = {
         agency: {
           name: data.agencyName,
+          slug: data.slug || undefined,
           cnpj: data.cnpj || undefined,
+          customDomain: data.customDomain || undefined,
         },
         user: {
           name: data.userName,
@@ -124,7 +144,8 @@ export function AgencyOnboardingForm({ onSuccess }: AgencyOnboardingFormProps) {
           password: data.password,
         },
         planId: data.planId,
-        customPrice: hasCustomPrice ? data.customPrice : undefined,
+        customPrice: hasCustomPrice && !manualBilling ? data.customPrice : undefined,
+        manualBilling,
       }
       const response = await api.post<AgencyCreateResponse>('/admin/agencies', payload)
       return response.data
@@ -134,6 +155,7 @@ export function AgencyOnboardingForm({ onSuccess }: AgencyOnboardingFormProps) {
       toast.success('Imobiliária cadastrada com sucesso!')
       reset()
       setHasCustomPrice(false)
+      setManualBilling(false)
       onSuccess(data.paymentLink)
     },
     onError: (error: ApiError) => {
@@ -148,7 +170,7 @@ export function AgencyOnboardingForm({ onSuccess }: AgencyOnboardingFormProps) {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 px-4 pb-4">
       <div className="space-y-4">
-        <p className="text-sm font-medium text-[#17375F]">Dados da Imobiliária</p>
+        <p className="text-sm font-medium text-primary">Dados da Imobiliária</p>
 
         <div className="space-y-2">
           <Label htmlFor="agencyName">Nome da Imobiliária</Label>
@@ -159,6 +181,40 @@ export function AgencyOnboardingForm({ onSuccess }: AgencyOnboardingFormProps) {
           />
           {errors.agencyName && (
             <span className="text-xs text-red-500">{errors.agencyName.message}</span>
+          )}
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="slug">
+            Subdomínio <span className="text-xs text-gray-400">(opcional)</span>
+          </Label>
+          <div className="flex items-center gap-1">
+            <Input
+              id="slug"
+              placeholder="minha-imobiliaria"
+              {...register('slug')}
+              className="flex-1"
+            />
+            <span className="text-sm text-muted-foreground whitespace-nowrap">
+              .{process.env.NEXT_PUBLIC_PLATFORM_DOMAIN ?? 'codelabz.com.br'}
+            </span>
+          </div>
+          {errors.slug && (
+            <span className="text-xs text-red-500">{errors.slug.message}</span>
+          )}
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="customDomain">
+            Domínio Personalizado <span className="text-xs text-gray-400">(opcional)</span>
+          </Label>
+          <Input
+            id="customDomain"
+            placeholder="imoveisgilli.com.br"
+            {...register('customDomain')}
+          />
+          {errors.customDomain && (
+            <span className="text-xs text-red-500">{errors.customDomain.message}</span>
           )}
         </div>
 
@@ -180,7 +236,7 @@ export function AgencyOnboardingForm({ onSuccess }: AgencyOnboardingFormProps) {
       <Separator />
 
       <div className="space-y-4">
-        <p className="text-sm font-medium text-[#17375F]">Usuário Administrador</p>
+        <p className="text-sm font-medium text-primary">Usuário Administrador</p>
 
         <div className="space-y-2">
           <Label htmlFor="userName">Nome do Responsável</Label>
@@ -233,7 +289,7 @@ export function AgencyOnboardingForm({ onSuccess }: AgencyOnboardingFormProps) {
       <Separator />
 
       <div className="space-y-4">
-        <p className="text-sm font-medium text-[#17375F]">Plano e Assinatura</p>
+        <p className="text-sm font-medium text-primary">Plano e Assinatura</p>
 
         <div className="space-y-2">
           <Label>Plano</Label>
@@ -266,7 +322,7 @@ export function AgencyOnboardingForm({ onSuccess }: AgencyOnboardingFormProps) {
         {selectedPlan && (
           <div className="p-3 bg-blue-50/50 rounded-lg border border-blue-100 text-sm">
             <span className="text-muted-foreground">Preço de tabela: </span>
-            <span className="font-medium text-[#17375F]">
+            <span className="font-medium text-primary">
               {Number(selectedPlan.defaultPrice).toLocaleString('pt-BR', {
                 style: 'currency',
                 currency: 'BRL',
@@ -277,13 +333,32 @@ export function AgencyOnboardingForm({ onSuccess }: AgencyOnboardingFormProps) {
 
         <label className="flex items-center gap-2 cursor-pointer">
           <Checkbox
-            checked={hasCustomPrice}
-            onCheckedChange={(checked) => setHasCustomPrice(checked === true)}
+            checked={manualBilling}
+            onCheckedChange={(checked) => {
+              setManualBilling(checked === true)
+              if (checked) setHasCustomPrice(false)
+            }}
           />
-          <span className="text-sm">Aplicar preço negociado</span>
+          <span className="text-sm">Cobrança manual</span>
         </label>
 
-        {hasCustomPrice && (
+        {manualBilling && (
+          <Badge className="bg-blue-100 text-blue-800 border-blue-200">
+            Cobrança manual ativada — Stripe ignorado
+          </Badge>
+        )}
+
+        {!manualBilling && (
+          <label className="flex items-center gap-2 cursor-pointer">
+            <Checkbox
+              checked={hasCustomPrice}
+              onCheckedChange={(checked) => setHasCustomPrice(checked === true)}
+            />
+            <span className="text-sm">Aplicar preço negociado</span>
+          </label>
+        )}
+
+        {!manualBilling && hasCustomPrice && (
           <div className="space-y-2">
             <Label htmlFor="customPrice">Preço Negociado (R$)</Label>
             <Input
@@ -308,7 +383,7 @@ export function AgencyOnboardingForm({ onSuccess }: AgencyOnboardingFormProps) {
       <div className="pt-2">
         <Button
           type="submit"
-          className="w-full bg-[#17375F] hover:bg-[#122b4a]"
+          className="w-full bg-primary hover:bg-primary/90"
           disabled={mutation.isPending}
         >
           {mutation.isPending ? (

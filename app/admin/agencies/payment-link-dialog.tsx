@@ -60,7 +60,7 @@ export function PaymentLinkDialog({ open, onOpenChange, paymentLink }: PaymentLi
           <Button variant="outline" onClick={() => onOpenChange(false)}>
             Fechar
           </Button>
-          <Button className="bg-[#17375F] hover:bg-[#122b4a]" onClick={handleOpenLink}>
+          <Button className="bg-primary hover:bg-primary/90" onClick={handleOpenLink}>
             <ExternalLink className="mr-2 h-4 w-4" />
             Abrir Link
           </Button>

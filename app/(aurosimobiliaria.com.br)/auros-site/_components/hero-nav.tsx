@@ -14,17 +14,23 @@ function SocialLink({ href, children, ariaLabel }: { href: string, children: Rea
   )
 }
 
-export function HeroNav() {
+interface HeroNavProps {
+  logoUrl?: string | null
+}
+
+export function HeroNav({ logoUrl }: HeroNavProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
   const closeMenu = () => setIsMobileMenuOpen(false)
+
+  const logoSrc = logoUrl ?? './logo-auros-minimalist.svg'
 
   return (
     <>
       <div className="w-full max-w-[1200px] mx-auto flex justify-between items-center py-4 z-50 relative">
         <Link href="/">
           <Image
-            src="./logo-auros-minimalist.svg"
+            src={logoSrc}
             alt="Auros Logo"
             width={120}
             height={120}
@@ -59,7 +65,7 @@ export function HeroNav() {
           <div className="flex justify-between items-center p-8">
             <Link href="/" onClick={closeMenu}>
               <Image
-                src="./logo-auros-minimalist.svg"
+                src={logoSrc}
                 alt="Auros Logo"
                 width={100}
                 height={100}

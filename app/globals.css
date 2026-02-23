@@ -120,6 +120,9 @@
   }
   body {
     @apply bg-background text-foreground;
+    /* --font-body is injected per-tenant from the root layout.
+       Falls back to --font-montserrat (loaded via next/font) then system-ui. */
+    font-family: var(--font-body, var(--font-montserrat, system-ui));
   }
 }
 

@@ -1,10 +1,11 @@
 import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { unstable_cache } from 'next/cache'
+import { cookies } from 'next/headers'
 import { BedDouble, Bath, CarFront, Ruler, MapPin, Grid2X2 } from 'lucide-react'
 
 import { MenubarHome } from '@/components/menu-home'
-import Footer from '@/components/footer'
+import Footer from '../../_components/footer'
 import { PropertyImagesCarousel } from '@/components/property-images-carousel'
 
 import { RecommendedCarousel, RecommendedProperty } from '@/components/recommended-carousel'
@@ -139,10 +140,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 }
 
+// agencyId is the first parameter so Next.js scopes the cache per tenant
 const getRecommendedProperties = unstable_cache(
-  async (city: string, currentId: string): Promise<RecommendedProperty[]> => {
+  async (agencyId: string, city: string, currentId: string): Promise<RecommendedProperty[]> => {
     try {
-      const response = await api.get<GetPropertiesResponse>(`/imovel/todos?filter[city]=${encodeURIComponent(city)}&pageSize=5&visible=true`)
+      const response = await api.get<GetPropertiesResponse>(`/imovel/todos?filter[city]=${encodeURIComponent(city)}&pageSize=5&visible=true`, {
+        headers: { 'x-agency-id': agencyId },
+      })
       const data = response.data
       const allProperties = data.properties || []
       const filtered = allProperties.filter((p: Properties) => p.id !== currentId)
@@ -214,8 +218,11 @@ export default async function PropertyPage({ params }: PageProps) {
     notFound()
   }
 
+  const cookieStore = await cookies()
+  const agencyId = cookieStore.get('__tenant__')?.value ?? process.env.NEXT_PUBLIC_AGENCY_ID ?? ''
+
   const realtors = property.realtors || []
-  const recommended = await getRecommendedProperties(property.city, property.id)
+  const recommended = await getRecommendedProperties(agencyId, property.city, property.id)
 
   const propertyJsonLd = buildPropertyJsonLd(property)
   const breadcrumbJsonLd = buildBreadcrumbJsonLd(property.name, property.slug)

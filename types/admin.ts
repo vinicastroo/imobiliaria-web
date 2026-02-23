@@ -12,12 +12,21 @@ export interface AdminPlan {
   _count: { subscriptions: number }
 }
 
+export interface AdminAgencyOwner {
+  id: string
+  name: string
+  email: string
+}
+
 export interface AdminAgency {
   id: string
   name: string
+  slug: string | null
+  customDomain: string | null
   cnpj: string | null
   active: boolean
   createdAt: string
+  owner: AdminAgencyOwner | null
   subscription: {
     id: string
     status: 'PENDING' | 'ACTIVE' | 'CANCELED' | 'EXPIRED'
@@ -26,6 +35,7 @@ export interface AdminAgency {
     effectivePrice: string
     snapshotPrice: string
     customPrice: string | null
+    manualBilling: boolean
     startDate: string
   } | null
   usage: {
