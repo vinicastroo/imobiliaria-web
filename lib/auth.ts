@@ -29,10 +29,7 @@ export const authOptions: NextAuthOptions = {
 
         // Middleware sets x-tenant-id on every request (Step 1).
         // On local dev, fall back to NEXT_PUBLIC_AGENCY_ID.
-        const tenantId =
-          (req?.headers?.['x-tenant-id'] as string | undefined) ??
-          process.env.NEXT_PUBLIC_AGENCY_ID ??
-          undefined
+        const tenantId = req?.headers?.['x-tenant-id'] as string | undefined
 
         try {
           const res = await fetch(`${API_URL}/sessions`, {
