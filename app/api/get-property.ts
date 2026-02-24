@@ -2,6 +2,7 @@ import { cache } from 'react'
 import { unstable_cache } from 'next/cache'
 import { headers } from 'next/headers'
 import api from 'services/api'
+import { isAxiosError } from 'axios'
 
 export interface Property {
   id: string
@@ -51,6 +52,7 @@ export interface Property {
 
 // unstable_cache: cache persistente entre requests (revalida a cada 5min)
 // agencyId is included as a parameter so Next.js scopes the cache per tenant
+// Key bumped to 'property-v2' to bust any stale undefined entries from previous deploys
 const getCachedProperty = unstable_cache(
   async (agencyId: string, slug: string) => {
     try {
@@ -59,7 +61,7 @@ const getCachedProperty = unstable_cache(
       })
       const data = response.data
 
-      if (!data) return undefined
+      if (!data) return null
 
       const baseUrl = `https://d2wss3tmei5yh1.cloudfront.net`
       const items = data.files.length > 0
@@ -69,11 +71,15 @@ const getCachedProperty = unstable_cache(
         : []
 
       return { ...data, items }
-    } catch {
-      return undefined
+    } catch (error) {
+      // Genuine "not found" — cache the null so we don't hammer the API
+      if (isAxiosError(error) && error.response?.status === 404) return null
+      // Transient error (network, 5xx) — do NOT cache, allow retry on next request
+      console.error('[getProperty] API error:', { agencyId, slug, status: isAxiosError(error) ? error.response?.status : 'unknown' })
+      throw error
     }
   },
-  ['property'],
+  ['property-v2'],
   { revalidate: 300, tags: ['properties'] } // 5 minutos
 )
 
@@ -81,5 +87,10 @@ export const getProperty = cache(async (slug: string) => {
   if (!slug) return undefined
   const agencyId =
     (await headers()).get('x-tenant-id') ?? process.env.NEXT_PUBLIC_AGENCY_ID ?? ''
-  return getCachedProperty(agencyId, slug)
+  try {
+    const result = await getCachedProperty(agencyId, slug)
+    return result ?? undefined
+  } catch {
+    return undefined
+  }
 })
