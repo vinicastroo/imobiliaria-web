@@ -3,5 +3,5 @@
 import { revalidateTag } from "next/cache"
 
 export async function revalidateVisualConfig() {
-  revalidateTag("visual-config")
+  revalidateTag("visual-config", "default")
 }
