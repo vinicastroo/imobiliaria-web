@@ -11,9 +11,10 @@ interface GetPropertiesResponse {
   properties: ApiProperty[]
 }
 
-export async function getRecentProperties() {
+export async function getRecentProperties(agencyId?: string) {
   const response = await api.get<GetPropertiesResponse>('/imovel', {
     params: { highlighted: false, visible: true, pageSize: 6 },
+    ...(agencyId && { headers: { 'x-agency-id': agencyId } }),
   })
 
   const properties = response.data.properties.map((property) => ({

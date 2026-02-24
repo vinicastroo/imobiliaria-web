@@ -5,9 +5,6 @@ const baseURL = process.env.NEXT_PUBLIC_API_URL || 'https://imobiliaria-api.verc
 
 const api = axios.create({
   baseURL,
-  headers: {
-    'x-agency-id': process.env.NEXT_PUBLIC_AGENCY_ID 
-  }
 })
 
 api.interceptors.request.use(async (config) => {
@@ -20,16 +17,15 @@ api.interceptors.request.use(async (config) => {
       if (session.user.agencyId) {
         config.headers['x-agency-id'] = session.user.agencyId
       } else {
-        // SUPER_ADMIN has no agency — remove the env-based default header
+        // SUPER_ADMIN has no agency
         delete config.headers['x-agency-id']
       }
-    } else {
-      // Public page (no session): resolve tenant from __tenant__ cookie
+    } else if (!config.headers['x-agency-id']) {
+      // Public page (no session) and no explicit per-request agency ID:
+      // try __tenant__ cookie first, then fall back to env var
       const match = document.cookie.match(/(?:^|;\s*)__tenant__=([^;]*)/)
       const tenantId = match ? decodeURIComponent(match[1]) : null
-      if (tenantId) {
-        config.headers['x-agency-id'] = tenantId
-      }
+      config.headers['x-agency-id'] = tenantId ?? process.env.NEXT_PUBLIC_AGENCY_ID ?? ''
     }
   }
 

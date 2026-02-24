@@ -29,8 +29,8 @@ const PropertyFeature = memo(function PropertyFeature({ icon: Icon, value, label
   return (
     <Tooltip>
       <TooltipTrigger asChild>
-        <div className="flex items-center gap-1 text-[#17375F] cursor-default bg-zinc-50 px-2 py-1 rounded-md border border-zinc-100 whitespace-nowrap">
-          <Icon size={16} className="text-[#17375F]" />
+        <div className="flex items-center gap-1 text-(--primary-color,#17375F) cursor-default bg-zinc-50 px-2 py-1 rounded-md border border-zinc-100 whitespace-nowrap">
+          <Icon size={16} className="text-(--primary-color,#17375F)" />
           <span className="font-bold text-xs">{value}{suffix}</span>
         </div>
       </TooltipTrigger>
@@ -39,10 +39,10 @@ const PropertyFeature = memo(function PropertyFeature({ icon: Icon, value, label
   )
 })
 
-export function HighlightedProperties() {
+export function HighlightedProperties({ agencyId }: { agencyId?: string }) {
   const { data, isLoading } = useQuery({
-    queryKey: ['highlighted-properties'],
-    queryFn: getHighlightedProperties,
+    queryKey: ['highlighted-properties', agencyId],
+    queryFn: () => getHighlightedProperties(agencyId),
   })
 
   if (!isLoading && (!data?.properties || data.properties.length === 0)) return null
@@ -56,10 +56,9 @@ export function HighlightedProperties() {
 
         <div className="text-center mb-10 z-10">
           <div className="flex items-center justify-center gap-2">
-            <Star className="h-5 w-5 text-yellow-500 fill-yellow-400" />
             <h2 className="text-2xl font-normal text-black">Imóveis em</h2>
           </div>
-          <h2 className="text-2xl font-bold text-[#17375F]">Destaque</h2>
+          <h2 className="text-2xl font-bold text-(--primary-color,#17375F)">Destaque</h2>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-[1200px] z-10">
@@ -104,10 +103,9 @@ export function HighlightedProperties() {
                   applyWatermark={property.applyWatermark}
                 />
 
-                <Link href={`/imoveis/${property.slug}`} className="group-hover:text-[#17375F] transition-colors flex-1 flex flex-col">
+                <Link href={`/imoveis/${property.slug}`} className="group-hover:text-(--primary-color,#17375F) transition-colors flex-1 flex flex-col">
                   <CardHeader className="pb-2">
                     <div className="flex items-center gap-1.5">
-                      <Star className="h-3.5 w-3.5 text-yellow-500 fill-yellow-400 shrink-0" />
                       <h3 className="text-lg font-bold text-zinc-800 line-clamp-1" title={property.name}>
                         {property.name}
                       </h3>
@@ -135,14 +133,14 @@ export function HighlightedProperties() {
 
                   <div className="mt-auto">
                     <CardFooter className="flex items-center justify-between border-t py-4 bg-gray-50/50">
-                      <span className="text-xl font-bold text-[#17375F]">
+                      <span className="text-xl font-bold text-(--primary-color,#17375F)">
                         {property.priceOnRequest
                           ? 'Sob consulta'
                           : property.pricePrefix
                             ? `Até ${property.value}${property.transactionType === 'ALUGUEL' ? '/mês' : ''}`
                             : `${property.value}${property.transactionType === 'ALUGUEL' ? '/mês' : ''}`}
                       </span>
-                      <Badge className={property.transactionType === 'ALUGUEL' ? 'bg-emerald-600 hover:bg-emerald-700' : 'bg-[#17375F] hover:bg-[#122b4a]'}>
+                      <Badge className={property.transactionType === 'ALUGUEL' ? 'bg-emerald-600 hover:bg-emerald-700' : 'bg-(--primary-color,#17375F) hover:bg-(--primary-color,#17375F)'}>
                         {property.transactionType === 'ALUGUEL' ? 'Aluguel' : 'Venda'}
                       </Badge>
                     </CardFooter>

@@ -30,8 +30,8 @@ const PropertyFeature = memo(function PropertyFeature({ icon: Icon, value, label
   return (
     <Tooltip>
       <TooltipTrigger asChild>
-        <div className="flex items-center gap-1 text-[#17375F] cursor-default bg-zinc-50 px-2 py-1 rounded-md border border-zinc-100 whitespace-nowrap">
-          <Icon size={16} className="text-[#17375F]" />
+        <div className="flex items-center gap-1 text-(--primary-color,#17375F) cursor-default bg-zinc-50 px-2 py-1 rounded-md border border-zinc-100 whitespace-nowrap">
+          <Icon size={16} className="text-(--primary-color,#17375F)" />
           <span className="font-bold text-xs">{value}{suffix}</span>
         </div>
       </TooltipTrigger>
@@ -40,10 +40,10 @@ const PropertyFeature = memo(function PropertyFeature({ icon: Icon, value, label
   )
 })
 
-export function RecentProperties() {
+export function RecentProperties({ agencyId }: { agencyId?: string }) {
   const { data, isLoading } = useQuery({
-    queryKey: ['recent-properties'],
-    queryFn: getRecentProperties,
+    queryKey: ['recent-properties', agencyId],
+    queryFn: () => getRecentProperties(agencyId),
   })
 
   return (
@@ -55,7 +55,7 @@ export function RecentProperties() {
 
         <div className="text-center mb-10 z-10">
           <h2 className="text-2xl font-normal text-black">Propriedades</h2>
-          <h2 className="text-2xl font-bold text-[#17375F]">Recentes</h2>
+          <h2 className="text-2xl font-bold text-(--primary-color,#17375F)">Recentes</h2>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-[1200px] z-10">
@@ -104,7 +104,7 @@ export function RecentProperties() {
                   applyWatermark={property.applyWatermark}
                 />
 
-                <Link href={`/imoveis/${property.slug}`} className="group-hover:text-[#17375F] transition-colors flex-1 flex flex-col">
+                <Link href={`/imoveis/${property.slug}`} className="group-hover:text-(--primary-color,#17375F) transition-colors flex-1 flex flex-col">
                   <CardHeader className="pb-2">
                     <h3 className="text-lg font-bold text-zinc-800 line-clamp-1" title={property.name}>
                       {property.name}
@@ -132,14 +132,14 @@ export function RecentProperties() {
 
                   <div className="mt-auto">
                     <CardFooter className="flex items-center justify-between border-t py-4 bg-gray-50/50">
-                      <span className="text-xl font-bold text-[#17375F]">
+                      <span className="text-xl font-bold text-(--primary-color,#17375F)">
                         {property.priceOnRequest
                           ? 'Sob consulta'
                           : property.pricePrefix
                             ? `Até ${property.value}${property.transactionType === 'ALUGUEL' ? '/mês' : ''}`
                             : `${property.value}${property.transactionType === 'ALUGUEL' ? '/mês' : ''}`}
                       </span>
-                      <Badge className={property.transactionType === 'ALUGUEL' ? 'bg-emerald-600 hover:bg-emerald-700' : 'bg-[#17375F] hover:bg-[#122b4a]'}>
+                      <Badge className={property.transactionType === 'ALUGUEL' ? 'bg-emerald-600 hover:bg-emerald-700' : 'bg-(--primary-color,#17375F) hover:bg-(--primary-color,#17375F)'}>
                         {property.transactionType === 'ALUGUEL' ? 'Aluguel' : 'Venda'}
                       </Badge>
                     </CardFooter>
@@ -152,7 +152,7 @@ export function RecentProperties() {
 
         {data && data.properties.length > 0 && (
           <Link href="/imoveis" className="mt-10">
-            <Button variant="outline" size="lg" className="bg-[#17375F] text-white hover:bg-[#17375F]/80 hover:text-white cursor-pointer ">
+            <Button variant="outline" size="lg" className="bg-(--primary-color,#17375F) text-white hover:bg-(--primary-color,#17375F)/80 hover:text-white cursor-pointer ">
               Ver todos os imóveis
             </Button>
           </Link>

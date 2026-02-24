@@ -1,4 +1,5 @@
 import { Metadata } from 'next'
+import { headers } from 'next/headers'
 import { HeroSection } from './_components/hero-section'
 import { HighlightedProperties } from '@/components/highlighted-properties'
 import { RecentProperties } from '@/components/recent-properties'
@@ -17,12 +18,15 @@ export const metadata: Metadata = {
   },
 }
 
-export default function Home() {
+export default async function Home() {
+  const agencyId =
+    (await headers()).get('x-tenant-id') ?? process.env.NEXT_PUBLIC_AGENCY_ID ?? ''
+
   return (
     <main className="flex flex-col min-h-screen">
       <HeroSection />
-      <HighlightedProperties />
-      <RecentProperties />
+      <HighlightedProperties agencyId={agencyId} />
+      <RecentProperties agencyId={agencyId} />
       <ContactSection />
       <Footer />
     </main>
