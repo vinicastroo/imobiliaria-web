@@ -10,7 +10,7 @@ export default async function Footer() {
   return (
     <footer className="flex flex-col">
       {/* Seção Principal */}
-      <div className="text-white py-10 px-4" style={{ backgroundColor: primaryColor }}>
+      <div className="text-white py-10 px-4" style={{ backgroundColor: secondaryColor, opacity: 0.98 }}>
         <div className="max-w-[1200px] mx-auto w-full flex flex-col md:flex-row items-center md:items-start justify-between gap-8 md:gap-4">
 
           {/* Coluna 1: Logo */}
@@ -35,8 +35,7 @@ export default async function Footer() {
               className="flex items-center gap-3 text-sm hover:text-gray-300 transition-colors"
             >
               <Phone size={18} className="shrink-0" />
-              {/* TODO: Inserir telefone da Gilli */}
-              <span>(XX) XXXXX-XXXX</span>
+              <span>(47) 99788-2496</span>
             </Link>
           </div>
 
@@ -69,11 +68,10 @@ export default async function Footer() {
       </div>
 
       {/* Faixa Inferior */}
-      <div className="text-white py-4 px-4 text-xs" style={{ backgroundColor: primaryColor, opacity: 0.95 }}>
+      <div className="text-white py-4 px-4 text-xs" style={{ backgroundColor: secondaryColor, }}>
         <div className="max-w-[1200px] mx-auto w-full flex flex-col md:flex-row items-center justify-between gap-2 text-center md:text-left">
           <p className="opacity-80">
-            {/* TODO: Inserir CRECI da Gilli */}
-            Imóveis Gilli - CRECI-XX XXXXX-X
+            Imóveis Gilli - CRECI 54 430 F
           </p>
 
           <Link

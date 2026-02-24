@@ -11,7 +11,7 @@ export interface VisualConfig {
 export const PLATFORM_DEFAULTS: VisualConfig = {
   logoUrl: null,
   primaryColor: '#EE9020',
-  secondaryColor: '#06060C',
+  secondaryColor: '#0F172A',
   fontFamily: 'Montserrat',
 }
 

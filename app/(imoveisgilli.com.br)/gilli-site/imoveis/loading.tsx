@@ -1,7 +1,7 @@
 export default function Loading() {
   return (
     <div className="min-h-screen bg-gray-50 font-sans">
-      <header className="flex justify-center items-center bg-[#17375F] w-full h-16">
+      <header className="flex justify-center items-center bg-[#EE9020] w-full h-16">
         <div className="w-full max-w-[1200px] mx-auto flex justify-between items-center px-4">
           <div className="w-24 h-8 rounded bg-white/20 animate-pulse" />
           <div className="hidden md:flex gap-6">
@@ -40,7 +40,7 @@ export default function Loading() {
               </div>
               <div className="border-t p-4 flex justify-between items-center mt-auto">
                 <div className="h-6 w-32 bg-gray-200 rounded animate-pulse" />
-                <div className="h-6 w-14 bg-[#17375F]/20 rounded animate-pulse" />
+                <div className="h-6 w-14 bg-[#EE9020]/20 rounded animate-pulse" />
               </div>
             </div>
           ))}

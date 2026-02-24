@@ -47,8 +47,8 @@ const PropertyFeature = ({ icon: Icon, value, label, suffix = "" }: PropertyFeat
   return (
     <Tooltip>
       <TooltipTrigger asChild>
-        <div className="flex items-center gap-1 text-[#17375F] cursor-default bg-zinc-50 px-2 py-1 rounded-md border border-zinc-100 whitespace-nowrap">
-          <Icon size={16} className="text-[#17375F]" />
+        <div className="flex items-center gap-1 text-(--primary-color,#17375F) cursor-default bg-zinc-50 px-2 py-1 rounded-md border border-zinc-100 whitespace-nowrap">
+          <Icon size={16} className="text-(--primary-color,#17375F)" />
           <span className="font-bold text-xs">{value}{suffix}</span>
         </div>
       </TooltipTrigger>
@@ -77,12 +77,12 @@ export function RecommendedCarousel({ properties }: { properties: RecommendedPro
     <TooltipProvider>
       <div className="space-y-6 py-8">
         <div className="flex items-center justify-between px-1">
-          <h2 className="text-xl font-bold text-[#17375F]">Imóveis Semelhantes em {properties[0].city}</h2>
+          <h2 className="text-xl font-bold text-(--primary-color,#17375F)">Imóveis Semelhantes em {properties[0].city}</h2>
           <div className="flex gap-2">
-            <Button variant="outline" size="icon" onClick={() => scroll('left')} className="h-8 w-8 rounded-full border-zinc-200 text-[#17375F] hover:bg-[#17375F] hover:text-white">
+            <Button variant="outline" size="icon" onClick={() => scroll('left')} className="h-8 w-8 rounded-full border-zinc-200 text-(--primary-color,#17375F) hover:bg-(--primary-color,#17375F) hover:text-white">
               <ChevronLeft className="h-4 w-4" />
             </Button>
-            <Button variant="outline" size="icon" onClick={() => scroll('right')} className="h-8 w-8 rounded-full border-zinc-200 text-[#17375F] hover:bg-[#17375F] hover:text-white">
+            <Button variant="outline" size="icon" onClick={() => scroll('right')} className="h-8 w-8 rounded-full border-zinc-200 text-(--primary-color,#17375F) hover:bg-(--primary-color,#17375F) hover:text-white">
               <ChevronRight className="h-4 w-4" />
             </Button>
           </div>
@@ -112,7 +112,7 @@ export function RecommendedCarousel({ properties }: { properties: RecommendedPro
               >
                 <Card className="h-full overflow-hidden hover:shadow-lg transition-all shadow-none duration-300 border-zinc-200 py-0 flex flex-col bg-white group">
 
-                  <Link href={`/imoveis/${property.slug}`} className="flex flex-col h-full hover:text-[#17375F] transition-colors">
+                  <Link href={`/imoveis/${property.slug}`} className="flex flex-col h-full hover:text-(--primary-color,#17375F) transition-colors">
 
                     {/* Imagem */}
                     <div className="relative h-[250px] w-full bg-gray-100 flex items-center justify-center overflow-hidden">
@@ -169,7 +169,7 @@ export function RecommendedCarousel({ properties }: { properties: RecommendedPro
 
                     <div className="mt-auto">
                       <CardFooter className="flex items-center justify-between border-t py-4 bg-gray-50/50">
-                        <span className="text-xl font-bold text-[#17375F]">
+                        <span className="text-xl font-bold text-(--primary-color,#17375F)">
                           {property.priceOnRequest
                             ? 'Sob consulta'
                             : property.pricePrefix
@@ -177,7 +177,7 @@ export function RecommendedCarousel({ properties }: { properties: RecommendedPro
                               : `${property.value}${property.transactionType === 'ALUGUEL' ? '/mês' : ''}`}
                         </span>
                         <div className="flex gap-2">
-                          <Badge className={property.transactionType === 'ALUGUEL' ? 'bg-emerald-600 hover:bg-emerald-700' : 'bg-[#17375F] hover:bg-[#122b4a]'}>
+                          <Badge className={property.transactionType === 'ALUGUEL' ? 'bg-emerald-600 hover:bg-emerald-700' : 'bg-(--primary-color,#17375F) hover:bg-(--primary-color,#17375F)'}>
                             {property.transactionType === 'ALUGUEL' ? 'Aluguel' : 'Venda'}
                           </Badge>
                         </div>

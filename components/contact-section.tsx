@@ -50,7 +50,7 @@ export function ContactSection() {
 
       <Card className="w-full max-w-[544px] z-10 shadow-xl bg-white/90 py-6 backdrop-blur-sm">
         <CardHeader>
-          <CardTitle className="text-center text-2xl text-[#17375F]">Entre em contato</CardTitle>
+          <CardTitle className="text-center text-2xl text-(--primary-color,#17375F)">Entre em contato</CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
@@ -80,7 +80,7 @@ export function ContactSection() {
               />
             </div>
 
-            <Button type="submit" className="w-full bg-[#17375F] hover:bg-[#122b4a]" disabled={isSubmitting}>
+            <Button type="submit" className="w-full bg-(--primary-color,#17375F) hover:bg-(--primary-color,#17375F)" disabled={isSubmitting}>
               {isSubmitting ? 'Enviando...' : 'Enviar Contato'}
             </Button>
           </form>

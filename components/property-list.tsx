@@ -163,13 +163,13 @@ export function PropertyList() {
             <Link href={`/imoveis/${property.slug}`} className="group flex flex-col flex-1">
               <div className="flex-1 flex flex-col p-4">
                 <div className="mb-4">
-                  <h3 className="font-bold text-gray-900 line-clamp-1 text-lg group-hover:text-[#17375F] transition-colors">{property.name}</h3>
+                  <h3 className="font-bold text-gray-900 line-clamp-1 text-lg group-hover:text-(--primary-color,#17375F) transition-colors">{property.name}</h3>
                   <p className="text-sm text-gray-500">{property.city} - {property.neighborhood}</p>
                   <p className="text-xs text-gray-400 mt-2 line-clamp-2">{property.summary}</p>
                 </div>
 
                 <div className="mt-auto">
-                  <p className="text-xs font-bold text-[#17375F] uppercase mb-2">Informações</p>
+                  <p className="text-xs font-bold text-(--primary-color,#17375F) uppercase mb-2">Informações</p>
                   <div className="flex flex-wrap gap-3">
                     <Feature icon={BedDouble} value={property.bedrooms} label="Quartos" />
                     <Feature icon={Bath} value={property.suites} label="Suítes" />
@@ -191,7 +191,7 @@ export function PropertyList() {
               </div>
 
               <div className="border-t p-4 flex justify-end bg-gray-50/50">
-                <span className="text-xl font-bold text-[#17375F]">
+                <span className="text-xl font-bold text-(--primary-color,#17375F)">
                   {property.priceOnRequest
                     ? 'Sob consulta'
                     : property.pricePrefix

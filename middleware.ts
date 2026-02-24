@@ -152,7 +152,7 @@ export async function middleware(req: NextRequest) {
   if (isLocalDev(hostname)) {
     const domainParam = req.nextUrl.searchParams.get('domain')
     const domainCookie = req.cookies.get('__dev_domain__')?.value
-    const effectiveDomain = domainParam ?? domainCookie
+    const effectiveDomain = domainParam ?? domainCookie ?? process.env.NEXT_PUBLIC_DEV_DOMAIN ?? null
 
     // If a domain is simulated (?domain= or cookie), resolve it via the backend
     // so tenant isolation works correctly for non-default tenants.
