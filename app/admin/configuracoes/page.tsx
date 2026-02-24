@@ -18,6 +18,7 @@ import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { BackLink } from '@/components/back-link'
+import { revalidateVisualConfig } from '@/app/actions/revalidate-visual-config'
 
 const FONT_OPTIONS = ['Montserrat', 'Inter', 'Roboto', 'Lato', 'Poppins', 'Raleway', 'Open Sans']
 
@@ -165,8 +166,9 @@ export default function ConfiguracoesPage() {
   const visualConfigMutation = useMutation({
     mutationFn: async () =>
       (await api.put('/visual-config', { primaryColor, secondaryColor, fontFamily })).data as VisualConfigData,
-    onSuccess: () => {
+    onSuccess: async () => {
       queryClient.invalidateQueries({ queryKey: ['visual-config'] })
+      await revalidateVisualConfig()
       toast.success('Aparência do site salva com sucesso!')
     },
     onError: () => toast.error('Erro ao salvar aparência do site.'),
@@ -179,8 +181,9 @@ export default function ConfiguracoesPage() {
       return (await api.put('/visual-config/icon', formData, { headers: { 'Content-Type': 'multipart/form-data' } }))
         .data as { logoUrl: string }
     },
-    onSuccess: () => {
+    onSuccess: async () => {
       queryClient.invalidateQueries({ queryKey: ['visual-config'] })
+      await revalidateVisualConfig()
       setIconFile(null)
       setIconPreview(null)
       toast.success('Ícone salvo com sucesso!')
