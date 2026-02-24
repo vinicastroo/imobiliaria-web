@@ -88,7 +88,7 @@ export default function AdminDashboard() {
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <main className="flex-1 w-full max-w-[1200px] mx-auto p-4 md:p-8">
         <div className="mb-8">
-          <h1 className="text-2xl font-bold text-[#17375F]">Bem-vindo ao sistema interno da Auros!</h1>
+          <h1 className="text-2xl font-bold text-[#17375F]">Bem-vindo ao sistema interno!</h1>
           <p className="text-gray-500">Gerencie seus clientes e leads aqui.</p>
         </div>
 
