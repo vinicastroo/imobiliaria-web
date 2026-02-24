@@ -1,6 +1,6 @@
 import { cache } from 'react'
 import { unstable_cache } from 'next/cache'
-import { cookies } from 'next/headers'
+import { headers } from 'next/headers'
 import api from 'services/api'
 
 export interface Property {
@@ -77,11 +77,9 @@ const getCachedProperty = unstable_cache(
   { revalidate: 300, tags: ['properties'] } // 5 minutos
 )
 
-// React cache(): deduplica chamadas com o mesmo slug no mesmo request
-// (ex: generateMetadata + page render chamam getProperty com o mesmo slug)
 export const getProperty = cache(async (slug: string) => {
   if (!slug) return undefined
-  const cookieStore = await cookies()
-  const agencyId = cookieStore.get('__tenant__')?.value ?? process.env.NEXT_PUBLIC_AGENCY_ID ?? ''
+  const agencyId =
+    (await headers()).get('x-tenant-id') ?? process.env.NEXT_PUBLIC_AGENCY_ID ?? ''
   return getCachedProperty(agencyId, slug)
 })

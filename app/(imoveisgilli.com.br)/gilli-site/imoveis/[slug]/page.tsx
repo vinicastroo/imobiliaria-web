@@ -199,8 +199,8 @@ const FeatureItem = ({ icon: Icon, value, label, suffix = "" }: FeatureItemProps
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
-          <div className="flex items-center gap-2 bg-[#17375F]/5 px-3 py-2 rounded-md">
-            <Icon size={24} className="text-[#17375F]" />
+          <div className="flex items-center gap-2 bg-[#EE9020]/5 px-3 py-2 rounded-md">
+            <Icon size={24} className="text-[#EE9020]" />
             <span className="text-lg font-bold text-gray-700">{value}{suffix}</span>
           </div>
         </TooltipTrigger>
@@ -260,7 +260,7 @@ export default async function PropertyPage({ params }: PageProps) {
 
                 {/* Cabeçalho */}
                 <div className="space-y-2 mb-6">
-                  <h1 className="text-3xl md:text-4xl font-bold text-[#17375F]">{property.name}</h1>
+                  <h1 className="text-3xl md:text-4xl font-bold text-[#EE9020]">{property.name}</h1>
                   <div className="flex items-center justify-between text-gray-500 gap-1 flex-wrap">
                     <div className='flex items-center gap-2'>
                       <MapPin size={18} />
@@ -273,7 +273,7 @@ export default async function PropertyPage({ params }: PageProps) {
                       )}
                     </div>
                     <div>
-                      <span className='text-xs bg-[#17375F] text-white px-4 py-1 rounded-full'>
+                      <span className='text-xs bg-[#EE9020] text-white px-4 py-1 rounded-full'>
                         Ref: {property.code || property.id.substring(0, 8).toUpperCase()}
                       </span>
                     </div>
@@ -284,7 +284,7 @@ export default async function PropertyPage({ params }: PageProps) {
 
                 {/* Features */}
                 <div>
-                  <h3 className="text-sm font-bold text-[#17375F] uppercase mb-4">Informações</h3>
+                  <h3 className="text-sm font-bold text-[#EE9020] uppercase mb-4">Informações</h3>
                   <div className="flex flex-wrap gap-4">
                     <FeatureItem icon={BedDouble} value={property.bedrooms} label="Quartos" />
                     <FeatureItem icon={Bath} value={property.suites} label="Suítes" />
@@ -299,8 +299,8 @@ export default async function PropertyPage({ params }: PageProps) {
 
                 {/* Descrição */}
                 <div className="space-y-4">
-                  <h3 className="text-sm font-bold text-[#17375F] uppercase">Sobre o imóvel</h3>
-                  <p className="text-gray-600 italic border-l-4 border-[#17375F] pl-4">
+                  <h3 className="text-sm font-bold text-[#EE9020] uppercase">Sobre o imóvel</h3>
+                  <p className="text-gray-600 italic border-l-4 border-[#EE9020] pl-4">
                     {property.summary}
                   </p>
 
@@ -311,7 +311,7 @@ export default async function PropertyPage({ params }: PageProps) {
                   <>
                     <Separator className='my-10' />
                     <div className="space-y-4">
-                      <h3 className="text-sm font-bold text-[#17375F] uppercase flex items-center gap-2">
+                      <h3 className="text-sm font-bold text-[#EE9020] uppercase flex items-center gap-2">
                         <MapPin size={18} />
                         Localização
                       </h3>
@@ -338,10 +338,10 @@ export default async function PropertyPage({ params }: PageProps) {
             <Card className="border-gray-200 shadow-sm sticky top-4">
               <CardContent className="p-6 space-y-6">
                 <div className="flex justify-between items-center border-b pb-4">
-                  <Badge variant="secondary" className={`text-lg px-4 py-1 ${property.transactionType === 'ALUGUEL' ? 'bg-emerald-100 text-emerald-700' : 'bg-[#17375F]/10 text-[#17375F]'}`}>
+                  <Badge variant="secondary" className={`text-lg px-4 py-1 ${property.transactionType === 'ALUGUEL' ? 'bg-emerald-100 text-emerald-700' : 'bg-[#EE9020]/10 text-[#EE9020]'}`}>
                     {property.transactionType === 'ALUGUEL' ? 'Aluguel' : 'Venda'}
                   </Badge>
-                  <span className="text-2xl font-bold text-[#17375F]">
+                  <span className="text-2xl font-bold text-[#EE9020]">
                     {property.priceOnRequest
                       ? 'Sob consulta'
                       : property.pricePrefix
