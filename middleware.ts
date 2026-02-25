@@ -48,6 +48,8 @@ function isPublicSitePage(pathname: string): boolean {
     !pathname.startsWith('/admin') &&
     !pathname.startsWith('/login') &&
     !pathname.startsWith('/api') &&
+    pathname !== '/sitemap.xml' &&
+    pathname !== '/robots.txt' &&
     !ALL_SITE_PREFIXES.some((prefix) => pathname.startsWith(prefix))
   )
 }
