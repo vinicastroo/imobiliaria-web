@@ -120,7 +120,6 @@ export async function middleware(req: NextRequest) {
     pathname.startsWith('/_next') ||
     pathname.startsWith('/monitoring') ||
     pathname === '/manifest.webmanifest' ||
-    pathname === '/sitemap.xml' ||
     /\.(ico|png|jpg|jpeg|svg|webp|avif|gif|css|js|map|woff2?|ttf|eot)$/.test(pathname)
   ) {
     return NextResponse.next()
