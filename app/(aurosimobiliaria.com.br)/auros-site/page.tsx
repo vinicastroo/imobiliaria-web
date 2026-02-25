@@ -1,9 +1,9 @@
 import { Metadata } from 'next'
 import { headers } from 'next/headers'
 import { HeroSection } from './_components/hero-section'
-import { HighlightedProperties } from '@/components/highlighted-properties'
-import { RecentProperties } from '@/components/recent-properties'
-import { ContactSection } from '@/components/contact-section'
+import { HighlightedPropertiesSection } from './_components/highlighted-properties-section'
+import { RecentPropertiesSection } from './_components/recent-properties-section'
+import { ContactSection } from './_components/contact-section'
 import Footer from './_components/footer'
 
 export const metadata: Metadata = {
@@ -25,8 +25,8 @@ export default async function Home() {
   return (
     <main className="flex flex-col min-h-screen">
       <HeroSection />
-      <HighlightedProperties agencyId={agencyId} />
-      <RecentProperties agencyId={agencyId} />
+      <HighlightedPropertiesSection agencyId={agencyId} />
+      <RecentPropertiesSection agencyId={agencyId} />
       <ContactSection />
       <Footer />
     </main>

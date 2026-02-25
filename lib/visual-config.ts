@@ -3,6 +3,7 @@ import { headers } from 'next/headers'
 
 export interface VisualConfig {
   logoUrl: string | null
+  iconUrl: string | null
   primaryColor: string
   secondaryColor: string
   fontFamily: string
@@ -10,6 +11,7 @@ export interface VisualConfig {
 
 export const PLATFORM_DEFAULTS: VisualConfig = {
   logoUrl: null,
+  iconUrl: null,
   primaryColor: '#EE9020',
   secondaryColor: '#0F172A',
   fontFamily: 'Montserrat',
@@ -56,6 +58,7 @@ export const getTenantVisualConfig = cache(async (): Promise<VisualConfig> => {
 
     return {
       logoUrl: data.logoUrl ?? null,
+      iconUrl: data.iconUrl ?? null,
       primaryColor: data.primaryColor ?? PLATFORM_DEFAULTS.primaryColor,
       secondaryColor: data.secondaryColor ?? PLATFORM_DEFAULTS.secondaryColor,
       fontFamily: SUPPORTED_FONTS[data.fontFamily ?? ''] !== undefined

@@ -31,7 +31,7 @@ export default async function Footer() {
               </p>
             </div>
             <Link
-              href="https://api.whatsapp.com/send?phone=55XXXXXXXXXXX&&text=Olá, vim pelo site"
+              href="https://wa.me/5547997882496"
               className="flex items-center gap-3 text-sm hover:text-gray-300 transition-colors"
             >
               <Phone size={18} className="shrink-0" />
@@ -45,16 +45,14 @@ export default async function Footer() {
               Contato
             </h3>
 
-            <Link href="https://www.instagram.com/imoveisgilli/" className="flex items-center gap-2 text-sm hover:text-gray-300 transition-colors">
+            <Link href="https://www.instagram.com/gilli_engenharia_e_imoveis/" className="flex items-center gap-2 text-sm hover:text-gray-300 transition-colors">
               <Instagram size={18} />
-              {/* TODO: Inserir @ do Instagram da Gilli */}
-              <span>@imoveisgilli</span>
+              <span>@gilli_engenharia_e_imoveis</span>
             </Link>
 
-            <Link href="https://api.whatsapp.com/send?phone=55XXXXXXXXXXX&&text=Olá" className="flex items-center gap-2 text-sm hover:text-gray-300 transition-colors">
+            <Link href="https://wa.me/5547997882496" className="flex items-center gap-2 text-sm hover:text-gray-300 transition-colors">
               <WhatsappLogo size={18} />
-              {/* TODO: Inserir número do WhatsApp da Gilli */}
-              <span>(XX) XXXXX-XXXX</span>
+              <span>(47) 99788-2496</span>
             </Link>
 
             <Link href="mailto:contato@imoveisgilli.com.br" className="flex items-center gap-2 text-sm hover:text-gray-300 transition-colors">
@@ -71,7 +69,7 @@ export default async function Footer() {
       <div className="text-white py-4 px-4 text-xs" style={{ backgroundColor: secondaryColor, }}>
         <div className="max-w-[1200px] mx-auto w-full flex flex-col md:flex-row items-center justify-between gap-2 text-center md:text-left">
           <p className="opacity-80">
-            Imóveis Gilli - CRECI 54 430 F
+            Imóveis Gilli - CRECI/SC 8982-J
           </p>
 
           <Link

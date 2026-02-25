@@ -1,6 +1,5 @@
 "use client"
 
-import Image from 'next/image'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -22,7 +21,7 @@ const contactSchema = z.object({
 
 type ContactFormData = z.infer<typeof contactSchema>
 
-export function ContactSection() {
+export function ContactForm() {
   const { register, handleSubmit, reset, formState: { isSubmitting } } = useForm<ContactFormData>({
     resolver: zodResolver(contactSchema),
   })
@@ -39,53 +38,55 @@ export function ContactSection() {
   }
 
   return (
+    <Card className="w-full max-w-[544px] z-10 shadow-xl bg-white/90 py-6 backdrop-blur-sm">
+      <CardHeader>
+        <CardTitle className="text-center text-2xl text-(--primary-color,#17375F)">Entre em contato</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
+          <div className="space-y-1">
+            <Label htmlFor="name">Nome</Label>
+            <Input id="name" {...register('name')} placeholder="Seu nome completo" />
+          </div>
+
+          <div className="space-y-1">
+            <Label htmlFor="email">Email</Label>
+            <Input id="email" type="email" {...register('email')} placeholder="seu@email.com" />
+          </div>
+
+          <div className="space-y-1">
+            <Label htmlFor="phone">Telefone</Label>
+            <Input id="phone" {...register('phone')} placeholder="(00) 00000-0000" />
+          </div>
+
+          <div className="space-y-1">
+            <Label htmlFor="description">Observação</Label>
+            <Textarea
+              id="description"
+              {...register('description')}
+              placeholder="Como podemos ajudar?"
+              className="min-h-[100px]"
+              maxLength={255}
+            />
+          </div>
+
+          <Button type="submit" className="w-full bg-(--primary-color,#17375F) hover:bg-(--primary-color,#17375F)" disabled={isSubmitting}>
+            {isSubmitting ? 'Enviando...' : 'Enviar Contato'}
+          </Button>
+        </form>
+      </CardContent>
+    </Card>
+  )
+}
+
+// Wrapper padrão — mantém compatibilidade com usos existentes
+export function ContactSection() {
+  return (
     <section
       id="contact"
       className="relative w-full min-h-[600px] flex flex-col items-center justify-center p-4 bg-gradient-to-b from-[#fafafa] to-[#D0DEF8] overflow-hidden"
     >
-      {/* Background City Image */}
-      <div className="absolute bottom-0 w-full flex justify-center opacity-80 pointer-events-none">
-        <Image src="/city-background.svg" alt="Cidade" className="w-auto h-[300px] md:h-[450px]" width={300} height={300} />
-      </div>
-
-      <Card className="w-full max-w-[544px] z-10 shadow-xl bg-white/90 py-6 backdrop-blur-sm">
-        <CardHeader>
-          <CardTitle className="text-center text-2xl text-(--primary-color,#17375F)">Entre em contato</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
-            <div className="space-y-1">
-              <Label htmlFor="name">Nome</Label>
-              <Input id="name" {...register('name')} placeholder="Seu nome completo" />
-            </div>
-
-            <div className="space-y-1">
-              <Label htmlFor="email">Email</Label>
-              <Input id="email" type="email" {...register('email')} placeholder="seu@email.com" />
-            </div>
-
-            <div className="space-y-1">
-              <Label htmlFor="phone">Telefone</Label>
-              <Input id="phone" {...register('phone')} placeholder="(00) 00000-0000" />
-            </div>
-
-            <div className="space-y-1">
-              <Label htmlFor="description">Observação</Label>
-              <Textarea
-                id="description"
-                {...register('description')}
-                placeholder="Como podemos ajudar?"
-                className="min-h-[100px]"
-                maxLength={255}
-              />
-            </div>
-
-            <Button type="submit" className="w-full bg-(--primary-color,#17375F) hover:bg-(--primary-color,#17375F)" disabled={isSubmitting}>
-              {isSubmitting ? 'Enviando...' : 'Enviar Contato'}
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
+      <ContactForm />
     </section>
   )
 }
