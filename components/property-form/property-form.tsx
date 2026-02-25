@@ -422,37 +422,43 @@ export function PropertyForm({ mode, propertyId, defaultValues }: PropertyFormPr
                       <Label className="flex items-center gap-1">
                         <Bed size={14} /> Quartos
                       </Label>
-                      <Input type="number" {...register('bedrooms')} />
+                      <Input type="number" min={0} {...register('bedrooms')} />
+                      {errors.bedrooms && <span className="text-xs text-red-500">{errors.bedrooms.message}</span>}
                     </div>
                     <div className="space-y-1">
                       <Label className="flex items-center gap-1">
                         <Bath size={14} /> Banheiros
                       </Label>
-                      <Input type="number" {...register('bathrooms')} />
+                      <Input type="number" min={0} {...register('bathrooms')} />
+                      {errors.bathrooms && <span className="text-xs text-red-500">{errors.bathrooms.message}</span>}
                     </div>
                     <div className="space-y-1">
                       <Label className="flex items-center gap-1">
                         <Bath size={14} /> Suítes
                       </Label>
-                      <Input type="number" {...register('suites')} />
+                      <Input type="number" min={0} {...register('suites')} />
+                      {errors.suites && <span className="text-xs text-red-500">{errors.suites.message}</span>}
                     </div>
                     <div className="space-y-1">
                       <Label className="flex items-center gap-1">
                         <CarFront size={14} /> Vagas
                       </Label>
-                      <Input type="number" {...register('parkingSpots')} />
+                      <Input type="number" min={0} {...register('parkingSpots')} />
+                      {errors.parkingSpots && <span className="text-xs text-red-500">{errors.parkingSpots.message}</span>}
                     </div>
                     <div className="space-y-1">
                       <Label className="flex items-center gap-1">
                         <Ruler size={14} /> Área Total
                       </Label>
-                      <Input type="number" {...register('totalArea')} />
+                      <Input type="number" min={0} {...register('totalArea')} />
+                      {errors.totalArea && <span className="text-xs text-red-500">{errors.totalArea.message}</span>}
                     </div>
                     <div className="space-y-1">
                       <Label className="flex items-center gap-1">
                         <Ruler size={14} /> Área Priv.
                       </Label>
-                      <Input type="number" {...register('privateArea')} />
+                      <Input type="number" min={0} {...register('privateArea')} />
+                      {errors.privateArea && <span className="text-xs text-red-500">{errors.privateArea.message}</span>}
                     </div>
                   </CardContent>
                 </Card>

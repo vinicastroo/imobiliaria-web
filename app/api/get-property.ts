@@ -48,6 +48,12 @@ export interface Property {
     path: string
     fileName: string
   }[]
+  property_infrastructures: {
+    infrastructure: {
+      id: string
+      name: string
+    }
+  }[]
 }
 
 // unstable_cache: cache persistente entre requests (revalida a cada 5min)

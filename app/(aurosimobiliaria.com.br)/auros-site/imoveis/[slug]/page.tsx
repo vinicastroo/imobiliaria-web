@@ -295,6 +295,22 @@ export default async function PropertyPage({ params }: PageProps) {
                   </div>
                 </div>
 
+                {property.property_infrastructures?.length > 0 && (
+                  <>
+                    <Separator className="my-6" />
+                    <div>
+                      <h3 className="text-sm font-bold text-[#17375F] uppercase mb-4">Infraestrutura</h3>
+                      <div className="flex flex-wrap gap-2">
+                        {property.property_infrastructures.map(({ infrastructure }) => (
+                          <Badge key={infrastructure.id} variant="secondary" className="text-xs px-3 py-1">
+                            {infrastructure.name}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+                  </>
+                )}
+
                 <Separator className="my-6" />
 
                 {/* Descrição */}
