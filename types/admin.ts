@@ -25,6 +25,7 @@ export interface AdminAgency {
   customDomain: string | null
   cnpj: string | null
   active: boolean
+  siteEnabled: boolean
   createdAt: string
   owner: AdminAgencyOwner | null
   subscription: {

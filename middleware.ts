@@ -18,9 +18,10 @@ const CUSTOM_SITE_PREFIXES: Record<string, string> = {
 const ALL_SITE_PREFIXES = [...Object.values(CUSTOM_SITE_PREFIXES), '/generic-site']
 
 interface TenantContext {
-  id:   string
-  slug: string
-  name: string
+  id:          string
+  slug:        string
+  name:        string
+  siteEnabled: boolean
 }
 
 async function fetchTenant(hostname: string): Promise<TenantContext | null> {
@@ -200,6 +201,11 @@ export async function middleware(req: NextRequest) {
   requestHeaders.set('x-tenant-slug', tenant.slug)
 
   if (isPublicSitePage(pathname)) {
+    if (!tenant.siteEnabled && pathname !== '/site-desativado') {
+      const maintenanceUrl = new URL('/site-desativado', req.url)
+      return NextResponse.rewrite(maintenanceUrl, { request: { headers: requestHeaders } })
+    }
+
     const prefix = getSitePrefix(hostname)
     const rewriteUrl = new URL(prefix + (pathname === '/' ? '' : pathname), req.url)
     const response = await applyAuthRules(

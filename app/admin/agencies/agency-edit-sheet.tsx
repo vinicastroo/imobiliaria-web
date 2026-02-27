@@ -6,7 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
-import { Loader2, Eye, EyeOff } from 'lucide-react'
+import { Loader2, Eye, EyeOff, Globe } from 'lucide-react'
 
 import api from '@/services/api'
 
@@ -30,6 +30,7 @@ import {
 import { Separator } from '@/components/ui/separator'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Badge } from '@/components/ui/badge'
+import { Switch } from '@/components/ui/switch'
 
 import type { AdminAgency, AdminPlan } from '@/types/admin'
 
@@ -102,6 +103,7 @@ interface AgencyEditSheetProps {
 export function AgencyEditSheet({ open, onOpenChange, agency }: AgencyEditSheetProps) {
   const queryClient = useQueryClient()
   const [showPassword, setShowPassword] = useState(false)
+  const [siteEnabled, setSiteEnabled] = useState(true)
 
   const {
     register: registerAgency,
@@ -142,6 +144,7 @@ export function AgencyEditSheet({ open, onOpenChange, agency }: AgencyEditSheetP
 
   useEffect(() => {
     if (open && agency) {
+      setSiteEnabled(agency.siteEnabled)
       resetAgency({
         name: agency.name,
         slug: agency.slug ?? '',
@@ -213,6 +216,17 @@ export function AgencyEditSheet({ open, onOpenChange, agency }: AgencyEditSheetP
         status: data.status,
       })
     },
+  })
+
+  const siteEnabledMutation = useMutation({
+    mutationFn: async (value: boolean) =>
+      (await api.patch(`/admin/agencies/${agency?.id}/site-enabled`, { siteEnabled: value })).data,
+    onSuccess: (data: { siteEnabled: boolean }) => {
+      setSiteEnabled(data.siteEnabled)
+      queryClient.invalidateQueries({ queryKey: ['admin-agencies'] })
+      toast.success(data.siteEnabled ? 'Site ativado.' : 'Site desativado.')
+    },
+    onError: () => toast.error('Erro ao alterar status do site.'),
   })
 
   async function onSave(
@@ -329,6 +343,23 @@ export function AgencyEditSheet({ open, onOpenChange, agency }: AgencyEditSheetP
                 <span className="text-xs text-red-500">{agencyErrors.cnpj.message}</span>
               )}
             </div>
+          </div>
+
+          <div className="flex items-center justify-between rounded-lg border p-3">
+            <div className="flex items-center gap-2">
+              <Globe className="h-4 w-4 text-muted-foreground" />
+              <div>
+                <p className="text-sm font-medium">Site público</p>
+                <p className="text-xs text-muted-foreground">
+                  {siteEnabled ? 'Site ativo para visitantes' : 'Site desativado (modo de implementação)'}
+                </p>
+              </div>
+            </div>
+            <Switch
+              checked={siteEnabled}
+              disabled={siteEnabledMutation.isPending}
+              onCheckedChange={(value) => siteEnabledMutation.mutate(value)}
+            />
           </div>
 
           <Separator />

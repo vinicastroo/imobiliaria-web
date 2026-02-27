@@ -251,6 +251,7 @@ export function PropertyForm({ mode, propertyId, defaultValues }: PropertyFormPr
                       <div className="space-y-2">
                         <Label>Tipo</Label>
                         <Select
+                          key={`type-select-${types.length}`}
                           onValueChange={(val) => setValue('type_id', val, { shouldDirty: true })}
                           value={watch('type_id') || undefined}
                         >

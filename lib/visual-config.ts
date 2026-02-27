@@ -7,6 +7,7 @@ export interface VisualConfig {
   primaryColor: string
   secondaryColor: string
   fontFamily: string
+  siteEnabled: boolean
 }
 
 export const PLATFORM_DEFAULTS: VisualConfig = {
@@ -15,6 +16,7 @@ export const PLATFORM_DEFAULTS: VisualConfig = {
   primaryColor: '#EE9020',
   secondaryColor: '#0F172A',
   fontFamily: 'Montserrat',
+  siteEnabled: true,
 }
 
 /** 
@@ -38,8 +40,32 @@ export const SUPPORTED_FONTS: Record<string, string> = {
  * in the same request without extra DB/network hits.
  * Falls back to PLATFORM_DEFAULTS on any error or missing tenant.
  */
+async function resolveTenantId(): Promise<string | null> {
+  const headerStore = await headers()
+
+  const tenantId = headerStore.get('x-tenant-id')
+  if (tenantId) return tenantId
+
+  // Fallback: resolve via hostname when middleware didn't inject the header
+  const host = headerStore.get('host')
+  if (!host) return null
+
+  try {
+    const hostname = host.split(':')[0]
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/resolve-tenant?hostname=${encodeURIComponent(hostname)}`,
+      { next: { revalidate: 300, tags: ['tenant'] } },
+    )
+    if (!res.ok) return null
+    const tenant = (await res.json()) as { id: string }
+    return tenant.id
+  } catch {
+    return null
+  }
+}
+
 export const getTenantVisualConfig = cache(async (): Promise<VisualConfig> => {
-  const tenantId = (await headers()).get('x-tenant-id')
+  const tenantId = await resolveTenantId()
 
   if (!tenantId) return PLATFORM_DEFAULTS
 
@@ -64,6 +90,7 @@ export const getTenantVisualConfig = cache(async (): Promise<VisualConfig> => {
       fontFamily: SUPPORTED_FONTS[data.fontFamily ?? ''] !== undefined
         ? (data.fontFamily ?? PLATFORM_DEFAULTS.fontFamily)
         : PLATFORM_DEFAULTS.fontFamily,
+      siteEnabled: data.siteEnabled ?? true,
     }
   } catch {
     return PLATFORM_DEFAULTS

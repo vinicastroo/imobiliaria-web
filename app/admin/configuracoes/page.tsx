@@ -52,6 +52,7 @@ interface VisualConfigData {
   primaryColor: string
   secondaryColor: string
   fontFamily: string
+  siteEnabled: boolean
 }
 
 const agencyInfoSchema = z.object({
