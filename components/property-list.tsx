@@ -156,7 +156,6 @@ export function PropertyList() {
               path={`/imoveis/${property.slug}`}
               propertyName={property.name}
               isRecentProperty
-              applyWatermark={property.applyWatermark}
             />
 
             {/* Conteúdo */}

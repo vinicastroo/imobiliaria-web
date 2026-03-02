@@ -248,7 +248,6 @@ export default async function PropertyPage({ params }: PageProps) {
             fileName: file.fileName
           }))}
           propertyName={property.name}
-          applyWatermark={property.applyWatermark}
         />
 
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8">

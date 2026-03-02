@@ -555,6 +555,8 @@ export function PropertyForm({ mode, propertyId, defaultValues }: PropertyFormPr
                   onImagesChange={setImages}
                   onDeleteExisting={handleDeleteExisting}
                   onSetThumb={handleSetThumb}
+                  applyWatermark={watch('applyWatermark')}
+                  watermarkUrl={watermarkUrl}
                 />
               </CardContent>
             </Card>

@@ -33,6 +33,8 @@ interface ImageUploaderProps {
   onImagesChange: (images: ImageItem[]) => void
   onDeleteExisting?: (fileName: string) => Promise<void>
   onSetThumb?: (fileId: string) => Promise<void>
+  applyWatermark?: boolean
+  watermarkUrl?: string | null
 }
 
 function getImageId(item: ImageItem) {
@@ -187,6 +189,8 @@ export function ImageUploader({
   onImagesChange,
   onDeleteExisting,
   onSetThumb,
+  applyWatermark,
+  watermarkUrl,
 }: ImageUploaderProps) {
   const {
     isOpen,
@@ -315,6 +319,8 @@ export function ImageUploader({
         onConfirm={confirmCrop}
         onSkip={skipCrop}
         onDismiss={dismissCrop}
+        applyWatermark={applyWatermark}
+        watermarkUrl={watermarkUrl}
       />
     </div>
   )
