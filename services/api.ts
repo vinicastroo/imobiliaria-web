@@ -7,6 +7,30 @@ const api = axios.create({
   baseURL,
 })
 
+// Cache em memória — reseta a cada refresh/navegação, nunca persiste valor de outra sessão
+let cachedTenantId: string | null = null
+
+async function resolveTenantId(): Promise<string> {
+  if (cachedTenantId) {
+    console.log('[api] tenantId (cache memória):', cachedTenantId)
+    return cachedTenantId
+  }
+
+  try {
+    const res = await fetch('/api/tenant')
+    const data = await res.json() as { tenantId: string | null }
+    console.log('[api] /api/tenant response:', { status: res.status, ok: res.ok, data })
+    if (res.ok && data.tenantId) {
+      cachedTenantId = data.tenantId
+      return cachedTenantId
+    }
+  } catch (err) {
+    console.error('[api] falha ao buscar /api/tenant:', err)
+  }
+
+  return ''
+}
+
 api.interceptors.request.use(async (config) => {
   if (typeof window !== 'undefined') {
     const session = await getSession()
@@ -21,32 +45,9 @@ api.interceptors.request.use(async (config) => {
         delete config.headers['x-agency-id']
       }
     } else if (!config.headers['x-agency-id']) {
-      // Public page (no session) and no explicit per-request agency ID:
-      // try __tenant__ cookie first, fall back to fetching /api/tenant, then env var
-      const match = document.cookie.match(/(?:^|;\s*)__tenant__=([^;]*)/)
-      let tenantId = match ? decodeURIComponent(match[1]) : null
-
-      console.log('[api] cookie __tenant__:', tenantId, '| all cookies:', document.cookie)
-
-      if (!tenantId) {
-        try {
-          const res = await fetch('/api/tenant')
-          const data = await res.json() as { tenantId: string | null }
-          console.log('[api] /api/tenant response:', { status: res.status, ok: res.ok, data })
-          if (res.ok) {
-            tenantId = data.tenantId
-            if (tenantId) {
-              document.cookie = `__tenant__=${encodeURIComponent(tenantId)}; path=/; samesite=lax`
-            }
-          }
-        } catch (err) {
-          console.error('[api] falha ao buscar /api/tenant:', err)
-          // network error — fall through to env var
-        }
-      }
-
-      config.headers['x-agency-id'] = tenantId ?? ''
-      console.log('[api] x-agency-id final:', config.headers['x-agency-id'], '| url:', config.url)
+      const tenantId = await resolveTenantId()
+      config.headers['x-agency-id'] = tenantId
+      console.log('[api] x-agency-id final:', tenantId, '| url:', config.url)
     }
   }
 
