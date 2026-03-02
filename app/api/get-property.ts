@@ -58,7 +58,7 @@ export interface Property {
 
 // unstable_cache: cache persistente entre requests (revalida a cada 5min)
 // agencyId is included as a parameter so Next.js scopes the cache per tenant
-// Key bumped to 'property-v2' to bust any stale undefined entries from previous deploys
+// Key bumped to 'property-v3' to bust stale null entries from previous deploys
 const getCachedProperty = unstable_cache(
   async (agencyId: string, slug: string) => {
     try {
@@ -85,7 +85,7 @@ const getCachedProperty = unstable_cache(
       throw error
     }
   },
-  ['property-v2'],
+  ['property-v3'],
   { revalidate: 300, tags: ['properties'] } // 5 minutos
 )
 
