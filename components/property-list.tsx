@@ -69,10 +69,13 @@ export function PropertyList() {
     privateArea: searchParams.get('areaTerreno'),
   }
 
-  const { data: result, isLoading } = useQuery({
+  const { data: result, isLoading, isError, error, status, fetchStatus } = useQuery({
     queryKey: ['properties', page, ...Object.values(filters)],
     queryFn: () => getProperties({ page, ...filters }),
   })
+
+  console.log('[PropertyList] query state:', { status, fetchStatus, isLoading, isError, error, page, filters })
+  console.log('[PropertyList] result:', { properties: result?.properties?.length, totalCount: result?.totalCount, totalPages: result?.totalPages })
 
   // CORREÇÃO 1: Usar totalPages direto da API (sem dividir novamente)
   const totalPages = result?.totalPages || 1

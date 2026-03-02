@@ -1,3 +1,4 @@
+import type { AxiosResponse } from 'axios'
 import api from 'services/api'
 
 export interface Properties {
@@ -72,22 +73,38 @@ export async function getProperties({
   type,
   page,
 }: GetPropertiesProps) {
-  const response = await api.get<GetPropertiesResponse>('/imovel', {
-    params: {
-      bathrooms,
-      bedrooms,
-      city,
-      neighborhood,
-      parkingSpots,
-      privateArea,
-      suites,
-      totalArea,
-      type_property: type,
-      page,
-      pageSize: 12,
-      visible: true,
-    },
-  })
+  const params = {
+    bathrooms,
+    bedrooms,
+    city,
+    neighborhood,
+    parkingSpots,
+    privateArea,
+    suites,
+    totalArea,
+    type_property: type,
+    page,
+    pageSize: 12,
+    visible: true,
+  }
+
+  console.log('[getProperties] iniciando fetch | params:', params)
+
+  let response: AxiosResponse<GetPropertiesResponse>
+  try {
+    response = await api.get<GetPropertiesResponse>('/imovel', { params })
+  } catch (err) {
+    console.error('[getProperties] erro no fetch:', err)
+    throw err
+  }
+
+  console.log('[getProperties] resposta bruta | status:', response.status, '| totalCount:', response.data.totalCount, '| totalPages:', response.data.totalPages, '| properties.length:', response.data.properties?.length)
+
+  if (!response.data.properties) {
+    console.warn('[getProperties] campo "properties" ausente na resposta:', response.data)
+    return { properties: [], totalPages: 1, totalCount: 0 }
+  }
+
   let formattedData: Properties[] = []
   if (response.data.properties.length > 0) {
     formattedData = response.data.properties.map((property) => {
@@ -102,7 +119,11 @@ export async function getProperties({
         files: newPathsFiles,
       }
     })
+  } else {
+    console.warn('[getProperties] API retornou 0 imóveis | params enviados:', params)
   }
+
+  console.log('[getProperties] formattedData.length:', formattedData.length)
 
   return {
     properties: formattedData,

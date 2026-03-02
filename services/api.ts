@@ -26,22 +26,27 @@ api.interceptors.request.use(async (config) => {
       const match = document.cookie.match(/(?:^|;\s*)__tenant__=([^;]*)/)
       let tenantId = match ? decodeURIComponent(match[1]) : null
 
+      console.log('[api] cookie __tenant__:', tenantId, '| all cookies:', document.cookie)
+
       if (!tenantId) {
         try {
           const res = await fetch('/api/tenant')
+          const data = await res.json() as { tenantId: string | null }
+          console.log('[api] /api/tenant response:', { status: res.status, ok: res.ok, data })
           if (res.ok) {
-            const data = await res.json() as { tenantId: string | null }
             tenantId = data.tenantId
             if (tenantId) {
               document.cookie = `__tenant__=${encodeURIComponent(tenantId)}; path=/; samesite=lax`
             }
           }
-        } catch {
+        } catch (err) {
+          console.error('[api] falha ao buscar /api/tenant:', err)
           // network error — fall through to env var
         }
       }
 
       config.headers['x-agency-id'] = tenantId ?? ''
+      console.log('[api] x-agency-id final:', config.headers['x-agency-id'], '| url:', config.url)
     }
   }
 
@@ -49,5 +54,21 @@ api.interceptors.request.use(async (config) => {
 }, (error) => {
   return Promise.reject(error)
 })
+
+api.interceptors.response.use(
+  (response) => {
+    console.log('[api] resposta:', response.config.url, '| status:', response.status, '| x-agency-id enviado:', response.config.headers?.['x-agency-id'])
+    return response
+  },
+  (error) => {
+    console.error('[api] erro na resposta:', {
+      url: error.config?.url,
+      status: error.response?.status,
+      data: error.response?.data,
+      'x-agency-id': error.config?.headers?.['x-agency-id'],
+    })
+    return Promise.reject(error)
+  }
+)
 
 export default api
