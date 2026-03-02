@@ -26,8 +26,7 @@ export default async function Footer() {
             <div className="flex items-start gap-2 text-sm">
               <MapPin size={18} className="shrink-0 mt-0.5" />
               <p className="max-w-[200px]">
-                {/* TODO: Inserir endereço da Gilli */}
-                Endereço - Cidade - Estado
+                SC-350, N° 377, Aurora - SC, 89186-000
               </p>
             </div>
             <Link
