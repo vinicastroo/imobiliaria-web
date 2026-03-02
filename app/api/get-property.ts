@@ -61,7 +61,19 @@ export interface Property {
 // Key bumped to 'property-v3' to bust stale null entries from previous deploys
 const getCachedProperty = unstable_cache(
   async (agencyId: string, slug: string) => {
-    console.log('[getCachedProperty] CACHE MISS — chamando API | agencyId:', agencyId, '| slug:', slug)
+    const baseURL = process.env.NEXT_PUBLIC_API_URL || 'https://imobiliaria-api.vercel.app'
+    console.log('[getCachedProperty] CACHE MISS — chamando API | agencyId:', agencyId || '(vazio!)', '| slug:', slug, '| url:', `${baseURL}/imovel/slug/${slug}`)
+
+    // Diagnóstico extra: raw fetch para comparar com axios
+    try {
+      const rawRes = await fetch(`${baseURL}/imovel/slug/${encodeURIComponent(slug)}`, {
+        headers: { 'x-agency-id': agencyId },
+      })
+      console.log('[getCachedProperty] raw fetch status:', rawRes.status, '| slug:', slug, '| agencyId:', agencyId || '(vazio!)')
+    } catch (fetchErr) {
+      console.error('[getCachedProperty] raw fetch falhou:', fetchErr)
+    }
+
     try {
       const response = await api.get<Property>(`/imovel/slug/${slug}`, {
         headers: { 'x-agency-id': agencyId },
@@ -85,11 +97,9 @@ const getCachedProperty = unstable_cache(
       return { ...data, items }
     } catch (error) {
       const status = isAxiosError(error) ? error.response?.status : 'unknown'
-      console.error('[getCachedProperty] erro | agencyId:', agencyId || '(vazio!)', '| slug:', slug, '| status:', status)
-      // Nunca retornar null aqui — throw garante que o unstable_cache NÃO armazena
-      // o resultado, permitindo retry na próxima requisição.
-      // Retornar null cachearia o "not found" permanentemente até o TTL expirar,
-      // quebrando imóveis que existem mas tiveram 404 transitório (agencyId errado, etc).
+      const responseBody = isAxiosError(error) ? JSON.stringify(error.response?.data) : null
+      const baseURL = process.env.NEXT_PUBLIC_API_URL || 'https://imobiliaria-api.vercel.app'
+      console.error('[getCachedProperty] erro | agencyId:', agencyId || '(vazio!)', '| slug:', slug, '| status:', status, '| body:', responseBody, '| url completa:', `${baseURL}/imovel/slug/${slug}`)
       throw error
     }
   },
