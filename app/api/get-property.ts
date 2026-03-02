@@ -84,18 +84,17 @@ const getCachedProperty = unstable_cache(
 
       return { ...data, items }
     } catch (error) {
-      if (isAxiosError(error) && error.response?.status === 404) {
-        // Cuidado: esse null fica cacheado por 5min — se agencyId estava errado aqui,
-        // requisições subsequentes com o agencyId correto usarão cache diferente (ok),
-        // mas um agencyId vazio/errado persistirá como null por 5min
-        console.error('[getCachedProperty] 404 da API — cacheando null | agencyId:', agencyId, '| slug:', slug, '| url chamada:', `/imovel/slug/${slug}`, '| agency-id header enviado:', agencyId || '(vazio!)')
-        return null
-      }
-      console.error('[getCachedProperty] erro não-404 | agencyId:', agencyId, '| slug:', slug, '| status:', isAxiosError(error) ? error.response?.status : 'unknown', '| message:', isAxiosError(error) ? error.message : String(error))
+      const status = isAxiosError(error) ? error.response?.status : 'unknown'
+      console.error('[getCachedProperty] erro | agencyId:', agencyId || '(vazio!)', '| slug:', slug, '| status:', status)
+      // Nunca retornar null aqui — throw garante que o unstable_cache NÃO armazena
+      // o resultado, permitindo retry na próxima requisição.
+      // Retornar null cachearia o "not found" permanentemente até o TTL expirar,
+      // quebrando imóveis que existem mas tiveram 404 transitório (agencyId errado, etc).
       throw error
     }
   },
-  ['property-v3'],
+  // Key bumped to 'property-v4' to bust stale null entries cached by previous versions
+  ['property-v4'],
   { revalidate: 300, tags: ['properties'] } // 5 minutos
 )
 
