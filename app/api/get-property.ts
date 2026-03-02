@@ -61,13 +61,19 @@ export interface Property {
 // Key bumped to 'property-v3' to bust stale null entries from previous deploys
 const getCachedProperty = unstable_cache(
   async (agencyId: string, slug: string) => {
+    console.log('[getCachedProperty] CACHE MISS — chamando API | agencyId:', agencyId, '| slug:', slug)
     try {
       const response = await api.get<Property>(`/imovel/slug/${slug}`, {
         headers: { 'x-agency-id': agencyId },
       })
       const data = response.data
 
-      if (!data) return null
+      console.log('[getCachedProperty] API ok | slug:', slug, '| property.id:', data?.id, '| property.name:', data?.name)
+
+      if (!data) {
+        console.warn('[getCachedProperty] API retornou status 200 mas body vazio | slug:', slug)
+        return null
+      }
 
       const baseUrl = `https://d2wss3tmei5yh1.cloudfront.net`
       const items = data.files.length > 0
@@ -78,10 +84,14 @@ const getCachedProperty = unstable_cache(
 
       return { ...data, items }
     } catch (error) {
-      // Genuine "not found" — cache the null so we don't hammer the API
-      if (isAxiosError(error) && error.response?.status === 404) return null
-      // Transient error (network, 5xx) — do NOT cache, allow retry on next request
-      console.error('[getProperty] API error:', { agencyId, slug, status: isAxiosError(error) ? error.response?.status : 'unknown' })
+      if (isAxiosError(error) && error.response?.status === 404) {
+        // Cuidado: esse null fica cacheado por 5min — se agencyId estava errado aqui,
+        // requisições subsequentes com o agencyId correto usarão cache diferente (ok),
+        // mas um agencyId vazio/errado persistirá como null por 5min
+        console.error('[getCachedProperty] 404 da API — cacheando null | agencyId:', agencyId, '| slug:', slug, '| url chamada:', `/imovel/slug/${slug}`, '| agency-id header enviado:', agencyId || '(vazio!)')
+        return null
+      }
+      console.error('[getCachedProperty] erro não-404 | agencyId:', agencyId, '| slug:', slug, '| status:', isAxiosError(error) ? error.response?.status : 'unknown', '| message:', isAxiosError(error) ? error.message : String(error))
       throw error
     }
   },
@@ -90,13 +100,28 @@ const getCachedProperty = unstable_cache(
 )
 
 export const getProperty = cache(async (slug: string) => {
-  if (!slug) return undefined
-  const agencyId =
-    (await headers()).get('x-tenant-id') ?? process.env.NEXT_PUBLIC_AGENCY_ID ?? ''
+  if (!slug) {
+    console.warn('[getProperty] slug vazio ou undefined')
+    return undefined
+  }
+
+  const headersList = await headers()
+  const agencyId = headersList.get('x-tenant-id') ?? process.env.NEXT_PUBLIC_AGENCY_ID ?? ''
+
+  console.log('[getProperty] slug:', slug, '| agencyId resolvido:', agencyId || '(vazio!)', '| x-tenant-id header:', headersList.get('x-tenant-id'), '| NEXT_PUBLIC_AGENCY_ID:', process.env.NEXT_PUBLIC_AGENCY_ID)
+
   try {
     const result = await getCachedProperty(agencyId, slug)
+
+    if (result === null) {
+      console.error('[getProperty] resultado null (404 cacheado ou property não existe) | slug:', slug, '| agencyId:', agencyId)
+    } else {
+      console.log('[getProperty] property encontrada | slug:', slug, '| id:', result.id)
+    }
+
     return result ?? undefined
-  } catch {
+  } catch (err) {
+    console.error('[getProperty] exceção capturada | slug:', slug, '| agencyId:', agencyId, '| erro:', err)
     return undefined
   }
 })
