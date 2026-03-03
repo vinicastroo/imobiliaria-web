@@ -40,7 +40,7 @@ export async function applyWatermarkToBlob(imageBlob: Blob, watermarkUrl: string
     const x = (canvas.width - wmW) / 2
     const y = (canvas.height - wmH) / 2
 
-    ctx.globalAlpha = 0.65
+    ctx.globalAlpha = 0.3
     ctx.drawImage(watermark, x, y, wmW, wmH)
     ctx.globalAlpha = 1
 

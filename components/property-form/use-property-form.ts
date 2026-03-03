@@ -25,6 +25,7 @@ function generateSlug(text: string) {
     .replace(/[^a-z0-9-]+/g, '')
     .replace(/--+/g, '-')
     .replace(/^-|-$/g, '')
+    .slice(0, 80)
 }
 
 function mapPropertyToFormData(d: PropertyData, isEdit: boolean): PropertyFormData {

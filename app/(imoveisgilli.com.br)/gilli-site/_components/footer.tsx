@@ -30,7 +30,7 @@ export default async function Footer() {
               </p>
             </div>
             <Link
-              href="https://wa.me/5547997882496"
+              href="https://api.whatsapp.com/send?phone=5547997882496&&text=Ol%C3%A1"
               className="flex items-center gap-3 text-sm hover:text-gray-300 transition-colors"
             >
               <Phone size={18} className="shrink-0" />
@@ -49,7 +49,7 @@ export default async function Footer() {
               <span>@gilli_engenharia_e_imoveis</span>
             </Link>
 
-            <Link href="https://wa.me/5547997882496" className="flex items-center gap-2 text-sm hover:text-gray-300 transition-colors">
+            <Link href="https://api.whatsapp.com/send?phone=5547997882496&&text=Ol%C3%A1" className="flex items-center gap-2 text-sm hover:text-gray-300 transition-colors">
               <WhatsappLogo size={18} />
               <span>(47) 99788-2496</span>
             </Link>

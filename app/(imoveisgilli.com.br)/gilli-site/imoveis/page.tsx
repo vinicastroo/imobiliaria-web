@@ -3,6 +3,11 @@ import { Metadata } from 'next'
 import Footer from '../_components/footer'
 import { PropertyList } from '@/components/property-list'
 import { MenubarHome } from '@/components/menu-home'
+
+const GILLI_SOCIAL = {
+  whatsappUrl: 'https://api.whatsapp.com/send?phone=5547997882496&&text=Ol%C3%A1',
+  instagramUrl: 'https://www.instagram.com/gilli_engenharia_e_imoveis/',
+}
 import { HorizontalFilter } from '@/components/horizontal-filter'
 
 export const metadata: Metadata = {
@@ -39,7 +44,7 @@ export default function GilliImoveisPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
-      <MenubarHome />
+      <MenubarHome socialLinks={GILLI_SOCIAL} />
 
       <section className="bg-white border-b border-gray-200 sticky top-0 z-30 shadow-none">
         <div className="w-full max-w-[1280px] mx-auto px-4 md:px-6 py-4">

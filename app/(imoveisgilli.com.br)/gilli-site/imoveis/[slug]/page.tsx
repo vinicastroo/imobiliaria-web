@@ -5,6 +5,11 @@ import { headers } from 'next/headers'
 import { BedDouble, Bath, CarFront, Ruler, MapPin, Grid2X2 } from 'lucide-react'
 
 import { MenubarHome } from '@/components/menu-home'
+
+const GILLI_SOCIAL = {
+  whatsappUrl: 'https://api.whatsapp.com/send?phone=5547997882496&&text=Ol%C3%A1',
+  instagramUrl: 'https://www.instagram.com/gilli_engenharia_e_imoveis/',
+}
 import Footer from '../../_components/footer'
 import { PropertyImagesCarousel } from '@/components/property-images-carousel'
 
@@ -237,7 +242,7 @@ export default async function PropertyPage({ params }: PageProps) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
-      <MenubarHome />
+      <MenubarHome socialLinks={GILLI_SOCIAL} />
 
       <div className="max-w-[1200px] mx-auto p-4 space-y-8 py-8 md:py-12">
 

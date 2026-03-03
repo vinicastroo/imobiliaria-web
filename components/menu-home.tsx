@@ -1,7 +1,19 @@
 import { MenubarHomeClient } from './menubar-home-client'
 import { getTenantVisualConfig } from '@/lib/visual-config'
+import type { SocialLinks } from './menubar-home-client'
 
-export async function MenubarHome() {
-  const { iconUrl, logoUrl, secondaryColor } = await getTenantVisualConfig()
-  return <MenubarHomeClient logoUrl={iconUrl ?? logoUrl} primaryColor={secondaryColor} />
+interface MenubarHomeProps {
+  socialLinks?: SocialLinks
+}
+
+export async function MenubarHome({ socialLinks }: MenubarHomeProps = {}) {
+  const { logoUrl, secondaryColor } = await getTenantVisualConfig()
+
+  return (
+    <MenubarHomeClient
+      logoUrl={logoUrl}
+      primaryColor={secondaryColor}
+      socialLinks={socialLinks}
+    />
+  )
 }

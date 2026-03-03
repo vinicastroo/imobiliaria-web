@@ -10,11 +10,11 @@ export default async function AdminLayout({
 }: {
   children: React.ReactNode
 }) {
-  const { logoUrl } = await getTenantVisualConfig()
+  const { iconUrl } = await getTenantVisualConfig()
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Menubar logoUrl={logoUrl} />
+      <Menubar logoUrl={iconUrl} />
 
       <main className="pl-20 w-full">
         {children}

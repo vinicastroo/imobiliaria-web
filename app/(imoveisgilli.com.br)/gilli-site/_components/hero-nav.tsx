@@ -49,10 +49,10 @@ export function HeroNav({ logoUrl, primaryColor, secondaryColor }: HeroNavProps)
 
         <nav className="hidden md:flex flex items-end gap-2 text-white font-medium">
           <div className="flex gap-4">
-            <SocialLink href="https://api.whatsapp.com/send?phone=55XXXXXXXXXXX&&text=Olá" ariaLabel="WhatsApp da Imóveis Gilli">
+            <SocialLink href="https://api.whatsapp.com/send?phone=5547997882496&&text=Ol%C3%A1" ariaLabel="WhatsApp da Imóveis Gilli">
               <WhatsappLogo size={20} />
             </SocialLink>
-            <SocialLink href="https://www.instagram.com/imoveisgilli/" ariaLabel="Instagram da Imóveis Gilli">
+            <SocialLink href="https://www.instagram.com/gilli_engenharia_e_imoveis/" ariaLabel="Instagram da Imóveis Gilli">
               <Instagram size={16} />
             </SocialLink>
           </div>
@@ -99,10 +99,10 @@ export function HeroNav({ logoUrl, primaryColor, secondaryColor }: HeroNavProps)
           </div>
 
           <div className="p-10 flex justify-center gap-8 border-t border-white/10">
-            <SocialLink href="https://api.whatsapp.com/send?phone=55XXXXXXXXXXX&&text=Olá" ariaLabel="WhatsApp da Imóveis Gilli">
+            <SocialLink href="https://api.whatsapp.com/send?phone=5547997882496&&text=Ol%C3%A1" ariaLabel="WhatsApp da Imóveis Gilli">
               <WhatsappLogo size={25} />
             </SocialLink>
-            <SocialLink href="https://www.instagram.com/imoveisgilli/" ariaLabel="Instagram da Imóveis Gilli">
+            <SocialLink href="https://www.instagram.com/gilli_engenharia_e_imoveis/" ariaLabel="Instagram da Imóveis Gilli">
               <Instagram size={25} />
             </SocialLink>
           </div>

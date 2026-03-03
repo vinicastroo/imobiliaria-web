@@ -55,7 +55,7 @@ export function PropertyForm({ mode, propertyId, defaultValues }: PropertyFormPr
   const { watermarkUrl } = useWatermark()
   const isRealtor = session?.user?.role === 'REALTOR'
   const realtorProfileId = session?.user?.realtorProfileId
-  const { types, realtors, enterprises } = usePropertyOptions()
+  const { types, realtors, enterprises, isLoading: isLoadingOptions } = usePropertyOptions()
   const { infrastructures, isLoading: isLoadingInfrastructures } = useInfrastructures()
 
   const {
@@ -193,12 +193,19 @@ export function PropertyForm({ mode, propertyId, defaultValues }: PropertyFormPr
                         className={`space-y-2 ${isEdit ? '' : 'col-span-2'}`}
                       >
                         <Label>Slug (URL)</Label>
-                        <Input {...register('slug')} />
-                        {errors.slug && (
-                          <span className="text-xs text-red-500">
-                            {errors.slug.message}
+                        <Input {...register('slug')} maxLength={80} />
+                        <div className="flex justify-between items-center">
+                          {errors.slug ? (
+                            <span className="text-xs text-red-500">
+                              {errors.slug.message}
+                            </span>
+                          ) : (
+                            <span />
+                          )}
+                          <span className="text-xs text-muted-foreground">
+                            {(watch('slug') ?? '').length}/80
                           </span>
-                        )}
+                        </div>
                       </div>
                     </div>
 
@@ -250,22 +257,25 @@ export function PropertyForm({ mode, propertyId, defaultValues }: PropertyFormPr
 
                       <div className="space-y-2">
                         <Label>Tipo</Label>
-                        <Select
-                          key={`type-select-${types.length}`}
-                          onValueChange={(val) => setValue('type_id', val, { shouldDirty: true })}
-                          value={watch('type_id') || undefined}
-                        >
-                          <SelectTrigger className="w-full">
-                            <SelectValue placeholder="Selecione" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {types.map((t) => (
-                              <SelectItem key={t.id} value={t.id}>
-                                {t.description}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
+                        {isLoadingOptions ? (
+                          <Skeleton className="h-10 w-full" />
+                        ) : (
+                          <Select
+                            onValueChange={(val) => setValue('type_id', val, { shouldDirty: true })}
+                            value={watch('type_id') || undefined}
+                          >
+                            <SelectTrigger className="w-full">
+                              <SelectValue placeholder="Selecione" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {types.map((t) => (
+                                <SelectItem key={t.id} value={t.id}>
+                                  {t.description}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        )}
                         {errors.type_id && (
                           <span className="text-xs text-red-500">
                             {errors.type_id.message}

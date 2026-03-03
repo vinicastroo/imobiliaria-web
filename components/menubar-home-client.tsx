@@ -6,12 +6,26 @@ import Link from 'next/link'
 import { Facebook, Instagram, Menu, X } from 'lucide-react'
 import { WhatsappLogo } from '@phosphor-icons/react'
 
+export interface SocialLinks {
+  whatsappUrl?: string
+  instagramUrl?: string
+  facebookUrl?: string
+}
+
 interface MenubarHomeClientProps {
   logoUrl: string | null
   primaryColor?: string
+  socialLinks?: SocialLinks
 }
 
-export function MenubarHomeClient({ logoUrl, primaryColor }: MenubarHomeClientProps) {
+const AUROS_SOCIAL: SocialLinks = {
+  whatsappUrl: 'https://api.whatsapp.com/send?phone=5547988163739&text=Ol%C3%A1',
+  instagramUrl: 'https://www.instagram.com/auroscorretoraimobiliaria/',
+  facebookUrl: 'https://www.facebook.com/AurosCorretoraImob?locale=pt_BR',
+}
+
+export function MenubarHomeClient({ logoUrl, primaryColor, socialLinks }: MenubarHomeClientProps) {
+  const { whatsappUrl, instagramUrl, facebookUrl } = socialLinks ?? AUROS_SOCIAL
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
   const toggleMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen)
@@ -40,15 +54,17 @@ export function MenubarHomeClient({ logoUrl, primaryColor }: MenubarHomeClientPr
         {/* --- DESKTOP NAV --- */}
         <nav className="hidden md:flex flex items-end gap-3">
           <div className="flex items-center gap-3">
-            <SocialLink href="https://api.whatsapp.com/send?phone=5547988163739&text=Olá" aria="WhatsApp">
+            <SocialLink href={whatsappUrl} aria="WhatsApp">
               <WhatsappLogo size={20} />
             </SocialLink>
-            <SocialLink href="https://www.instagram.com/auroscorretoraimobiliaria/" aria="Instagram">
+            <SocialLink href={instagramUrl} aria="Instagram">
               <Instagram size={16} />
             </SocialLink>
-            <SocialLink href="https://www.facebook.com/AurosCorretoraImob?locale=pt_BR" aria="Facebook">
-              <Facebook size={16} />
-            </SocialLink>
+            {facebookUrl && (
+              <SocialLink href={facebookUrl} aria="Facebook">
+                <Facebook size={16} />
+              </SocialLink>
+            )}
           </div>
 
           <div className="flex items-center gap-6 text-white font-medium text-base">
@@ -108,15 +124,17 @@ export function MenubarHomeClient({ logoUrl, primaryColor }: MenubarHomeClientPr
           </div>
 
           <div className="p-10 flex justify-center gap-8 border-t border-white/10 mx-8">
-            <SocialLink href="https://api.whatsapp.com/send?phone=5547988163739&text=Olá" aria="WhatsApp">
+            <SocialLink href={whatsappUrl} aria="WhatsApp">
               <WhatsappLogo size={24} />
             </SocialLink>
-            <SocialLink href="https://www.instagram.com/auroscorretoraimobiliaria/" aria="Instagram">
+            <SocialLink href={instagramUrl} aria="Instagram">
               <Instagram size={24} />
             </SocialLink>
-            <SocialLink href="https://www.facebook.com/AurosCorretoraImob?locale=pt_BR" aria="Facebook">
-              <Facebook size={24} />
-            </SocialLink>
+            {facebookUrl && (
+              <SocialLink href={facebookUrl} aria="Facebook">
+                <Facebook size={24} />
+              </SocialLink>
+            )}
           </div>
         </div>
       )}

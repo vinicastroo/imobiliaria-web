@@ -2,7 +2,7 @@ import { z } from 'zod'
 
 export const propertySchema = z.object({
   name: z.string().min(1, 'Nome é obrigatório'),
-  slug: z.string().min(1, 'Slug é obrigatório'),
+  slug: z.string().min(1, 'Slug é obrigatório').max(80, 'Slug não pode ultrapassar 80 caracteres'),
   code: z.union([z.string(), z.number()]).optional(),
   value: z.string().min(1, 'Valor é obrigatório'),
   summary: z.string().min(1, 'Resumo é obrigatório'),
