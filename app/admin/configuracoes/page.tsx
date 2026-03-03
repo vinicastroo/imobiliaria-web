@@ -49,6 +49,7 @@ interface AgencyInfo {
 
 interface VisualConfigData {
   logoUrl: string | null
+  iconUrl: string | null
   primaryColor: string
   secondaryColor: string
   fontFamily: string
@@ -86,9 +87,11 @@ export default function ConfiguracoesPage() {
   const [iconFile, setIconFile] = useState<File | null>(null)
   const [iconPreview, setIconPreview] = useState<string | null>(null)
 
-  const [primaryColor, setPrimaryColor] = useState('#0f172a')
-  const [secondaryColor, setSecondaryColor] = useState('#e2e8f0')
-  const [fontFamily, setFontFamily] = useState('Inter')
+  const [visualEdits, setVisualEdits] = useState<{
+    primaryColor: string
+    secondaryColor: string
+    fontFamily: string
+  } | null>(null)
 
   const {
     register,
@@ -118,6 +121,14 @@ export default function ConfiguracoesPage() {
     enabled: isAllowed,
   })
 
+  const primaryColor = visualEdits?.primaryColor ?? visualConfig?.primaryColor ?? '#0f172a'
+  const secondaryColor = visualEdits?.secondaryColor ?? visualConfig?.secondaryColor ?? '#e2e8f0'
+  const fontFamily = visualEdits?.fontFamily ?? visualConfig?.fontFamily ?? 'Inter'
+
+  const setPrimaryColor = (v: string) => setVisualEdits({ primaryColor: v, secondaryColor, fontFamily })
+  const setSecondaryColor = (v: string) => setVisualEdits({ primaryColor, secondaryColor: v, fontFamily })
+  const setFontFamily = (v: string) => setVisualEdits({ primaryColor, secondaryColor, fontFamily: v })
+
   useEffect(() => {
     if (agencyInfo) {
       reset({
@@ -133,13 +144,6 @@ export default function ConfiguracoesPage() {
     }
   }, [agencyInfo, reset])
 
-  useEffect(() => {
-    if (visualConfig) {
-      setPrimaryColor(visualConfig.primaryColor)
-      setSecondaryColor(visualConfig.secondaryColor)
-      setFontFamily(visualConfig.fontFamily)
-    }
-  }, [visualConfig])
 
   const infoMutation = useMutation({
     mutationFn: async (data: AgencyInfoFormData) => (await api.put('/agency-info', data)).data as AgencyInfo,
@@ -170,6 +174,7 @@ export default function ConfiguracoesPage() {
       (await api.put('/visual-config', { primaryColor, secondaryColor, fontFamily })).data as VisualConfigData,
     onSuccess: async () => {
       queryClient.invalidateQueries({ queryKey: ['visual-config'] })
+      setVisualEdits(null)
       await revalidateVisualConfig()
       toast.success('Aparência do site salva com sucesso!')
     },
@@ -181,7 +186,7 @@ export default function ConfiguracoesPage() {
       const formData = new FormData()
       formData.append('icon', file)
       return (await api.put('/visual-config/icon', formData, { headers: { 'Content-Type': 'multipart/form-data' } }))
-        .data as { logoUrl: string }
+        .data as { iconUrl: string }
     },
     onSuccess: async () => {
       queryClient.invalidateQueries({ queryKey: ['visual-config'] })
@@ -229,7 +234,7 @@ export default function ConfiguracoesPage() {
 
   const currentLogo = logoPreview ?? settings?.logo ?? null
   const currentWatermark = watermarkPreview ?? settings?.watermark ?? null
-  const currentIcon = iconPreview ?? visualConfig?.logoUrl ?? null
+  const currentIcon = iconPreview ?? visualConfig?.iconUrl ?? null
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col p-8 gap-6 max-w-[1200px] mx-auto">
