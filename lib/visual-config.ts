@@ -74,8 +74,6 @@ export const getTenantVisualConfig = cache(async (): Promise<VisualConfig> => {
       `${process.env.NEXT_PUBLIC_API_URL}/visual-config`,
       {
         headers: { 'x-agency-id': tenantId },
-        cache: 'force-cache',
-        next: { revalidate: 300, tags: ['visual-config'] },
       },
     )
 
