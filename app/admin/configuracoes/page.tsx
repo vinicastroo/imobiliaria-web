@@ -153,12 +153,13 @@ export default function ConfiguracoesPage() {
   const settingsMutation = useMutation({
     mutationFn: async (formData: FormData) =>
       (await api.put('/agency-settings', formData, { headers: { 'Content-Type': 'multipart/form-data' } })).data as AgencySettings,
-    onSuccess: () => {
+    onSuccess: async () => {
       queryClient.invalidateQueries({ queryKey: ['agency-settings'] })
       setLogoFile(null)
       setLogoPreview(null)
       setWatermarkFile(null)
       setWatermarkPreview(null)
+      await revalidateVisualConfig()
       toast.success('Identidade visual salva com sucesso!')
     },
     onError: () => toast.error('Erro ao salvar identidade visual.'),
