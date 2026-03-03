@@ -165,11 +165,12 @@ export function usePropertyForm({ mode, propertyId, defaultValues }: UseProperty
       id: f.id,
       path: f.path,
       fileName: f.fileName,
-      thumb: f.thumb,
+      thumb: f.thumb ?? undefined,
+      order: f.order,
     }))
     existingImages.sort((a, b) => {
       if (a.type === 'existing' && b.type === 'existing') {
-        return (b.thumb ? 1 : 0) - (a.thumb ? 1 : 0)
+        return (a.order ?? 0) - (b.order ?? 0)
       }
       return 0
     })
@@ -215,31 +216,50 @@ export function usePropertyForm({ mode, propertyId, defaultValues }: UseProperty
 
     setIsSubmitting(true)
     try {
-      // Upload new images
-      const newImages = images.filter(
-        (img): img is Extract<ImageItem, { type: 'new' }> => img.type === 'new',
-      )
+      // Mapeia novos arquivos com sua posição final no array
+      const newImagesWithOrder = images
+        .map((img, index) => ({ img, order: index }))
+        .filter(({ img }) => img.type === 'new') as Array<{
+          img: Extract<ImageItem, { type: 'new' }>
+          order: number
+        }>
 
-      let paths: { path: string; fileName: string }[] = []
-      if (newImages.length > 0) {
-        paths = await Promise.all(
-          newImages.map(async (img) => {
+      // Faz upload dos novos (se houver)
+      const uploadedPaths: { path: string; fileName: string; order: number }[] = []
+      if (newImagesWithOrder.length > 0) {
+        const results = await Promise.all(
+          newImagesWithOrder.map(async ({ img, order }) => {
             const formData = new FormData()
             formData.append('files', img.file)
             const res = await api.post('/files/upload', formData)
             return {
               path: res.data.paths[0]?.path || res.data.paths[0],
               fileName: res.data.paths[0]?.fileName || img.file.name,
+              order,
             }
           }),
         )
+        uploadedPaths.push(...results)
       }
 
       if (mode === 'create') {
-        await api.post('/imovel', { ...data, files: paths })
+        await api.post('/imovel', { ...data, files: uploadedPaths })
         toast.success('Imóvel criado com sucesso!')
       } else {
-        await api.put(`/imovel/${propertyId}`, { ...data, files: paths })
+        // Ordem das imagens existentes (sempre enviada para persistir reordenação)
+        const existingFileOrders = images
+          .map((img, index) => ({ img, order: index }))
+          .filter(({ img }) => img.type === 'existing')
+          .map(({ img, order }) => ({
+            id: (img as Extract<ImageItem, { type: 'existing' }>).id,
+            order,
+          }))
+
+        await api.put(`/imovel/${propertyId}`, {
+          ...data,
+          files: uploadedPaths,
+          existingFileOrders,
+        })
         toast.success('Imóvel atualizado com sucesso!')
       }
 
