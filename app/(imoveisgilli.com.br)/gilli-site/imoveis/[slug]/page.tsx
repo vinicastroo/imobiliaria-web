@@ -206,7 +206,7 @@ const FeatureItem = ({ icon: Icon, value, label, suffix = "" }: FeatureItemProps
         <TooltipTrigger asChild>
           <div className="flex items-center gap-2 bg-[#EE9020]/5 px-3 py-2 rounded-md">
             <Icon size={24} className="text-[#EE9020]" />
-            <span className="text-lg font-bold text-gray-700">{value}{suffix}</span>
+            <span className="text-lg font-bold text-[#EE9020]">{value}{suffix}</span>
           </div>
         </TooltipTrigger>
         <TooltipContent><p>{label}</p></TooltipContent>
@@ -264,7 +264,7 @@ export default async function PropertyPage({ params }: PageProps) {
 
                 {/* Cabeçalho */}
                 <div className="space-y-2 mb-6">
-                  <h1 className="text-3xl md:text-4xl font-bold text-[#EE9020]">{property.name}</h1>
+                  <h1 className="text-3xl md:text-4xl font-bold text-[#0F172A]">{property.name}</h1>
                   <div className="flex items-center justify-between text-gray-500 gap-1 flex-wrap">
                     <div className='flex items-center gap-2'>
                       <MapPin size={18} />
@@ -288,7 +288,7 @@ export default async function PropertyPage({ params }: PageProps) {
 
                 {/* Features */}
                 <div>
-                  <h3 className="text-sm font-bold text-[#EE9020] uppercase mb-4">Informações</h3>
+                  <h3 className="text-sm font-bold text-[#0F172A] uppercase mb-4">Informações</h3>
                   <div className="flex flex-wrap gap-4">
                     <FeatureItem icon={BedDouble} value={property.bedrooms} label="Quartos" />
                     <FeatureItem icon={Bath} value={property.suites} label="Suítes" />
@@ -303,10 +303,10 @@ export default async function PropertyPage({ params }: PageProps) {
                   <>
                     <Separator className="my-6" />
                     <div>
-                      <h3 className="text-sm font-bold text-[#EE9020] uppercase mb-4">Infraestrutura</h3>
+                      <h3 className="text-sm font-bold text-[#0F172A] uppercase mb-4">Infraestrutura</h3>
                       <div className="flex flex-wrap gap-2">
                         {property.property_infrastructures.map(({ infrastructure }) => (
-                          <Badge key={infrastructure.id} variant="secondary" className="text-xs px-3 py-1">
+                          <Badge key={infrastructure.id} variant="outline" className="text-xs px-3 py-1  text-[#EE9020] border-[#EE9020]">
                             {infrastructure.name}
                           </Badge>
                         ))}
@@ -319,7 +319,7 @@ export default async function PropertyPage({ params }: PageProps) {
 
                 {/* Descrição */}
                 <div className="space-y-4">
-                  <h3 className="text-sm font-bold text-[#EE9020] uppercase">Sobre o imóvel</h3>
+                  <h3 className="text-sm font-bold text-[#0F172A] uppercase">Sobre o imóvel</h3>
                   <p className="text-gray-600 italic border-l-4 border-[#EE9020] pl-4">
                     {property.summary}
                   </p>

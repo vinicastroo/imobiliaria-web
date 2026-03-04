@@ -47,8 +47,8 @@ export function HeroNav({ logoUrl, primaryColor, secondaryColor }: HeroNavProps)
           <Menu size={20} />
         </button>
 
-        <nav className="hidden md:flex flex items-end gap-2 text-white font-medium">
-          <div className="flex gap-4">
+        <nav className="hidden md:flex lg:flex items-center gap-4 text-white font-medium">
+          <div className="flex gap-4 items-center justify-center">
             <SocialLink href="https://api.whatsapp.com/send?phone=5547997882496&&text=Ol%C3%A1" ariaLabel="WhatsApp da Imóveis Gilli">
               <WhatsappLogo size={20} />
             </SocialLink>
@@ -56,7 +56,7 @@ export function HeroNav({ logoUrl, primaryColor, secondaryColor }: HeroNavProps)
               <Instagram size={16} />
             </SocialLink>
           </div>
-          <div className="flex gap-6">
+          <div className="flex gap-6 ml-2 items-center justify-center">
             <Link href="/imoveis" className="hover:underline hover:text-gray-200 transition-colors">Imóveis</Link>
             <Link href="#contact" className="hover:underline hover:text-gray-200 transition-colors">Entre em contato</Link>
           </div>

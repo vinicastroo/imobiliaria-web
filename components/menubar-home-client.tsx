@@ -52,7 +52,7 @@ export function MenubarHomeClient({ logoUrl, primaryColor, socialLinks }: Menuba
         <Link href="/">{logoEl}</Link>
 
         {/* --- DESKTOP NAV --- */}
-        <nav className="hidden md:flex flex items-end gap-3">
+        <nav className="hidden md:flex flex items-center gap-3">
           <div className="flex items-center gap-3">
             <SocialLink href={whatsappUrl} aria="WhatsApp">
               <WhatsappLogo size={20} />

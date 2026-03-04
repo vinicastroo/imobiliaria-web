@@ -17,8 +17,6 @@ export function PropertyDescription({ description }: PropertyDescriptionProps) {
 
   return (
     <div className="space-y-4">
-      <h3 className="text-sm font-bold text-[#17375F] uppercase">Sobre o imóvel</h3>
-
       <div
         className={cn(
           "relative overflow-hidden transition-all duration-500 ease-in-out",
