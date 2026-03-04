@@ -12,9 +12,22 @@ import { HorizontalFilter } from '@/components/horizontal-filter'
 
 export const metadata: Metadata = {
   title: 'Imóveis Gilli | Imóveis',
-  description: 'Busque e filtre imóveis com a Imóveis Gilli.',
+  description: 'Busque e filtre imóveis com a Imóveis Gilli. Compra, venda e locação em Blumenau e região.',
   alternates: {
     canonical: 'https://imoveisgilli.com.br/imoveis',
+  },
+  openGraph: {
+    title: 'Imóveis Gilli | Imóveis',
+    description: 'Busque e filtre imóveis com a Imóveis Gilli. Compra, venda e locação em Blumenau e região.',
+    url: 'https://imoveisgilli.com.br/imoveis',
+    type: 'website',
+    images: [{ url: 'https://imoveisgilli.com.br/og-image.png', width: 1200, height: 630, alt: 'Imóveis Gilli' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Imóveis Gilli | Imóveis',
+    description: 'Busque e filtre imóveis com a Imóveis Gilli.',
+    images: ['https://imoveisgilli.com.br/og-image.png'],
   },
 }
 

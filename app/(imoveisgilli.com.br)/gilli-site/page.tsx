@@ -8,12 +8,22 @@ import Footer from './_components/footer'
 
 export const metadata: Metadata = {
   title: 'Imóveis Gilli - Imobiliária',
-  description: 'Encontre os melhores imóveis com a Imóveis Gilli.',
+  description: 'Encontre os melhores imóveis com a Imóveis Gilli. Compra, venda e locação em Blumenau e região.',
   alternates: {
     canonical: 'https://imoveisgilli.com.br',
   },
   openGraph: {
-    images: ['https://imoveisgilli.com.br/logo.png'],
+    title: 'Imóveis Gilli - Imobiliária',
+    description: 'Encontre os melhores imóveis com a Imóveis Gilli. Compra, venda e locação em Blumenau e região.',
+    url: 'https://imoveisgilli.com.br',
+    type: 'website',
+    images: [{ url: 'https://imoveisgilli.com.br/og-image.png', width: 1200, height: 630, alt: 'Imóveis Gilli' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Imóveis Gilli - Imobiliária',
+    description: 'Encontre os melhores imóveis com a Imóveis Gilli.',
+    images: ['https://imoveisgilli.com.br/og-image.png'],
   },
 }
 

@@ -15,7 +15,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 
 const loginSchema = z.object({
-  email:    z.string().min(1, 'Email é obrigatório').email('Formato de email inválido'),
+  email: z.string().min(1, 'Email é obrigatório').email('Formato de email inválido'),
   password: z.string().min(1, 'Senha é obrigatória'),
 })
 
@@ -23,7 +23,7 @@ type LoginFormData = z.infer<typeof loginSchema>
 
 interface LoginFormProps {
   /** Tenant logo URL from VisualConfig. Null = show platform fallback icon. */
-  logoUrl:     string | null
+  logoUrl: string | null
   agencyName?: string | null
 }
 
@@ -41,9 +41,9 @@ export function LoginForm({ logoUrl, agencyName }: LoginFormProps) {
     setIsLoading(true)
     try {
       const result = await signIn('credentials', {
-        redirect:  false,
-        email:     data.email,
-        password:  data.password,
+        redirect: false,
+        email: data.email,
+        password: data.password,
       })
 
       if (result?.error) {

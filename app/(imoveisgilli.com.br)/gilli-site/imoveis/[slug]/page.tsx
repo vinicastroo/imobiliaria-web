@@ -50,7 +50,7 @@ function buildPropertyJsonLd(property: Property) {
     "@type": "RealEstateListing",
     name: property.name,
     description: property.summary,
-    url: `https://aurosimobiliaria.com.br/imoveis/${property.slug}`,
+    url: `https://imoveisgilli.com.br/imoveis/${property.slug}`,
     image: images,
     address: {
       "@type": "PostalAddress",
@@ -93,19 +93,19 @@ function buildBreadcrumbJsonLd(propertyName: string, slug: string) {
         "@type": "ListItem",
         position: 1,
         name: "Home",
-        item: "https://aurosimobiliaria.com.br",
+        item: "https://imoveisgilli.com.br",
       },
       {
         "@type": "ListItem",
         position: 2,
         name: "Imóveis",
-        item: "https://aurosimobiliaria.com.br/imoveis",
+        item: "https://imoveisgilli.com.br/imoveis",
       },
       {
         "@type": "ListItem",
         position: 3,
         name: propertyName,
-        item: `https://aurosimobiliaria.com.br/imoveis/${slug}`,
+        item: `https://imoveisgilli.com.br/imoveis/${slug}`,
       },
     ],
   }
@@ -116,16 +116,16 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const property = await getProperty(slug)
   if (!property) return { title: 'Imóvel não encontrado' }
 
-  const ogImage = property.files?.[0]?.path || "https://aurosimobiliaria.com.br/logo.png"
+  const ogImage = property.files?.[0]?.path ?? 'https://imoveisgilli.com.br/og-image.png'
 
   return {
-    title: `Auros | ${property.name}`,
+    title: `Imóveis Gilli | ${property.name}`,
     description: property.summary,
-    alternates: { canonical: `https://aurosimobiliaria.com.br/imoveis/${property.slug}` },
+    alternates: { canonical: `https://imoveisgilli.com.br/imoveis/${property.slug}` },
     openGraph: {
       title: property.name,
       description: property.summary,
-      url: `https://aurosimobiliaria.com.br/imoveis/${property.slug}`,
+      url: `https://imoveisgilli.com.br/imoveis/${property.slug}`,
       type: "website",
       images: [
         {
