@@ -275,13 +275,18 @@ export function usePropertyForm({ mode, propertyId, defaultValues }: UseProperty
     }
   }
 
+  const onValidationError = (errors: Record<string, unknown>) => {
+    const first = Object.values(errors).find(Boolean) as { message?: string } | undefined
+    toast.error(first?.message ?? 'Erro em algum dos campos informados, revise eles')
+  }
+
   return {
     form,
     editor,
     images,
     setImages,
     isSubmitting,
-    onSubmit: form.handleSubmit(onSubmit),
+    onSubmit: form.handleSubmit(onSubmit, onValidationError),
     handleDeleteExisting: isEdit ? handleDeleteExisting : undefined,
     handleSetThumb: isEdit ? handleSetThumb : undefined,
   }

@@ -106,8 +106,8 @@ export function Menubar({ logoUrl }: MenubarProps) {
 
         {/* Navigation */}
         <nav className="flex flex-col px-3">
-          {isSuperAdminPanel ? (
-            // Super admin panel: show only platform management routes
+          {/* Platform management routes — always visible for super admin */}
+          {isSuperAdmin && (
             <>
               <NavItem
                 href="/admin/agencies"
@@ -126,8 +126,10 @@ export function Menubar({ logoUrl }: MenubarProps) {
                 isExpanded={isExpanded}
               />
             </>
-          ) : (
-            // Tenant backoffice routes
+          )}
+
+          {/* Tenant backoffice routes */}
+          {!isSuperAdminPanel && (
             <>
               <NavItem
                 href="/admin/imoveis"

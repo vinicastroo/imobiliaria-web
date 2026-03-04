@@ -40,7 +40,7 @@ export function CopyLinkButton({ className }: CopyLinkButtonProps) {
       size="sm"
       onClick={handleCopy}
       className={cn(
-        "gap-2 w-full cursor-pointer border-[#17375F] text-[#17375F] hover:bg-[#17375F] hover:text-white transition-all duration-300 min-w-[130px]",
+        "gap-2 w-full cursor-pointer border-primary text-primary hover:bg-primary hover:text-white transition-all duration-300 min-w-[130px]",
         className
       )}
     >

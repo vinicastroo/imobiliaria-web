@@ -76,12 +76,12 @@ export const authOptions: NextAuthOptions = {
       if (token) {
         session.user = {
           ...session.user,
-          id:               token.id               as string,
-          role:             token.role              as string,
-          agencyId:         (token.agencyId         as string) ?? null,
-          planId:           (token.planId           as string) ?? null,
-          features:         (token.features         as string[]) ?? [],
-          realtorProfileId: (token.realtorProfileId as string) ?? null,
+          id:               (token.id               as string)       ?? '',
+          role:             (token.role             as string | undefined) ?? null,
+          agencyId:         (token.agencyId         as string)       ?? null,
+          planId:           (token.planId           as string)       ?? null,
+          features:         (token.features         as string[])     ?? [],
+          realtorProfileId: (token.realtorProfileId as string)       ?? null,
         }
       }
       return session
