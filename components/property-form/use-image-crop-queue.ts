@@ -3,6 +3,23 @@
 import { useState, useCallback, useRef } from 'react'
 import type { ImageItem } from './types'
 
+function isHeicFile(file: File) {
+  return (
+    file.type === 'image/heic' ||
+    file.type === 'image/heif' ||
+    file.name.toLowerCase().endsWith('.heic') ||
+    file.name.toLowerCase().endsWith('.heif')
+  )
+}
+
+async function convertHeicToJpeg(file: File): Promise<File> {
+  const heic2any = (await import('heic2any')).default
+  const blob = await heic2any({ blob: file, toType: 'image/jpeg', quality: 0.9 })
+  const converted = Array.isArray(blob) ? blob[0] : blob
+  const newName = file.name.replace(/\.(heic|heif)$/i, '.jpg')
+  return new File([converted], newName, { type: 'image/jpeg' })
+}
+
 interface QueueItem {
   file: File
   previewUrl: string
@@ -27,8 +44,12 @@ export function useImageCropQueue(
   const currentItem = queue.length > 0 ? queue[currentIndex] : null
   const isOpen = currentItem !== null
 
-  const enqueueFiles = useCallback((files: File[]) => {
-    const items: QueueItem[] = files.map((file) => {
+  const enqueueFiles = useCallback(async (files: File[]) => {
+    const normalizedFiles = await Promise.all(
+      files.map((file) => (isHeicFile(file) ? convertHeicToJpeg(file) : file)),
+    )
+
+    const items: QueueItem[] = normalizedFiles.map((file) => {
       const previewUrl = URL.createObjectURL(file)
       previewUrlsRef.current.push(previewUrl)
       return { file, previewUrl }

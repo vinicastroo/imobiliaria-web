@@ -1,6 +1,7 @@
 "use client"
 
 import { useCallback } from 'react'
+import { toast } from 'sonner'
 import { useDropzone } from 'react-dropzone'
 import {
   DndContext,
@@ -203,17 +204,27 @@ export function ImageUploader({
     dismissCrop,
   } = useImageCropQueue(images, onImagesChange)
 
+  const MAX_IMAGES = 15
+  const remaining = MAX_IMAGES - images.length
+  const isAtLimit = remaining <= 0
+
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
-      enqueueFiles(acceptedFiles)
+      if (isAtLimit) return
+      const toAdd = acceptedFiles.slice(0, remaining)
+      if (acceptedFiles.length > remaining) {
+        toast.warning(`Limite de ${MAX_IMAGES} fotos atingido. Apenas ${remaining} foto(s) foram adicionadas.`)
+      }
+      void enqueueFiles(toAdd)
     },
-    [enqueueFiles],
+    [enqueueFiles, isAtLimit, remaining],
   )
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
-    accept: { 'image/*': [] },
+    accept: { 'image/*': [], 'image/heic': ['.heic'], 'image/heif': ['.heif'] },
     multiple: true,
+    disabled: isAtLimit,
   })
 
   const sensors = useSensors(
@@ -264,20 +275,26 @@ export function ImageUploader({
       <div
         {...getRootProps()}
         className={cn(
-          'border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors',
-          isDragActive
-            ? 'border-[#17375F] bg-blue-50/50'
-            : 'border-gray-300 hover:border-gray-400',
+          'border-2 border-dashed rounded-lg p-8 text-center transition-colors',
+          isAtLimit
+            ? 'border-gray-200 bg-gray-50 cursor-not-allowed opacity-60'
+            : isDragActive
+              ? 'border-[#17375F] bg-blue-50/50 cursor-pointer'
+              : 'border-gray-300 hover:border-gray-400 cursor-pointer',
         )}
       >
         <input {...getInputProps()} />
         <Upload className="mx-auto h-10 w-10 text-gray-400 mb-3" />
         <p className="text-sm text-gray-600">
-          {isDragActive
-            ? 'Solte as imagens aqui...'
-            : 'Arraste imagens aqui ou clique para selecionar'}
+          {isAtLimit
+            ? 'Limite de fotos atingido'
+            : isDragActive
+              ? 'Solte as imagens aqui...'
+              : 'Arraste imagens aqui ou clique para selecionar'}
         </p>
-        <p className="text-xs text-gray-400 mt-1">PNG, JPG, WEBP</p>
+        <p className="text-xs text-gray-400 mt-1">
+          {isAtLimit ? `${MAX_IMAGES}/${MAX_IMAGES} fotos` : `PNG, JPG, WEBP, HEIC · ${images.length}/${MAX_IMAGES} fotos`}
+        </p>
       </div>
 
       {images.length > 0 && (

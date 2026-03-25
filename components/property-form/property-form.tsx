@@ -211,28 +211,27 @@ export function PropertyForm({ mode, propertyId, defaultValues }: PropertyFormPr
 
                     <div className="grid grid-cols-2 gap-4">
                       <div className="space-y-2">
-                        <Label>Valor</Label>
-                        {watch('priceOnRequest') ? (
-                          <div className="flex h-9 items-center rounded-md border border-input bg-muted px-3 text-sm text-muted-foreground">
-                            Sob consulta
-                          </div>
-                        ) : (
-                          <div className="flex items-center gap-2">
-                            <NumericFormat
-                              value={watch('value')}
-                              onValueChange={(v) => setValue('value', v.formattedValue, { shouldValidate: true, shouldDirty: true })}
-                              prefix="R$ "
-                              thousandSeparator="."
-                              decimalSeparator=","
-                              customInput={Input}
-                              placeholder="R$ 0,00"
-                            />
-                            {watch('transactionType') === 'ALUGUEL' && (
-                              <span className="text-sm text-muted-foreground whitespace-nowrap">/mês</span>
-                            )}
-                          </div>
-                        )}
-                        {!watch('priceOnRequest') && errors.value && (
+                        <Label>
+                          Valor
+                          {watch('priceOnRequest') && (
+                            <span className="ml-2 text-xs font-normal text-muted-foreground">(exibido como &quot;Sob consulta&quot;)</span>
+                          )}
+                        </Label>
+                        <div className="flex items-center gap-2">
+                          <NumericFormat
+                            value={watch('value')}
+                            onValueChange={(v) => setValue('value', v.formattedValue, { shouldValidate: true, shouldDirty: true })}
+                            prefix="R$ "
+                            thousandSeparator="."
+                            decimalSeparator=","
+                            customInput={Input}
+                            placeholder="R$ 0,00"
+                          />
+                          {watch('transactionType') === 'ALUGUEL' && (
+                            <span className="text-sm text-muted-foreground whitespace-nowrap">/mês</span>
+                          )}
+                        </div>
+                        {errors.value && (
                           <span className="text-xs text-red-500">
                             {errors.value.message}
                           </span>
