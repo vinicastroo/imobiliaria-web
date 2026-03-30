@@ -128,7 +128,7 @@ export function RecentPropertiesGrid({ agencyId, renderCTA }: RecentPropertiesGr
                       {property.priceOnRequest
                         ? 'Sob consulta'
                         : property.pricePrefix
-                          ? `Até ${property.value}${property.transactionType === 'ALUGUEL' ? '/mês' : ''}`
+                          ? `A partir de ${property.value}${property.transactionType === 'ALUGUEL' ? '/mês' : ''}`
                           : `${property.value}${property.transactionType === 'ALUGUEL' ? '/mês' : ''}`}
                     </span>
                     <Badge className={property.transactionType === 'ALUGUEL' ? 'bg-emerald-600 hover:bg-emerald-700' : 'bg-(--primary-color,#17375F) hover:bg-(--primary-color,#17375F)'}>

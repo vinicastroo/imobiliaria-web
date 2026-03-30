@@ -197,7 +197,7 @@ export function PropertyList() {
                   {property.priceOnRequest
                     ? 'Sob consulta'
                     : property.pricePrefix
-                      ? `Até ${property.value}${property.transactionType === 'ALUGUEL' ? '/mês' : ''}`
+                      ? `A partir de ${property.value}${property.transactionType === 'ALUGUEL' ? '/mês' : ''}`
                       : `${property.value}${property.transactionType === 'ALUGUEL' ? '/mês' : ''}`}
                 </span>
               </div>
