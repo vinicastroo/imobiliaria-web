@@ -302,7 +302,7 @@ export function PropertyForm({ mode, propertyId, defaultValues }: PropertyFormPr
                           disabled={watch('priceOnRequest')}
                         />
                         <Label htmlFor="pricePrefix" className="cursor-pointer font-normal">
-                          Adicionar <strong>Até</strong> antes do valor
+                          Adicionar <strong>"a partir"</strong> antes do valor
                         </Label>
                       </div>
                       <div className="flex items-center gap-2">
@@ -359,11 +359,10 @@ export function PropertyForm({ mode, propertyId, defaultValues }: PropertyFormPr
                     <div className="space-y-2">
                       <Label>Descrição Completa</Label>
                       <div
-                        className={`border rounded-md ${
-                          errors.description
-                            ? 'border-red-500'
-                            : 'border-gray-200'
-                        } bg-white overflow-hidden focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2`}
+                        className={`border rounded-md ${errors.description
+                          ? 'border-red-500'
+                          : 'border-gray-200'
+                          } bg-white overflow-hidden focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2`}
                       >
                         <MenuBarTiptap editor={editor} />
                         <EditorContent editor={editor} />
@@ -379,21 +378,21 @@ export function PropertyForm({ mode, propertyId, defaultValues }: PropertyFormPr
 
                 {/* Corretores - esconde para REALTOR (auto-atribuído) */}
                 {!isRealtor && (
-                <Card className="py-6">
-                  <CardHeader>
-                    <CardTitle>Corretores Responsáveis</CardTitle>
-                    <p className="text-sm text-gray-500">
-                      Selecione quem está atendendo este imóvel
-                    </p>
-                  </CardHeader>
-                  <CardContent>
-                    <RealtorSorter
-                      allRealtors={realtors}
-                      selectedIds={watch('realtorIds') || []}
-                      onChange={(ids) => setValue('realtorIds', ids, { shouldDirty: true })}
-                    />
-                  </CardContent>
-                </Card>
+                  <Card className="py-6">
+                    <CardHeader>
+                      <CardTitle>Corretores Responsáveis</CardTitle>
+                      <p className="text-sm text-gray-500">
+                        Selecione quem está atendendo este imóvel
+                      </p>
+                    </CardHeader>
+                    <CardContent>
+                      <RealtorSorter
+                        allRealtors={realtors}
+                        selectedIds={watch('realtorIds') || []}
+                        onChange={(ids) => setValue('realtorIds', ids, { shouldDirty: true })}
+                      />
+                    </CardContent>
+                  </Card>
                 )}
 
                 <Card className="py-6">
