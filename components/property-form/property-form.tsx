@@ -302,7 +302,7 @@ export function PropertyForm({ mode, propertyId, defaultValues }: PropertyFormPr
                           disabled={watch('priceOnRequest')}
                         />
                         <Label htmlFor="pricePrefix" className="cursor-pointer font-normal">
-                          Adicionar <strong>"a partir"</strong> antes do valor
+                          Adicionar <strong>"a partir de"</strong> antes do valor
                         </Label>
                       </div>
                       <div className="flex items-center gap-2">
