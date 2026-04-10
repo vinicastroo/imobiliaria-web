@@ -25,17 +25,13 @@ export async function RecentPropertiesSection({ agencyId }: RecentPropertiesSect
         <h2 className="text-2xl font-bold text-(--primary-color,#17375F)">Recentes</h2>
       </div>
 
-      <RecentPropertiesGrid
-        agencyId={agencyId}
-        initialProperties={properties}
-        renderCTA={(hasData) => hasData && (
-          <Link href="/imoveis" className="mt-10">
-            <Button variant="outline" size="lg" className="bg-(--primary-color,#17375F) text-white hover:bg-(--primary-color,#17375F)/80 hover:text-white cursor-pointer">
-              Ver todos os imóveis
-            </Button>
-          </Link>
-        )}
-      />
+      <RecentPropertiesGrid agencyId={agencyId} initialProperties={properties} />
+
+      <Link href="/imoveis" className="mt-10">
+        <Button variant="outline" size="lg" className="bg-(--primary-color,#17375F) text-white hover:bg-(--primary-color,#17375F)/80 hover:text-white cursor-pointer">
+          Ver todos os imóveis
+        </Button>
+      </Link>
     </section>
   )
 }
