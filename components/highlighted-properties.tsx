@@ -12,6 +12,7 @@ import { Badge } from '@/components/ui/badge'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 
 import { getHighlightedProperties } from '@/app/api/get-highlighted-properties'
+import type { Properties } from '@/app/api/get-properties'
 import { PropertyGallery } from './property-gallery'
 import square from '@/public/square.svg'
 
@@ -42,15 +43,19 @@ const PropertyFeature = memo(function PropertyFeature({ icon: Icon, value, label
 export interface HighlightedPropertiesGridProps {
   agencyId?: string
   renderCTA?: (hasData: boolean) => React.ReactNode
+  initialProperties?: Properties[]
 }
 
-export function HighlightedPropertiesGrid({ agencyId, renderCTA }: HighlightedPropertiesGridProps) {
+export function HighlightedPropertiesGrid({ agencyId, renderCTA, initialProperties }: HighlightedPropertiesGridProps) {
   const { data, isLoading } = useQuery({
     queryKey: ['highlighted-properties', agencyId],
     queryFn: () => getHighlightedProperties(agencyId),
+    enabled: !initialProperties,
+    initialData: initialProperties ? { properties: initialProperties } : undefined,
   })
 
-  if (!isLoading && (!data?.properties || data.properties.length === 0)) return null
+  if (!initialProperties && !isLoading && (!data?.properties || data.properties.length === 0)) return null
+  if (initialProperties && initialProperties.length === 0) return null
 
   return (
     <TooltipProvider>

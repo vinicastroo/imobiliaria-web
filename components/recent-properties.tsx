@@ -13,6 +13,7 @@ import { Badge } from '@/components/ui/badge'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 
 import { getRecentProperties } from '@/app/api/get-recent-properties'
+import type { Properties } from '@/app/api/get-properties'
 
 import React from 'react'
 import { PropertyGallery } from './property-gallery'
@@ -42,12 +43,15 @@ const PropertyFeature = memo(function PropertyFeature({ icon: Icon, value, label
 export interface RecentPropertiesGridProps {
   agencyId?: string
   renderCTA?: (hasData: boolean) => React.ReactNode
+  initialProperties?: Properties[]
 }
 
-export function RecentPropertiesGrid({ agencyId, renderCTA }: RecentPropertiesGridProps) {
+export function RecentPropertiesGrid({ agencyId, renderCTA, initialProperties }: RecentPropertiesGridProps) {
   const { data, isLoading } = useQuery({
     queryKey: ['recent-properties', agencyId],
     queryFn: () => getRecentProperties(agencyId),
+    enabled: !initialProperties,
+    initialData: initialProperties ? { properties: initialProperties } : undefined,
   })
 
   return (

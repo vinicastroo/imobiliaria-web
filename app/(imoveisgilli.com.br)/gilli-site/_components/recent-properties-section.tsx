@@ -1,7 +1,4 @@
-"use client"
-
 import Link from 'next/link'
-import { useQuery } from '@tanstack/react-query'
 import { Button } from '@/components/ui/button'
 import { RecentPropertiesGrid } from '@/components/recent-properties'
 import { getRecentProperties } from '@/app/api/get-recent-properties'
@@ -10,13 +7,16 @@ interface RecentPropertiesSectionProps {
   agencyId?: string
 }
 
-export function RecentPropertiesSection({ agencyId }: RecentPropertiesSectionProps) {
-  const { data, isLoading } = useQuery({
-    queryKey: ['recent-properties', agencyId],
-    queryFn: () => getRecentProperties(agencyId),
-  })
+export async function RecentPropertiesSection({ agencyId }: RecentPropertiesSectionProps) {
+  let properties: Awaited<ReturnType<typeof getRecentProperties>>['properties'] = []
+  try {
+    const result = await getRecentProperties(agencyId)
+    properties = result.properties
+  } catch {
+    return null
+  }
 
-  if (!isLoading && (!data?.properties || data.properties.length === 0)) return null
+  if (properties.length === 0) return null
 
   return (
     <section className="relative w-full py-16 px-4 bg-zinc-50 flex flex-col items-center overflow-hidden">
@@ -27,6 +27,7 @@ export function RecentPropertiesSection({ agencyId }: RecentPropertiesSectionPro
 
       <RecentPropertiesGrid
         agencyId={agencyId}
+        initialProperties={properties}
         renderCTA={(hasData) => hasData && (
           <Link href="/imoveis" className="mt-10">
             <Button variant="outline" size="lg" className="bg-(--primary-color,#17375F) text-white hover:bg-(--primary-color,#17375F)/80 hover:text-white cursor-pointer">
