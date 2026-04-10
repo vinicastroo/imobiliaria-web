@@ -110,14 +110,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { slug } = await params
   const property = await getProperty(slug)
 
-  // 1. Se o imóvel nem existir, mantém o 404
-  if (!property) {
-    notFound()
-  }
-
-  // 2. Se existir mas não estiver visível, redireciona para a home
-  if (property && property.visible === false) {
-    redirect('/')
+  if (!property || property.visible === false) {
+    return { title: 'Imóvel indisponível' }
   }
 
   if (!property) return { title: 'Imóvel não encontrado' }
@@ -227,6 +221,11 @@ export default async function PropertyPage({ params }: PageProps) {
 
   if (!property) {
     notFound()
+  }
+
+  // 2. Se existir mas não estiver visível, redireciona para a home
+  if (property.visible === false) {
+    redirect('/')
   }
 
   const agencyId =
