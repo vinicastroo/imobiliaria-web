@@ -1,5 +1,5 @@
 import { Metadata } from 'next'
-import { notFound } from 'next/navigation'
+import { notFound, redirect } from 'next/navigation'
 import { unstable_cache } from 'next/cache'
 import { headers } from 'next/headers'
 import { BedDouble, Bath, CarFront, Ruler, MapPin, Grid2X2 } from 'lucide-react'
@@ -109,6 +109,17 @@ function buildBreadcrumbJsonLd(propertyName: string, slug: string) {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params
   const property = await getProperty(slug)
+
+  // 1. Se o imóvel nem existir, mantém o 404
+  if (!property) {
+    notFound()
+  }
+
+  // 2. Se existir mas não estiver visível, redireciona para a home
+  if (property && property.visible === false) {
+    redirect('/')
+  }
+
   if (!property) return { title: 'Imóvel não encontrado' }
 
   const ogImage = property.files?.[0]?.path || "https://aurosimobiliaria.com.br/logo.png"

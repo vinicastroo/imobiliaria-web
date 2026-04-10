@@ -30,6 +30,7 @@ export interface Property {
   street: string
   numberAddress: string
   longitude: string
+  visible: boolean
   latitude: string
   realtors: {
     id: string
