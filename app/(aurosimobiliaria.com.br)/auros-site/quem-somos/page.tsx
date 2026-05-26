@@ -9,6 +9,33 @@ export const metadata: Metadata = {
   alternates: {
     canonical: 'https://aurosimobiliaria.com.br/quem-somos',
   },
+  openGraph: {
+    title: 'Quem Somos | Auros Corretora Imobiliária',
+    description: 'Conheça a história, missão e equipe da Auros Corretora Imobiliária. Tradição familiar com mais de 25 anos.',
+    url: 'https://aurosimobiliaria.com.br/quem-somos',
+    type: 'website',
+    images: [{ url: 'https://aurosimobiliaria.com.br/logo.png', width: 1200, height: 630, alt: 'Auros Corretora Imobiliária' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Quem Somos | Auros Corretora Imobiliária',
+    description: 'Conheça a história, missão e equipe da Auros Corretora Imobiliária.',
+    images: ['https://aurosimobiliaria.com.br/logo.png'],
+  },
+}
+
+const aboutPageJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'AboutPage',
+  name: 'Quem Somos - Auros Corretora Imobiliária',
+  url: 'https://aurosimobiliaria.com.br/quem-somos',
+  description: 'Conheça a história, missão e equipe da Auros Corretora Imobiliária. Fundada em 2023 em Rio do Sul, SC.',
+  mainEntity: {
+    '@type': 'RealEstateAgent',
+    name: 'Auros Corretora Imobiliária',
+    foundingDate: '2023-02-07',
+    url: 'https://aurosimobiliaria.com.br',
+  },
 }
 
 import { Button } from '@/components/ui/button'
@@ -23,6 +50,10 @@ import Link from 'next/link'
 export default function QuemSomosPage() {
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(aboutPageJsonLd) }}
+      />
       <MenubarHome />
       <div className="min-h-screen bg-white font-sans">
 

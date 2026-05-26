@@ -12,6 +12,19 @@ export const metadata: Metadata = {
   alternates: {
     canonical: 'https://aurosimobiliaria.com.br/imoveis',
   },
+  openGraph: {
+    title: 'Imóveis à Venda | Auros Corretora Imobiliária',
+    description: 'Busque e filtre imóveis à venda em Rio do Sul e Balneário Camboriú. Apartamentos, casas, terrenos e muito mais.',
+    url: 'https://aurosimobiliaria.com.br/imoveis',
+    type: 'website',
+    images: [{ url: 'https://aurosimobiliaria.com.br/logo.png', width: 1200, height: 630, alt: 'Auros Corretora Imobiliária - Imóveis' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Imóveis à Venda | Auros Corretora Imobiliária',
+    description: 'Busque e filtre imóveis à venda em Rio do Sul e Balneário Camboriú.',
+    images: ['https://aurosimobiliaria.com.br/logo.png'],
+  },
 }
 
 const breadcrumbJsonLd = {

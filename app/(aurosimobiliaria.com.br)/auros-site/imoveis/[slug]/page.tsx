@@ -111,10 +111,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const property = await getProperty(slug)
 
   if (!property || property.visible === false) {
-    return { title: 'Imóvel indisponível' }
+    return { title: 'Imóvel indisponível', robots: { index: false, follow: false } }
   }
-
-  if (!property) return { title: 'Imóvel não encontrado' }
 
   const ogImage = property.files?.[0]?.path || "https://aurosimobiliaria.com.br/logo.png"
 
@@ -293,7 +291,7 @@ export default async function PropertyPage({ params }: PageProps) {
 
                 {/* Features */}
                 <div>
-                  <h3 className="text-sm font-bold text-[#17375F] uppercase mb-4">Informações</h3>
+                  <h2 className="text-sm font-bold text-[#17375F] uppercase mb-4">Informações</h2>
                   <div className="flex flex-wrap gap-4">
                     <FeatureItem icon={BedDouble} value={property.bedrooms} label="Quartos" />
                     <FeatureItem icon={Bath} value={property.suites} label="Suítes" />
@@ -308,7 +306,7 @@ export default async function PropertyPage({ params }: PageProps) {
                   <>
                     <Separator className="my-6" />
                     <div>
-                      <h3 className="text-sm font-bold text-[#17375F] uppercase mb-4">Infraestrutura</h3>
+                      <h2 className="text-sm font-bold text-[#17375F] uppercase mb-4">Infraestrutura</h2>
                       <div className="flex flex-wrap gap-2">
                         {property.property_infrastructures.map(({ infrastructure }) => (
                           <Badge key={infrastructure.id} variant="secondary" className="text-xs px-3 py-1">
@@ -324,7 +322,7 @@ export default async function PropertyPage({ params }: PageProps) {
 
                 {/* Descrição */}
                 <div className="space-y-4">
-                  <h3 className="text-sm font-bold text-[#17375F] uppercase">Sobre o imóvel</h3>
+                  <h2 className="text-sm font-bold text-[#17375F] uppercase">Sobre o imóvel</h2>
                   <p className="text-gray-600 italic border-l-4 border-[#17375F] pl-4">
                     {property.summary}
                   </p>
@@ -336,10 +334,10 @@ export default async function PropertyPage({ params }: PageProps) {
                   <>
                     <Separator className='my-10' />
                     <div className="space-y-4">
-                      <h3 className="text-sm font-bold text-[#17375F] uppercase flex items-center gap-2">
+                      <h2 className="text-sm font-bold text-[#17375F] uppercase flex items-center gap-2">
                         <MapPin size={18} />
                         Localização
-                      </h3>
+                      </h2>
                       <PropertyGoogleMap
                         lat={Number(property.latitude)}
                         lng={Number(property.longitude)}

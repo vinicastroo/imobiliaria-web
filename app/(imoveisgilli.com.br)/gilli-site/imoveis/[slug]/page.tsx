@@ -114,7 +114,7 @@ function buildBreadcrumbJsonLd(propertyName: string, slug: string) {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params
   const property = await getProperty(slug)
-  if (!property) return { title: 'Imóvel não encontrado' }
+  if (!property) return { title: 'Imóvel não encontrado', robots: { index: false, follow: false } }
 
   const ogImage = property.files?.[0]?.path ?? 'https://imoveisgilli.com.br/og-image.png'
 
