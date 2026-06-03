@@ -215,7 +215,10 @@ export function ImageUploader({
       if (acceptedFiles.length > remaining) {
         toast.warning(`Limite de ${MAX_IMAGES} fotos atingido. Apenas ${remaining} foto(s) foram adicionadas.`)
       }
-      void enqueueFiles(toAdd)
+      enqueueFiles(toAdd).catch((err: unknown) => {
+        const message = err instanceof Error ? err.message : 'Erro ao processar imagem. Tente novamente.'
+        toast.error(message)
+      })
     },
     [enqueueFiles, isAtLimit, remaining],
   )
