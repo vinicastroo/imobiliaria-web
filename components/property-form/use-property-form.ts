@@ -214,6 +214,20 @@ export function usePropertyForm({ mode, propertyId, defaultValues }: UseProperty
       return
     }
 
+    // Verifica disponibilidade do slug antes de qualquer upload
+    try {
+      const params = new URLSearchParams({ slug: data.slug })
+      if (mode === 'edit' && propertyId) params.set('excludeId', propertyId)
+      const { data: check } = await api.get<{ available: boolean }>(`/imovel/check-slug?${params}`)
+      if (!check.available) {
+        form.setError('slug', { message: 'Este slug já está em uso. Altere o nome ou edite o slug.' })
+        toast.error('Este slug já está em uso. Altere o nome ou edite o slug.')
+        return
+      }
+    } catch {
+      // Se a verificação falhar, deixa o backend rejeitar com 409
+    }
+
     setIsSubmitting(true)
     try {
       // Mapeia novos arquivos com sua posição final no array
@@ -265,11 +279,16 @@ export function usePropertyForm({ mode, propertyId, defaultValues }: UseProperty
 
       await revalidateProperties()
       router.push('/admin/imoveis')
-    } catch (error) {
+    } catch (error: unknown) {
       console.error(error)
-      toast.error(
-        mode === 'create' ? 'Erro ao criar imóvel' : 'Erro ao atualizar imóvel',
-      )
+      const axiosError = error as { response?: { status?: number; data?: { error?: string } } }
+      if (axiosError.response?.status === 409) {
+        const msg = axiosError.response.data?.error ?? 'Este slug já está em uso.'
+        form.setError('slug', { message: msg })
+        toast.error(msg)
+      } else {
+        toast.error(mode === 'create' ? 'Erro ao criar imóvel' : 'Erro ao atualizar imóvel')
+      }
     } finally {
       setIsSubmitting(false)
     }
