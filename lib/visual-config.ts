@@ -1,22 +1,28 @@
 import { cache } from 'react'
 import { headers } from 'next/headers'
 
+export type LayoutType = 'MODERN' | 'CLASSIC' | 'MINIMAL'
+
 export interface VisualConfig {
-  logoUrl: string | null
-  iconUrl: string | null
-  primaryColor: string
+  logoUrl:        string | null
+  iconUrl:        string | null
+  primaryColor:   string
   secondaryColor: string
-  fontFamily: string
-  siteEnabled: boolean
+  fontFamily:     string
+  layoutType:     LayoutType
+  isCustomFolder: boolean
+  siteEnabled:    boolean
 }
 
 export const PLATFORM_DEFAULTS: VisualConfig = {
-  logoUrl: null,
-  iconUrl: null,
-  primaryColor: '#EE9020',
+  logoUrl:        null,
+  iconUrl:        null,
+  primaryColor:   '#EE9020',
   secondaryColor: '#0F172A',
-  fontFamily: 'Montserrat',
-  siteEnabled: true,
+  fontFamily:     'Montserrat',
+  layoutType:     'MODERN',
+  isCustomFolder: false,
+  siteEnabled:    true,
 }
 
 /** 
@@ -82,14 +88,16 @@ export const getTenantVisualConfig = cache(async (): Promise<VisualConfig> => {
     const data = (await res.json()) as Partial<VisualConfig>
 
     return {
-      logoUrl: data.logoUrl ?? null,
-      iconUrl: data.iconUrl ?? null,
-      primaryColor: data.primaryColor ?? PLATFORM_DEFAULTS.primaryColor,
+      logoUrl:        data.logoUrl        ?? null,
+      iconUrl:        data.iconUrl        ?? null,
+      primaryColor:   data.primaryColor   ?? PLATFORM_DEFAULTS.primaryColor,
       secondaryColor: data.secondaryColor ?? PLATFORM_DEFAULTS.secondaryColor,
       fontFamily: SUPPORTED_FONTS[data.fontFamily ?? ''] !== undefined
         ? (data.fontFamily ?? PLATFORM_DEFAULTS.fontFamily)
         : PLATFORM_DEFAULTS.fontFamily,
-      siteEnabled: data.siteEnabled ?? true,
+      layoutType:     (data.layoutType    ?? PLATFORM_DEFAULTS.layoutType) as LayoutType,
+      isCustomFolder: data.isCustomFolder ?? false,
+      siteEnabled:    data.siteEnabled    ?? true,
     }
   } catch {
     return PLATFORM_DEFAULTS

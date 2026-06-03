@@ -6,7 +6,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { Loader2, Upload, ImageIcon, ShieldAlert, Building2, CreditCard, Palette } from 'lucide-react'
+import { Loader2, Upload, ImageIcon, ShieldAlert, Building2, CreditCard, Palette, Layout } from 'lucide-react'
 import Image from 'next/image'
 import { toast } from 'sonner'
 
@@ -47,14 +47,23 @@ interface AgencyInfo {
   plan: AgencyPlan | null
 }
 
+type LayoutType = 'MODERN' | 'CLASSIC' | 'MINIMAL'
+
 interface VisualConfigData {
-  logoUrl: string | null
-  iconUrl: string | null
-  primaryColor: string
+  logoUrl:        string | null
+  iconUrl:        string | null
+  primaryColor:   string
   secondaryColor: string
-  fontFamily: string
-  siteEnabled: boolean
+  fontFamily:     string
+  layoutType:     LayoutType
+  siteEnabled:    boolean
 }
+
+const LAYOUT_OPTIONS: { value: LayoutType; label: string; description: string }[] = [
+  { value: 'MODERN',  label: 'Moderno',    description: 'Hero em tela cheia com overlay e busca centralizada.' },
+  { value: 'CLASSIC', label: 'Clássico',   description: 'Header tradicional com banner colorido e grid de imóveis.' },
+  { value: 'MINIMAL', label: 'Minimalista', description: 'Tipografia clean, muito espaço em branco e foco no conteúdo.' },
+]
 
 const agencyInfoSchema = z.object({
   name: z.string().min(1, 'Nome é obrigatório'),
@@ -88,9 +97,10 @@ export default function ConfiguracoesPage() {
   const [iconPreview, setIconPreview] = useState<string | null>(null)
 
   const [visualEdits, setVisualEdits] = useState<{
-    primaryColor: string
+    primaryColor:   string
     secondaryColor: string
-    fontFamily: string
+    fontFamily:     string
+    layoutType:     LayoutType
   } | null>(null)
 
   const {
@@ -121,13 +131,15 @@ export default function ConfiguracoesPage() {
     enabled: isAllowed,
   })
 
-  const primaryColor = visualEdits?.primaryColor ?? visualConfig?.primaryColor ?? '#0f172a'
+  const primaryColor   = visualEdits?.primaryColor   ?? visualConfig?.primaryColor   ?? '#0f172a'
   const secondaryColor = visualEdits?.secondaryColor ?? visualConfig?.secondaryColor ?? '#e2e8f0'
-  const fontFamily = visualEdits?.fontFamily ?? visualConfig?.fontFamily ?? 'Inter'
+  const fontFamily     = visualEdits?.fontFamily     ?? visualConfig?.fontFamily     ?? 'Inter'
+  const layoutType     = visualEdits?.layoutType     ?? visualConfig?.layoutType     ?? 'MODERN'
 
-  const setPrimaryColor = (v: string) => setVisualEdits({ primaryColor: v, secondaryColor, fontFamily })
-  const setSecondaryColor = (v: string) => setVisualEdits({ primaryColor, secondaryColor: v, fontFamily })
-  const setFontFamily = (v: string) => setVisualEdits({ primaryColor, secondaryColor, fontFamily: v })
+  const setPrimaryColor   = (v: string)     => setVisualEdits({ primaryColor: v, secondaryColor, fontFamily, layoutType })
+  const setSecondaryColor = (v: string)     => setVisualEdits({ primaryColor, secondaryColor: v, fontFamily, layoutType })
+  const setFontFamily     = (v: string)     => setVisualEdits({ primaryColor, secondaryColor, fontFamily: v, layoutType })
+  const setLayoutType     = (v: LayoutType) => setVisualEdits({ primaryColor, secondaryColor, fontFamily, layoutType: v })
 
   useEffect(() => {
     if (agencyInfo) {
@@ -171,7 +183,7 @@ export default function ConfiguracoesPage() {
 
   const visualConfigMutation = useMutation({
     mutationFn: async () =>
-      (await api.put('/visual-config', { primaryColor, secondaryColor, fontFamily })).data as VisualConfigData,
+      (await api.put('/visual-config', { primaryColor, secondaryColor, fontFamily, layoutType })).data as VisualConfigData,
     onSuccess: async () => {
       queryClient.invalidateQueries({ queryKey: ['visual-config'] })
       setVisualEdits(null)
@@ -371,6 +383,36 @@ export default function ConfiguracoesPage() {
               <CardDescription>Ícone, cores e tipografia exibidos no site e no painel.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
+
+              {/* Layout do Site */}
+              <div className="space-y-3">
+                <div className="flex items-center gap-2">
+                  <Layout className="h-4 w-4 text-[#17375F]" />
+                  <Label className="text-sm font-semibold">Layout do Site</Label>
+                </div>
+                <p className="text-xs text-gray-500">
+                  Escolha o estilo visual do seu site público. Não se aplica a sites com layout customizado.
+                </p>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                  {LAYOUT_OPTIONS.map((option) => (
+                    <button
+                      key={option.value}
+                      type="button"
+                      onClick={() => setLayoutType(option.value)}
+                      className={`text-left p-4 rounded-lg border-2 transition-all ${
+                        layoutType === option.value
+                          ? 'border-[#17375F] bg-blue-50/50'
+                          : 'border-gray-200 hover:border-gray-300'
+                      }`}
+                    >
+                      <p className="font-semibold text-sm text-gray-800">{option.label}</p>
+                      <p className="text-xs text-gray-500 mt-1">{option.description}</p>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="border-t" />
 
               {/* Ícone do Painel */}
               <div className="space-y-2">

@@ -1,6 +1,11 @@
+import type { Metadata } from 'next'
 import { getTenantVisualConfig } from '@/lib/visual-config'
 import { Menubar } from '@/components/menu'
 import "@/app/globals.css"
+
+export const metadata: Metadata = {
+  robots: { index: false, follow: false },
+}
 
 // Server Component — fetches tenant visual config once per request.
 // getTenantVisualConfig() is deduplicated via React.cache, so the root

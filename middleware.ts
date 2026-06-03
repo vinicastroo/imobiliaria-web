@@ -5,23 +5,29 @@ const PLATFORM_DOMAIN  = process.env.NEXT_PUBLIC_PLATFORM_DOMAIN ?? 'codelabz.co
 const SUPER_ADMIN_HOST = `admin.${PLATFORM_DOMAIN}`
 const API_URL          = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3333'
 
-// Fallback agency used in local development (existing NEXT_PUBLIC_AGENCY_ID)
 const DEV_AGENCY_ID = process.env.NEXT_PUBLIC_AGENCY_ID
 
-// Map: hostname → internal site prefix
-// Add new custom tenants here — generic-site is the fallback
+// Hostnames with dedicated physical site folders — highest priority.
+// Add new fully-custom tenants here; all others use the standard engine.
 const CUSTOM_SITE_PREFIXES: Record<string, string> = {
   'aurosimobiliaria.com.br': '/auros-site',
   'imoveisgilli.com.br':     '/gilli-site',
 }
 
-const ALL_SITE_PREFIXES = [...Object.values(CUSTOM_SITE_PREFIXES), '/generic-site']
+// All rewritten prefixes — used by isPublicSitePage to avoid re-processing
+// requests that were already rewritten internally by Next.js.
+const ALL_SITE_PREFIXES = [
+  ...Object.values(CUSTOM_SITE_PREFIXES),
+  '/sites',
+]
 
 interface TenantContext {
-  id:          string
-  slug:        string
-  name:        string
-  siteEnabled: boolean
+  id:             string
+  slug:           string
+  name:           string
+  siteEnabled:    boolean
+  layoutType:     'MODERN' | 'CLASSIC' | 'MINIMAL'
+  isCustomFolder: boolean
 }
 
 async function fetchTenant(hostname: string): Promise<TenantContext | null> {
@@ -55,8 +61,10 @@ function isPublicSitePage(pathname: string): boolean {
   )
 }
 
-function getSitePrefix(hostname: string): string {
-  return CUSTOM_SITE_PREFIXES[hostname] ?? '/generic-site'
+// Returns the internal Next.js path prefix for the given hostname + tenant.
+// Custom tenants use hardcoded folder paths; standard tenants use the dynamic engine.
+function getSitePrefix(hostname: string, tenantSlug: string): string {
+  return CUSTOM_SITE_PREFIXES[hostname] ?? `/sites/${tenantSlug}`
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -73,22 +81,16 @@ async function applyAuthRules(
 
   const isSuperAdmin = token?.role === 'SUPER_ADMIN'
 
-  // /login → redirect already-authenticated users to admin dashboard
   if (pathname === '/login' && isAuth) {
-    // SUPER_ADMIN always goes to the platform panel
     if (isSuperAdmin) {
       return NextResponse.redirect(new URL('/admin/agencies', req.url))
     }
-    // Tenant users: only redirect if the token belongs to the current tenant.
-    // If a user from tenant A lands on tenant B's login page while still logged
-    // in to A, we let them see the login form so they can sign in to the right account.
     if (!tenantId || token.agencyId === tenantId) {
       return NextResponse.redirect(new URL('/admin/imoveis', req.url))
     }
     return response
   }
 
-  // /admin/* → must be authenticated AND belong to this tenant
   if (pathname.startsWith('/admin')) {
     if (!isAuth) {
       const loginUrl = new URL('/login', req.url)
@@ -96,13 +98,10 @@ async function applyAuthRules(
       return NextResponse.redirect(loginUrl)
     }
 
-    // SUPER_ADMIN (agencyId=null) bypasses tenant matching — they can access
-    // any admin route (used for local dev and future impersonation support).
     if (!isSuperAdmin && tenantId && token.agencyId !== tenantId) {
       return NextResponse.redirect(new URL('/login', req.url))
     }
 
-    // SUPER_ADMIN accessing the tenant dashboard index → redirect to their panel
     if (isSuperAdmin && pathname === '/admin') {
       return NextResponse.redirect(new URL('/admin/agencies', req.url))
     }
@@ -133,7 +132,6 @@ export async function middleware(req: NextRequest) {
     const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET })
 
     if (pathname === '/login') {
-      // Redirect already-authenticated super admins to their dashboard
       if (token?.role === 'SUPER_ADMIN') {
         return NextResponse.redirect(new URL('/admin/agencies', req.url))
       }
@@ -154,24 +152,30 @@ export async function middleware(req: NextRequest) {
 
   // ── 3. Local development — skip resolution, inject env-based tenant ─────
   if (isLocalDev(hostname)) {
-    const domainParam = req.nextUrl.searchParams.get('domain')
+    const domainParam  = req.nextUrl.searchParams.get('domain')
     const domainCookie = req.cookies.get('__dev_domain__')?.value
     const effectiveDomain = domainParam ?? domainCookie ?? process.env.NEXT_PUBLIC_DEV_DOMAIN ?? null
 
-    // If a domain is simulated (?domain= or cookie), resolve it via the backend
-    // so tenant isolation works correctly for non-default tenants.
-    let tenantId = DEV_AGENCY_ID ?? null
+    let tenantId   = DEV_AGENCY_ID ?? null
+    let tenantSlug: string | null = null
+    let layoutType: TenantContext['layoutType'] = 'MODERN'
+
     if (effectiveDomain) {
       const resolved = await fetchTenant(effectiveDomain)
-      if (resolved) tenantId = resolved.id
+      if (resolved) {
+        tenantId   = resolved.id
+        tenantSlug = resolved.slug
+        layoutType = resolved.layoutType
+      }
     }
 
     const requestHeaders = new Headers(req.headers)
-    if (tenantId) requestHeaders.set('x-tenant-id', tenantId)
+    if (tenantId)   requestHeaders.set('x-tenant-id',     tenantId)
+    if (layoutType) requestHeaders.set('x-tenant-layout', layoutType)
 
     let base: NextResponse
-    if (isPublicSitePage(pathname)) {
-      const prefix = getSitePrefix(effectiveDomain ?? '')
+    if (isPublicSitePage(pathname) && tenantSlug) {
+      const prefix     = getSitePrefix(effectiveDomain ?? '', tenantSlug)
       const rewriteUrl = new URL(prefix + (pathname === '/' ? '' : pathname), req.url)
       base = NextResponse.rewrite(rewriteUrl, { request: { headers: requestHeaders } })
     } else {
@@ -192,18 +196,18 @@ export async function middleware(req: NextRequest) {
   const tenant = await fetchTenant(hostname)
 
   if (!tenant) {
-    // Unknown hostname → send to platform landing page
     return NextResponse.redirect(`https://${PLATFORM_DOMAIN}`)
   }
 
   const requestHeaders = new Headers(req.headers)
-  requestHeaders.set('x-tenant-id',   tenant.id)
-  requestHeaders.set('x-tenant-slug', tenant.slug)
+  requestHeaders.set('x-tenant-id',     tenant.id)
+  requestHeaders.set('x-tenant-slug',   tenant.slug)
+  requestHeaders.set('x-tenant-layout', tenant.layoutType)
 
   if (isPublicSitePage(pathname)) {
-    const prefix = getSitePrefix(hostname)
+    const prefix     = getSitePrefix(hostname, tenant.slug)
     const rewriteUrl = new URL(prefix + (pathname === '/' ? '' : pathname), req.url)
-    const response = await applyAuthRules(
+    const response   = await applyAuthRules(
       req,
       NextResponse.rewrite(rewriteUrl, { request: { headers: requestHeaders } }),
       tenant.id,
@@ -222,6 +226,5 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  // Run on all paths except Next.js internals
   matcher: ['/((?!_next/static|_next/image|favicon.ico).*)'],
 }
