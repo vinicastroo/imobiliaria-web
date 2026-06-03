@@ -40,9 +40,14 @@ api.interceptors.request.use(async (config) => {
 
       if (session.user.agencyId) {
         config.headers['x-agency-id'] = session.user.agencyId
-      } else {
-        // SUPER_ADMIN has no agency
+      } else if (session.user.role === 'SUPER_ADMIN') {
+        // SUPER_ADMIN has no agency — intentionally omit the header
         delete config.headers['x-agency-id']
+      } else {
+        // Authenticated user with null agencyId (edge case) — fall back to domain resolution
+        const tenantId = await resolveTenantId()
+        if (tenantId) config.headers['x-agency-id'] = tenantId
+        console.log('[api] x-agency-id via fallback (session sem agencyId):', tenantId, '| url:', config.url)
       }
     } else if (!config.headers['x-agency-id']) {
       const tenantId = await resolveTenantId()
