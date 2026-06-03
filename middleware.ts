@@ -196,6 +196,11 @@ export async function middleware(req: NextRequest) {
   const tenant = await fetchTenant(hostname)
 
   if (!tenant) {
+    // Allow internal Next.js API routes to pass through even without tenant
+    // context — blocking them would break getSession() and other auth flows.
+    if (pathname.startsWith('/api')) {
+      return NextResponse.next()
+    }
     return NextResponse.redirect(`https://${PLATFORM_DOMAIN}`)
   }
 
