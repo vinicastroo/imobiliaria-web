@@ -1,9 +1,18 @@
 import { headers } from 'next/headers'
+import type { Metadata } from 'next'
 import { getTenantVisualConfig } from '@/lib/visual-config'
 import { ModernTemplate } from '@/components/site-templates/modern-template'
 import { ClassicTemplate } from '@/components/site-templates/classic-template'
 import { MinimalTemplate } from '@/components/site-templates/minimal-template'
 import type { LayoutType } from '@/lib/visual-config'
+
+export async function generateMetadata(): Promise<Metadata> {
+  const host = (await headers()).get('host')?.split(':')[0] ?? ''
+  return {
+    alternates: { canonical: `https://${host}` },
+    openGraph:  { url: `https://${host}` },
+  }
+}
 
 const TEMPLATES: Record<LayoutType, React.ComponentType<{ agencyId: string }>> = {
   MODERN:  ModernTemplate,

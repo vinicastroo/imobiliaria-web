@@ -1,5 +1,15 @@
 import { Suspense } from 'react'
+import { headers } from 'next/headers'
+import type { Metadata } from 'next'
 import { MenubarHome } from '@/components/menu-home'
+
+export async function generateMetadata(): Promise<Metadata> {
+  const host = (await headers()).get('host')?.split(':')[0] ?? ''
+  return {
+    alternates: { canonical: `https://${host}/imoveis` },
+    openGraph:  { url: `https://${host}/imoveis` },
+  }
+}
 import { PropertyList } from '@/components/property-list'
 import { HorizontalFilter } from '@/components/horizontal-filter'
 import { SiteFooter } from '@/components/site-templates/site-footer'

@@ -1,6 +1,6 @@
-import { notFound, redirect } from 'next/navigation'
+import { notFound } from 'next/navigation'
 import { headers } from 'next/headers'
-import { Metadata } from 'next'
+import type { Metadata } from 'next'
 import { BedDouble, Bath, CarFront, Ruler, Grid2X2, MapPin } from 'lucide-react'
 
 import { getProperty } from '@/app/api/get-property'
@@ -20,14 +20,18 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { slug } = await params
   const property = await getProperty(slug)
 
-  if (!property) return { title: 'Imóvel não encontrado', robots: { index: false, follow: false } }
+  if (!property || property.visible === false) return { title: 'Imóvel indisponível', robots: { index: false, follow: false } }
+
+  const host = (await headers()).get('host')?.split(':')[0] ?? ''
 
   return {
     title:       property.name,
     description: property.summary,
+    alternates:  { canonical: `https://${host}/imoveis/${property.slug}` },
     openGraph: {
       title:       property.name,
       description: property.summary,
+      url:         `https://${host}/imoveis/${property.slug}`,
       images:      property.files[0] ? [{ url: property.files[0].path }] : [],
     },
   }
@@ -56,9 +60,7 @@ export default async function TenantPropertyPage({ params }: PageProps) {
   const property = await getProperty(slug)
 
   if (!property) notFound()
-  if (property.visible === false) redirect('/')
-
-  const agencyId = (await headers()).get('x-tenant-id') ?? process.env.NEXT_PUBLIC_AGENCY_ID ?? ''
+  if (property.visible === false) notFound()
 
   const priceDisplay = property.priceOnRequest
     ? 'Sob consulta'

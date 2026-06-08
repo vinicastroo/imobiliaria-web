@@ -1,5 +1,5 @@
 import { Metadata } from 'next'
-import { notFound, redirect } from 'next/navigation'
+import { notFound } from 'next/navigation'
 import { unstable_cache } from 'next/cache'
 import { headers } from 'next/headers'
 import { BedDouble, Bath, CarFront, Ruler, MapPin, Grid2X2 } from 'lucide-react'
@@ -221,9 +221,8 @@ export default async function PropertyPage({ params }: PageProps) {
     notFound()
   }
 
-  // 2. Se existir mas não estiver visível, redireciona para a home
   if (property.visible === false) {
-    redirect('/')
+    notFound()
   }
 
   const agencyId =
