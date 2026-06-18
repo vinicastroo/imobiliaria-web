@@ -5,7 +5,6 @@ import { Button } from '@/components/ui/button'
 
 export const metadata: Metadata = {
   title: 'Página não encontrada',
-  robots: { index: false, follow: false },
 }
 
 export default function Custom404() {
