@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Image from 'next/image'
+import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { signIn } from 'next-auth/react'
 import { useForm } from 'react-hook-form'
@@ -117,7 +118,15 @@ export function LoginForm({ logoUrl, agencyName }: LoginFormProps) {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="password">Senha</Label>
+              <div className="flex items-center justify-between">
+                <Label htmlFor="password">Senha</Label>
+                <Link
+                  href="/login/forgot-password"
+                  className="text-xs text-muted-foreground hover:text-primary hover:underline"
+                >
+                  Esqueceu a senha?
+                </Link>
+              </div>
               <div className="relative">
                 <Input
                   id="password"
