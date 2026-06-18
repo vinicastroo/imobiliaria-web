@@ -105,6 +105,10 @@ async function applyAuthRules(
     if (isSuperAdmin && pathname === '/admin') {
       return NextResponse.redirect(new URL('/admin/agencies', req.url))
     }
+
+    if (token?.role === 'REALTOR' && pathname === '/admin') {
+      return NextResponse.redirect(new URL('/admin/imoveis', req.url))
+    }
   }
 
   return response
@@ -173,9 +177,11 @@ export async function middleware(req: NextRequest) {
     if (tenantId)   requestHeaders.set('x-tenant-id',     tenantId)
     if (layoutType) requestHeaders.set('x-tenant-layout', layoutType)
 
+    const hasKnownPrefix = (effectiveDomain ?? '') in CUSTOM_SITE_PREFIXES
+
     let base: NextResponse
-    if (isPublicSitePage(pathname) && tenantSlug) {
-      const prefix     = getSitePrefix(effectiveDomain ?? '', tenantSlug)
+    if (isPublicSitePage(pathname) && (tenantSlug || hasKnownPrefix)) {
+      const prefix     = getSitePrefix(effectiveDomain ?? '', tenantSlug ?? '')
       const rewriteUrl = new URL(prefix + (pathname === '/' ? '' : pathname), req.url)
       base = NextResponse.rewrite(rewriteUrl, { request: { headers: requestHeaders } })
     } else {
