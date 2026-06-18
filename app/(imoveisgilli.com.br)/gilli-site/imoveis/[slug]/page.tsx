@@ -1,5 +1,5 @@
 import { Metadata } from 'next'
-import { notFound } from 'next/navigation'
+import { notFound, redirect } from 'next/navigation'
 import { unstable_cache } from 'next/cache'
 import { headers } from 'next/headers'
 import { BedDouble, Bath, CarFront, Ruler, MapPin, Grid2X2 } from 'lucide-react'
@@ -28,6 +28,9 @@ import type { Properties } from '@/app/api/get-properties'
 import RentJourney from '@/components/rent-journet'
 import { CopyLinkButton } from '@/components/copy-link-button'
 import { PropertyDescription } from '@/components/property-description'
+import { trackView } from '@/lib/track-view'
+
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 
 interface PageProps {
   params: Promise<{ slug: string }>
@@ -113,8 +116,11 @@ function buildBreadcrumbJsonLd(propertyName: string, slug: string) {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params
+
+  if (UUID_RE.test(slug)) return { robots: { index: false, follow: false } }
+
   const property = await getProperty(slug)
-  if (!property || property.visible === false) return { title: 'Imóvel indisponível', robots: { index: false, follow: false } }
+  if (!property || property.visible === false) return { title: 'Imóvel indisponível' }
 
   const ogImage = property.files?.[0]?.path ?? 'https://imoveisgilli.com.br/og-image.png'
 
@@ -217,14 +223,23 @@ const FeatureItem = ({ icon: Icon, value, label, suffix = "" }: FeatureItemProps
 
 export default async function PropertyPage({ params }: PageProps) {
   const { slug } = await params
+
+  if (UUID_RE.test(slug)) {
+    const property = await getProperty(slug)
+    if (property?.slug) redirect(`/imoveis/${property.slug}`)
+    notFound()
+  }
+
   const property = await getProperty(slug)
 
   if (!property || property.visible === false) {
     notFound()
   }
 
-  const agencyId =
-    (await headers()).get('x-tenant-id') ?? process.env.NEXT_PUBLIC_AGENCY_ID ?? ''
+  const headersList = await headers()
+  const agencyId = headersList.get('x-tenant-id') ?? process.env.NEXT_PUBLIC_AGENCY_ID ?? ''
+
+  trackView(slug, agencyId, headersList.get('referer'))
 
   const realtors = property.realtors || []
   const recommended = await getRecommendedProperties(agencyId, property.city, property.id)

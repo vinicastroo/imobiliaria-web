@@ -1,9 +1,10 @@
-import { notFound } from 'next/navigation'
+import { notFound, redirect } from 'next/navigation'
 import { headers } from 'next/headers'
 import type { Metadata } from 'next'
 import { BedDouble, Bath, CarFront, Ruler, Grid2X2, MapPin } from 'lucide-react'
 
 import { getProperty } from '@/app/api/get-property'
+import { trackView } from '@/lib/track-view'
 import { MenubarHome } from '@/components/menu-home'
 import { PropertyImagesCarousel } from '@/components/property-images-carousel'
 import { PropertyDescription } from '@/components/property-description'
@@ -12,15 +13,20 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+
 interface PageProps {
   params: Promise<{ tenant: string; slug: string }>
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params
+
+  if (UUID_RE.test(slug)) return { robots: { index: false, follow: false } }
+
   const property = await getProperty(slug)
 
-  if (!property || property.visible === false) return { title: 'Imóvel indisponível', robots: { index: false, follow: false } }
+  if (!property || property.visible === false) return { title: 'Imóvel indisponível' }
 
   const host = (await headers()).get('host')?.split(':')[0] ?? ''
 
@@ -57,10 +63,22 @@ function Feature({ icon: Icon, value, label, suffix = '' }: FeatureProps) {
 
 export default async function TenantPropertyPage({ params }: PageProps) {
   const { slug } = await params
+
+  if (UUID_RE.test(slug)) {
+    const property = await getProperty(slug)
+    if (property?.slug) redirect(`/imoveis/${property.slug}`)
+    notFound()
+  }
+
   const property = await getProperty(slug)
 
   if (!property) notFound()
   if (property.visible === false) notFound()
+
+  const headersList = await headers()
+  const agencyId = headersList.get('x-tenant-id') ?? process.env.NEXT_PUBLIC_AGENCY_ID ?? ''
+
+  trackView(slug, agencyId, headersList.get('referer'))
 
   const priceDisplay = property.priceOnRequest
     ? 'Sob consulta'
@@ -81,7 +99,7 @@ export default async function TenantPropertyPage({ params }: PageProps) {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-          {/* Main column */}
+          {/* Main column */} 
           <div className="lg:col-span-2 space-y-4">
             <Card>
               <CardContent className="p-6 space-y-4">
