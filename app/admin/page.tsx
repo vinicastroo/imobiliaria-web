@@ -1,176 +1,87 @@
 "use client"
 
-import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useState } from 'react'
 import { useSession } from 'next-auth/react'
-import { Loader2, Trash2 } from 'lucide-react'
-import { toast } from 'sonner' // Se você usa Sonner, senão troque por console.log ou alert
-
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Skeleton } from '@/components/ui/skeleton'
-import { Button } from '@/components/ui/button' // Botão do Shadcn
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog"
+import { useRouter } from 'next/navigation'
+import { useEffect } from 'react'
+import { useQuery } from '@tanstack/react-query'
 
 import api from '@/services/api'
-
-interface ClientProps {
-  id: string
-  name: string
-  phone: string
-  email: string
-  description: string
-}
+import { PeriodSelector } from '@/components/metrics/period-selector'
+import { StatCard } from '@/components/metrics/stat-card'
+import { SourceChart } from '@/components/metrics/source-chart'
+import { TopPropertiesList } from '@/components/metrics/top-properties-list'
+import type { MetricsResponse, Period } from '@/components/metrics/types'
 
 export default function AdminDashboard() {
-  const { status } = useSession()
-  const [clients, setClients] = useState<ClientProps[]>([])
-  const [loading, setLoading] = useState(true)
-
-  // Estado para controlar qual cliente será excluído (para o Modal)
-  const [clientToDelete, setClientToDelete] = useState<string | null>(null)
-  const [isDeleting, setIsDeleting] = useState(false)
-
-  const loadClients = async () => {
-    try {
-      setLoading(true)
-      const response = await api.get('/clientes')
-      setClients(response.data)
-    } catch (error) {
-      console.error("Erro ao carregar clientes", error)
-      toast.error("Erro ao carregar clientes")
-    } finally {
-      setLoading(false)
-    }
-  }
+  const { data: session } = useSession()
+  const router = useRouter()
+  const role = session?.user?.role
 
   useEffect(() => {
-    loadClients()
-  }, [status])
-
-  const handleDeleteClient = async () => {
-    if (!clientToDelete) return
-
-    try {
-      setIsDeleting(true)
-      await api.delete(`/clientes/${clientToDelete}`)
-
-      setClients((prev) => prev.filter((c) => c.id !== clientToDelete))
-
-      toast.success("Cliente removido com sucesso!")
-    } catch (error) {
-      console.error("Erro ao deletar", error)
-      toast.error("Erro ao remover cliente")
-    } finally {
-      setIsDeleting(false)
-      setClientToDelete(null) // Fecha o modal
+    if (role && role !== 'OWNER' && role !== 'MANAGER') {
+      router.replace('/admin/imoveis')
     }
-  }
+  }, [role, router])
+  const [period, setPeriod] = useState<Period>('30d')
 
-  if (status === 'loading') {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <Loader2 className="h-8 w-8 animate-spin text-[#17375F]" />
-      </div>
-    )
+  const { data, isLoading } = useQuery({
+    queryKey: ['metrics', period],
+    queryFn: async () => {
+      const res = await api.get<MetricsResponse>(`/metrics?period=${period}`)
+      return res.data
+    },
+    staleTime: 5 * 60 * 1000,
+  })
+
+  const topProperty = data?.topProperties[0]
+  const topSource = data?.sourceBreakdown[0]
+
+  const sourceLabels: Record<string, string> = {
+    DIRECT: 'Direto',
+    GOOGLE: 'Google',
+    FACEBOOK: 'Facebook',
+    INSTAGRAM: 'Instagram',
+    WHATSAPP: 'WhatsApp',
+    OTHER: 'Outros',
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
-      <main className="flex-1 w-full max-w-[1200px] mx-auto p-4 md:p-8">
-        <div className="mb-8">
-          <h1 className="text-2xl font-bold text-[#17375F]">Bem-vindo ao sistema interno!</h1>
-          <p className="text-gray-500">Gerencie seus clientes e leads aqui.</p>
+    <div className="min-h-screen bg-gray-50">
+      <main className="w-full max-w-6xl mx-auto p-4 md:p-8 space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900">Métricas do Site</h1>
+            <p className="text-sm text-gray-500 mt-0.5">Visualizações dos imóveis e origem do tráfego</p>
+          </div>
+          <PeriodSelector value={period} onChange={setPeriod} />
         </div>
 
-        <Card className='py-6'>
-          <CardHeader>
-            <CardTitle className="text-[#17375F]">Clientes Cadastrados</CardTitle>
-          </CardHeader>
-          <CardContent>
-            {loading ? (
-              <div className="space-y-2">
-                <Skeleton className="h-12 w-full" />
-                <Skeleton className="h-12 w-full" />
-                <Skeleton className="h-12 w-full" />
-              </div>
-            ) : clients.length === 0 ? (
-              <p className="text-center text-gray-500 py-8">Nenhum cliente encontrado.</p>
-            ) : (
-              <Accordion type="single" collapsible className="w-full">
-                {clients.map((client) => (
-                  <AccordionItem key={client.id} value={client.id}>
-                    <AccordionTrigger className="hover:no-underline hover:bg-gray-50 px-2 rounded">
-                      <div className="flex flex-col md:flex-row md:items-center text-left gap-1">
-                        <span className="font-semibold text-gray-700">{client.name}</span>
-                        <span className="text-xs md:text-sm text-gray-500 font-normal">
-                          ({client.email} - {client.phone})
-                        </span>
-                      </div>
-                    </AccordionTrigger>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <StatCard
+            title="Total de Visualizações"
+            value={data?.totalViews ?? 0}
+            loading={isLoading}
+          />
+          <StatCard
+            title="Imóvel Mais Visto"
+            value={topProperty?.views ?? 0}
+            subtitle={topProperty?.name}
+            loading={isLoading}
+          />
+          <StatCard
+            title="Fonte Principal"
+            value={topSource ? sourceLabels[topSource.source] ?? topSource.source : '—'}
+            subtitle={topSource ? `${topSource.count} visita${topSource.count !== 1 ? 's' : ''}` : undefined}
+            loading={isLoading}
+          />
+        </div>
 
-                    <AccordionContent className="bg-gray-50/50 p-4 border-t text-gray-600">
-                      <div className="flex flex-col gap-4">
-                        <div>
-                          <p className="font-medium text-xs text-gray-400 uppercase mb-1">Observação:</p>
-                          <p className="text-sm">{client.description || "Sem descrição."}</p>
-                        </div>
-
-                        <div className="flex justify-end pt-2 border-t mt-2">
-                          <Button
-                            variant="destructive"
-                            size="sm"
-                            className="gap-2"
-                            onClick={() => setClientToDelete(client.id)}
-                          >
-                            <Trash2 size={16} />
-                            Excluir Cliente
-                          </Button>
-                        </div>
-                      </div>
-                    </AccordionContent>
-                  </AccordionItem>
-                ))}
-              </Accordion>
-            )}
-          </CardContent>
-        </Card>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <SourceChart data={data?.sourceBreakdown ?? []} loading={isLoading} />
+          <TopPropertiesList data={data?.topProperties ?? []} loading={isLoading} />
+        </div>
       </main>
-
-      {/* MODAL DE CONFIRMAÇÃO DE EXCLUSÃO */}
-      <AlertDialog open={!!clientToDelete} onOpenChange={() => setClientToDelete(null)}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Tem certeza absoluta?</AlertDialogTitle>
-            <AlertDialogDescription>
-              Essa ação não pode ser desfeita. Isso excluirá permanentemente o cliente da base de dados.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel disabled={isDeleting}>Cancelar</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={(e) => {
-                e.preventDefault() // Impede fechar automático para mostrar loading se quiser
-                handleDeleteClient()
-              }}
-              className="bg-red-600 hover:bg-red-700 focus:ring-red-600"
-              disabled={isDeleting}
-            >
-              {isDeleting ? <Loader2 className="h-4 w-4 animate-spin" /> : "Sim, excluir"}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-
     </div>
   )
 }
