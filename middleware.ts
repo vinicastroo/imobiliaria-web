@@ -199,6 +199,7 @@ export async function middleware(req: NextRequest) {
   }
 
   // ── 4. Resolve tenant from hostname via backend ─────────────────────────
+  const isKnownCustomDomain = hostname in CUSTOM_SITE_PREFIXES
   const tenant = await fetchTenant(hostname)
 
   if (!tenant) {
@@ -206,6 +207,14 @@ export async function middleware(req: NextRequest) {
     // context — blocking them would break getSession() and other auth flows.
     if (pathname.startsWith('/api')) {
       return NextResponse.next()
+    }
+    // Known custom domains (ex: aurosimobiliaria.com.br) must never redirect
+    // to the platform domain — serve the site even if the API is temporarily
+    // unavailable (cold start after deploy, etc.).
+    if (isKnownCustomDomain && isPublicSitePage(pathname)) {
+      const prefix     = CUSTOM_SITE_PREFIXES[hostname]
+      const rewriteUrl = new URL(prefix + (pathname === '/' ? '' : pathname), req.url)
+      return NextResponse.rewrite(rewriteUrl)
     }
     return NextResponse.redirect(`https://${PLATFORM_DOMAIN}`)
   }
