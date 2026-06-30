@@ -130,7 +130,7 @@ export function Menubar({ logoUrl }: MenubarProps) {
 
             {hasClients && (
               <NavItem href="/admin/crm" icon={ContactRound} label="CRM"
-                isActive={pathname.startsWith('/admin/crm')} isExpanded={isExpanded} />
+                isActive={pathname.startsWith('/admin/crm')} isExpanded={isExpanded} badge="Beta" />
             )}
 
             {!isRealtor && (
@@ -226,12 +226,13 @@ interface NavItemProps {
   isActive?:  boolean
   onClick?:   () => void
   variant?:   'default' | 'danger'
+  badge?:     string
 }
 
-function NavItem({ href, icon: Icon, label, isExpanded, isActive, onClick, variant = 'default' }: NavItemProps) {
+function NavItem({ href, icon: Icon, label, isExpanded, isActive, onClick, variant = 'default', badge }: NavItemProps) {
   const itemClass = cn(
-    "flex items-center gap-3 rounded-lg h-10 w-full text-sm transition-all duration-150 select-none",
-    isExpanded ? "px-3" : "justify-center px-0",
+    "flex items-center rounded-lg h-10 w-full text-sm transition-all duration-150 select-none",
+    isExpanded ? "gap-3 px-3" : "justify-center px-0",
     variant === 'danger'
       ? "text-white/40 hover:text-red-300 hover:bg-red-500/20 cursor-pointer"
       : isActive
@@ -241,10 +242,15 @@ function NavItem({ href, icon: Icon, label, isExpanded, isActive, onClick, varia
 
   const labelEl = (
     <span className={cn(
-      "whitespace-nowrap transition-all duration-300 overflow-hidden",
+      "whitespace-nowrap transition-all duration-300 overflow-hidden flex items-center gap-2",
       isExpanded ? "max-w-xs opacity-100" : "max-w-0 opacity-0",
     )}>
       {label}
+      {badge && (
+        <span className="text-[10px] font-semibold bg-amber-400/25 text-amber-300 px-1.5 py-0.5 rounded-full leading-none">
+          {badge}
+        </span>
+      )}
     </span>
   )
 

@@ -29,10 +29,10 @@ export function SourceChart({ data, loading }: SourceChartProps) {
 
   return (
     <Card className="h-full">
-      <CardHeader className="pb-2">
+      <CardHeader className="pt-4 pb-2">
         <CardTitle className="text-base font-semibold">Origem do Acesso</CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="pt-2">
         {loading ? (
           <div className="flex justify-center items-center h-48">
             <Skeleton className="h-40 w-40 rounded-full" />

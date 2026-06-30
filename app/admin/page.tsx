@@ -51,7 +51,10 @@ export default function AdminDashboard() {
       <main className="w-full max-w-6xl mx-auto p-4 md:p-8 space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Métricas do Site</h1>
+            <div className="flex items-center gap-2">
+              <h1 className="text-2xl font-bold text-gray-900">Métricas do Site</h1>
+              <span className="text-xs font-semibold bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full">Beta</span>
+            </div>
             <p className="text-sm text-gray-500 mt-0.5">Visualizações dos imóveis e origem do tráfego</p>
           </div>
           <PeriodSelector value={period} onChange={setPeriod} />

@@ -12,10 +12,10 @@ export function TopPropertiesList({ data, loading }: TopPropertiesListProps) {
 
   return (
     <Card className="h-full">
-      <CardHeader className="pb-2">
+      <CardHeader className="pt-4 pb-2">
         <CardTitle className="text-base font-semibold">Imóveis Mais Vistos</CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="pt-2">
         {loading ? (
           <div className="space-y-3">
             {Array.from({ length: 5 }).map((_, i) => (
