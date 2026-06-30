@@ -1,12 +1,13 @@
 "use client"
 
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { useDropzone } from 'react-dropzone'
 import { useSession } from 'next-auth/react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { Loader2, Upload, ImageIcon, ShieldAlert, Building2, CreditCard, Palette, Layout } from 'lucide-react'
+import { Loader2, Upload, ImageIcon, ShieldAlert, Building2, CreditCard, Palette, Layout, LayoutDashboard, X, ChevronRight } from 'lucide-react'
 import Image from 'next/image'
 import { toast } from 'sonner'
 
@@ -87,7 +88,6 @@ export default function ConfiguracoesPage() {
 
   const logoInputRef = useRef<HTMLInputElement>(null)
   const watermarkInputRef = useRef<HTMLInputElement>(null)
-  const iconInputRef = useRef<HTMLInputElement>(null)
 
   const [logoFile, setLogoFile] = useState<File | null>(null)
   const [logoPreview, setLogoPreview] = useState<string | null>(null)
@@ -373,14 +373,25 @@ export default function ConfiguracoesPage() {
         {/* ── Aba: Visual do Site ───────────────────────────────────────── */}
         <TabsContent value="visual-do-site" className="space-y-6">
 
+          {/* Logo do Sistema Interno */}
+          <LogoSistemaCard
+            currentIcon={currentIcon}
+            iconFile={iconFile}
+            setIconFile={setIconFile}
+            setIconPreview={setIconPreview}
+            isPending={iconMutation.isPending}
+            onSave={() => iconFile && iconMutation.mutate(iconFile)}
+            primaryColor={primaryColor}
+          />
+
           {/* Aparência */}
           <Card className="py-6">
             <CardHeader>
               <div className="flex items-center gap-2">
                 <Palette className="h-5 w-5 text-[#17375F]" />
-                <CardTitle>Aparência</CardTitle>
+                <CardTitle>Aparência do Site</CardTitle>
               </div>
-              <CardDescription>Ícone, cores e tipografia exibidos no site e no painel.</CardDescription>
+              <CardDescription>Cores, tipografia e layout do seu site público.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
 
@@ -409,53 +420,6 @@ export default function ConfiguracoesPage() {
                       <p className="text-xs text-gray-500 mt-1">{option.description}</p>
                     </button>
                   ))}
-                </div>
-              </div>
-
-              <div className="border-t" />
-
-              {/* Ícone do Painel */}
-              <div className="space-y-2">
-                <Label>Ícone do Painel</Label>
-                <p className="text-xs text-gray-500">Exibido como logo na barra lateral do painel administrativo.</p>
-                <div className="flex items-center gap-4">
-                  <div className="flex items-center justify-center w-16 h-16 bg-gray-50 border-2 border-dashed border-gray-200 rounded-lg overflow-hidden shrink-0">
-                    {currentIcon ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img src={currentIcon} alt="Ícone do painel" className="w-full h-full object-contain" />
-                    ) : (
-                      <ImageIcon className="h-6 w-6 text-gray-400" />
-                    )}
-                  </div>
-                  <div className="flex flex-col gap-2">
-                    <input
-                      ref={iconInputRef}
-                      type="file"
-                      accept="image/*"
-                      className="hidden"
-                      onChange={(e) => {
-                        const file = e.target.files?.[0]
-                        if (file) { setIconFile(file); setIconPreview(URL.createObjectURL(file)) }
-                      }}
-                    />
-                    <Button type="button" variant="outline" size="sm" onClick={() => iconInputRef.current?.click()}>
-                      <Upload className="mr-2 h-4 w-4" />
-                      {currentIcon ? 'Trocar ícone' : 'Escolher ícone'}
-                    </Button>
-                    {iconFile && (
-                      <Button
-                        type="button"
-                        size="sm"
-                        className="bg-[#17375F] hover:bg-[#122b4a]"
-                        disabled={iconMutation.isPending}
-                        onClick={() => iconMutation.mutate(iconFile)}
-                      >
-                        {iconMutation.isPending
-                          ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Salvando...</>
-                          : 'Salvar ícone'}
-                      </Button>
-                    )}
-                  </div>
                 </div>
               </div>
 
@@ -643,5 +607,156 @@ export default function ConfiguracoesPage() {
         </TabsContent>
       </Tabs>
     </div>
+  )
+}
+
+// ── Logo do Sistema Interno ────────────────────────────────────────────────────
+
+interface LogoSistemaCardProps {
+  currentIcon:    string | null
+  iconFile:       File | null
+  setIconFile:    (f: File | null) => void
+  setIconPreview: (p: string | null) => void
+  isPending:      boolean
+  onSave:         () => void
+  primaryColor:   string
+}
+
+function LogoSistemaCard({
+  currentIcon, iconFile, setIconFile, setIconPreview, isPending, onSave, primaryColor,
+}: LogoSistemaCardProps) {
+  const onDrop = useCallback((accepted: File[]) => {
+    const file = accepted[0]
+    if (!file) return
+    setIconFile(file)
+    setIconPreview(URL.createObjectURL(file))
+  }, [setIconFile, setIconPreview])
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+    accept: { 'image/*': [] },
+    maxFiles: 1,
+    multiple: false,
+  })
+
+  const clearSelection = () => {
+    setIconFile(null)
+    setIconPreview(null)
+  }
+
+  return (
+    <Card className="py-6">
+      <CardHeader>
+        <div className="flex items-center gap-2">
+          <LayoutDashboard className="h-5 w-5 text-[#17375F]" />
+          <CardTitle>Logo do Sistema Interno</CardTitle>
+        </div>
+        <CardDescription>
+          Exibida na barra lateral do painel administrativo. Use uma versão minimalista — ícone, símbolo ou monograma.
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <div className="flex flex-col md:flex-row items-start gap-8">
+
+          {/* Dropzone + ações */}
+          <div className="flex-1 space-y-4">
+            <div
+              {...getRootProps()}
+              className={`relative flex flex-col items-center justify-center h-44 rounded-xl border-2 border-dashed transition-colors cursor-pointer select-none
+                ${isDragActive
+                  ? 'border-[#17375F] bg-blue-50/60'
+                  : 'border-gray-200 bg-gray-50 hover:border-gray-300 hover:bg-gray-100/60'
+                }`}
+            >
+              <input {...getInputProps()} />
+
+              {currentIcon ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={currentIcon} alt="Logo do painel" className="max-h-28 max-w-[200px] object-contain" />
+              ) : (
+                <div className="flex flex-col items-center gap-2 text-gray-400">
+                  <div className="h-12 w-12 rounded-full bg-gray-200/70 flex items-center justify-center">
+                    <Upload className="h-5 w-5" />
+                  </div>
+                  <p className="text-sm font-medium text-gray-500">
+                    {isDragActive ? 'Solte a imagem aqui' : 'Arraste ou clique para escolher'}
+                  </p>
+                  <p className="text-xs text-gray-400">PNG, SVG, WebP — recomendado quadrado</p>
+                </div>
+              )}
+
+              {/* Badge "trocar" quando já tem imagem */}
+              {currentIcon && (
+                <div className="absolute inset-0 flex items-center justify-center rounded-xl opacity-0 hover:opacity-100 transition-opacity bg-black/30">
+                  <span className="flex items-center gap-1.5 bg-white text-gray-800 text-xs font-medium px-3 py-1.5 rounded-full shadow">
+                    <Upload className="h-3 w-3" />
+                    Trocar imagem
+                  </span>
+                </div>
+              )}
+            </div>
+
+            {/* Arquivo selecionado */}
+            {iconFile && (
+              <div className="flex items-center justify-between px-3 py-2 bg-blue-50 border border-blue-100 rounded-lg">
+                <p className="text-xs text-blue-700 font-medium truncate">{iconFile.name}</p>
+                <button type="button" onClick={clearSelection} className="text-blue-400 hover:text-blue-600 shrink-0 ml-2">
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+            )}
+
+            <Button
+              type="button"
+              className="w-full bg-[#17375F] hover:bg-[#122b4a]"
+              disabled={isPending || !iconFile}
+              onClick={onSave}
+            >
+              {isPending
+                ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Salvando...</>
+                : 'Salvar logo do painel'}
+            </Button>
+          </div>
+
+          {/* Prévia da sidebar */}
+          <div className="shrink-0">
+            <p className="text-xs text-gray-400 uppercase font-semibold tracking-wide mb-3">Prévia</p>
+            <div
+              className="w-[72px] h-56 rounded-xl flex flex-col items-center pt-4 pb-3 shadow-md gap-2 overflow-hidden"
+              style={{ backgroundColor: primaryColor }}
+            >
+              {/* Toggle button placeholder */}
+              <div className="self-end w-4 h-4 bg-white/20 rounded-full mb-1 mr-1" />
+
+              {/* Logo area */}
+              <div className="h-9 w-9 rounded-lg bg-white/15 flex items-center justify-center overflow-hidden shrink-0">
+                {currentIcon ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={currentIcon} alt="" className="w-full h-full object-contain" />
+                ) : (
+                  <ImageIcon className="h-4 w-4 text-white/40" />
+                )}
+              </div>
+
+              {/* Fake nav items */}
+              <div className="flex flex-col items-center gap-2 mt-2 w-full px-3">
+                <div className="w-8 h-8 bg-white/20 rounded-lg" />
+                <div className="w-8 h-8 bg-white/10 rounded-lg" />
+                <div className="w-8 h-8 bg-white/10 rounded-lg" />
+                <div className="w-8 h-8 bg-white/10 rounded-lg" />
+              </div>
+
+              {/* Bottom divider + user */}
+              <div className="mt-auto w-full border-t border-white/10 pt-2 flex justify-center">
+                <div className="h-8 w-8 rounded-full bg-white/20" />
+              </div>
+            </div>
+            <p className="text-[10px] text-gray-400 text-center mt-2 max-w-[72px] leading-tight">
+              Sidebar recolhida
+            </p>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
   )
 }
