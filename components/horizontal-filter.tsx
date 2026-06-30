@@ -1,9 +1,9 @@
 "use client"
 
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter, useSearchParams, usePathname } from 'next/navigation'
 import { useQuery } from '@tanstack/react-query'
-import { SlidersHorizontal, X, ChevronDown, BedDouble, Bath, CarFront, Toilet } from 'lucide-react'
+import { SlidersHorizontal, X, ChevronDown, BedDouble, Bath, CarFront, Toilet, Hash } from 'lucide-react'
 import { useForm, Controller } from 'react-hook-form'
 
 // UI Components
@@ -103,6 +103,17 @@ export function HorizontalFilter() {
   const currentBathroom = searchParams.get('banheiros') || ''
   const currentSuite = searchParams.get('suites') || ''
   const currentParking = searchParams.get('garagem') || ''
+  const currentCode = searchParams.get('ref') || ''
+
+  const [codeInput, setCodeInput] = useState(currentCode)
+
+  useEffect(() => {
+    setCodeInput(currentCode)
+  }, [currentCode])
+
+  const applyCode = (value: string) => {
+    updateFilter('ref', value.replace('#', '').trim())
+  }
 
   // --- QUERIES GERAIS (com cache longo para dados estáticos) ---
   const { data: cities } = useQuery({
@@ -145,6 +156,7 @@ export function HorizontalFilter() {
     parkingSpots: string
     minPrice: string
     maxPrice: string
+    code: string
   }
 
   const { register, control, handleSubmit, reset, watch, setValue } = useForm<FilterFormData>({
@@ -158,6 +170,7 @@ export function HorizontalFilter() {
       parkingSpots: currentParking,
       minPrice: searchParams.get('precoMin') || '',
       maxPrice: searchParams.get('precoMax') || '',
+      code: currentCode,
     }
   })
 
@@ -173,8 +186,9 @@ export function HorizontalFilter() {
       parkingSpots: currentParking,
       minPrice: searchParams.get('precoMin') || '',
       maxPrice: searchParams.get('precoMax') || '',
+      code: currentCode,
     })
-  }, [searchParams, reset, currentCity, currentNeighborhood, currentType, currentBedroom, currentSuite, currentBathroom, currentParking])
+  }, [searchParams, reset, currentCity, currentNeighborhood, currentType, currentBedroom, currentSuite, currentBathroom, currentParking, currentCode])
 
   // Lógica de Bairro DENTRO do Modal (Observa o select do form, não a URL)
   const formCity = watch('city')
@@ -205,7 +219,8 @@ export function HorizontalFilter() {
       banheiros: data.bathrooms,
       garagem: data.parkingSpots,
       precoMin: data.minPrice,
-      precoMax: data.maxPrice
+      precoMax: data.maxPrice,
+      ref: data.code,
     }
 
     Object.entries(map).forEach(([key, value]) => {
@@ -219,6 +234,7 @@ export function HorizontalFilter() {
 
   const clearAll = () => {
     router.push(pathname)
+    setCodeInput('')
     reset()
   }
 
@@ -226,6 +242,7 @@ export function HorizontalFilter() {
   const activeAdvancedFilters = [
     searchParams.get('precoMin'),
     searchParams.get('precoMax'),
+    searchParams.get('ref'),
   ].filter(Boolean).length
 
   const activeRoomFilters = [currentBedroom, currentBathroom, currentSuite, currentParking].filter(Boolean).length
@@ -276,6 +293,19 @@ export function HorizontalFilter() {
               ))}
             </SelectContent>
           </Select>
+
+          {/* Filtro por Ref */}
+          <div className="relative self-center">
+            <Hash size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+            <Input
+              value={codeInput}
+              onChange={(e) => setCodeInput(e.target.value)}
+              onBlur={() => applyCode(codeInput)}
+              onKeyDown={(e) => e.key === 'Enter' && applyCode(codeInput)}
+              placeholder="Ref"
+              className={`w-[110px] h-10 rounded-full pl-8 border-gray-300 text-sm ${currentCode ? 'bg-[#17375F]/10 border-[#17375F] text-[#17375F]' : 'bg-white'}`}
+            />
+          </div>
 
           {/* Menu Cômodos (Popover Desktop) */}
           <Popover>
@@ -410,6 +440,14 @@ export function HorizontalFilter() {
                         </Select>
                       )}
                     />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label>Referência (Ref)</Label>
+                    <div className="relative">
+                      <Hash size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+                      <Input placeholder="Ex: 1042" className="pl-8" {...register('code')} />
+                    </div>
                   </div>
                 </div>
 

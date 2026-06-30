@@ -102,11 +102,12 @@ export function HighlightedPropertiesGrid({ agencyId, renderCTA, initialProperti
 
               <Link href={`/imoveis/${property.slug}`} className="group-hover:text-(--primary-color,#17375F) transition-colors flex-1 flex flex-col">
                 <CardHeader className="pb-2">
-                  <div className="flex items-center gap-1.5">
-                    <h3 className="text-lg font-bold text-zinc-800 line-clamp-1" title={property.name}>
-                      {property.name}
-                    </h3>
-                  </div>
+                  <h3 className="text-lg font-bold text-zinc-800 line-clamp-1" title={property.name}>
+                    {property.name}
+                  </h3>
+                  {property.code && (
+                    <p className="text-xs text-zinc-400">Ref: #{property.code}</p>
+                  )}
                   <p className="text-sm text-zinc-500">{property.city} - {property.neighborhood}</p>
                   <p className="text-sm text-zinc-600 line-clamp-2 mt-2 h-10">{property.summary}</p>
                 </CardHeader>

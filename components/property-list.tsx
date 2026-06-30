@@ -67,6 +67,7 @@ export function PropertyList() {
     parkingSpots: searchParams.get('garagem'),
     totalArea: searchParams.get('areaTotal'),
     privateArea: searchParams.get('areaTerreno'),
+    code: searchParams.get('ref'),
   }
 
   const { data: result, isLoading, isError, error, status, fetchStatus } = useQuery({
@@ -166,6 +167,9 @@ export function PropertyList() {
               <div className="flex-1 flex flex-col p-4">
                 <div className="mb-4">
                   <h3 className="font-bold text-gray-900 line-clamp-1 text-lg group-hover:text-(--primary-color,#17375F) transition-colors">{property.name}</h3>
+                  {property.code && (
+                    <p className="text-xs text-gray-400">Ref: #{property.code}</p>
+                  )}
                   <p className="text-sm text-gray-500">{property.city} - {property.neighborhood}</p>
                   <p className="text-xs text-gray-400 mt-2 line-clamp-2">{property.summary}</p>
                 </div>

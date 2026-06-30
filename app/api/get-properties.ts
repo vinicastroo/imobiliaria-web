@@ -59,6 +59,7 @@ interface GetPropertiesProps {
   parkingSpots?: string | null
   totalArea?: string | null
   privateArea?: string | null
+  code?: string | null
 }
 
 export async function getProperties({
@@ -72,6 +73,7 @@ export async function getProperties({
   totalArea,
   type,
   page,
+  code,
 }: GetPropertiesProps) {
   const params = {
     bathrooms,
@@ -86,6 +88,7 @@ export async function getProperties({
     page,
     pageSize: 12,
     visible: true,
+    code,
   }
 
   console.log('[getProperties] iniciando fetch | params:', params)

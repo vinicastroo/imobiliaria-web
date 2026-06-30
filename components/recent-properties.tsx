@@ -105,6 +105,9 @@ export function RecentPropertiesGrid({ agencyId, renderCTA, initialProperties }:
                   <h3 className="text-lg font-bold text-zinc-800 line-clamp-1" title={property.name}>
                     {property.name}
                   </h3>
+                  {property.code && (
+                    <p className="text-xs text-zinc-400">Ref: #{property.code}</p>
+                  )}
                   <p className="text-sm text-zinc-500">{property.city} - {property.neighborhood}</p>
                   <p className="text-sm text-zinc-600 line-clamp-2 mt-2 h-10">{property.summary}</p>
                 </CardHeader>
