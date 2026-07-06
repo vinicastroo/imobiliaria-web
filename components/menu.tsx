@@ -31,6 +31,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip'
 import { cn } from '@/lib/utils'
+import { NotificationsBell } from '@/components/notifications-bell'
 
 import staticLogo from '@/public/logo-auros.svg'
 
@@ -107,7 +108,8 @@ export function Menubar({ logoUrl }: MenubarProps) {
       </div>
 
       {/* ── Navigation ───────────────────────────────────────────────── */}
-      <nav className="flex-1 overflow-y-auto py-3 px-3 flex flex-col gap-0.5">
+      <nav className="flex-1 overflow-y-auto py-3 px-3 flex flex-col justify-between gap-4">
+        <div className="flex flex-col gap-0.5">
 
         {/* Super admin — platform routes */}
         {isSuperAdmin && (
@@ -170,14 +172,17 @@ export function Menubar({ logoUrl }: MenubarProps) {
             )}
           </>
         )}
+        </div>
+
+        <NotificationsBell isExpanded={isExpanded} />
       </nav>
 
       {/* ── User info + sign out ─────────────────────────────────────── */}
       <div className="shrink-0 px-3 pb-4 pt-3 border-t border-white/10 flex flex-col gap-1">
         {/* User info */}
         <div className={cn(
-          "flex items-center gap-3 px-2 py-2 rounded-lg",
-          !isExpanded && "justify-center",
+          "flex items-center py-2 rounded-lg",
+          isExpanded ? "gap-3 px-2" : "justify-center px-0",
         )}>
           <div className="h-8 w-8 rounded-full bg-white/20 flex items-center justify-center shrink-0 ring-2 ring-white/10">
             <span className="text-[11px] font-bold text-white leading-none">{initials}</span>
