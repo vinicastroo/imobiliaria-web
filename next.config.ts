@@ -34,8 +34,8 @@ const nextConfig: NextConfig = {
 
 
 export default withSentryConfig(nextConfig, {
-  org: "auros-ob",
-  project: "javascript-nextjs",
+  org: "codelabz-logs",
+  project: "imobx-next",
   silent: !process.env.CI,
   tunnelRoute: "/monitoring",
   disableLogger: true,
