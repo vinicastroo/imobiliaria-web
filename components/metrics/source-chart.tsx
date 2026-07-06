@@ -3,6 +3,15 @@
 import { useState } from 'react'
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts'
 import { Globe } from 'lucide-react'
+import {
+  FacebookLogo,
+  GlobeSimple,
+  GoogleLogo,
+  InstagramLogo,
+  LinkSimple,
+  WhatsappLogo,
+  type Icon,
+} from '@phosphor-icons/react'
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -28,6 +37,15 @@ const SOURCE_COLORS: Record<string, string> = {
   OTHER: '#94a3b8',
 }
 
+const SOURCE_ICONS: Record<string, Icon> = {
+  DIRECT: LinkSimple,
+  GOOGLE: GoogleLogo,
+  FACEBOOK: FacebookLogo,
+  INSTAGRAM: InstagramLogo,
+  WHATSAPP: WhatsappLogo,
+  OTHER: GlobeSimple,
+}
+
 interface SourceChartProps {
   data: SourceBreakdown[]
   loading?: boolean
@@ -42,6 +60,7 @@ export function SourceChart({ data, loading }: SourceChartProps) {
     name: SOURCE_LABELS[item.source] ?? item.source,
     value: item.count,
     color: SOURCE_COLORS[item.source] ?? SOURCE_COLORS.OTHER,
+    icon: SOURCE_ICONS[item.source] ?? SOURCE_ICONS.OTHER,
   }))
 
   const hoveredEntry = chartData.find((entry) => entry.source === hovered)
@@ -120,10 +139,7 @@ export function SourceChart({ data, loading }: SourceChartProps) {
                     hovered === entry.source ? 'bg-gray-50' : hovered ? 'opacity-50' : '',
                   )}
                 >
-                  <span
-                    className="h-2.5 w-2.5 shrink-0 rounded-full"
-                    style={{ backgroundColor: entry.color }}
-                  />
+                  <entry.icon size={15} weight="bold" className="shrink-0" style={{ color: entry.color }} />
                   <span className="truncate text-gray-600">{entry.name}</span>
                   <span className="ml-auto font-semibold tabular-nums text-gray-900">
                     {entry.value.toLocaleString('pt-BR')}
