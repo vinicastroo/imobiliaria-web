@@ -7,7 +7,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { Loader2, Upload, ImageIcon, ShieldAlert, Building2, CreditCard, Palette, Layout, LayoutDashboard, X, ChevronRight } from 'lucide-react'
+import { Loader2, Upload, ImageIcon, ShieldAlert, Building2, CreditCard, Palette, Layout, LayoutDashboard, X, ChevronRight, Globe, BarChart3 } from 'lucide-react'
 import Image from 'next/image'
 import { toast } from 'sonner'
 
@@ -53,6 +53,9 @@ type LayoutType = 'MODERN' | 'CLASSIC' | 'MINIMAL'
 interface VisualConfigData {
   logoUrl:        string | null
   iconUrl:        string | null
+  faviconUrl:     string | null
+  metaPixelId:    string | null
+  gtmId:          string | null
   primaryColor:   string
   secondaryColor: string
   fontFamily:     string
@@ -95,12 +98,19 @@ export default function ConfiguracoesPage() {
   const [watermarkPreview, setWatermarkPreview] = useState<string | null>(null)
   const [iconFile, setIconFile] = useState<File | null>(null)
   const [iconPreview, setIconPreview] = useState<string | null>(null)
+  const [faviconFile, setFaviconFile] = useState<File | null>(null)
+  const [faviconPreview, setFaviconPreview] = useState<string | null>(null)
 
   const [visualEdits, setVisualEdits] = useState<{
     primaryColor:   string
     secondaryColor: string
     fontFamily:     string
     layoutType:     LayoutType
+  } | null>(null)
+
+  const [trackingEdits, setTrackingEdits] = useState<{
+    metaPixelId: string
+    gtmId:       string
   } | null>(null)
 
   const {
@@ -135,6 +145,12 @@ export default function ConfiguracoesPage() {
   const secondaryColor = visualEdits?.secondaryColor ?? visualConfig?.secondaryColor ?? '#e2e8f0'
   const fontFamily     = visualEdits?.fontFamily     ?? visualConfig?.fontFamily     ?? 'Inter'
   const layoutType     = visualEdits?.layoutType     ?? visualConfig?.layoutType     ?? 'MODERN'
+
+  const metaPixelId = trackingEdits?.metaPixelId ?? visualConfig?.metaPixelId ?? ''
+  const gtmId       = trackingEdits?.gtmId       ?? visualConfig?.gtmId       ?? ''
+
+  const setMetaPixelId = (v: string) => setTrackingEdits({ metaPixelId: v, gtmId })
+  const setGtmId       = (v: string) => setTrackingEdits({ metaPixelId, gtmId: v })
 
   const setPrimaryColor   = (v: string)     => setVisualEdits({ primaryColor: v, secondaryColor, fontFamily, layoutType })
   const setSecondaryColor = (v: string)     => setVisualEdits({ primaryColor, secondaryColor: v, fontFamily, layoutType })
@@ -210,6 +226,53 @@ export default function ConfiguracoesPage() {
     onError: () => toast.error('Erro ao salvar ícone.'),
   })
 
+  const faviconMutation = useMutation({
+    mutationFn: async (file: File) => {
+      const formData = new FormData()
+      formData.append('favicon', file)
+      return (await api.put('/visual-config/favicon', formData, { headers: { 'Content-Type': 'multipart/form-data' } }))
+        .data as { faviconUrl: string }
+    },
+    onSuccess: async () => {
+      queryClient.invalidateQueries({ queryKey: ['visual-config'] })
+      await revalidateVisualConfig()
+      setFaviconFile(null)
+      setFaviconPreview(null)
+      toast.success('Favicon salvo com sucesso!')
+    },
+    onError: () => toast.error('Erro ao salvar favicon.'),
+  })
+
+  const trackingMutation = useMutation({
+    mutationFn: async () =>
+      (await api.put('/visual-config', {
+        metaPixelId: metaPixelId.trim() || null,
+        gtmId: gtmId.trim().toUpperCase() || null,
+      })).data as VisualConfigData,
+    onSuccess: async () => {
+      queryClient.invalidateQueries({ queryKey: ['visual-config'] })
+      setTrackingEdits(null)
+      await revalidateVisualConfig()
+      toast.success('Integrações salvas com sucesso!')
+    },
+    onError: () => toast.error('Erro ao salvar integrações. Verifique o formato dos IDs.'),
+  })
+
+  const handleSaveTracking = () => {
+    const pixel = metaPixelId.trim()
+    const gtm = gtmId.trim().toUpperCase()
+
+    if (pixel && !/^\d{5,20}$/.test(pixel)) {
+      toast.error('Meta Pixel ID inválido. Use apenas números (ex: 1081492213995645).')
+      return
+    }
+    if (gtm && !/^GTM-[A-Z0-9]{4,10}$/.test(gtm)) {
+      toast.error('GTM ID inválido. Use o formato GTM-XXXXXXX.')
+      return
+    }
+    trackingMutation.mutate()
+  }
+
   const handleFileSelect = (file: File, setFile: (f: File) => void, setPreview: (p: string) => void) => {
     setFile(file)
     setPreview(URL.createObjectURL(file))
@@ -247,6 +310,7 @@ export default function ConfiguracoesPage() {
   const currentLogo = logoPreview ?? settings?.logo ?? null
   const currentWatermark = watermarkPreview ?? settings?.watermark ?? null
   const currentIcon = iconPreview ?? visualConfig?.iconUrl ?? null
+  const currentFavicon = faviconPreview ?? visualConfig?.faviconUrl ?? null
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col p-8 gap-6 max-w-[1200px] mx-auto">
@@ -262,6 +326,7 @@ export default function ConfiguracoesPage() {
         <TabsList className="mb-4">
           <TabsTrigger value="dados-gerais">Dados Gerais</TabsTrigger>
           <TabsTrigger value="visual-do-site">Visual do Site</TabsTrigger>
+          <TabsTrigger value="integracoes">Integrações</TabsTrigger>
         </TabsList>
 
         {/* ── Aba: Dados Gerais ─────────────────────────────────────────── */}
@@ -382,6 +447,17 @@ export default function ConfiguracoesPage() {
             isPending={iconMutation.isPending}
             onSave={() => iconFile && iconMutation.mutate(iconFile)}
             primaryColor={primaryColor}
+          />
+
+          {/* Favicon do Site */}
+          <FaviconCard
+            currentFavicon={currentFavicon}
+            faviconFile={faviconFile}
+            setFaviconFile={setFaviconFile}
+            setFaviconPreview={setFaviconPreview}
+            isPending={faviconMutation.isPending}
+            onSave={() => faviconFile && faviconMutation.mutate(faviconFile)}
+            siteName={agencyInfo?.name ?? 'Seu site'}
           />
 
           {/* Aparência */}
@@ -605,6 +681,71 @@ export default function ConfiguracoesPage() {
             </CardContent>
           </Card>
         </TabsContent>
+
+        {/* ── Aba: Integrações ──────────────────────────────────────────── */}
+        <TabsContent value="integracoes" className="space-y-6">
+          <Card className="py-6">
+            <CardHeader>
+              <div className="flex items-center gap-2">
+                <BarChart3 className="h-5 w-5 text-[#17375F]" />
+                <CardTitle>Rastreamento e Anúncios</CardTitle>
+              </div>
+              <CardDescription>
+                Conecte ferramentas de marketing ao seu site público. Os scripts são adicionados automaticamente em todas as páginas do site.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <Label htmlFor="metaPixelId">Meta Pixel ID</Label>
+                  <Input
+                    id="metaPixelId"
+                    placeholder="Ex: 1081492213995645"
+                    value={metaPixelId}
+                    onChange={(e) => setMetaPixelId(e.target.value.replace(/\D/g, ''))}
+                    className="font-mono"
+                  />
+                  <p className="text-xs text-gray-500">
+                    Encontre em Gerenciador de Eventos do Meta → Fontes de dados. Rastreia visitas para anúncios do Facebook e Instagram.
+                  </p>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="gtmId">Google Tag Manager ID</Label>
+                  <Input
+                    id="gtmId"
+                    placeholder="Ex: GTM-ABC1234"
+                    value={gtmId}
+                    onChange={(e) => setGtmId(e.target.value.toUpperCase())}
+                    className="font-mono"
+                  />
+                  <p className="text-xs text-gray-500">
+                    Encontre em tagmanager.google.com, no topo do painel do contêiner.
+                  </p>
+                </div>
+              </div>
+
+              <div className="rounded-lg border border-blue-100 bg-blue-50/50 p-4">
+                <p className="text-sm text-gray-600">
+                  <strong>Precisa de outros scripts?</strong> Google Analytics, Google Ads, TikTok Pixel, Hotjar e qualquer outra
+                  ferramenta podem ser adicionados como tags dentro do seu contêiner do Google Tag Manager — sem precisar alterar o site.
+                </p>
+              </div>
+
+              <div className="flex justify-end">
+                <Button
+                  className="bg-[#17375F] hover:bg-[#122b4a]"
+                  onClick={handleSaveTracking}
+                  disabled={trackingMutation.isPending || !trackingEdits}
+                >
+                  {trackingMutation.isPending
+                    ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Salvando...</>
+                    : 'Salvar integrações'}
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
       </Tabs>
     </div>
   )
@@ -753,6 +894,139 @@ function LogoSistemaCard({
             </div>
             <p className="text-[10px] text-gray-400 text-center mt-2 max-w-[72px] leading-tight">
               Sidebar recolhida
+            </p>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  )
+}
+
+// ── Favicon do Site ────────────────────────────────────────────────────────────
+
+interface FaviconCardProps {
+  currentFavicon:    string | null
+  faviconFile:       File | null
+  setFaviconFile:    (f: File | null) => void
+  setFaviconPreview: (p: string | null) => void
+  isPending:         boolean
+  onSave:            () => void
+  siteName:          string
+}
+
+function FaviconCard({
+  currentFavicon, faviconFile, setFaviconFile, setFaviconPreview, isPending, onSave, siteName,
+}: FaviconCardProps) {
+  const onDrop = useCallback((accepted: File[]) => {
+    const file = accepted[0]
+    if (!file) return
+    setFaviconFile(file)
+    setFaviconPreview(URL.createObjectURL(file))
+  }, [setFaviconFile, setFaviconPreview])
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+    accept: { 'image/png': [], 'image/x-icon': [], 'image/vnd.microsoft.icon': [], 'image/svg+xml': [], 'image/webp': [] },
+    maxFiles: 1,
+    multiple: false,
+  })
+
+  const clearSelection = () => {
+    setFaviconFile(null)
+    setFaviconPreview(null)
+  }
+
+  return (
+    <Card className="py-6">
+      <CardHeader>
+        <div className="flex items-center gap-2">
+          <Globe className="h-5 w-5 text-[#17375F]" />
+          <CardTitle>Favicon do Site</CardTitle>
+        </div>
+        <CardDescription>
+          Ícone exibido na aba do navegador do seu site público. Use uma imagem quadrada de pelo menos 32x32px.
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <div className="flex flex-col md:flex-row items-start gap-8">
+
+          {/* Dropzone + ações */}
+          <div className="flex-1 space-y-4">
+            <div
+              {...getRootProps()}
+              className={`relative flex flex-col items-center justify-center h-44 rounded-xl border-2 border-dashed transition-colors cursor-pointer select-none
+                ${isDragActive
+                  ? 'border-[#17375F] bg-blue-50/60'
+                  : 'border-gray-200 bg-gray-50 hover:border-gray-300 hover:bg-gray-100/60'
+                }`}
+            >
+              <input {...getInputProps()} />
+
+              {currentFavicon ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={currentFavicon} alt="Favicon do site" className="h-16 w-16 object-contain" />
+              ) : (
+                <div className="flex flex-col items-center gap-2 text-gray-400">
+                  <div className="h-12 w-12 rounded-full bg-gray-200/70 flex items-center justify-center">
+                    <Upload className="h-5 w-5" />
+                  </div>
+                  <p className="text-sm font-medium text-gray-500">
+                    {isDragActive ? 'Solte a imagem aqui' : 'Arraste ou clique para escolher'}
+                  </p>
+                  <p className="text-xs text-gray-400">PNG, ICO, SVG, WebP — quadrado, mínimo 32x32px</p>
+                </div>
+              )}
+
+              {currentFavicon && (
+                <div className="absolute inset-0 flex items-center justify-center rounded-xl opacity-0 hover:opacity-100 transition-opacity bg-black/30">
+                  <span className="flex items-center gap-1.5 bg-white text-gray-800 text-xs font-medium px-3 py-1.5 rounded-full shadow">
+                    <Upload className="h-3 w-3" />
+                    Trocar imagem
+                  </span>
+                </div>
+              )}
+            </div>
+
+            {/* Arquivo selecionado */}
+            {faviconFile && (
+              <div className="flex items-center justify-between px-3 py-2 bg-blue-50 border border-blue-100 rounded-lg">
+                <p className="text-xs text-blue-700 font-medium truncate">{faviconFile.name}</p>
+                <button type="button" onClick={clearSelection} className="text-blue-400 hover:text-blue-600 shrink-0 ml-2">
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+            )}
+
+            <Button
+              type="button"
+              className="w-full bg-[#17375F] hover:bg-[#122b4a]"
+              disabled={isPending || !faviconFile}
+              onClick={onSave}
+            >
+              {isPending
+                ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Salvando...</>
+                : 'Salvar favicon'}
+            </Button>
+          </div>
+
+          {/* Prévia da aba do navegador */}
+          <div className="shrink-0 w-full md:w-64">
+            <p className="text-xs text-gray-400 uppercase font-semibold tracking-wide mb-3">Prévia</p>
+            <div className="rounded-t-xl bg-gray-200 px-2 pt-2">
+              <div className="flex items-center gap-2 bg-white rounded-t-lg px-3 py-2 max-w-[210px] shadow-sm">
+                {currentFavicon ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={currentFavicon} alt="" className="h-4 w-4 object-contain shrink-0" />
+                ) : (
+                  <Globe className="h-4 w-4 text-gray-300 shrink-0" />
+                )}
+                <span className="text-xs text-gray-600 truncate">{siteName}</span>
+                <X className="h-3 w-3 text-gray-400 shrink-0 ml-auto" />
+              </div>
+            </div>
+            <div className="h-8 rounded-b-md bg-white border border-t-0 border-gray-100 shadow-sm" />
+            <p className="text-[10px] text-gray-400 mt-2 leading-tight">
+              Aba do navegador
             </p>
           </div>
         </div>

@@ -52,8 +52,8 @@ export default async function RootLayout({
     // letting globals.css font-family fallback chain work correctly.
     <html lang="pt-BR" className={montserrat.variable}>
       <head>
-        {visualConfig.iconUrl && (
-          <link rel="icon" href={visualConfig.iconUrl} />
+        {(visualConfig.faviconUrl ?? visualConfig.iconUrl) && (
+          <link rel="icon" href={visualConfig.faviconUrl ?? visualConfig.iconUrl ?? undefined} />
         )}
         {fontLink && (
           <link rel="preconnect" href="https://fonts.googleapis.com" />

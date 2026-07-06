@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { getTenantVisualConfig } from '@/lib/visual-config'
 import type { ReactNode } from 'react'
 import { WhatsAppFab } from './_components/whatsapp-fab'
+import { TrackingScripts } from '@/components/tracking-scripts'
 
 export const metadata: Metadata = {
   title: {
@@ -57,6 +58,7 @@ export default async function GilliSiteLayout({ children }: { children: ReactNod
       />
       {children}
       <WhatsAppFab />
+      <TrackingScripts />
     </div>
   )
 }

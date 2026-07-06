@@ -6,6 +6,9 @@ export type LayoutType = 'MODERN' | 'CLASSIC' | 'MINIMAL'
 export interface VisualConfig {
   logoUrl:        string | null
   iconUrl:        string | null
+  faviconUrl:     string | null
+  metaPixelId:    string | null
+  gtmId:          string | null
   primaryColor:   string
   secondaryColor: string
   fontFamily:     string
@@ -17,6 +20,9 @@ export interface VisualConfig {
 export const PLATFORM_DEFAULTS: VisualConfig = {
   logoUrl:        null,
   iconUrl:        null,
+  faviconUrl:     null,
+  metaPixelId:    null,
+  gtmId:          null,
   primaryColor:   '#EE9020',
   secondaryColor: '#0F172A',
   fontFamily:     'Montserrat',
@@ -90,6 +96,9 @@ export const getTenantVisualConfig = cache(async (): Promise<VisualConfig> => {
     return {
       logoUrl:        data.logoUrl        ?? null,
       iconUrl:        data.iconUrl        ?? null,
+      faviconUrl:     data.faviconUrl     ?? null,
+      metaPixelId:    data.metaPixelId    ?? null,
+      gtmId:          data.gtmId          ?? null,
       primaryColor:   data.primaryColor   ?? PLATFORM_DEFAULTS.primaryColor,
       secondaryColor: data.secondaryColor ?? PLATFORM_DEFAULTS.secondaryColor,
       fontFamily: SUPPORTED_FONTS[data.fontFamily ?? ''] !== undefined
