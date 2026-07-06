@@ -12,8 +12,7 @@ interface StatCardProps {
 
 export function StatCard({ title, value, subtitle, icon: Icon, loading }: StatCardProps) {
   return (
-    <Card className="group relative overflow-hidden border-gray-200/80 shadow-[0_1px_3px_rgba(16,24,40,0.06)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(16,24,40,0.09)]">
-      <div className="pointer-events-none absolute -right-6 -top-10 h-28 w-28 rounded-full bg-primary/[0.05] transition-transform duration-300 group-hover:scale-125" />
+    <Card className="border-gray-200/80 shadow-[0_1px_3px_rgba(16,24,40,0.06)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(16,24,40,0.09)]">
       <CardContent className="p-5">
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
