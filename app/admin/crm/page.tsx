@@ -22,6 +22,7 @@ import { BackLink } from '@/components/back-link'
 import { FeatureGate } from '@/components/feature-gate'
 import { CrmContactDialog } from '@/components/crm-contact-dialog'
 import { CrmKanbanBoard, type CrmContact } from '@/components/crm-kanban-board'
+import { type ClientStage } from '@/components/crm-stage-colors'
 
 export default function CrmPage() {
   const { data: session } = useSession()
@@ -35,13 +36,20 @@ export default function CrmPage() {
   const [deleteId, setDeleteId] = useState('')
   const [isDeleteOpen, setIsDeleteOpen] = useState(false)
 
-  const { data: contacts = [], isLoading } = useQuery<CrmContact[]>({
+  const { data: contacts = [], isLoading: isLoadingContacts } = useQuery<CrmContact[]>({
     queryKey: ['crm-contacts', isRealtor ? realtorProfileId : 'all'],
     queryFn: async () => {
       const params = isRealtor && realtorProfileId ? `?realtorId=${realtorProfileId}` : ''
       return (await api.get(`/clientes${params}`)).data
     },
   })
+
+  const { data: stages = [], isLoading: isLoadingStages } = useQuery<ClientStage[]>({
+    queryKey: ['crm-stages'],
+    queryFn: async () => (await api.get('/crm-stages')).data,
+  })
+
+  const isLoading = isLoadingContacts || isLoadingStages
 
   const deleteMutation = useMutation({
     mutationFn: async () => api.delete(`/clientes/${deleteId}`),
@@ -95,6 +103,7 @@ export default function CrmPage() {
           ) : (
             <CrmKanbanBoard
               contacts={contacts}
+              stages={stages}
               isRealtor={isRealtor}
               realtorProfileId={realtorProfileId}
               onEdit={handleEdit}
