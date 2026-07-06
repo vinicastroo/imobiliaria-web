@@ -1,6 +1,6 @@
 "use client"
 
-import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
 import type { Period } from './types'
 
 const OPTIONS: { value: Period; label: string }[] = [
@@ -16,17 +16,22 @@ interface PeriodSelectorProps {
 
 export function PeriodSelector({ value, onChange }: PeriodSelectorProps) {
   return (
-    <div className="flex gap-1 bg-gray-100 p-1 rounded-lg">
+    <div className="flex gap-0.5 rounded-full bg-gray-200/60 p-1">
       {OPTIONS.map((opt) => (
-        <Button
+        <button
           key={opt.value}
-          variant={value === opt.value ? 'default' : 'ghost'}
-          size="sm"
+          type="button"
+          aria-pressed={value === opt.value}
           onClick={() => onChange(opt.value)}
-          className={value === opt.value ? 'bg-white shadow-sm text-gray-900 hover:bg-white' : 'text-gray-500 hover:text-gray-700'}
+          className={cn(
+            'rounded-full px-3.5 py-1.5 text-xs font-medium transition-all duration-200',
+            value === opt.value
+              ? 'bg-white text-gray-900 shadow-[0_1px_3px_rgba(16,24,40,0.12)]'
+              : 'text-gray-500 hover:text-gray-800',
+          )}
         >
           {opt.label}
-        </Button>
+        </button>
       ))}
     </div>
   )

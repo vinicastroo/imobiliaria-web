@@ -12,8 +12,14 @@ export interface SourceBreakdown {
   count: number
 }
 
+export interface DailyViews {
+  date: string
+  views: number
+}
+
 export interface MetricsResponse {
   totalViews: number
   topProperties: TopProperty[]
   sourceBreakdown: SourceBreakdown[]
+  dailyViews: DailyViews[]
 }
