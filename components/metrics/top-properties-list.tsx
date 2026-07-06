@@ -1,4 +1,5 @@
-import { Flame } from 'lucide-react'
+import Link from 'next/link'
+import { Flame, SquareArrowOutUpRight } from 'lucide-react'
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -52,6 +53,13 @@ export function TopPropertiesList({ data, loading }: TopPropertiesListProps) {
                       {index + 1}
                     </span>
                     <span className="truncate text-sm text-gray-700">{item.name}</span>
+                    <Link
+                      href={`/admin/imoveis/editar/${item.id}`}
+                      title="Abrir imóvel"
+                      className="shrink-0 text-gray-300 opacity-0 transition-opacity hover:text-primary group-hover:opacity-100"
+                    >
+                      <SquareArrowOutUpRight size={14} />
+                    </Link>
                   </div>
                   <span className="shrink-0 text-sm font-semibold tabular-nums text-gray-900">
                     {item.views.toLocaleString('pt-BR')}
