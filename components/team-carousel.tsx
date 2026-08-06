@@ -58,7 +58,7 @@ const teamMembers = [
   {
     id: 7,
     name: "Michele Stahnke",
-    role: "Corretora Imobiliária",
+    role: "Avaliadora de Imóveis & Corretora Imobiliária",
     image: "/michele.png",
     bio: "Consultoria personalizada e escuta ativa para guiar você com assertividade na escolha ideal."
   },
