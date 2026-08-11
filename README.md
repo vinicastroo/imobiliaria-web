@@ -1,36 +1,133 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# auros-imob-web
 
-## Getting Started
+Frontend da plataforma SaaS multi-tenant para imobiliárias. Um único Next.js serve o painel administrativo, os sites públicos white-label de cada imobiliária e o painel de super admin da plataforma.
 
-First, run the development server:
+---
 
+## 📸 Screenshots
+
+### Site público — Home (`/`)
+![Home page](docs/screenshots/home.jpg)
+
+### Site público — Listagem de imóveis (`/imoveis`)
+![Listagem de imóveis](docs/screenshots/imoveis-lista.jpg)
+
+### Site público — Detalhe do imóvel (`/imoveis/:id`)
+![Detalhe do imóvel](docs/screenshots/imovel-detalhe.jpg)
+
+### Sistema interno — Gerenciamento de imóveis
+![Gerenciamento de imóveis](docs/screenshots/admin-imoveis.jpg)
+
+---
+
+## 🚀 Stack
+
+- **Framework**: Next.js 16 (App Router) + React 19 + TypeScript
+- **Auth**: NextAuth v4 (strategy JWT)
+- **UI**: Shadcn/ui + Tailwind CSS v4 + Radix UI
+- **Data fetching**: TanStack Query v5
+- **Formulários**: React Hook Form + Zod
+- **Editor rich text**: Tiptap
+- **Drag & drop**: @dnd-kit
+- **Upload**: react-dropzone + react-easy-crop
+- **Ícones**: lucide-react e @phosphor-icons/react
+- **Toast**: sonner
+- **Monitoramento**: Sentry
+
+---
+
+## 🏢 Multi-tenancy
+
+Cada imobiliária (tenant) tem seu próprio site público, resolvido dinamicamente pelo `middleware.ts` a partir do hostname da requisição:
+
+1. **Hostname conhecido** (ex: `aurosimobiliaria.com.br`) → rewrite para o site dedicado daquele tenant
+2. **Hostname desconhecido** → resolve via `GET /resolve-tenant?hostname=` na API
+3. **Super admin** (`admin.codelabz.com.br`) → painel de plataforma, exige role `SUPER_ADMIN`
+4. **Local dev** → usa `NEXT_PUBLIC_AGENCY_ID` ou o cookie `__dev_domain__`
+
+O tenant é propagado via header `x-tenant-id` (Server Components) e cookie `__tenant__` (Client Components).
+
+## ✨ Funcionalidades
+
+- 🏠 **Gestão de imóveis** — cadastro, edição, fotos com crop/reordenação (limite de 15 por imóvel), imóveis em destaque
+- 👥 **CRM** — kanban de pipeline de vendas, timeline de contatos, origem de leads
+- 📊 **Dashboard de métricas** — visualizações por dia, origem de tráfego, imóveis mais vistos
+- 🏢 **Multi-tenant** — sites públicos white-label por domínio, cores e identidade visual configuráveis por imobiliária
+- 👔 **Gestão de equipe** — corretores, usuários e papéis (`OWNER`, `MANAGER`, `REALTOR`)
+- 💳 **Planos e cobrança** — planos por tenant (Starter, Professional, Enterprise) via Stripe
+- 🔐 **Painel super admin** — gerenciamento de agências e planos da plataforma inteira
+
+---
+
+## 📦 Setup local
+
+### 1. Instalar dependências
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Rodar o servidor de desenvolvimento
+```bash
+npm run dev
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Acesse [http://localhost:3000](http://localhost:3000).
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 3. Build de produção
+```bash
+npm run build
+npm start
+```
 
-## Learn More
+### 4. Lint
+```bash
+npm run lint
+```
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🔧 Variáveis de ambiente
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+NEXTAUTH_SECRET
+NEXTAUTH_URL
+NEXT_PUBLIC_API_URL
+NEXT_PUBLIC_AGENCY_ID       # Fallback de tenant em dev local
+NEXT_PUBLIC_PLATFORM_DOMAIN # ex: codelabz.com.br
+NEXT_PUBLIC_DEV_DOMAIN      # Simula um tenant específico em dev local (ex: aurosimobiliaria.com.br)
+```
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 📁 Estrutura de rotas (simplificada)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+app/
+  (aurosimobiliaria.com.br)/auros-site/   # Site público de um tenant customizado
+  (imoveisgilli.com.br)/gilli-site/       # Site público de outro tenant customizado
+  (generic-tenant)/generic-site/          # Site genérico (fallback dinâmico)
+  admin/                                  # Painel admin do tenant
+    imoveis/
+    corretores/
+    clientes/
+    crm/
+    configuracoes/
+    empreendimentos/
+    infraestruturas/
+    tipo-imovel/
+    usuarios/
+    agencies/    # Super admin
+    plans/       # Super admin
+  login/
+  api/           # Route handlers (NextAuth)
+components/
+  ui/            # Componentes Shadcn
+  property-form/ # Formulário de imóvel (schema, uploader, crop)
+middleware.ts    # Resolução de tenant + regras de auth
+```
+
+---
+
+## 📜 Licença
+
+Licença MIT - consulte a página [LICENÇA](https://opensource.org/licenses/MIT) para obter detalhes.
