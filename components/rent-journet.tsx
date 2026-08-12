@@ -42,7 +42,7 @@ const RentJourney = () => {
           </div>
 
           <div className="relative rounded-lg overflow-hidden shadow-xl">
-            <div className="absolute inset-0 z-10 bg-gradient-to-t from-[#032550] via-transparent to-transparent opacity-60"></div>
+            <div className="absolute inset-0 z-10 bg-gradient-to-t from-blue-950 via-transparent to-transparent opacity-60"></div>
             <Image
               src={journeyImage}
               alt="Casal se mudando para o novo apartamento com vista para o mar"

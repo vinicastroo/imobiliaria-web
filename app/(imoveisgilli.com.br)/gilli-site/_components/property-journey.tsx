@@ -39,7 +39,7 @@ export function PropertyJourney() {
       </div>
 
       <div className="relative mt-10 aspect-[16/7] w-full overflow-hidden rounded-2xl shadow-xl">
-        <div className="absolute inset-0 z-10 bg-gradient-to-t from-[#0F172A]/70 via-transparent to-transparent" />
+        <div className="absolute inset-0 z-10 bg-gradient-to-t from-[#EE9020]/70 via-transparent to-transparent" />
         <Image
           src={journeyImage}
           alt="Corretor caminhando com um casal por uma rua da região de Aurora"
