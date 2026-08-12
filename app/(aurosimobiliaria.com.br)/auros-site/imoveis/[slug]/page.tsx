@@ -9,7 +9,8 @@ import Footer from '../../_components/footer'
 import { PropertyImagesCarousel } from '@/components/property-images-carousel'
 
 import { RecommendedCarousel, RecommendedProperty } from '@/components/recommended-carousel'
-import { getProperty, type Property } from '@/app/api/get-property'
+import { getProperty } from '@/app/api/get-property'
+import { buildBreadcrumbJsonLd, buildPropertyJsonLd } from '@/lib/json-ld'
 
 import { Card, CardContent } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
@@ -32,81 +33,6 @@ interface PageProps {
 }
 export interface GetPropertiesResponse {
   properties: Properties[]
-}
-
-function parsePrice(value: string): number {
-  const cleaned = value.replace(/[^\d,]/g, "").replace(",", ".")
-  return Number(cleaned) || 0
-}
-
-function buildPropertyJsonLd(property: Property) {
-  const price = parsePrice(property.value)
-  const images = property.files.map((f) => f.path)
-
-  const jsonLd: Record<string, unknown> = {
-    "@context": "https://schema.org",
-    "@type": "RealEstateListing",
-    name: property.name,
-    description: property.summary,
-    url: `https://aurosimobiliaria.com.br/imoveis/${property.slug}`,
-    image: images,
-    address: {
-      "@type": "PostalAddress",
-      streetAddress: property.street
-        ? `${property.street}, ${property.numberAddress}`
-        : undefined,
-      addressLocality: property.city,
-      addressRegion: property.state || "SC",
-      addressCountry: "BR",
-      neighborhood: property.neighborhood,
-    },
-  }
-
-  if (property.latitude && property.longitude) {
-    jsonLd.geo = {
-      "@type": "GeoCoordinates",
-      latitude: Number(property.latitude),
-      longitude: Number(property.longitude),
-    }
-  }
-
-  if (!property.priceOnRequest && price > 0) {
-    jsonLd.offers = {
-      "@type": "Offer",
-      price,
-      priceCurrency: "BRL",
-      availability: "https://schema.org/InStock",
-    }
-  }
-
-  return jsonLd
-}
-
-function buildBreadcrumbJsonLd(propertyName: string, slug: string) {
-  return {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      {
-        "@type": "ListItem",
-        position: 1,
-        name: "Home",
-        item: "https://aurosimobiliaria.com.br",
-      },
-      {
-        "@type": "ListItem",
-        position: 2,
-        name: "Imóveis",
-        item: "https://aurosimobiliaria.com.br/imoveis",
-      },
-      {
-        "@type": "ListItem",
-        position: 3,
-        name: propertyName,
-        item: `https://aurosimobiliaria.com.br/imoveis/${slug}`,
-      },
-    ],
-  }
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
@@ -246,8 +172,13 @@ export default async function PropertyPage({ params }: PageProps) {
   const realtors = property.realtors || []
   const recommended = await getRecommendedProperties(agencyId, property.city, property.id)
 
-  const propertyJsonLd = buildPropertyJsonLd(property)
-  const breadcrumbJsonLd = buildBreadcrumbJsonLd(property.name, property.slug)
+  const baseUrl = 'https://aurosimobiliaria.com.br'
+  const propertyJsonLd = buildPropertyJsonLd(property, baseUrl)
+  const breadcrumbJsonLd = buildBreadcrumbJsonLd(baseUrl, [
+    { name: 'Home', path: '' },
+    { name: 'Imóveis', path: '/imoveis' },
+    { name: property.name, path: `/imoveis/${property.slug}` },
+  ])
 
   return (
     <main className="min-h-screen bg-white">

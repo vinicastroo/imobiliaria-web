@@ -3,6 +3,7 @@ import { Metadata } from 'next'
 import Footer from '../_components/footer'
 import { PropertyList } from '@/components/property-list'
 import { MenubarHome } from '@/components/menu-home'
+import { buildBreadcrumbJsonLd } from '@/lib/json-ld'
 
 const GILLI_SOCIAL = {
   whatsappUrl: 'https://api.whatsapp.com/send?phone=5547997882496&&text=Ol%C3%A1',
@@ -12,13 +13,13 @@ import { HorizontalFilter } from '@/components/horizontal-filter'
 
 export const metadata: Metadata = {
   title: 'Imóveis Gilli | Imóveis',
-  description: 'Busque e filtre imóveis com a Imóveis Gilli. Compra, venda e locação em Blumenau e região.',
+  description: 'Busque e filtre imóveis com a Imóveis Gilli. Compra, venda e locação em Aurora e região.',
   alternates: {
     canonical: 'https://imoveisgilli.com.br/imoveis',
   },
   openGraph: {
     title: 'Imóveis Gilli | Imóveis',
-    description: 'Busque e filtre imóveis com a Imóveis Gilli. Compra, venda e locação em Blumenau e região.',
+    description: 'Busque e filtre imóveis com a Imóveis Gilli. Compra, venda e locação em Aurora e região.',
     url: 'https://imoveisgilli.com.br/imoveis',
     type: 'website',
     images: [{ url: 'https://imoveisgilli.com.br/og-image.png', width: 1200, height: 630, alt: 'Imóveis Gilli' }],
@@ -31,24 +32,10 @@ export const metadata: Metadata = {
   },
 }
 
-const breadcrumbJsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'BreadcrumbList',
-  itemListElement: [
-    {
-      '@type': 'ListItem',
-      position: 1,
-      name: 'Home',
-      item: 'https://imoveisgilli.com.br',
-    },
-    {
-      '@type': 'ListItem',
-      position: 2,
-      name: 'Imóveis',
-      item: 'https://imoveisgilli.com.br/imoveis',
-    },
-  ],
-}
+const breadcrumbJsonLd = buildBreadcrumbJsonLd('https://imoveisgilli.com.br', [
+  { name: 'Home', path: '' },
+  { name: 'Imóveis', path: '/imoveis' },
+])
 
 export default function GilliImoveisPage() {
   return (

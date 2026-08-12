@@ -4,6 +4,7 @@ import Footer from '../_components/footer'
 import { PropertyList } from '@/components/property-list'
 import { MenubarHome } from '@/components/menu-home'
 import { HorizontalFilter } from '@/components/horizontal-filter'
+import { buildBreadcrumbJsonLd } from '@/lib/json-ld'
 
 export const metadata: Metadata = {
   title: 'Auros Corretora Imobiliária | Imóveis',
@@ -27,24 +28,10 @@ export const metadata: Metadata = {
   },
 }
 
-const breadcrumbJsonLd = {
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  itemListElement: [
-    {
-      "@type": "ListItem",
-      position: 1,
-      name: "Home",
-      item: "https://aurosimobiliaria.com.br",
-    },
-    {
-      "@type": "ListItem",
-      position: 2,
-      name: "Imóveis",
-      item: "https://aurosimobiliaria.com.br/imoveis",
-    },
-  ],
-}
+const breadcrumbJsonLd = buildBreadcrumbJsonLd('https://aurosimobiliaria.com.br', [
+  { name: 'Home', path: '' },
+  { name: 'Imóveis', path: '/imoveis' },
+])
 
 export default function ImoveisPage() {
   return (

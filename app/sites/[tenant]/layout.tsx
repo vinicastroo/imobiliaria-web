@@ -1,16 +1,13 @@
 import type { ReactNode } from 'react'
-import { getTenantVisualConfig, getGoogleFontsUrl } from '@/lib/visual-config'
+import { getTenantVisualConfig } from '@/lib/visual-config'
 import { TrackingScripts } from '@/components/tracking-scripts'
 
 export default async function TenantSiteLayout({ children }: { children: ReactNode }) {
   const { primaryColor, secondaryColor, fontFamily } = await getTenantVisualConfig()
-  const fontsUrl = getGoogleFontsUrl(fontFamily)
 
   return (
     <>
-      {fontsUrl && (
-        <link rel="stylesheet" href={fontsUrl} />
-      )}
+      {/* Font <link> is already injected with preconnect by the root layout (app/layout.tsx) */}
       <style>{`
         :root {
           --primary-color:   ${primaryColor};

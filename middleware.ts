@@ -162,6 +162,7 @@ export async function middleware(req: NextRequest) {
 
     let tenantId   = DEV_AGENCY_ID ?? null
     let tenantSlug: string | null = null
+    let tenantName: string | null = null
     let layoutType: TenantContext['layoutType'] = 'MODERN'
 
     if (effectiveDomain) {
@@ -169,12 +170,14 @@ export async function middleware(req: NextRequest) {
       if (resolved) {
         tenantId   = resolved.id
         tenantSlug = resolved.slug
+        tenantName = resolved.name
         layoutType = resolved.layoutType
       }
     }
 
     const requestHeaders = new Headers(req.headers)
     if (tenantId)   requestHeaders.set('x-tenant-id',     tenantId)
+    if (tenantName) requestHeaders.set('x-tenant-name',   encodeURIComponent(tenantName))
     if (layoutType) requestHeaders.set('x-tenant-layout', layoutType)
 
     const hasKnownPrefix = (effectiveDomain ?? '') in CUSTOM_SITE_PREFIXES
@@ -222,6 +225,7 @@ export async function middleware(req: NextRequest) {
   const requestHeaders = new Headers(req.headers)
   requestHeaders.set('x-tenant-id',     tenant.id)
   requestHeaders.set('x-tenant-slug',   tenant.slug)
+  requestHeaders.set('x-tenant-name',   encodeURIComponent(tenant.name))
   requestHeaders.set('x-tenant-layout', tenant.layoutType)
 
   if (isPublicSitePage(pathname)) {

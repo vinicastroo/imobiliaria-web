@@ -5,6 +5,7 @@ import { BedDouble, Bath, CarFront, Ruler, Grid2X2, MapPin } from 'lucide-react'
 
 import { getProperty } from '@/app/api/get-property'
 import { trackView } from '@/lib/track-view'
+import { buildBreadcrumbJsonLd, buildPropertyJsonLd } from '@/lib/json-ld'
 import { MenubarHome } from '@/components/menu-home'
 import { PropertyImagesCarousel } from '@/components/property-images-carousel'
 import { PropertyDescription } from '@/components/property-description'
@@ -77,6 +78,7 @@ export default async function TenantPropertyPage({ params }: PageProps) {
 
   const headersList = await headers()
   const agencyId = headersList.get('x-tenant-id') ?? process.env.NEXT_PUBLIC_AGENCY_ID ?? ''
+  const host = headersList.get('host')?.split(':')[0] ?? ''
 
   trackView(slug, agencyId, headersList.get('referer'))
 
@@ -86,8 +88,24 @@ export default async function TenantPropertyPage({ params }: PageProps) {
       ? `A partir de ${property.value}${property.transactionType === 'ALUGUEL' ? '/mês' : ''}`
       : `${property.value}${property.transactionType === 'ALUGUEL' ? '/mês' : ''}`
 
+  const baseUrl = `https://${host}`
+  const propertyJsonLd = buildPropertyJsonLd(property, baseUrl)
+  const breadcrumbJsonLd = buildBreadcrumbJsonLd(baseUrl, [
+    { name: 'Home', path: '' },
+    { name: 'Imóveis', path: '/imoveis' },
+    { name: property.name, path: `/imoveis/${property.slug}` },
+  ])
+
   return (
     <main className="min-h-screen bg-gray-50">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(propertyJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
       <MenubarHome />
 
       <div className="max-w-[1200px] mx-auto px-4 py-8 space-y-6">
