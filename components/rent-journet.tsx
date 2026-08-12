@@ -1,4 +1,7 @@
+import Image from 'next/image';
 import { FileText, ArrowUpRight, DollarSign, FileSearchCorner, Workflow } from 'lucide-react';
+
+import journeyImage from '@/public/auros-secao.png';
 
 const RentJourney = () => {
   const steps = [
@@ -39,10 +42,12 @@ const RentJourney = () => {
           </div>
 
           <div className="relative rounded-lg overflow-hidden shadow-xl">
-            <div className="absolute inset-0 bg-gradient-to-t from-[#032550] via-transparent to-transparent opacity-60"></div>
-            <img
-              src="/journey.jpg"
-              alt="Casal feliz na cozinha"
+            <div className="absolute inset-0 z-10 bg-gradient-to-t from-[#032550] via-transparent to-transparent opacity-60"></div>
+            <Image
+              src={journeyImage}
+              alt="Casal se mudando para o novo apartamento com vista para o mar"
+              placeholder="blur"
+              sizes="(max-width: 768px) 100vw, 50vw"
               className="w-full h-full object-cover"
             />
           </div>
