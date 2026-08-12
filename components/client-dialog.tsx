@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -20,6 +20,7 @@ const clientSchema = z.object({
   phone: z.string().min(1, 'Telefone obrigatório'),
   email: z.string().email('Email inválido').or(z.literal('')).optional(),
   description: z.string().min(1, 'Observação obrigatória'),
+  realtorId: z.string().nullable().optional(),
 })
 
 type ClientFormData = z.infer<typeof clientSchema>
@@ -46,9 +47,8 @@ interface ClientDialogProps {
 
 export function ClientDialog({ open, onOpenChange, clientToEdit }: ClientDialogProps) {
   const queryClient = useQueryClient()
-  const [selectedRealtorId, setSelectedRealtorId] = useState<string | null>(null)
 
-  const { register, handleSubmit, reset, setValue, formState: { errors } } = useForm<ClientFormData>({
+  const { register, handleSubmit, reset, setValue, watch, formState: { errors } } = useForm<ClientFormData>({
     resolver: zodResolver(clientSchema),
   })
 
@@ -68,20 +68,16 @@ export function ClientDialog({ open, onOpenChange, clientToEdit }: ClientDialogP
         setValue('phone', clientToEdit.phone)
         setValue('email', clientToEdit.email ?? '')
         setValue('description', clientToEdit.description)
-        setSelectedRealtorId(clientToEdit.realtorId ?? null)
+        setValue('realtorId', clientToEdit.realtorId ?? null)
       } else {
-        reset({ name: '', phone: '', email: '', description: '' })
-        setSelectedRealtorId(null)
+        reset({ name: '', phone: '', email: '', description: '', realtorId: null })
       }
     }
   }, [open, clientToEdit, setValue, reset])
 
   const mutation = useMutation({
     mutationFn: async (data: ClientFormData) => {
-      const payload = {
-        ...data,
-        realtorId: selectedRealtorId,
-      }
+      const payload = data
 
       if (clientToEdit) {
         await api.put(`/clientes/${clientToEdit.id}`, payload)
@@ -131,8 +127,8 @@ export function ClientDialog({ open, onOpenChange, clientToEdit }: ClientDialogP
           <div className="space-y-2">
             <Label>Corretor Responsável <span className="text-xs text-gray-400">(opcional)</span></Label>
             <Select
-              value={selectedRealtorId ?? 'none'}
-              onValueChange={(val) => setSelectedRealtorId(val === 'none' ? null : val)}
+              value={watch('realtorId') ?? 'none'}
+              onValueChange={(val) => setValue('realtorId', val === 'none' ? null : val)}
             >
               <SelectTrigger>
                 <SelectValue placeholder="Selecione um corretor" />

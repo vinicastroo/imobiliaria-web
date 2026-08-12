@@ -43,7 +43,7 @@ export function useImageCropQueue(
   const previewUrlsRef = useRef<string[]>([])
   const pendingImagesRef = useRef<ImageItem[]>([])
 
-  const totalInBatch = useRef(0)
+  const [totalInBatch, setTotalInBatch] = useState(0)
 
   const currentItem = queue.length > 0 ? queue[currentIndex] : null
   const isOpen = currentItem !== null
@@ -60,7 +60,7 @@ export function useImageCropQueue(
     })
 
     pendingImagesRef.current = []
-    totalInBatch.current = items.length
+    setTotalInBatch(items.length)
     setCurrentIndex(0)
     setQueue(items)
   }, [])
@@ -130,7 +130,7 @@ export function useImageCropQueue(
     isOpen,
     currentItem,
     processedCount,
-    totalCount: totalInBatch.current,
+    totalCount: totalInBatch,
     enqueueFiles,
     confirmCrop,
     skipCrop,
