@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { useState } from 'react'
 import { toast } from 'sonner'
@@ -15,8 +15,8 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogCancel,
-} from "@/components/ui/alert-dialog"
-import { Button } from "@/components/ui/button"
+} from '@/components/ui/alert-dialog'
+import { Button } from '@/components/ui/button'
 
 interface PropsModal {
   open: boolean
@@ -37,10 +37,11 @@ export function ModalDeleteProperty({ id, open, handleClose }: PropsModal) {
 
       // Fecha o modal
       handleClose()
-
     } catch (error: unknown) {
       console.error(error)
-      const errorMessage = (error as AxiosError<{ message: string }>).response?.data?.message || 'Erro ao excluir imóvel'
+      const errorMessage =
+        (error as AxiosError<{ message: string }>).response?.data?.message ||
+        'Erro ao excluir imóvel'
       toast.error(errorMessage)
     } finally {
       setIsDeleting(false)
@@ -53,20 +54,15 @@ export function ModalDeleteProperty({ id, open, handleClose }: PropsModal) {
         <AlertDialogHeader>
           <AlertDialogTitle>Excluir imóvel</AlertDialogTitle>
           <AlertDialogDescription>
-            Você realmente deseja excluir este imóvel? Essa ação não pode ser desfeita e removerá permanentemente os dados do sistema.
+            Você realmente deseja excluir este imóvel? Essa ação não pode ser desfeita e removerá
+            permanentemente os dados do sistema.
           </AlertDialogDescription>
         </AlertDialogHeader>
 
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={isDeleting}>
-            Cancelar
-          </AlertDialogCancel>
+          <AlertDialogCancel disabled={isDeleting}>Cancelar</AlertDialogCancel>
 
-          <Button
-            variant="destructive"
-            onClick={handleDeleteProperty}
-            disabled={isDeleting}
-          >
+          <Button variant="destructive" onClick={handleDeleteProperty} disabled={isDeleting}>
             {isDeleting ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />

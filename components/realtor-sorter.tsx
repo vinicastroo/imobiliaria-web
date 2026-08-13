@@ -1,17 +1,17 @@
-"use client"
+'use client'
 
-import { ArrowUp, ArrowDown, X, User } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
+import { ArrowUp, ArrowDown, X, User } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
+} from '@/components/ui/select'
 // 1. Importar componentes de Avatar
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 
 interface Realtor {
   id: string
@@ -27,7 +27,7 @@ interface RealtorSorterProps {
 
 export function RealtorSorter({ allRealtors, selectedIds, onChange }: RealtorSorterProps) {
   const selectedRealtors = selectedIds
-    .map(id => allRealtors.find(r => r.id === id))
+    .map((id) => allRealtors.find((r) => r.id === id))
     .filter(Boolean) as Realtor[]
 
   const handleAdd = (id: string) => {
@@ -37,7 +37,7 @@ export function RealtorSorter({ allRealtors, selectedIds, onChange }: RealtorSor
   }
 
   const handleRemove = (id: string) => {
-    onChange(selectedIds.filter(itemId => itemId !== id))
+    onChange(selectedIds.filter((itemId) => itemId !== id))
   }
 
   const moveUp = (index: number) => {
@@ -64,13 +64,15 @@ export function RealtorSorter({ allRealtors, selectedIds, onChange }: RealtorSor
         <label className="text-sm font-medium">Adicionar Corretor</label>
 
         <Select onValueChange={handleAdd}>
-          <SelectTrigger className="h-12"> {/* Aumentei um pouco a altura para caber a foto */}
+          <SelectTrigger className="h-12">
+            {' '}
+            {/* Aumentei um pouco a altura para caber a foto */}
             <SelectValue placeholder="Selecione para adicionar..." />
           </SelectTrigger>
           <SelectContent>
             {allRealtors
-              .filter(r => !selectedIds.includes(r.id))
-              .map(r => (
+              .filter((r) => !selectedIds.includes(r.id))
+              .map((r) => (
                 <SelectItem key={r.id} value={r.id}>
                   {/* 3. Layout Flex para Foto + Nome dentro do Select */}
                   <div className="flex items-center gap-2">
@@ -95,27 +97,54 @@ export function RealtorSorter({ allRealtors, selectedIds, onChange }: RealtorSor
         )}
 
         {selectedRealtors.map((realtor, index) => (
-          <div key={realtor.id} className="flex items-center justify-between bg-gray-50 p-2 rounded border">
+          <div
+            key={realtor.id}
+            className="flex items-center justify-between rounded border bg-gray-50 p-2"
+          >
             <span className="flex items-center gap-3">
-              <Badge variant="outline" className="w-6 h-6 flex justify-center p-0">{index + 1}</Badge>
+              <Badge variant="outline" className="flex h-6 w-6 justify-center p-0">
+                {index + 1}
+              </Badge>
 
               {/* 4. Exibindo a foto também na lista de ordenação */}
               <Avatar className="h-8 w-8 border bg-white">
                 <AvatarImage src={realtor.avatar} alt={realtor.name} />
-                <AvatarFallback><User size={14} /></AvatarFallback>
+                <AvatarFallback>
+                  <User size={14} />
+                </AvatarFallback>
               </Avatar>
 
-              <span className="font-medium text-sm">{realtor.name}</span>
+              <span className="text-sm font-medium">{realtor.name}</span>
             </span>
 
             <div className="flex items-center gap-1">
-              <Button size="icon" variant="ghost" type="button" className="h-8 w-8" onClick={() => moveUp(index)} disabled={index === 0}>
+              <Button
+                size="icon"
+                variant="ghost"
+                type="button"
+                className="h-8 w-8"
+                onClick={() => moveUp(index)}
+                disabled={index === 0}
+              >
                 <ArrowUp size={14} />
               </Button>
-              <Button size="icon" variant="ghost" type="button" className="h-8 w-8" onClick={() => moveDown(index)} disabled={index === selectedRealtors.length - 1}>
+              <Button
+                size="icon"
+                variant="ghost"
+                type="button"
+                className="h-8 w-8"
+                onClick={() => moveDown(index)}
+                disabled={index === selectedRealtors.length - 1}
+              >
                 <ArrowDown size={14} />
               </Button>
-              <Button size="icon" variant="ghost" type="button" className="h-8 w-8 text-red-500 hover:bg-red-50 hover:text-red-600" onClick={() => handleRemove(realtor.id)}>
+              <Button
+                size="icon"
+                variant="ghost"
+                type="button"
+                className="h-8 w-8 text-red-500 hover:bg-red-50 hover:text-red-600"
+                onClick={() => handleRemove(realtor.id)}
+              >
                 <X size={14} />
               </Button>
             </div>

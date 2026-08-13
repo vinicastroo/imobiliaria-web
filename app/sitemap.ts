@@ -4,7 +4,7 @@ import { MetadataRoute } from 'next'
 // Rotas estáticas por tenant — adicione aqui ao criar novos tenants
 const TENANT_STATIC_PATHS: Record<string, string[]> = {
   'aurosimobiliaria.com.br': ['/', '/imoveis', '/quem-somos'],
-  'imoveisgilli.com.br':     ['/', '/imoveis'],
+  'imoveisgilli.com.br': ['/', '/imoveis'],
 }
 
 const FALLBACK_STATIC_PATHS = ['/', '/imoveis']

@@ -7,15 +7,19 @@ Frontend da plataforma SaaS multi-tenant para imobiliárias. Um único Next.js s
 ## 📸 Screenshots
 
 ### Site público — Home (`/`)
+
 ![Home page](docs/screenshots/home.jpg)
 
 ### Site público — Listagem de imóveis (`/imoveis`)
+
 ![Listagem de imóveis](docs/screenshots/imoveis-lista.jpg)
 
 ### Site público — Detalhe do imóvel (`/imoveis/:id`)
+
 ![Detalhe do imóvel](docs/screenshots/imovel-detalhe.jpg)
 
 ### Sistema interno — Gerenciamento de imóveis
+
 ![Gerenciamento de imóveis](docs/screenshots/admin-imoveis.jpg)
 
 ---
@@ -62,11 +66,13 @@ O tenant é propagado via header `x-tenant-id` (Server Components) e cookie `__t
 ## 📦 Setup local
 
 ### 1. Instalar dependências
+
 ```bash
 npm install
 ```
 
 ### 2. Rodar o servidor de desenvolvimento
+
 ```bash
 npm run dev
 ```
@@ -74,12 +80,14 @@ npm run dev
 Acesse [http://localhost:3000](http://localhost:3000).
 
 ### 3. Build de produção
+
 ```bash
 npm run build
 npm start
 ```
 
 ### 4. Lint
+
 ```bash
 npm run lint
 ```

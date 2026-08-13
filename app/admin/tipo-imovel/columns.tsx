@@ -1,8 +1,8 @@
-"use client"
+'use client'
 
-import { ColumnDef } from "@tanstack/react-table"
-import { Trash2, Loader2 } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { ColumnDef } from '@tanstack/react-table'
+import { Trash2, Loader2 } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -13,7 +13,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
+} from '@/components/ui/alert-dialog'
 
 export interface TypeProperty {
   id: string
@@ -28,12 +28,12 @@ interface ColumnsProps {
 
 export const getColumns = ({ onDelete, isDeletingId }: ColumnsProps): ColumnDef<TypeProperty>[] => [
   {
-    accessorKey: "description",
-    header: "Descrição",
-    cell: ({ row }) => <span className="font-medium">{row.getValue("description")}</span>,
+    accessorKey: 'description',
+    header: 'Descrição',
+    cell: ({ row }) => <span className="font-medium">{row.getValue('description')}</span>,
   },
   {
-    id: "actions",
+    id: 'actions',
     cell: ({ row }) => {
       const type = row.original
       const isDeleting = isDeletingId === type.id
@@ -45,18 +45,22 @@ export const getColumns = ({ onDelete, isDeletingId }: ColumnsProps): ColumnDef<
               <Button
                 variant="ghost"
                 size="icon"
-                className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                className="text-red-500 hover:bg-red-50 hover:text-red-700"
                 disabled={isDeleting}
               >
-                {isDeleting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
+                {isDeleting ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Trash2 className="h-4 w-4" />
+                )}
               </Button>
             </AlertDialogTrigger>
             <AlertDialogContent>
               <AlertDialogHeader>
                 <AlertDialogTitle>Excluir Tipo</AlertDialogTitle>
                 <AlertDialogDescription>
-                  Tem certeza que deseja excluir o tipo <strong>{type.description}</strong>?
-                  Isso pode afetar imóveis vinculados a ele.
+                  Tem certeza que deseja excluir o tipo <strong>{type.description}</strong>? Isso
+                  pode afetar imóveis vinculados a ele.
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>

@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
@@ -116,14 +116,14 @@ export function NotificationsBell({ isExpanded }: { isExpanded: boolean }) {
       <button
         type="button"
         className={cn(
-          'flex h-10 w-full select-none items-center rounded-lg text-sm text-white/65 transition-all duration-150 hover:bg-white/10 hover:text-white',
+          'flex h-10 w-full items-center rounded-lg text-sm text-white/65 transition-all duration-150 select-none hover:bg-white/10 hover:text-white',
           isExpanded ? 'gap-3 px-3' : 'justify-center px-0',
         )}
       >
         <span className="relative shrink-0">
           <Bell size={18} />
           {unreadCount > 0 && (
-            <span className="absolute -right-1.5 -top-1 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-red-500 px-1 text-[9px] font-bold leading-none text-white">
+            <span className="absolute -top-1 -right-1.5 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-red-500 px-1 text-[9px] leading-none font-bold text-white">
               {unreadCount > 9 ? '9+' : unreadCount}
             </span>
           )}
@@ -142,11 +142,16 @@ export function NotificationsBell({ isExpanded }: { isExpanded: boolean }) {
 
   return (
     <>
-      <Dialog open={modalOpen} onOpenChange={(isOpen) => { if (!isOpen) setModalHidden(true) }}>
+      <Dialog
+        open={modalOpen}
+        onOpenChange={(isOpen) => {
+          if (!isOpen) setModalHidden(true)
+        }}
+      >
         <DialogContent className="max-w-sm">
           <DialogHeader>
-            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
-              <BellRing className="h-6 w-6 text-primary" />
+            <div className="bg-primary/10 mx-auto flex h-12 w-12 items-center justify-center rounded-full">
+              <BellRing className="text-primary h-6 w-6" />
             </div>
             <DialogTitle className="text-center">
               {unreadCount === 1
@@ -158,10 +163,17 @@ export function NotificationsBell({ isExpanded }: { isExpanded: boolean }) {
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="flex-col gap-2 sm:flex-col">
-            <Button className="w-full bg-[#17375F] hover:bg-[#122b4a]" onClick={handleViewNotifications}>
+            <Button
+              className="w-full bg-[#17375F] hover:bg-[#122b4a]"
+              onClick={handleViewNotifications}
+            >
               Ver notificações
             </Button>
-            <Button variant="ghost" className="w-full text-muted-foreground" onClick={handleSnoozeModal}>
+            <Button
+              variant="ghost"
+              className="text-muted-foreground w-full"
+              onClick={handleSnoozeModal}
+            >
               Ver depois
             </Button>
           </DialogFooter>
@@ -169,102 +181,108 @@ export function NotificationsBell({ isExpanded }: { isExpanded: boolean }) {
       </Dialog>
 
       <Popover open={open} onOpenChange={setOpen}>
-      {isExpanded ? (
-        trigger
-      ) : (
-        <TooltipProvider>
-          <Tooltip delayDuration={200}>
-            <TooltipTrigger asChild>{trigger}</TooltipTrigger>
-            <TooltipContent side="right" className="text-xs">Notificações</TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-      )}
-
-      <PopoverContent side="right" align="end" className="w-80 p-0">
-        <div className="flex items-center justify-between border-b px-3.5 py-2.5">
-          <p className="text-sm font-semibold">Notificações</p>
-          {unreadCount > 0 && (
-            <Button
-              variant="ghost"
-              size="sm"
-              className="h-7 gap-1.5 px-2 text-xs text-muted-foreground"
-              disabled={readAllMutation.isPending}
-              onClick={() => readAllMutation.mutate()}
-            >
-              <CheckCheck size={13} /> Marcar todas
-            </Button>
-          )}
-        </div>
-
-        {notifications.length === 0 ? (
-          <div className="flex flex-col items-center gap-2 px-4 py-10 text-center">
-            <Bell size={20} className="text-gray-300" />
-            <p className="text-xs text-muted-foreground">Nenhuma notificação por aqui</p>
-          </div>
+        {isExpanded ? (
+          trigger
         ) : (
-          <div className="thin-scrollbar max-h-96 overflow-y-auto">
-            {notifications.map((notification) => (
-              <div
-                key={notification.id}
-                role="button"
-                tabIndex={0}
-                onClick={() => handleNotificationClick(notification)}
-                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleNotificationClick(notification) }}
-                className={cn(
-                  'group flex w-full cursor-pointer items-start gap-2.5 border-b px-3.5 py-3 text-left transition-colors last:border-0 hover:bg-gray-50',
-                  !notification.readAt && 'bg-primary/[0.04]',
-                )}
+          <TooltipProvider>
+            <Tooltip delayDuration={200}>
+              <TooltipTrigger asChild>{trigger}</TooltipTrigger>
+              <TooltipContent side="right" className="text-xs">
+                Notificações
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        )}
+
+        <PopoverContent side="right" align="end" className="w-80 p-0">
+          <div className="flex items-center justify-between border-b px-3.5 py-2.5">
+            <p className="text-sm font-semibold">Notificações</p>
+            {unreadCount > 0 && (
+              <Button
+                variant="ghost"
+                size="sm"
+                className="text-muted-foreground h-7 gap-1.5 px-2 text-xs"
+                disabled={readAllMutation.isPending}
+                onClick={() => readAllMutation.mutate()}
               >
-                <span
+                <CheckCheck size={13} /> Marcar todas
+              </Button>
+            )}
+          </div>
+
+          {notifications.length === 0 ? (
+            <div className="flex flex-col items-center gap-2 px-4 py-10 text-center">
+              <Bell size={20} className="text-gray-300" />
+              <p className="text-muted-foreground text-xs">Nenhuma notificação por aqui</p>
+            </div>
+          ) : (
+            <div className="thin-scrollbar max-h-96 overflow-y-auto">
+              {notifications.map((notification) => (
+                <div
+                  key={notification.id}
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => handleNotificationClick(notification)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') handleNotificationClick(notification)
+                  }}
                   className={cn(
-                    'mt-1.5 h-2 w-2 shrink-0 rounded-full',
-                    notification.readAt ? 'bg-transparent' : 'bg-primary',
+                    'group flex w-full cursor-pointer items-start gap-2.5 border-b px-3.5 py-3 text-left transition-colors last:border-0 hover:bg-gray-50',
+                    !notification.readAt && 'bg-primary/[0.04]',
                   )}
-                />
-                <span className={cn('min-w-0 flex-1', notification.readAt && 'opacity-55')}>
+                >
                   <span
                     className={cn(
-                      'block text-xs text-foreground',
-                      notification.readAt ? 'font-normal' : 'font-medium',
+                      'mt-1.5 h-2 w-2 shrink-0 rounded-full',
+                      notification.readAt ? 'bg-transparent' : 'bg-primary',
                     )}
-                  >
-                    {notification.title}
-                  </span>
-                  {notification.body && (
-                    <span className="mt-0.5 block truncate text-xs text-muted-foreground">
-                      {notification.body}
+                  />
+                  <span className={cn('min-w-0 flex-1', notification.readAt && 'opacity-55')}>
+                    <span
+                      className={cn(
+                        'text-foreground block text-xs',
+                        notification.readAt ? 'font-normal' : 'font-medium',
+                      )}
+                    >
+                      {notification.title}
                     </span>
-                  )}
-                  <span className="mt-1 block text-[11px] text-muted-foreground/70">
-                    {relativeTime(notification.createdAt)}
+                    {notification.body && (
+                      <span className="text-muted-foreground mt-0.5 block truncate text-xs">
+                        {notification.body}
+                      </span>
+                    )}
+                    <span className="text-muted-foreground/70 mt-1 block text-[11px]">
+                      {relativeTime(notification.createdAt)}
+                    </span>
                   </span>
-                </span>
-                {!notification.readAt && (
-                  <TooltipProvider>
-                    <Tooltip delayDuration={300}>
-                      <TooltipTrigger asChild>
-                        <button
-                          type="button"
-                          disabled={markReadMutation.isPending}
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            markReadMutation.mutate(notification.id)
-                          }}
-                          className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-muted-foreground/50 opacity-0 transition-all hover:bg-primary/10 hover:text-primary group-hover:opacity-100 focus-visible:opacity-100"
-                        >
-                          <Check size={14} />
-                        </button>
-                      </TooltipTrigger>
-                      <TooltipContent side="left" className="text-xs">Marcar como lida</TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                )}
-              </div>
-            ))}
-          </div>
-        )}
-      </PopoverContent>
-    </Popover>
+                  {!notification.readAt && (
+                    <TooltipProvider>
+                      <Tooltip delayDuration={300}>
+                        <TooltipTrigger asChild>
+                          <button
+                            type="button"
+                            disabled={markReadMutation.isPending}
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              markReadMutation.mutate(notification.id)
+                            }}
+                            className="text-muted-foreground/50 hover:bg-primary/10 hover:text-primary mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full opacity-0 transition-all group-hover:opacity-100 focus-visible:opacity-100"
+                          >
+                            <Check size={14} />
+                          </button>
+                        </TooltipTrigger>
+                        <TooltipContent side="left" className="text-xs">
+                          Marcar como lida
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+        </PopoverContent>
+      </Popover>
     </>
   )
 }

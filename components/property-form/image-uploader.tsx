@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { useCallback } from 'react'
 import { toast } from 'sonner'
@@ -48,8 +48,7 @@ function getImageSrc(item: ImageItem) {
 
 async function downloadImage(item: ImageItem) {
   const src = item.type === 'existing' ? item.path : item.preview
-  const fileName =
-    item.type === 'existing' ? item.fileName : item.file.name
+  const fileName = item.type === 'existing' ? item.fileName : item.file.name
 
   try {
     const response = await fetch(src)
@@ -78,14 +77,9 @@ function SortableImageItem({
   onRemove: () => void
   onSetCover: () => void
 }) {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id: getImageId(item) })
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id: getImageId(item),
+  })
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -99,25 +93,20 @@ function SortableImageItem({
       ref={setNodeRef}
       style={style}
       className={cn(
-        'relative group aspect-square rounded-lg overflow-hidden border bg-gray-100',
-        isDragging && 'opacity-50 z-50',
+        'group relative aspect-square overflow-hidden rounded-lg border bg-gray-100',
+        isDragging && 'z-50 opacity-50',
         isCover && 'ring-2 ring-yellow-400',
       )}
     >
-      <Image
-        src={getImageSrc(item)}
-        alt={`Imagem ${index + 1}`}
-        fill
-        className="object-cover"
-      />
+      <Image src={getImageSrc(item)} alt={`Imagem ${index + 1}`} fill className="object-cover" />
 
       {isCover && (
-        <div className="absolute top-2 left-2 bg-yellow-500 text-white text-[10px] px-2 py-0.5 rounded-full font-bold">
+        <div className="absolute top-2 left-2 rounded-full bg-yellow-500 px-2 py-0.5 text-[10px] font-bold text-white">
           Capa
         </div>
       )}
 
-      <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+      <div className="absolute inset-0 flex items-center justify-center gap-2 bg-black/40 opacity-0 transition-opacity group-hover:opacity-100">
         <Tooltip>
           <TooltipTrigger asChild>
             <Button
@@ -213,10 +202,13 @@ export function ImageUploader({
       if (isAtLimit) return
       const toAdd = acceptedFiles.slice(0, remaining)
       if (acceptedFiles.length > remaining) {
-        toast.warning(`Limite de ${MAX_IMAGES} fotos atingido. Apenas ${remaining} foto(s) foram adicionadas.`)
+        toast.warning(
+          `Limite de ${MAX_IMAGES} fotos atingido. Apenas ${remaining} foto(s) foram adicionadas.`,
+        )
       }
       enqueueFiles(toAdd).catch((err: unknown) => {
-        const message = err instanceof Error ? err.message : 'Erro ao processar imagem. Tente novamente.'
+        const message =
+          err instanceof Error ? err.message : 'Erro ao processar imagem. Tente novamente.'
         toast.error(message)
       })
     },
@@ -278,16 +270,16 @@ export function ImageUploader({
       <div
         {...getRootProps()}
         className={cn(
-          'border-2 border-dashed rounded-lg p-8 text-center transition-colors',
+          'rounded-lg border-2 border-dashed p-8 text-center transition-colors',
           isAtLimit
-            ? 'border-gray-200 bg-gray-50 cursor-not-allowed opacity-60'
+            ? 'cursor-not-allowed border-gray-200 bg-gray-50 opacity-60'
             : isDragActive
-              ? 'border-[#17375F] bg-blue-50/50 cursor-pointer'
-              : 'border-gray-300 hover:border-gray-400 cursor-pointer',
+              ? 'cursor-pointer border-[#17375F] bg-blue-50/50'
+              : 'cursor-pointer border-gray-300 hover:border-gray-400',
         )}
       >
         <input {...getInputProps()} />
-        <Upload className="mx-auto h-10 w-10 text-gray-400 mb-3" />
+        <Upload className="mx-auto mb-3 h-10 w-10 text-gray-400" />
         <p className="text-sm text-gray-600">
           {isAtLimit
             ? 'Limite de fotos atingido'
@@ -295,22 +287,17 @@ export function ImageUploader({
               ? 'Solte as imagens aqui...'
               : 'Arraste imagens aqui ou clique para selecionar'}
         </p>
-        <p className="text-xs text-gray-400 mt-1">
-          {isAtLimit ? `${MAX_IMAGES}/${MAX_IMAGES} fotos` : `PNG, JPG, WEBP, HEIC · ${images.length}/${MAX_IMAGES} fotos`}
+        <p className="mt-1 text-xs text-gray-400">
+          {isAtLimit
+            ? `${MAX_IMAGES}/${MAX_IMAGES} fotos`
+            : `PNG, JPG, WEBP, HEIC · ${images.length}/${MAX_IMAGES} fotos`}
         </p>
       </div>
 
       {images.length > 0 && (
-        <DndContext
-          sensors={sensors}
-          collisionDetection={closestCenter}
-          onDragEnd={handleDragEnd}
-        >
-          <SortableContext
-            items={images.map(getImageId)}
-            strategy={rectSortingStrategy}
-          >
-            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+          <SortableContext items={images.map(getImageId)} strategy={rectSortingStrategy}>
+            <div className="grid grid-cols-2 gap-4 md:grid-cols-4 lg:grid-cols-6">
               {images.map((item, index) => (
                 <SortableImageItem
                   key={getImageId(item)}

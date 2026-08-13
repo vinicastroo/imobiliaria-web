@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
@@ -11,7 +11,12 @@ import { RealtorDialog, Realtor } from '@/components/realtor-dialog'
 import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import {
-  Table, TableBody, TableCell, TableHead, TableHeader, TableRow
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from '@/components/ui/table'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
@@ -24,7 +29,7 @@ export default function CorretoresPage() {
 
   const { data: realtors, isLoading } = useQuery<Realtor[]>({
     queryKey: ['realtors'],
-    queryFn: async () => (await api.get('/corretor')).data
+    queryFn: async () => (await api.get('/corretor')).data,
   })
 
   const deleteMutation = useMutation({
@@ -32,7 +37,7 @@ export default function CorretoresPage() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['realtors'] })
       toast.success('Corretor removido')
-    }
+    },
   })
 
   // Função para abrir modal de criação
@@ -48,10 +53,10 @@ export default function CorretoresPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col p-8 max-w-[1200px] mx-auto">
-      <div className="flex flex-col gap-4 mb-6">
+    <div className="mx-auto flex min-h-screen max-w-[1200px] flex-col bg-gray-50 p-8">
+      <div className="mb-6 flex flex-col gap-4">
         <BackLink href="/admin" />
-        <div className="flex justify-between items-center">
+        <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold text-[#17375F]">Corretores</h1>
             <p className="text-gray-500">Gerencie sua equipe de vendas.</p>
@@ -64,8 +69,8 @@ export default function CorretoresPage() {
         </div>
       </div>
 
-      <Card className='py-6'>
-          <CardContent>
+      <Card className="py-6">
+        <CardContent>
           <Table>
             <TableHeader>
               <TableRow>
@@ -114,7 +119,11 @@ export default function CorretoresPage() {
                 </TableRow>
               ))}
               {!isLoading && realtors?.length === 0 && (
-                <TableRow><TableCell colSpan={5} className="text-center">Nenhum corretor encontrado.</TableCell></TableRow>
+                <TableRow>
+                  <TableCell colSpan={5} className="text-center">
+                    Nenhum corretor encontrado.
+                  </TableCell>
+                </TableRow>
               )}
             </TableBody>
           </Table>

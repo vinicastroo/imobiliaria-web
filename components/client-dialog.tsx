@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
@@ -8,12 +8,24 @@ import { toast } from 'sonner'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Loader2 } from 'lucide-react'
 import api from '@/services/api'
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from '@/components/ui/dialog'
 
 const clientSchema = z.object({
   name: z.string().min(1, 'Nome obrigatório'),
@@ -48,7 +60,14 @@ interface ClientDialogProps {
 export function ClientDialog({ open, onOpenChange, clientToEdit }: ClientDialogProps) {
   const queryClient = useQueryClient()
 
-  const { register, handleSubmit, reset, setValue, watch, formState: { errors } } = useForm<ClientFormData>({
+  const {
+    register,
+    handleSubmit,
+    reset,
+    setValue,
+    watch,
+    formState: { errors },
+  } = useForm<ClientFormData>({
     resolver: zodResolver(clientSchema),
   })
 
@@ -118,14 +137,18 @@ export function ClientDialog({ open, onOpenChange, clientToEdit }: ClientDialogP
             </div>
 
             <div className="space-y-2">
-              <Label>Email <span className="text-xs text-gray-400">(opcional)</span></Label>
+              <Label>
+                Email <span className="text-xs text-gray-400">(opcional)</span>
+              </Label>
               <Input {...register('email')} placeholder="email@exemplo.com" type="email" />
               {errors.email && <span className="text-xs text-red-500">{errors.email.message}</span>}
             </div>
           </div>
 
           <div className="space-y-2">
-            <Label>Corretor Responsável <span className="text-xs text-gray-400">(opcional)</span></Label>
+            <Label>
+              Corretor Responsável <span className="text-xs text-gray-400">(opcional)</span>
+            </Label>
             <Select
               value={watch('realtorId') ?? 'none'}
               onValueChange={(val) => setValue('realtorId', val === 'none' ? null : val)}
@@ -151,15 +174,21 @@ export function ClientDialog({ open, onOpenChange, clientToEdit }: ClientDialogP
               placeholder="Ex: Busca apartamento 3 quartos na região central..."
               rows={4}
             />
-            {errors.description && <span className="text-xs text-red-500">{errors.description.message}</span>}
+            {errors.description && (
+              <span className="text-xs text-red-500">{errors.description.message}</span>
+            )}
           </div>
 
           <DialogFooter>
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
               Cancelar
             </Button>
-            <Button type="submit" className="bg-[#17375F] hover:bg-[#122b4a]" disabled={mutation.isPending}>
-              {mutation.isPending ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
+            <Button
+              type="submit"
+              className="bg-[#17375F] hover:bg-[#122b4a]"
+              disabled={mutation.isPending}
+            >
+              {mutation.isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
               Salvar
             </Button>
           </DialogFooter>

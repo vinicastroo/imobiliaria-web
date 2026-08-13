@@ -8,16 +8,25 @@ import Footer from './_components/footer'
 
 export const metadata: Metadata = {
   title: 'Imóveis Gilli - Imobiliária',
-  description: 'Encontre os melhores imóveis com a Imóveis Gilli. Compra, venda e locação em Aurora e região.',
+  description:
+    'Encontre os melhores imóveis com a Imóveis Gilli. Compra, venda e locação em Aurora e região.',
   alternates: {
     canonical: 'https://imoveisgilli.com.br',
   },
   openGraph: {
     title: 'Imóveis Gilli - Imobiliária',
-    description: 'Encontre os melhores imóveis com a Imóveis Gilli. Compra, venda e locação em Aurora e região.',
+    description:
+      'Encontre os melhores imóveis com a Imóveis Gilli. Compra, venda e locação em Aurora e região.',
     url: 'https://imoveisgilli.com.br',
     type: 'website',
-    images: [{ url: 'https://imoveisgilli.com.br/og-image.png', width: 1200, height: 630, alt: 'Imóveis Gilli' }],
+    images: [
+      {
+        url: 'https://imoveisgilli.com.br/og-image.png',
+        width: 1200,
+        height: 630,
+        alt: 'Imóveis Gilli',
+      },
+    ],
   },
   twitter: {
     card: 'summary_large_image',
@@ -28,11 +37,10 @@ export const metadata: Metadata = {
 }
 
 export default async function GilliHome() {
-  const agencyId =
-    (await headers()).get('x-tenant-id') ?? process.env.NEXT_PUBLIC_AGENCY_ID ?? ''
+  const agencyId = (await headers()).get('x-tenant-id') ?? process.env.NEXT_PUBLIC_AGENCY_ID ?? ''
 
   return (
-    <main className="flex flex-col min-h-screen">
+    <main className="flex min-h-screen flex-col">
       <HeroSection />
       <HighlightedPropertiesSection agencyId={agencyId} />
       <RecentPropertiesSection agencyId={agencyId} />

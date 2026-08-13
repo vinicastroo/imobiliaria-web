@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { useState } from 'react'
 import Image from 'next/image'
@@ -66,23 +66,21 @@ export function LoginForm({ logoUrl, agencyName }: LoginFormProps) {
 
   return (
     <div className="w-full lg:grid lg:min-h-screen lg:grid-cols-5">
-
       {/* ── Left panel: form (2/5) ─────────────────────────────────────── */}
-      <div className="flex items-center justify-center py-12 lg:col-span-2 bg-white">
+      <div className="flex items-center justify-center bg-white py-12 lg:col-span-2">
         <div className="mx-auto w-[350px] space-y-6">
-
           {/* Logo / fallback */}
-          <div className="flex flex-col space-y-2 text-center items-center">
-            <div className="relative w-40 h-20 mb-2 flex items-center justify-center">
+          <div className="flex flex-col items-center space-y-2 text-center">
+            <div className="relative mb-2 flex h-20 w-40 items-center justify-center">
               {logoUrl ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
                   src={logoUrl}
                   alt={agencyName ?? 'Logo'}
-                  className="w-full h-full object-contain"
+                  className="h-full w-full object-contain"
                 />
               ) : (
-                <div className="flex flex-col items-center gap-1 text-primary">
+                <div className="text-primary flex flex-col items-center gap-1">
                   <Building2 size={40} strokeWidth={1.5} />
                   {agencyName && (
                     <span className="text-xs font-semibold tracking-wide uppercase opacity-70">
@@ -92,10 +90,10 @@ export function LoginForm({ logoUrl, agencyName }: LoginFormProps) {
                 </div>
               )}
             </div>
-            <h1 className="text-2xl font-bold tracking-tight text-primary">
+            <h1 className="text-primary text-2xl font-bold tracking-tight">
               Acesso Administrativo
             </h1>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-muted-foreground text-sm">
               Entre com suas credenciais para continuar
             </p>
           </div>
@@ -112,9 +110,7 @@ export function LoginForm({ logoUrl, agencyName }: LoginFormProps) {
                 className={errors.email ? 'border-red-500' : ''}
                 disabled={isLoading}
               />
-              {errors.email && (
-                <span className="text-xs text-red-500">{errors.email.message}</span>
-              )}
+              {errors.email && <span className="text-xs text-red-500">{errors.email.message}</span>}
             </div>
 
             <div className="space-y-2">
@@ -122,7 +118,7 @@ export function LoginForm({ logoUrl, agencyName }: LoginFormProps) {
                 <Label htmlFor="password">Senha</Label>
                 <Link
                   href="/login/forgot-password"
-                  className="text-xs text-muted-foreground hover:text-primary hover:underline"
+                  className="text-muted-foreground hover:text-primary text-xs hover:underline"
                 >
                   Esqueceu a senha?
                 </Link>
@@ -138,8 +134,8 @@ export function LoginForm({ logoUrl, agencyName }: LoginFormProps) {
                 />
                 <button
                   type="button"
-                  onClick={() => setShowPassword(v => !v)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                  onClick={() => setShowPassword((v) => !v)}
+                  className="text-muted-foreground hover:text-foreground absolute top-1/2 right-3 -translate-y-1/2"
                   tabIndex={-1}
                   aria-label={showPassword ? 'Ocultar senha' : 'Mostrar senha'}
                 >
@@ -153,7 +149,7 @@ export function LoginForm({ logoUrl, agencyName }: LoginFormProps) {
 
             <Button
               type="submit"
-              className="w-full bg-primary hover:bg-primary/90 mt-4 h-11"
+              className="bg-primary hover:bg-primary/90 mt-4 h-11 w-full"
               disabled={isLoading}
             >
               {isLoading ? (
@@ -170,7 +166,7 @@ export function LoginForm({ logoUrl, agencyName }: LoginFormProps) {
       </div>
 
       {/* ── Right panel: background image (3/5) ───────────────────────── */}
-      <div className="hidden bg-muted lg:block lg:col-span-3 relative">
+      <div className="bg-muted relative hidden lg:col-span-3 lg:block">
         <Image
           src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=1470&auto=format&fit=crop"
           alt="Imagem de Imóvel de Alto Padrão"
@@ -179,16 +175,16 @@ export function LoginForm({ logoUrl, agencyName }: LoginFormProps) {
           priority
         />
         {/* Overlay uses tenant primary color */}
-        <div className="absolute inset-0 bg-primary/60 mix-blend-multiply" />
-        <div className="absolute bottom-10 left-10 z-20 text-white max-w-lg">
+        <div className="bg-primary/60 absolute inset-0 mix-blend-multiply" />
+        <div className="absolute bottom-10 left-10 z-20 max-w-lg text-white">
           <blockquote className="space-y-2">
             <p className="text-lg font-medium">
-              &ldquo;A tecnologia impulsionando o mercado imobiliário. Gerencie seus imóveis com eficiência e elegância.&rdquo;
+              &ldquo;A tecnologia impulsionando o mercado imobiliário. Gerencie seus imóveis com
+              eficiência e elegância.&rdquo;
             </p>
           </blockquote>
         </div>
       </div>
-
     </div>
   )
 }

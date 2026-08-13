@@ -1,8 +1,8 @@
-"use client"
+'use client'
 
-import { ColumnDef } from "@tanstack/react-table"
-import { MoreHorizontal, Pencil, Eye, EyeOff, Trash2, Star, StarOff } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { ColumnDef } from '@tanstack/react-table'
+import { MoreHorizontal, Pencil, Eye, EyeOff, Trash2, Star, StarOff } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,8 +10,8 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import Link from "next/link"
+} from '@/components/ui/dropdown-menu'
+import Link from 'next/link'
 
 export interface Property {
   id: string
@@ -35,63 +35,74 @@ interface ColumnsProps {
 }
 
 // Função para criar colunas injetando funções de ação
-export const getColumns = ({ onToggleStatus, onToggleHighlighted, onDelete }: ColumnsProps): ColumnDef<Property>[] => [
+export const getColumns = ({
+  onToggleStatus,
+  onToggleHighlighted,
+  onDelete,
+}: ColumnsProps): ColumnDef<Property>[] => [
   {
-    accessorKey: "code",
-    header: "Código",
-    cell: ({ row }) => <span className="text-xs text-blue-900 font-bold px-3 py-2 rounded-full">{row.getValue("code")}</span>,
-  },
-  {
-    accessorKey: "highlighted",
-    header: "",
-    cell: ({ row }) => row.getValue("highlighted")
-      ? <Star className="h-4 w-4 text-yellow-400 fill-yellow-400" />
-      : null,
-  },
-  {
-    accessorKey: "type_property.description",
-    header: "Tipo",
-  },
-  {
-    accessorKey: "name",
-    header: "Nome",
-  },
-  {
-    accessorKey: "value",
-    header: "Valor",
-  },
-  {
-    accessorKey: "slug",
-    header: "Slug",
+    accessorKey: 'code',
+    header: 'Código',
     cell: ({ row }) => (
-      <div className="max-w-[150px] overflow-x-hidden px-2 py-1 rounded">
-        <span className="text-xs text-gray-500 ">{row.getValue("slug")}</span>
+      <span className="rounded-full px-3 py-2 text-xs font-bold text-blue-900">
+        {row.getValue('code')}
+      </span>
+    ),
+  },
+  {
+    accessorKey: 'highlighted',
+    header: '',
+    cell: ({ row }) =>
+      row.getValue('highlighted') ? (
+        <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+      ) : null,
+  },
+  {
+    accessorKey: 'type_property.description',
+    header: 'Tipo',
+  },
+  {
+    accessorKey: 'name',
+    header: 'Nome',
+  },
+  {
+    accessorKey: 'value',
+    header: 'Valor',
+  },
+  {
+    accessorKey: 'slug',
+    header: 'Slug',
+    cell: ({ row }) => (
+      <div className="max-w-[150px] overflow-x-hidden rounded px-2 py-1">
+        <span className="text-xs text-gray-500">{row.getValue('slug')}</span>
       </div>
     ),
   },
 
   {
-    accessorKey: "city",
-    header: "Cidade",
+    accessorKey: 'city',
+    header: 'Cidade',
   },
   {
-    accessorKey: "neighborhood",
-    header: "Bairro",
+    accessorKey: 'neighborhood',
+    header: 'Bairro',
   },
   {
-    accessorKey: "visible",
-    header: "Situação",
+    accessorKey: 'visible',
+    header: 'Situação',
     cell: ({ row }) => {
-      const isVisible = row.getValue("visible")
+      const isVisible = row.getValue('visible')
       return (
-        <span className={`px-2 py-1 rounded-full text-xs font-semibold ${isVisible ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+        <span
+          className={`rounded-full px-2 py-1 text-xs font-semibold ${isVisible ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}
+        >
           {isVisible ? 'Ativo' : 'Inativo'}
         </span>
       )
     },
   },
   {
-    id: "actions",
+    id: 'actions',
     cell: ({ row }) => {
       const property = row.original
 
@@ -107,7 +118,10 @@ export const getColumns = ({ onToggleStatus, onToggleHighlighted, onDelete }: Co
             <DropdownMenuLabel>Ações</DropdownMenuLabel>
 
             <DropdownMenuItem asChild>
-              <Link href={`/admin/imoveis/editar/${property.id}`} className="flex items-center cursor-pointer">
+              <Link
+                href={`/admin/imoveis/editar/${property.id}`}
+                className="flex cursor-pointer items-center"
+              >
                 <Pencil className="mr-2 h-4 w-4" /> Editar
               </Link>
             </DropdownMenuItem>
@@ -124,7 +138,9 @@ export const getColumns = ({ onToggleStatus, onToggleHighlighted, onDelete }: Co
               )}
             </DropdownMenuItem>
 
-            <DropdownMenuItem onClick={() => onToggleHighlighted(property.id, property.highlighted)}>
+            <DropdownMenuItem
+              onClick={() => onToggleHighlighted(property.id, property.highlighted)}
+            >
               {property.highlighted ? (
                 <>
                   <StarOff className="mr-2 h-4 w-4" /> Remover destaque
@@ -140,7 +156,7 @@ export const getColumns = ({ onToggleStatus, onToggleHighlighted, onDelete }: Co
 
             <DropdownMenuItem
               onClick={() => onDelete(property.id)}
-              className="text-red-600 focus:text-red-600 focus:bg-red-50"
+              className="text-red-600 focus:bg-red-50 focus:text-red-600"
             >
               <Trash2 className="mr-2 h-4 w-4 text-red-600" /> Excluir
             </DropdownMenuItem>

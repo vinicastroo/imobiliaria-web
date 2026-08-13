@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { useState, useMemo } from 'react'
 import { useForm, Controller } from 'react-hook-form'
@@ -39,16 +39,14 @@ const onboardingSchema = z.object({
     .toLowerCase()
     .regex(
       /^([a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)+)?$/,
-      'Domínio inválido (ex: imoveisgilli.com.br)'
+      'Domínio inválido (ex: imoveisgilli.com.br)',
     )
     .optional()
     .or(z.literal('')),
   cnpj: z
     .string()
     .transform((val) => val.replace(/\D/g, ''))
-    .pipe(
-      z.string().refine((val) => val === '' || val.length === 14, 'CNPJ deve ter 14 dígitos')
-    )
+    .pipe(z.string().refine((val) => val === '' || val.length === 14, 'CNPJ deve ter 14 dígitos'))
     .optional()
     .or(z.literal('')),
   userName: z.string().min(1, 'Nome do responsável é obrigatório'),
@@ -108,17 +106,14 @@ export function AgencyOnboardingForm({ onSuccess }: AgencyOnboardingFormProps) {
     },
   })
 
-  const activePlans = useMemo(
-    () => plans?.filter((p) => p.active) ?? [],
-    [plans]
-  )
+  const activePlans = useMemo(() => plans?.filter((p) => p.active) ?? [], [plans])
 
   const selectedPlanId = watch('planId')
   const customPriceValue = watch('customPrice')
 
   const selectedPlan = useMemo(
     () => activePlans.find((p) => p.id === selectedPlanId),
-    [activePlans, selectedPlanId]
+    [activePlans, selectedPlanId],
   )
 
   const discountPercentage = useMemo(() => {
@@ -170,7 +165,7 @@ export function AgencyOnboardingForm({ onSuccess }: AgencyOnboardingFormProps) {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 px-4 pb-4">
       <div className="space-y-4">
-        <p className="text-sm font-medium text-primary">Dados da Imobiliária</p>
+        <p className="text-primary text-sm font-medium">Dados da Imobiliária</p>
 
         <div className="space-y-2">
           <Label htmlFor="agencyName">Nome da Imobiliária</Label>
@@ -195,13 +190,11 @@ export function AgencyOnboardingForm({ onSuccess }: AgencyOnboardingFormProps) {
               {...register('slug')}
               className="flex-1"
             />
-            <span className="text-sm text-muted-foreground whitespace-nowrap">
+            <span className="text-muted-foreground text-sm whitespace-nowrap">
               .{process.env.NEXT_PUBLIC_PLATFORM_DOMAIN ?? 'codelabz.com.br'}
             </span>
           </div>
-          {errors.slug && (
-            <span className="text-xs text-red-500">{errors.slug.message}</span>
-          )}
+          {errors.slug && <span className="text-xs text-red-500">{errors.slug.message}</span>}
         </div>
 
         <div className="space-y-2">
@@ -222,29 +215,19 @@ export function AgencyOnboardingForm({ onSuccess }: AgencyOnboardingFormProps) {
           <Label htmlFor="cnpj">
             CNPJ <span className="text-xs text-gray-400">(opcional)</span>
           </Label>
-          <Input
-            id="cnpj"
-            placeholder="00.000.000/0000-00"
-            {...register('cnpj')}
-          />
-          {errors.cnpj && (
-            <span className="text-xs text-red-500">{errors.cnpj.message}</span>
-          )}
+          <Input id="cnpj" placeholder="00.000.000/0000-00" {...register('cnpj')} />
+          {errors.cnpj && <span className="text-xs text-red-500">{errors.cnpj.message}</span>}
         </div>
       </div>
 
       <Separator />
 
       <div className="space-y-4">
-        <p className="text-sm font-medium text-primary">Usuário Administrador</p>
+        <p className="text-primary text-sm font-medium">Usuário Administrador</p>
 
         <div className="space-y-2">
           <Label htmlFor="userName">Nome do Responsável</Label>
-          <Input
-            id="userName"
-            placeholder="Nome completo"
-            {...register('userName')}
-          />
+          <Input id="userName" placeholder="Nome completo" {...register('userName')} />
           {errors.userName && (
             <span className="text-xs text-red-500">{errors.userName.message}</span>
           )}
@@ -252,15 +235,8 @@ export function AgencyOnboardingForm({ onSuccess }: AgencyOnboardingFormProps) {
 
         <div className="space-y-2">
           <Label htmlFor="email">Email</Label>
-          <Input
-            id="email"
-            type="email"
-            placeholder="email@exemplo.com"
-            {...register('email')}
-          />
-          {errors.email && (
-            <span className="text-xs text-red-500">{errors.email.message}</span>
-          )}
+          <Input id="email" type="email" placeholder="email@exemplo.com" {...register('email')} />
+          {errors.email && <span className="text-xs text-red-500">{errors.email.message}</span>}
         </div>
 
         <div className="space-y-2">
@@ -275,7 +251,7 @@ export function AgencyOnboardingForm({ onSuccess }: AgencyOnboardingFormProps) {
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+              className="absolute top-1/2 right-3 -translate-y-1/2 text-gray-400 hover:text-gray-600"
             >
               {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
             </button>
@@ -289,7 +265,7 @@ export function AgencyOnboardingForm({ onSuccess }: AgencyOnboardingFormProps) {
       <Separator />
 
       <div className="space-y-4">
-        <p className="text-sm font-medium text-primary">Plano e Assinatura</p>
+        <p className="text-primary text-sm font-medium">Plano e Assinatura</p>
 
         <div className="space-y-2">
           <Label>Plano</Label>
@@ -304,7 +280,8 @@ export function AgencyOnboardingForm({ onSuccess }: AgencyOnboardingFormProps) {
                 <SelectContent>
                   {activePlans.map((plan) => (
                     <SelectItem key={plan.id} value={plan.id}>
-                      {plan.name} — {Number(plan.defaultPrice).toLocaleString('pt-BR', {
+                      {plan.name} —{' '}
+                      {Number(plan.defaultPrice).toLocaleString('pt-BR', {
                         style: 'currency',
                         currency: 'BRL',
                       })}
@@ -314,15 +291,13 @@ export function AgencyOnboardingForm({ onSuccess }: AgencyOnboardingFormProps) {
               </Select>
             )}
           />
-          {errors.planId && (
-            <span className="text-xs text-red-500">{errors.planId.message}</span>
-          )}
+          {errors.planId && <span className="text-xs text-red-500">{errors.planId.message}</span>}
         </div>
 
         {selectedPlan && (
-          <div className="p-3 bg-blue-50/50 rounded-lg border border-blue-100 text-sm">
+          <div className="rounded-lg border border-blue-100 bg-blue-50/50 p-3 text-sm">
             <span className="text-muted-foreground">Preço de tabela: </span>
-            <span className="font-medium text-primary">
+            <span className="text-primary font-medium">
               {Number(selectedPlan.defaultPrice).toLocaleString('pt-BR', {
                 style: 'currency',
                 currency: 'BRL',
@@ -331,7 +306,7 @@ export function AgencyOnboardingForm({ onSuccess }: AgencyOnboardingFormProps) {
           </div>
         )}
 
-        <label className="flex items-center gap-2 cursor-pointer">
+        <label className="flex cursor-pointer items-center gap-2">
           <Checkbox
             checked={manualBilling}
             onCheckedChange={(checked) => {
@@ -343,13 +318,13 @@ export function AgencyOnboardingForm({ onSuccess }: AgencyOnboardingFormProps) {
         </label>
 
         {manualBilling && (
-          <Badge className="bg-blue-100 text-blue-800 border-blue-200">
+          <Badge className="border-blue-200 bg-blue-100 text-blue-800">
             Cobrança manual ativada — Stripe ignorado
           </Badge>
         )}
 
         {!manualBilling && (
-          <label className="flex items-center gap-2 cursor-pointer">
+          <label className="flex cursor-pointer items-center gap-2">
             <Checkbox
               checked={hasCustomPrice}
               onCheckedChange={(checked) => setHasCustomPrice(checked === true)}
@@ -372,7 +347,7 @@ export function AgencyOnboardingForm({ onSuccess }: AgencyOnboardingFormProps) {
               <span className="text-xs text-red-500">{errors.customPrice.message}</span>
             )}
             {discountPercentage !== null && discountPercentage > 0 && (
-              <Badge className="bg-green-100 text-green-800 border-green-200">
+              <Badge className="border-green-200 bg-green-100 text-green-800">
                 {discountPercentage}% de desconto
               </Badge>
             )}
@@ -383,7 +358,7 @@ export function AgencyOnboardingForm({ onSuccess }: AgencyOnboardingFormProps) {
       <div className="pt-2">
         <Button
           type="submit"
-          className="w-full bg-primary hover:bg-primary/90"
+          className="bg-primary hover:bg-primary/90 w-full"
           disabled={mutation.isPending}
         >
           {mutation.isPending ? (

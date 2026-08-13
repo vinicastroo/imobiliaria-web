@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { useState } from 'react'
 import Link from 'next/link'
@@ -42,7 +42,6 @@ export default function ForgotPasswordPage() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
       <div className="w-full max-w-[380px] space-y-6">
-
         {sent ? (
           <div className="space-y-4 text-center">
             <div className="flex justify-center">
@@ -50,11 +49,15 @@ export default function ForgotPasswordPage() {
                 <MailCheck className="h-8 w-8 text-green-600" />
               </div>
             </div>
-            <h1 className="text-2xl font-bold text-primary">Verifique seu e-mail</h1>
-            <p className="text-sm text-muted-foreground">
-              Se este e-mail estiver cadastrado, você receberá as instruções para redefinir sua senha em breve. Verifique também a pasta de spam.
+            <h1 className="text-primary text-2xl font-bold">Verifique seu e-mail</h1>
+            <p className="text-muted-foreground text-sm">
+              Se este e-mail estiver cadastrado, você receberá as instruções para redefinir sua
+              senha em breve. Verifique também a pasta de spam.
             </p>
-            <Link href="/login" className="inline-flex items-center gap-1.5 text-sm text-primary hover:underline">
+            <Link
+              href="/login"
+              className="text-primary inline-flex items-center gap-1.5 text-sm hover:underline"
+            >
               <ArrowLeft className="h-4 w-4" />
               Voltar ao login
             </Link>
@@ -62,8 +65,8 @@ export default function ForgotPasswordPage() {
         ) : (
           <>
             <div className="space-y-1 text-center">
-              <h1 className="text-2xl font-bold text-primary">Esqueceu a senha?</h1>
-              <p className="text-sm text-muted-foreground">
+              <h1 className="text-primary text-2xl font-bold">Esqueceu a senha?</h1>
+              <p className="text-muted-foreground text-sm">
                 Informe seu e-mail e enviaremos as instruções para criar uma nova senha.
               </p>
             </div>
@@ -84,7 +87,7 @@ export default function ForgotPasswordPage() {
                 )}
               </div>
 
-              <Button type="submit" className="w-full h-11" disabled={isSubmitting}>
+              <Button type="submit" className="h-11 w-full" disabled={isSubmitting}>
                 {isSubmitting ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -97,7 +100,10 @@ export default function ForgotPasswordPage() {
             </form>
 
             <div className="text-center">
-              <Link href="/login" className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-primary">
+              <Link
+                href="/login"
+                className="text-muted-foreground hover:text-primary inline-flex items-center gap-1.5 text-sm"
+              >
                 <ArrowLeft className="h-4 w-4" />
                 Voltar ao login
               </Link>

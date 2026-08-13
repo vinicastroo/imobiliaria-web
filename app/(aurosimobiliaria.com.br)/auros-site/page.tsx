@@ -19,11 +19,10 @@ export const metadata: Metadata = {
 }
 
 export default async function Home() {
-  const agencyId =
-    (await headers()).get('x-tenant-id') ?? process.env.NEXT_PUBLIC_AGENCY_ID ?? ''
+  const agencyId = (await headers()).get('x-tenant-id') ?? process.env.NEXT_PUBLIC_AGENCY_ID ?? ''
 
   return (
-    <main className="flex flex-col min-h-screen">
+    <main className="flex min-h-screen flex-col">
       <HeroSection />
       <HighlightedPropertiesSection agencyId={agencyId} />
       <RecentPropertiesSection agencyId={agencyId} />

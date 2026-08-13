@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { useRouter } from 'next/navigation'
 import { useForm, Controller } from 'react-hook-form'
@@ -9,7 +9,13 @@ import { Search } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 
 import { getCities } from '@/app/api/get-cities'
 import { getTypes } from '@/app/api/get-types'
@@ -30,7 +36,12 @@ interface HeroSearchFormProps {
 export function HeroSearchForm({ primaryColor }: HeroSearchFormProps) {
   const router = useRouter()
 
-  const { control, watch, handleSubmit, formState: { isLoading } } = useForm<SearchFormData>({
+  const {
+    control,
+    watch,
+    handleSubmit,
+    formState: { isLoading },
+  } = useForm<SearchFormData>({
     resolver: zodResolver(searchSchema),
   })
 
@@ -63,22 +74,26 @@ export function HeroSearchForm({ primaryColor }: HeroSearchFormProps) {
   }
 
   return (
-    <Card className="w-full bg-white/95 md:bg-white/10 md:backdrop-blur-md border-none shadow-2xl">
-      <CardContent className="py-6 px-4 md:px-6">
-        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col md:flex-row gap-4 items-center">
-
+    <Card className="w-full border-none bg-white/95 shadow-2xl md:bg-white/10 md:backdrop-blur-md">
+      <CardContent className="px-4 py-6 md:px-6">
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="flex flex-col items-center gap-4 md:flex-row"
+        >
           <div className="w-full text-left">
             <Controller
               name="type_id"
               control={control}
               render={({ field }) => (
-                <Select onValueChange={field.onChange} value={field.value} >
-                  <SelectTrigger className="bg-white text-black w-full h-12 md:h-14 border-0 md:border">
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <SelectTrigger className="h-12 w-full border-0 bg-white text-black md:h-14 md:border">
                     <SelectValue placeholder="Tipo de Imóvel" />
                   </SelectTrigger>
                   <SelectContent>
                     {types?.map((type: { id: string; description: string }) => (
-                      <SelectItem key={type.id} value={type.description}>{type.description}</SelectItem>
+                      <SelectItem key={type.id} value={type.description}>
+                        {type.description}
+                      </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
@@ -92,12 +107,14 @@ export function HeroSearchForm({ primaryColor }: HeroSearchFormProps) {
               control={control}
               render={({ field }) => (
                 <Select onValueChange={field.onChange} value={field.value}>
-                  <SelectTrigger className="bg-white text-black w-full h-12 md:h-14 border-0 md:border">
+                  <SelectTrigger className="h-12 w-full border-0 bg-white text-black md:h-14 md:border">
                     <SelectValue placeholder="Cidade" />
                   </SelectTrigger>
                   <SelectContent>
                     {cities?.map((c: { city: string }) => (
-                      <SelectItem key={c.city} value={c.city}>{c.city}</SelectItem>
+                      <SelectItem key={c.city} value={c.city}>
+                        {c.city}
+                      </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
@@ -110,13 +127,19 @@ export function HeroSearchForm({ primaryColor }: HeroSearchFormProps) {
               name="neighborhood"
               control={control}
               render={({ field }) => (
-                <Select onValueChange={field.onChange} value={field.value} disabled={!neighborhoods} >
-                  <SelectTrigger className="bg-white text-black w-full h-12 md:h-14 border-0 md:border">
+                <Select
+                  onValueChange={field.onChange}
+                  value={field.value}
+                  disabled={!neighborhoods}
+                >
+                  <SelectTrigger className="h-12 w-full border-0 bg-white text-black md:h-14 md:border">
                     <SelectValue placeholder="Bairro" />
                   </SelectTrigger>
                   <SelectContent>
                     {neighborhoods?.map((n: { neighborhood: string }) => (
-                      <SelectItem key={n.neighborhood} value={n.neighborhood}>{n.neighborhood}</SelectItem>
+                      <SelectItem key={n.neighborhood} value={n.neighborhood}>
+                        {n.neighborhood}
+                      </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
@@ -124,14 +147,18 @@ export function HeroSearchForm({ primaryColor }: HeroSearchFormProps) {
             />
           </div>
 
-          <div className="flex items-end w-full md:w-auto">
-            <Button size="lg" className="cursor-pointer w-full md:w-auto text-lg gap-2 px-14 py-3 hover:opacity-90 transition-opacity" style={{ backgroundColor: primaryColor ?? '#17375F' }} disabled={isLoading}>
+          <div className="flex w-full items-end md:w-auto">
+            <Button
+              size="lg"
+              className="w-full cursor-pointer gap-2 px-14 py-3 text-lg transition-opacity hover:opacity-90 md:w-auto"
+              style={{ backgroundColor: primaryColor ?? '#17375F' }}
+              disabled={isLoading}
+            >
               <Search size={20} />
               <span className="text-base md:hidden">Buscar Imóveis</span>
               <span className="hidden text-base md:inline">Buscar</span>
             </Button>
           </div>
-
         </form>
       </CardContent>
     </Card>

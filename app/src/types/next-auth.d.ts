@@ -1,6 +1,6 @@
-import NextAuth, { DefaultSession } from "next-auth"
+import NextAuth, { DefaultSession } from 'next-auth'
 
-declare module "next-auth" {
+declare module 'next-auth' {
   interface User {
     id: string
     role: string
@@ -18,11 +18,11 @@ declare module "next-auth" {
       planId: string | null
       features: string[]
       realtorProfileId: string | null
-    } & DefaultSession["user"]
+    } & DefaultSession['user']
   }
 }
 
-declare module "next-auth/jwt" {
+declare module 'next-auth/jwt' {
   interface JWT {
     id: string
     role: string

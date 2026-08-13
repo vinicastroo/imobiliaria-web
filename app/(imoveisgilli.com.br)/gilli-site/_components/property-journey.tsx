@@ -5,35 +5,39 @@ import journeyImage from '@/public/gilli-secao.png'
 
 const steps = [
   {
-    icon: <MapPin className="w-6 h-6 text-[#EE9020]" />,
+    icon: <MapPin className="h-6 w-6 text-[#EE9020]" />,
     title: 'Conhecimento local de verdade',
-    description: 'Atuamos aqui e conhecemos cada bairro: te orientamos sobre localização, valorização e vizinhança.',
+    description:
+      'Atuamos aqui e conhecemos cada bairro: te orientamos sobre localização, valorização e vizinhança.',
   },
   {
-    icon: <CalendarCheck className="w-6 h-6 text-[#EE9020]" />,
+    icon: <CalendarCheck className="h-6 w-6 text-[#EE9020]" />,
     title: 'Visitas do seu jeito',
-    description: 'Agendamos conforme a sua rotina e acompanhamos você em cada imóvel, sem pressa e sem pressão.',
+    description:
+      'Agendamos conforme a sua rotina e acompanhamos você em cada imóvel, sem pressa e sem pressão.',
   },
   {
-    icon: <FileCheck className="w-6 h-6 text-[#EE9020]" />,
+    icon: <FileCheck className="h-6 w-6 text-[#EE9020]" />,
     title: 'Documentação descomplicada',
-    description: 'Cuidamos de contratos, certidões e financiamento para você assinar com total segurança.',
+    description:
+      'Cuidamos de contratos, certidões e financiamento para você assinar com total segurança.',
   },
   {
-    icon: <Handshake className="w-6 h-6 text-[#EE9020]" />,
+    icon: <Handshake className="h-6 w-6 text-[#EE9020]" />,
     title: 'Negociação transparente',
-    description: 'Defendemos o melhor acordo para você, com clareza em todas as condições do início ao fim.',
+    description:
+      'Defendemos o melhor acordo para você, com clareza em todas as condições do início ao fim.',
   },
 ]
 
 export function PropertyJourney() {
   return (
-    <section className="max-w-6xl mx-auto py-10 px-4 font-sans bg-white">
-      <div className="mx-auto max-w-2xl text-center space-y-4">
-        <span className="inline-block border border-[#EE9020] text-[#EE9020] text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+    <section className="mx-auto max-w-6xl bg-white px-4 py-10 font-sans">
+      <div className="mx-auto max-w-2xl space-y-4 text-center">
+        <span className="inline-block rounded-full border border-[#EE9020] px-3 py-1 text-xs font-bold tracking-wider text-[#EE9020] uppercase">
           Atendimento Gilli
         </span>
-        <h2 className="text-3xl sm:text-4xl font-semibold text-[#0F172A] leading-tight">
+        <h2 className="text-3xl leading-tight font-semibold text-[#0F172A] sm:text-4xl">
           Seu próximo endereço, com quem conhece a cidade
         </h2>
       </div>
@@ -60,9 +64,7 @@ export function PropertyJourney() {
               {step.icon}
             </div>
             <h3 className="text-lg font-bold text-[#0F172A]">{step.title}</h3>
-            <p className="text-sm text-slate-600 leading-relaxed">
-              {step.description}
-            </p>
+            <p className="text-sm leading-relaxed text-slate-600">{step.description}</p>
           </div>
         ))}
       </div>

@@ -5,7 +5,7 @@ export async function SiteFooter() {
 
   return (
     <footer
-      className="py-8 px-6 text-center text-sm text-white/80 mt-auto"
+      className="mt-auto px-6 py-8 text-center text-sm text-white/80"
       style={{ backgroundColor: primaryColor }}
     >
       <p>Todos os direitos reservados.</p>

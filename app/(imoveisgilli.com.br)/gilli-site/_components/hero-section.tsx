@@ -7,7 +7,7 @@ export async function HeroSection() {
   const { logoUrl, primaryColor, secondaryColor } = await getTenantVisualConfig()
 
   return (
-    <section className="relative w-full h-screen flex flex-col p-4 z-10 overflow-hidden">
+    <section className="relative z-10 flex h-screen w-full flex-col overflow-hidden p-4">
       <div className="absolute inset-0 -z-10">
         <Image
           src="/background-gilli.jpg"
@@ -23,8 +23,8 @@ export async function HeroSection() {
 
       <HeroNav logoUrl={logoUrl} primaryColor={primaryColor} secondaryColor={secondaryColor} />
 
-      <div className="flex-1 flex flex-col items-center justify-center gap-8 w-full max-w-[1200px] mx-auto text-center z-10 px-2 md:px-0">
-        <h1 className="text-white text-2xl md:text-5xl font-light drop-shadow-lg leading-tight">
+      <div className="z-10 mx-auto flex w-full max-w-[1200px] flex-1 flex-col items-center justify-center gap-8 px-2 text-center md:px-0">
+        <h1 className="text-2xl leading-tight font-light text-white drop-shadow-lg md:text-5xl">
           Encontre o imóvel ideal <br className="hidden md:block" /> com quem entende do mercado
         </h1>
 

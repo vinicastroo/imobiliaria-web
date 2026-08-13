@@ -32,14 +32,14 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const host = (await headers()).get('host')?.split(':')[0] ?? ''
 
   return {
-    title:       property.name,
+    title: property.name,
     description: property.summary,
-    alternates:  { canonical: `https://${host}/imoveis/${property.slug}` },
+    alternates: { canonical: `https://${host}/imoveis/${property.slug}` },
     openGraph: {
-      title:       property.name,
+      title: property.name,
       description: property.summary,
-      url:         `https://${host}/imoveis/${property.slug}`,
-      images:      property.files[0] ? [{ url: property.files[0].path }] : [],
+      url: `https://${host}/imoveis/${property.slug}`,
+      images: property.files[0] ? [{ url: property.files[0].path }] : [],
     },
   }
 }
@@ -54,9 +54,12 @@ interface FeatureProps {
 function Feature({ icon: Icon, value, label, suffix = '' }: FeatureProps) {
   if (!value || value === '0') return null
   return (
-    <div className="flex items-center gap-2 bg-gray-50 px-3 py-2 rounded-md border border-gray-100">
+    <div className="flex items-center gap-2 rounded-md border border-gray-100 bg-gray-50 px-3 py-2">
       <Icon size={20} className="text-(--primary-color,#17375F)" />
-      <span className="text-sm font-semibold text-gray-700">{value}{suffix}</span>
+      <span className="text-sm font-semibold text-gray-700">
+        {value}
+        {suffix}
+      </span>
       <span className="text-xs text-gray-400">{label}</span>
     </div>
   )
@@ -108,28 +111,32 @@ export default async function TenantPropertyPage({ params }: PageProps) {
       />
       <MenubarHome />
 
-      <div className="max-w-[1200px] mx-auto px-4 py-8 space-y-6">
-
+      <div className="mx-auto max-w-[1200px] space-y-6 px-4 py-8">
         <PropertyImagesCarousel
-          files={property.files.map(f => ({ id: f.id, path: f.path, fileName: f.fileName }))}
+          files={property.files.map((f) => ({ id: f.id, path: f.path, fileName: f.fileName }))}
           propertyName={property.name}
         />
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-
-          {/* Main column */} 
-          <div className="lg:col-span-2 space-y-4">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+          {/* Main column */}
+          <div className="space-y-4 lg:col-span-2">
             <Card>
-              <CardContent className="p-6 space-y-4">
+              <CardContent className="space-y-4 p-6">
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div>
                     <h1 className="text-2xl font-bold text-gray-900">{property.name}</h1>
-                    <p className="flex items-center gap-1 text-sm text-gray-500 mt-1">
+                    <p className="mt-1 flex items-center gap-1 text-sm text-gray-500">
                       <MapPin size={14} />
                       {property.neighborhood}, {property.city} — {property.state}
                     </p>
                   </div>
-                  <Badge className={property.transactionType === 'ALUGUEL' ? 'bg-emerald-600' : 'bg-(--primary-color,#17375F)'}>
+                  <Badge
+                    className={
+                      property.transactionType === 'ALUGUEL'
+                        ? 'bg-emerald-600'
+                        : 'bg-(--primary-color,#17375F)'
+                    }
+                  >
                     {property.transactionType === 'ALUGUEL' ? 'Aluguel' : 'Venda'}
                   </Badge>
                 </div>
@@ -137,18 +144,28 @@ export default async function TenantPropertyPage({ params }: PageProps) {
                 <Separator />
 
                 <div className="flex flex-wrap gap-2">
-                  <Feature icon={BedDouble} value={property.bedrooms}    label="Quartos" />
-                  <Feature icon={Bath}     value={property.suites}       label="Suítes" />
-                  <Feature icon={Bath}     value={property.bathrooms}    label="Banheiros" />
+                  <Feature icon={BedDouble} value={property.bedrooms} label="Quartos" />
+                  <Feature icon={Bath} value={property.suites} label="Suítes" />
+                  <Feature icon={Bath} value={property.bathrooms} label="Banheiros" />
                   <Feature icon={CarFront} value={property.parkingSpots} label="Vagas" />
-                  <Feature icon={Ruler}    value={property.totalArea}    label="Área total" suffix=" m²" />
-                  <Feature icon={Grid2X2} value={property.privateArea}   label="Área priv." suffix=" m²" />
+                  <Feature
+                    icon={Ruler}
+                    value={property.totalArea}
+                    label="Área total"
+                    suffix=" m²"
+                  />
+                  <Feature
+                    icon={Grid2X2}
+                    value={property.privateArea}
+                    label="Área priv."
+                    suffix=" m²"
+                  />
                 </div>
 
                 {property.summary && (
                   <>
                     <Separator />
-                    <p className="text-gray-600 leading-relaxed">{property.summary}</p>
+                    <p className="leading-relaxed text-gray-600">{property.summary}</p>
                   </>
                 )}
 
@@ -165,7 +182,7 @@ export default async function TenantPropertyPage({ params }: PageProps) {
           {/* Sidebar */}
           <div className="space-y-4">
             <Card className="sticky top-24">
-              <CardContent className="p-6 space-y-4">
+              <CardContent className="space-y-4 p-6">
                 <p className="text-3xl font-bold text-(--primary-color,#17375F)">{priceDisplay}</p>
                 <p className="text-xs text-gray-400">Cód. {property.code}</p>
                 <Separator />
@@ -176,7 +193,7 @@ export default async function TenantPropertyPage({ params }: PageProps) {
                   href={`https://wa.me/?text=${encodeURIComponent(`Olá! Tenho interesse no imóvel ${property.name} (Cód. ${property.code}).`)}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex w-full items-center justify-center rounded-md px-4 py-3 text-white text-sm font-medium"
+                  className="flex w-full items-center justify-center rounded-md px-4 py-3 text-sm font-medium text-white"
                   style={{ backgroundColor: 'var(--primary-color, #17375F)' }}
                 >
                   Entrar em contato

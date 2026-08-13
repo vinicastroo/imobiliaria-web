@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
@@ -17,10 +17,10 @@ import {
   DialogTitle,
   DialogTrigger, // Mantemos o Trigger opcional
   DialogFooter,
-} from "@/components/ui/dialog"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+} from '@/components/ui/dialog'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 
 const typeSchema = z.object({
   description: z.string().min(1, 'A descrição é obrigatória'),
@@ -32,10 +32,14 @@ interface TypeDialogProps {
   // Props opcionais para controlar o modal externamente (modo edição)
   open?: boolean
   onOpenChange?: (open: boolean) => void
-  typeToEdit?: { id: string, description: string } | null
+  typeToEdit?: { id: string; description: string } | null
 }
 
-export function TypeDialog({ open: externalOpen, onOpenChange: setExternalOpen, typeToEdit }: TypeDialogProps) {
+export function TypeDialog({
+  open: externalOpen,
+  onOpenChange: setExternalOpen,
+  typeToEdit,
+}: TypeDialogProps) {
   // Estado interno para quando o modal é usado autonomamente (modo criação com botão próprio)
   const [internalOpen, setInternalOpen] = useState(false)
 
@@ -45,8 +49,14 @@ export function TypeDialog({ open: externalOpen, onOpenChange: setExternalOpen, 
 
   const queryClient = useQueryClient()
 
-  const { register, handleSubmit, reset, setValue, formState: { errors } } = useForm<TypeSchema>({
-    resolver: zodResolver(typeSchema)
+  const {
+    register,
+    handleSubmit,
+    reset,
+    setValue,
+    formState: { errors },
+  } = useForm<TypeSchema>({
+    resolver: zodResolver(typeSchema),
   })
 
   // Preenche o formulário ao abrir para edição
@@ -78,7 +88,7 @@ export function TypeDialog({ open: externalOpen, onOpenChange: setExternalOpen, 
     },
     onError: () => {
       toast.error('Erro ao salvar tipo de imóvel')
-    }
+    },
   })
 
   const onSubmit = async (data: TypeSchema) => {

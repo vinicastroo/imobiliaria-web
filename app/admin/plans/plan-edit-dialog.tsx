@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { useEffect } from 'react'
 import { useForm, Controller } from 'react-hook-form'
@@ -124,9 +124,7 @@ export function PlanEditDialog({ open, onOpenChange, planToEdit }: PlanEditDialo
           <div className="space-y-2">
             <Label htmlFor="name">Nome</Label>
             <Input id="name" placeholder="Nome do plano" {...register('name')} />
-            {errors.name && (
-              <span className="text-xs text-red-500">{errors.name.message}</span>
-            )}
+            {errors.name && <span className="text-xs text-red-500">{errors.name.message}</span>}
           </div>
 
           <div className="space-y-2">
@@ -146,21 +144,33 @@ export function PlanEditDialog({ open, onOpenChange, planToEdit }: PlanEditDialo
           <div className="grid grid-cols-3 gap-4">
             <div className="space-y-2">
               <Label htmlFor="maxUsers">Max Usuários</Label>
-              <Input id="maxUsers" type="number" {...register('maxUsers', { valueAsNumber: true })} />
+              <Input
+                id="maxUsers"
+                type="number"
+                {...register('maxUsers', { valueAsNumber: true })}
+              />
               {errors.maxUsers && (
                 <span className="text-xs text-red-500">{errors.maxUsers.message}</span>
               )}
             </div>
             <div className="space-y-2">
               <Label htmlFor="maxRealtors">Max Corretores</Label>
-              <Input id="maxRealtors" type="number" {...register('maxRealtors', { valueAsNumber: true })} />
+              <Input
+                id="maxRealtors"
+                type="number"
+                {...register('maxRealtors', { valueAsNumber: true })}
+              />
               {errors.maxRealtors && (
                 <span className="text-xs text-red-500">{errors.maxRealtors.message}</span>
               )}
             </div>
             <div className="space-y-2">
               <Label htmlFor="maxProperties">Max Imóveis</Label>
-              <Input id="maxProperties" type="number" {...register('maxProperties', { valueAsNumber: true })} />
+              <Input
+                id="maxProperties"
+                type="number"
+                {...register('maxProperties', { valueAsNumber: true })}
+              />
               {errors.maxProperties && (
                 <span className="text-xs text-red-500">{errors.maxProperties.message}</span>
               )}
@@ -175,10 +185,7 @@ export function PlanEditDialog({ open, onOpenChange, planToEdit }: PlanEditDialo
               render={({ field }) => (
                 <div className="grid grid-cols-2 gap-3">
                   {AVAILABLE_FEATURES.map((feature) => (
-                    <label
-                      key={feature.value}
-                      className="flex items-center gap-2 cursor-pointer"
-                    >
+                    <label key={feature.value} className="flex cursor-pointer items-center gap-2">
                       <Checkbox
                         checked={field.value.includes(feature.value)}
                         onCheckedChange={(checked) => {
@@ -202,10 +209,7 @@ export function PlanEditDialog({ open, onOpenChange, planToEdit }: PlanEditDialo
               name="active"
               control={control}
               render={({ field }) => (
-                <Switch
-                  checked={field.value}
-                  onCheckedChange={field.onChange}
-                />
+                <Switch checked={field.value} onCheckedChange={field.onChange} />
               )}
             />
             <Label>Plano ativo</Label>

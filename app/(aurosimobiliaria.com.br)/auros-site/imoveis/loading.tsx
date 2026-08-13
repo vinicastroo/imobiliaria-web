@@ -2,48 +2,51 @@ export default function Loading() {
   return (
     <div className="min-h-screen bg-gray-50 font-sans">
       {/* MenubarHome Skeleton */}
-      <header className="flex justify-center items-center bg-[#17375F] w-full h-16">
-        <div className="w-full max-w-[1200px] mx-auto flex justify-between items-center px-4">
-          <div className="w-24 h-8 rounded bg-white/20 animate-pulse" />
-          <div className="hidden md:flex gap-6">
-            <div className="w-16 h-4 rounded bg-white/20 animate-pulse" />
-            <div className="w-20 h-4 rounded bg-white/20 animate-pulse" />
-            <div className="w-24 h-4 rounded bg-white/20 animate-pulse" />
+      <header className="flex h-16 w-full items-center justify-center bg-[#17375F]">
+        <div className="mx-auto flex w-full max-w-[1200px] items-center justify-between px-4">
+          <div className="h-8 w-24 animate-pulse rounded bg-white/20" />
+          <div className="hidden gap-6 md:flex">
+            <div className="h-4 w-16 animate-pulse rounded bg-white/20" />
+            <div className="h-4 w-20 animate-pulse rounded bg-white/20" />
+            <div className="h-4 w-24 animate-pulse rounded bg-white/20" />
           </div>
-          <div className="md:hidden w-8 h-8 rounded bg-white/20 animate-pulse" />
+          <div className="h-8 w-8 animate-pulse rounded bg-white/20 md:hidden" />
         </div>
       </header>
 
       {/* Filter Bar Skeleton */}
-      <div className="bg-white border-b border-gray-200 sticky top-0 z-30">
-        <div className="w-full max-w-[1280px] mx-auto px-4 md:px-6 py-4">
+      <div className="sticky top-0 z-30 border-b border-gray-200 bg-white">
+        <div className="mx-auto w-full max-w-[1280px] px-4 py-4 md:px-6">
           <div className="flex gap-3 overflow-hidden">
-            <div className="h-10 w-32 bg-gray-200 rounded-lg animate-pulse shrink-0" />
-            <div className="h-10 w-28 bg-gray-200 rounded-lg animate-pulse shrink-0" />
-            <div className="h-10 w-36 bg-gray-200 rounded-lg animate-pulse shrink-0" />
-            <div className="h-10 w-24 bg-gray-200 rounded-lg animate-pulse shrink-0" />
+            <div className="h-10 w-32 shrink-0 animate-pulse rounded-lg bg-gray-200" />
+            <div className="h-10 w-28 shrink-0 animate-pulse rounded-lg bg-gray-200" />
+            <div className="h-10 w-36 shrink-0 animate-pulse rounded-lg bg-gray-200" />
+            <div className="h-10 w-24 shrink-0 animate-pulse rounded-lg bg-gray-200" />
           </div>
         </div>
       </div>
 
       {/* Property Grid Skeleton */}
-      <div className="w-full max-w-[1280px] mx-auto px-4 md:px-6 py-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="mx-auto w-full max-w-[1280px] px-4 py-8 md:px-6">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
           {Array.from({ length: 6 }).map((_, i) => (
-            <div key={i} className="flex flex-col h-full border rounded-xl overflow-hidden bg-white">
-              <div className="h-[250px] bg-gray-200 animate-pulse" />
-              <div className="p-4 space-y-3">
-                <div className="h-5 w-3/4 bg-gray-200 rounded animate-pulse" />
-                <div className="h-4 w-1/2 bg-gray-200 rounded animate-pulse" />
-                <div className="flex gap-2 mt-2">
-                  <div className="h-7 w-16 bg-gray-200 rounded animate-pulse" />
-                  <div className="h-7 w-16 bg-gray-200 rounded animate-pulse" />
-                  <div className="h-7 w-20 bg-gray-200 rounded animate-pulse" />
+            <div
+              key={i}
+              className="flex h-full flex-col overflow-hidden rounded-xl border bg-white"
+            >
+              <div className="h-[250px] animate-pulse bg-gray-200" />
+              <div className="space-y-3 p-4">
+                <div className="h-5 w-3/4 animate-pulse rounded bg-gray-200" />
+                <div className="h-4 w-1/2 animate-pulse rounded bg-gray-200" />
+                <div className="mt-2 flex gap-2">
+                  <div className="h-7 w-16 animate-pulse rounded bg-gray-200" />
+                  <div className="h-7 w-16 animate-pulse rounded bg-gray-200" />
+                  <div className="h-7 w-20 animate-pulse rounded bg-gray-200" />
                 </div>
               </div>
-              <div className="border-t p-4 flex justify-between items-center mt-auto">
-                <div className="h-6 w-32 bg-gray-200 rounded animate-pulse" />
-                <div className="h-6 w-14 bg-[#17375F]/20 rounded animate-pulse" />
+              <div className="mt-auto flex items-center justify-between border-t p-4">
+                <div className="h-6 w-32 animate-pulse rounded bg-gray-200" />
+                <div className="h-6 w-14 animate-pulse rounded bg-[#17375F]/20" />
               </div>
             </div>
           ))}

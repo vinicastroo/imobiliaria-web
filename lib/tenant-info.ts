@@ -29,10 +29,9 @@ export const getTenantIdentity = cache(async (): Promise<TenantIdentity> => {
 
   try {
     const hostname = host.split(':')[0]
-    const res = await fetch(
-      `${API_URL}/resolve-tenant?hostname=${encodeURIComponent(hostname)}`,
-      { next: { revalidate: 300, tags: ['tenant'] } },
-    )
+    const res = await fetch(`${API_URL}/resolve-tenant?hostname=${encodeURIComponent(hostname)}`, {
+      next: { revalidate: 300, tags: ['tenant'] },
+    })
     if (!res.ok) return { name: FALLBACK_NAME, slug: null }
     const tenant = (await res.json()) as { name?: string; slug?: string }
     return { name: tenant.name ?? FALLBACK_NAME, slug: tenant.slug ?? null }

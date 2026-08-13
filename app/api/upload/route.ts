@@ -1,11 +1,11 @@
-import { NextResponse } from "next/server";
+import { NextResponse } from 'next/server'
 
 export async function POST(req: Request) {
-  const formData = await req.formData();
-  const file = formData.get("files") as File;
+  const formData = await req.formData()
+  const file = formData.get('files') as File
 
   if (!file) {
-    return NextResponse.json({ error: "Nenhum arquivo enviado" }, { status: 400 });
+    return NextResponse.json({ error: 'Nenhum arquivo enviado' }, { status: 400 })
   }
 
   // aqui você pode:
@@ -18,5 +18,5 @@ export async function POST(req: Request) {
     filename: file.name,
     size: file.size,
     type: file.type,
-  });
+  })
 }

@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { FilePond, registerPlugin } from 'react-filepond'
 import type { FilePondFile, FilePondInitialFile } from 'filepond'
@@ -17,7 +17,7 @@ registerPlugin(
   FilePondPluginImageExifOrientation,
   FilePondPluginImagePreview,
   FilePondPluginImageCrop,
-  FilePondPluginFileValidateType
+  FilePondPluginFileValidateType,
 )
 
 interface MultiFileInputProps {
@@ -53,11 +53,11 @@ export function MultiFileInput({ files, onUpdateFiles, label }: MultiFileInputPr
             width: calc(33.33% - 0.5em) !important;
           }
         }
-        
+
         /* Ajustes visuais para ficar igual à Imagem 1 */
         .filepond-grid-wrapper .filepond--label-action {
-            text-decoration: none;
-            font-weight: 600;
+          text-decoration: none;
+          font-weight: 600;
         }
       `}</style>
 
@@ -82,24 +82,24 @@ export function MultiFileInput({ files, onUpdateFiles, label }: MultiFileInputPr
 
         server={{
           process: async (fieldName, file, metadata, load, error, progress, abort) => {
-            const formData = new FormData();
-            formData.append(fieldName, file);
+            const formData = new FormData()
+            formData.append(fieldName, file)
 
             try {
-              const res = await fetch("/api/upload", {
-                method: "POST",
+              const res = await fetch('/api/upload', {
+                method: 'POST',
                 body: formData,
-              });
+              })
 
               if (!res.ok) {
-                error("Erro ao enviar");
-                return;
+                error('Erro ao enviar')
+                return
               }
 
-              const data = await res.json();
-              load(data.fileId);
+              const data = await res.json()
+              load(data.fileId)
             } catch (err) {
-              error("Erro de conexão");
+              error('Erro de conexão')
             }
           },
         }}

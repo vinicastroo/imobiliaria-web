@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
@@ -52,44 +52,50 @@ export default function AdminImoveisPage() {
   const [selectedId, setSelectedId] = useState<string | null>(null)
 
   // 3. Estados do Filtro Avançado
-  const [filterColumn, setFilterColumn] = useState("name") // Coluna padrão
-  const [filterValue, setFilterValue] = useState("") // Valor do filtro
+  const [filterColumn, setFilterColumn] = useState('name') // Coluna padrão
+  const [filterValue, setFilterValue] = useState('') // Valor do filtro
 
   // Debounce para não chamar a API a cada letra digitada
   const [debouncedFilter] = useDebounce(filterValue, 500)
 
   // 4. Configuração das Opções de Filtro
   const filterOptions: FilterOption[] = [
-    { id: "code", label: "Código", type: "number" },
-    { id: "name", label: "Nome", type: "text" },
-    { id: "city", label: "Cidade", type: "text" },
-    { id: "slug", label: "Slug", type: "text" },
+    { id: 'code', label: 'Código', type: 'number' },
+    { id: 'name', label: 'Nome', type: 'text' },
+    { id: 'city', label: 'Cidade', type: 'text' },
+    { id: 'slug', label: 'Slug', type: 'text' },
     {
-      id: "visible",
-      label: "Situação",
-      type: "select",
+      id: 'visible',
+      label: 'Situação',
+      type: 'select',
       options: [
-        { label: "Ativo", value: "true" },
-        { label: "Inativo", value: "false" }
-      ]
-    }
+        { label: 'Ativo', value: 'true' },
+        { label: 'Inativo', value: 'false' },
+      ],
+    },
   ]
 
   // 5. Query principal
   const { data, isLoading } = useQuery<PropertiesResponse>({
     // A chave da query muda se a paginação, coluna de filtro ou valor do filtro mudarem
-    queryKey: ['admin-properties', pagination.pageIndex, pagination.pageSize, filterColumn, debouncedFilter],
+    queryKey: [
+      'admin-properties',
+      pagination.pageIndex,
+      pagination.pageSize,
+      filterColumn,
+      debouncedFilter,
+    ],
     queryFn: async () => {
       // Montagem dinâmica dos parâmetros
       const params: Record<string, string | number> = {
         page: pagination.pageIndex + 1,
         pageSize: pagination.pageSize,
         orderBy: 'createdAt',
-        order: 'desc'
+        order: 'desc',
       }
 
       // Lógica para enviar o filtro correto para o backend
-      if (debouncedFilter && debouncedFilter !== "ALL_VALUES_RESET") {
+      if (debouncedFilter && debouncedFilter !== 'ALL_VALUES_RESET') {
         if (filterColumn === 'visible') {
           // Sua API trata 'visible' fora do loop de 'filter[]', então mandamos direto
           params.visible = debouncedFilter
@@ -107,32 +113,36 @@ export default function AdminImoveisPage() {
 
   // 6. Mutation para Ativar/Desativar
   const toggleStatusMutation = useMutation({
-    mutationFn: async ({ id, currentStatus }: { id: string, currentStatus: boolean }) => {
+    mutationFn: async ({ id, currentStatus }: { id: string; currentStatus: boolean }) => {
       await api.patch(`/imovel/${id}`, { visible: !currentStatus })
     },
     onSuccess: async () => {
       queryClient.invalidateQueries({ queryKey: ['admin-properties'] })
       await revalidateProperties()
-      toast.success("Status atualizado com sucesso!")
+      toast.success('Status atualizado com sucesso!')
     },
     onError: (error: AxiosError<{ message: string }>) => {
-      toast.error(error.response?.data?.message || "Erro ao atualizar status")
-    }
+      toast.error(error.response?.data?.message || 'Erro ao atualizar status')
+    },
   })
 
   // 7. Mutation para Destacar/Remover destaque
   const toggleHighlightedMutation = useMutation({
-    mutationFn: async ({ id, currentHighlighted }: { id: string, currentHighlighted: boolean }) => {
+    mutationFn: async ({ id, currentHighlighted }: { id: string; currentHighlighted: boolean }) => {
       await api.patch(`/imovel/${id}/highlighted`, { highlighted: !currentHighlighted })
     },
     onSuccess: async () => {
       queryClient.invalidateQueries({ queryKey: ['admin-properties'] })
       await revalidateProperties()
-      toast.success("Destaque atualizado com sucesso!")
+      toast.success('Destaque atualizado com sucesso!')
     },
     onError: (error: AxiosError<{ message: string; error: string }>) => {
-      toast.error(error.response?.data?.error || error.response?.data?.message || "Erro ao atualizar destaque")
-    }
+      toast.error(
+        error.response?.data?.error ||
+          error.response?.data?.message ||
+          'Erro ao atualizar destaque',
+      )
+    },
   })
 
   // Handlers de Ação
@@ -159,15 +169,14 @@ export default function AdminImoveisPage() {
   const columns = getColumns({
     onToggleStatus: handleToggleStatus,
     onToggleHighlighted: handleToggleHighlighted,
-    onDelete: handleDeleteClick
+    onDelete: handleDeleteClick,
   })
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
-      <main className="flex-1 w-full mx-auto p-4 md:p-8">
-
+    <div className="flex min-h-screen flex-col bg-gray-50">
+      <main className="mx-auto w-full flex-1 p-4 md:p-8">
         {/* Cabeçalho da Página */}
-        <div className="flex flex-col gap-4 mb-4">
+        <div className="mb-4 flex flex-col gap-4">
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-2xl font-bold text-[#17375F]">Gerenciamento de Imóveis</h1>
@@ -196,10 +205,10 @@ export default function AdminImoveisPage() {
           filterOptions={filterOptions}
           onFilterChange={(columnId, value) => {
             setFilterColumn(columnId)
-            const newValue = value === "ALL_VALUES_RESET" ? "" : value
+            const newValue = value === 'ALL_VALUES_RESET' ? '' : value
             setFilterValue(newValue)
 
-            setPagination(prev => ({ ...prev, pageIndex: 0 }))
+            setPagination((prev) => ({ ...prev, pageIndex: 0 }))
           }}
 
           filterValue={filterValue}
@@ -214,7 +223,7 @@ export default function AdminImoveisPage() {
             id={selectedId}
           />
         )}
-      </main >
-    </div >
+      </main>
+    </div>
   )
 }

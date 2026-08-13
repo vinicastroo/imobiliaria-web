@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { useState } from 'react'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
@@ -83,12 +83,12 @@ export default function InfraestruturaPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
-      <main className="flex-1 w-full max-w-[1200px] mx-auto p-4 md:p-8">
-        <div className="flex flex-col gap-4 mb-6">
+    <div className="flex min-h-screen flex-col bg-gray-50">
+      <main className="mx-auto w-full max-w-[1200px] flex-1 p-4 md:p-8">
+        <div className="mb-6 flex flex-col gap-4">
           <BackLink href="/admin" />
 
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
             <div>
               <h1 className="text-2xl font-bold text-[#17375F]">Infraestrutura</h1>
               <p className="text-gray-500">
@@ -99,7 +99,7 @@ export default function InfraestruturaPage() {
         </div>
 
         {/* Formulário de adição */}
-        <div className="flex gap-2 mb-6">
+        <div className="mb-6 flex gap-2">
           <Input
             placeholder="Nome do item (ex: Piscina, Churrasqueira...)"
             value={newName}
@@ -112,16 +112,12 @@ export default function InfraestruturaPage() {
             disabled={isAdding || !newName.trim()}
             className="bg-[#17375F] hover:bg-[#122b4a]"
           >
-            {isAdding ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : (
-              <Plus className="h-4 w-4" />
-            )}
+            {isAdding ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
             Adicionar
           </Button>
         </div>
 
-        <div className="rounded-md border bg-white py-3 px-4">
+        <div className="rounded-md border bg-white px-4 py-3">
           <Table>
             <TableHeader>
               <TableRow>
@@ -134,8 +130,8 @@ export default function InfraestruturaPage() {
               {isLoading ? (
                 <TableRow>
                   <TableCell colSpan={3} className="h-24 text-center">
-                    <div className="flex justify-center items-center gap-2 text-muted-foreground">
-                      <Loader2 className="animate-spin h-4 w-4" />
+                    <div className="text-muted-foreground flex items-center justify-center gap-2">
+                      <Loader2 className="h-4 w-4 animate-spin" />
                       Carregando...
                     </div>
                   </TableCell>
@@ -143,7 +139,7 @@ export default function InfraestruturaPage() {
               ) : items && items.length > 0 ? (
                 items.map((item) => (
                   <TableRow key={item.id}>
-                    <TableCell className="font-mono text-xs text-muted-foreground">
+                    <TableCell className="text-muted-foreground font-mono text-xs">
                       {item.id.substring(0, 8)}...
                     </TableCell>
                     <TableCell className="font-medium">{item.name}</TableCell>
@@ -151,7 +147,7 @@ export default function InfraestruturaPage() {
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="h-8 w-8 text-red-500 hover:text-red-600 hover:bg-red-50"
+                        className="h-8 w-8 text-red-500 hover:bg-red-50 hover:text-red-600"
                         onClick={() => setDeleteId(item.id)}
                         title="Excluir"
                       >
@@ -162,7 +158,7 @@ export default function InfraestruturaPage() {
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={3} className="h-24 text-center text-muted-foreground">
+                  <TableCell colSpan={3} className="text-muted-foreground h-24 text-center">
                     Nenhum item cadastrado. Adicione o primeiro acima.
                   </TableCell>
                 </TableRow>
@@ -176,8 +172,8 @@ export default function InfraestruturaPage() {
             <AlertDialogHeader>
               <AlertDialogTitle>Remover item de infraestrutura?</AlertDialogTitle>
               <AlertDialogDescription>
-                Esta ação não pode ser desfeita. O item será removido de todos os imóveis
-                que o utilizam.
+                Esta ação não pode ser desfeita. O item será removido de todos os imóveis que o
+                utilizam.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
@@ -187,7 +183,7 @@ export default function InfraestruturaPage() {
                 disabled={isDeleting}
                 className="bg-red-600 hover:bg-red-700"
               >
-                {isDeleting ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
+                {isDeleting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
                 Remover
               </AlertDialogAction>
             </AlertDialogFooter>

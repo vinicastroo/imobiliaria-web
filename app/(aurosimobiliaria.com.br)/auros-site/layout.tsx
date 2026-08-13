@@ -24,7 +24,14 @@ export const metadata: Metadata = {
     title: 'Auros Corretora Imobiliária',
     description:
       'Descubra uma variedade de imóveis em Rio do Sul e Balneário Camboriú com a Auros Corretora Imobiliária.',
-    images: [{ url: 'https://aurosimobiliaria.com.br/logo.png', width: 1200, height: 630, alt: 'Auros Corretora Imobiliária' }],
+    images: [
+      {
+        url: 'https://aurosimobiliaria.com.br/logo.png',
+        width: 1200,
+        height: 630,
+        alt: 'Auros Corretora Imobiliária',
+      },
+    ],
   },
   twitter: {
     card: 'summary_large_image',

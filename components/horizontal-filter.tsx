@@ -1,9 +1,18 @@
-"use client"
+'use client'
 
 import { useEffect, useState } from 'react'
 import { useRouter, useSearchParams, usePathname } from 'next/navigation'
 import { useQuery } from '@tanstack/react-query'
-import { SlidersHorizontal, X, ChevronDown, BedDouble, Bath, CarFront, Toilet, Hash } from 'lucide-react'
+import {
+  SlidersHorizontal,
+  X,
+  ChevronDown,
+  BedDouble,
+  Bath,
+  CarFront,
+  Toilet,
+  Hash,
+} from 'lucide-react'
 import { useForm, Controller } from 'react-hook-form'
 
 // UI Components
@@ -15,12 +24,8 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover"
+} from '@/components/ui/select'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Separator } from '@/components/ui/separator'
@@ -32,8 +37,8 @@ import {
   DialogTitle,
   DialogTrigger,
   DialogFooter,
-  DialogClose
-} from "@/components/ui/dialog"
+  DialogClose,
+} from '@/components/ui/dialog'
 
 // APIs
 import { getCities } from '@/app/api/get-cities'
@@ -61,12 +66,11 @@ const NumberSelector = ({ label, value, onChange, max = 4, icon: Icon }: NumberS
         <button
           type="button" // Importante para não submeter formulário
           onClick={() => onChange('')}
-          className={`
-              px-3 py-1.5 rounded-full text-xs font-medium transition-all border
-              ${!value
-              ? 'bg-[#17375F] text-white border-[#17375F]'
-              : 'bg-white text-gray-600 border-gray-200 hover:border-[#17375F] hover:text-[#17375F]'}
-            `}
+          className={`rounded-full border px-3 py-1.5 text-xs font-medium transition-all ${
+            !value
+              ? 'border-[#17375F] bg-[#17375F] text-white'
+              : 'border-gray-200 bg-white text-gray-600 hover:border-[#17375F] hover:text-[#17375F]'
+          } `}
         >
           Tanto faz
         </button>
@@ -75,12 +79,11 @@ const NumberSelector = ({ label, value, onChange, max = 4, icon: Icon }: NumberS
             type="button"
             key={num}
             onClick={() => onChange(String(num))}
-            className={`
-                w-8 h-8 rounded-full text-xs font-medium transition-all border flex items-center justify-center
-                ${value === String(num)
-                ? 'bg-[#17375F] text-white border-[#17375F]'
-                : 'bg-white text-gray-600 border-gray-200 hover:border-[#17375F] hover:text-[#17375F]'}
-              `}
+            className={`flex h-8 w-8 items-center justify-center rounded-full border text-xs font-medium transition-all ${
+              value === String(num)
+                ? 'border-[#17375F] bg-[#17375F] text-white'
+                : 'border-gray-200 bg-white text-gray-600 hover:border-[#17375F] hover:text-[#17375F]'
+            } `}
           >
             {num}+
           </button>
@@ -171,7 +174,7 @@ export function HorizontalFilter() {
       minPrice: searchParams.get('precoMin') || '',
       maxPrice: searchParams.get('precoMax') || '',
       code: currentCode,
-    }
+    },
   })
 
   // Sincroniza o form quando a URL muda (ex: usuário usou a barra horizontal)
@@ -188,7 +191,18 @@ export function HorizontalFilter() {
       maxPrice: searchParams.get('precoMax') || '',
       code: currentCode,
     })
-  }, [searchParams, reset, currentCity, currentNeighborhood, currentType, currentBedroom, currentSuite, currentBathroom, currentParking, currentCode])
+  }, [
+    searchParams,
+    reset,
+    currentCity,
+    currentNeighborhood,
+    currentType,
+    currentBedroom,
+    currentSuite,
+    currentBathroom,
+    currentParking,
+    currentCode,
+  ])
 
   // Lógica de Bairro DENTRO do Modal (Observa o select do form, não a URL)
   const formCity = watch('city')
@@ -245,23 +259,27 @@ export function HorizontalFilter() {
     searchParams.get('ref'),
   ].filter(Boolean).length
 
-  const activeRoomFilters = [currentBedroom, currentBathroom, currentSuite, currentParking].filter(Boolean).length
+  const activeRoomFilters = [currentBedroom, currentBathroom, currentSuite, currentParking].filter(
+    Boolean,
+  ).length
 
   return (
-    <div className="flex flex-col gap-4 w-full">
-      <div className="flex flex-wrap items-center gap-3 w-full justify-between">
-
+    <div className="flex w-full flex-col gap-4">
+      <div className="flex w-full flex-wrap items-center justify-between gap-3">
         {/* FILTROS DA BARRA (Visíveis em Desktop) */}
-        <div className='hidden md:flex gap-3'>
-
+        <div className="hidden gap-3 md:flex">
           <Select value={currentCity} onValueChange={(val) => updateFilter('cidade', val)}>
-            <SelectTrigger className={`w-[160px] h-10 rounded-full border-gray-300 ${currentCity ? 'bg-[#17375F]/10 border-[#17375F] text-[#17375F] font-medium' : 'bg-white'}`}>
+            <SelectTrigger
+              className={`h-10 w-[160px] rounded-full border-gray-300 ${currentCity ? 'border-[#17375F] bg-[#17375F]/10 font-medium text-[#17375F]' : 'bg-white'}`}
+            >
               <SelectValue placeholder="Cidade" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Todas as Cidades</SelectItem>
               {cities?.map((c) => (
-                <SelectItem key={c.city} value={c.city}>{c.city}</SelectItem>
+                <SelectItem key={c.city} value={c.city}>
+                  {c.city}
+                </SelectItem>
               ))}
             </SelectContent>
           </Select>
@@ -271,39 +289,50 @@ export function HorizontalFilter() {
             onValueChange={(val) => updateFilter('bairro', val)}
             disabled={!currentCity || !neighborhoods?.length}
           >
-            <SelectTrigger className={`w-[160px] h-10 rounded-full border-gray-300 ${currentNeighborhood ? 'bg-[#17375F]/10 border-[#17375F] text-[#17375F] font-medium' : 'bg-white'}`}>
+            <SelectTrigger
+              className={`h-10 w-[160px] rounded-full border-gray-300 ${currentNeighborhood ? 'border-[#17375F] bg-[#17375F]/10 font-medium text-[#17375F]' : 'bg-white'}`}
+            >
               <SelectValue placeholder="Bairro" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Todos os Bairros</SelectItem>
               {neighborhoods?.map((n) => (
-                <SelectItem key={n.neighborhood} value={n.neighborhood}>{n.neighborhood}</SelectItem>
+                <SelectItem key={n.neighborhood} value={n.neighborhood}>
+                  {n.neighborhood}
+                </SelectItem>
               ))}
             </SelectContent>
           </Select>
 
           <Select value={currentType} onValueChange={(val) => updateFilter('tipoImovel', val)}>
-            <SelectTrigger className={`w-[180px] h-10 rounded-full border-gray-300 ${currentType ? 'bg-[#17375F]/10 border-[#17375F] text-[#17375F] font-medium' : 'bg-white'}`}>
+            <SelectTrigger
+              className={`h-10 w-[180px] rounded-full border-gray-300 ${currentType ? 'border-[#17375F] bg-[#17375F]/10 font-medium text-[#17375F]' : 'bg-white'}`}
+            >
               <SelectValue placeholder="Tipo de Imóvel" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Todos os Tipos</SelectItem>
               {types?.map((t) => (
-                <SelectItem key={t.id} value={t.description}>{t.description}</SelectItem>
+                <SelectItem key={t.id} value={t.description}>
+                  {t.description}
+                </SelectItem>
               ))}
             </SelectContent>
           </Select>
 
           {/* Filtro por Ref */}
           <div className="relative self-center">
-            <Hash size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+            <Hash
+              size={14}
+              className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-gray-400"
+            />
             <Input
               value={codeInput}
               onChange={(e) => setCodeInput(e.target.value)}
               onBlur={() => applyCode(codeInput)}
               onKeyDown={(e) => e.key === 'Enter' && applyCode(codeInput)}
               placeholder="Ref"
-              className={`w-[110px] h-10 rounded-full pl-8 border-gray-300 text-sm ${currentCode ? 'bg-[#17375F]/10 border-[#17375F] text-[#17375F]' : 'bg-white'}`}
+              className={`h-10 w-[110px] rounded-full border-gray-300 pl-8 text-sm ${currentCode ? 'border-[#17375F] bg-[#17375F]/10 text-[#17375F]' : 'bg-white'}`}
             />
           </div>
 
@@ -312,11 +341,11 @@ export function HorizontalFilter() {
             <PopoverTrigger asChild>
               <Button
                 variant="outline"
-                className={`rounded-full border-gray-300 gap-2 ${activeRoomFilters > 0 ? 'bg-[#17375F]/10 border-[#17375F] text-[#17375F]' : 'bg-white text-gray-600'}`}
+                className={`gap-2 rounded-full border-gray-300 ${activeRoomFilters > 0 ? 'border-[#17375F] bg-[#17375F]/10 text-[#17375F]' : 'bg-white text-gray-600'}`}
               >
                 Cômodos
                 {activeRoomFilters > 0 && (
-                  <Badge className="bg-[#17375F] text-white h-5 w-5 p-0 flex items-center justify-center rounded-full text-[10px]">
+                  <Badge className="flex h-5 w-5 items-center justify-center rounded-full bg-[#17375F] p-0 text-[10px] text-white">
                     {activeRoomFilters}
                   </Badge>
                 )}
@@ -361,35 +390,37 @@ export function HorizontalFilter() {
           </Popover>
         </div>
 
-        <div className="w-full md:w-auto flex items-center justify-end">
+        <div className="flex w-full items-center justify-end md:w-auto">
           <Dialog>
             <DialogTrigger asChild>
-              <Button variant="outline" className={`w-full md:w-auto rounded-full border-gray-300 h-10 gap-2 ml-auto md:ml-0 ${activeAdvancedFilters > 0 ? 'bg-[#17375F]/10 border-[#17375F] text-[#17375F]' : 'text-gray-600'}`}>
+              <Button
+                variant="outline"
+                className={`ml-auto h-10 w-full gap-2 rounded-full border-gray-300 md:ml-0 md:w-auto ${activeAdvancedFilters > 0 ? 'border-[#17375F] bg-[#17375F]/10 text-[#17375F]' : 'text-gray-600'}`}
+              >
                 <SlidersHorizontal size={16} />
                 <span className="md:hidden">Filtrar Imóveis</span>
                 <span className="hidden md:inline">Mais Filtros</span>
                 {(activeAdvancedFilters > 0 || activeRoomFilters > 0) && (
-                  <Badge className="bg-[#17375F] text-white h-5 w-5 p-0 flex items-center justify-center rounded-full text-[10px]">
+                  <Badge className="flex h-5 w-5 items-center justify-center rounded-full bg-[#17375F] p-0 text-[10px] text-white">
                     {activeAdvancedFilters + activeRoomFilters}
                   </Badge>
                 )}
               </Button>
             </DialogTrigger>
 
-            <DialogContent className="w-full h-full max-h-[90vh] md:h-auto md:max-h-[85vh] sm:max-w-[500px] overflow-y-auto flex flex-col">
+            <DialogContent className="flex h-full max-h-[90vh] w-full flex-col overflow-y-auto sm:max-w-[500px] md:h-auto md:max-h-[85vh]">
               <DialogHeader>
                 <DialogTitle>Todos os Filtros</DialogTitle>
-                <DialogDescription>
-                  Refine sua busca detalhadamente.
-                </DialogDescription>
+                <DialogDescription>Refine sua busca detalhadamente.</DialogDescription>
               </DialogHeader>
 
-              <form onSubmit={handleSubmit(onAdvancedSubmit)} className="flex flex-col gap-6 py-4 flex-1">
-
+              <form
+                onSubmit={handleSubmit(onAdvancedSubmit)}
+                className="flex flex-1 flex-col gap-6 py-4"
+              >
                 {/* --- SELETORES PRINCIPAIS --- */}
                 <div className="grid grid-cols-1 gap-4">
-
-                  <div className='flex flex-col lg:flex-row lg:items-center lg:justify-between'>
+                  <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
                     <div className="space-y-2">
                       <Label>Cidade</Label>
                       <Controller
@@ -397,10 +428,16 @@ export function HorizontalFilter() {
                         control={control}
                         render={({ field }) => (
                           <Select onValueChange={field.onChange} value={field.value}>
-                            <SelectTrigger><SelectValue placeholder="Selecione a cidade" /></SelectTrigger>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Selecione a cidade" />
+                            </SelectTrigger>
                             <SelectContent>
                               <SelectItem value="all">Todas</SelectItem>
-                              {cities?.map((c) => <SelectItem key={c.city} value={c.city}>{c.city}</SelectItem>)}
+                              {cities?.map((c) => (
+                                <SelectItem key={c.city} value={c.city}>
+                                  {c.city}
+                                </SelectItem>
+                              ))}
                             </SelectContent>
                           </Select>
                         )}
@@ -413,11 +450,21 @@ export function HorizontalFilter() {
                         name="neighborhood"
                         control={control}
                         render={({ field }) => (
-                          <Select onValueChange={field.onChange} value={field.value} disabled={!formCity || formCity === 'all'}>
-                            <SelectTrigger><SelectValue placeholder="Selecione o bairro" /></SelectTrigger>
+                          <Select
+                            onValueChange={field.onChange}
+                            value={field.value}
+                            disabled={!formCity || formCity === 'all'}
+                          >
+                            <SelectTrigger>
+                              <SelectValue placeholder="Selecione o bairro" />
+                            </SelectTrigger>
                             <SelectContent>
                               <SelectItem value="all">Todos</SelectItem>
-                              {formNeighborhoods?.map((n) => <SelectItem key={n.neighborhood} value={n.neighborhood}>{n.neighborhood}</SelectItem>)}
+                              {formNeighborhoods?.map((n) => (
+                                <SelectItem key={n.neighborhood} value={n.neighborhood}>
+                                  {n.neighborhood}
+                                </SelectItem>
+                              ))}
                             </SelectContent>
                           </Select>
                         )}
@@ -432,10 +479,16 @@ export function HorizontalFilter() {
                       control={control}
                       render={({ field }) => (
                         <Select onValueChange={field.onChange} value={field.value}>
-                          <SelectTrigger><SelectValue placeholder="Selecione o tipo" /></SelectTrigger>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Selecione o tipo" />
+                          </SelectTrigger>
                           <SelectContent>
                             <SelectItem value="all">Todos</SelectItem>
-                            {types?.map((t) => <SelectItem key={t.id} value={t.description}>{t.description}</SelectItem>)}
+                            {types?.map((t) => (
+                              <SelectItem key={t.id} value={t.description}>
+                                {t.description}
+                              </SelectItem>
+                            ))}
                           </SelectContent>
                         </Select>
                       )}
@@ -445,7 +498,10 @@ export function HorizontalFilter() {
                   <div className="space-y-2">
                     <Label>Referência (Ref)</Label>
                     <div className="relative">
-                      <Hash size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+                      <Hash
+                        size={14}
+                        className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-gray-400"
+                      />
                       <Input placeholder="Ex: 1042" className="pl-8" {...register('code')} />
                     </div>
                   </div>
@@ -455,33 +511,53 @@ export function HorizontalFilter() {
 
                 {/* --- CÔMODOS --- */}
                 <div className="space-y-4">
-                  <Label className='text-base text-popover-foreground'>Cômodos</Label>
+                  <Label className="text-popover-foreground text-base">Cômodos</Label>
                   <Controller
                     name="bedrooms"
                     control={control}
                     render={({ field }) => (
-                      <NumberSelector label="Quartos" value={field.value} onChange={field.onChange} icon={BedDouble} />
+                      <NumberSelector
+                        label="Quartos"
+                        value={field.value}
+                        onChange={field.onChange}
+                        icon={BedDouble}
+                      />
                     )}
                   />
                   <Controller
                     name="suites"
                     control={control}
                     render={({ field }) => (
-                      <NumberSelector label="Suítes" value={field.value} onChange={field.onChange} icon={Bath} />
+                      <NumberSelector
+                        label="Suítes"
+                        value={field.value}
+                        onChange={field.onChange}
+                        icon={Bath}
+                      />
                     )}
                   />
                   <Controller
                     name="bathrooms"
                     control={control}
                     render={({ field }) => (
-                      <NumberSelector label="Banheiros" value={field.value} onChange={field.onChange} icon={Toilet} />
+                      <NumberSelector
+                        label="Banheiros"
+                        value={field.value}
+                        onChange={field.onChange}
+                        icon={Toilet}
+                      />
                     )}
                   />
                   <Controller
                     name="parkingSpots"
                     control={control}
                     render={({ field }) => (
-                      <NumberSelector label="Vagas" value={field.value} onChange={field.onChange} icon={CarFront} />
+                      <NumberSelector
+                        label="Vagas"
+                        value={field.value}
+                        onChange={field.onChange}
+                        icon={CarFront}
+                      />
                     )}
                   />
                 </div>
@@ -497,13 +573,13 @@ export function HorizontalFilter() {
                   </div>
                 </div> */}
 
-                <DialogFooter className="flex-row gap-2 sm:justify-between mt-auto pt-4">
+                <DialogFooter className="mt-auto flex-row gap-2 pt-4 sm:justify-between">
                   <Button type="button" variant="outline" onClick={clearAll} className="flex-1">
                     Limpar
                   </Button>
 
                   <DialogClose asChild>
-                    <Button type="submit" className="bg-[#17375F] flex-1">
+                    <Button type="submit" className="flex-1 bg-[#17375F]">
                       Aplicar Filtros
                     </Button>
                   </DialogClose>
@@ -513,8 +589,18 @@ export function HorizontalFilter() {
           </Dialog>
 
           {/* Botão limpar tudo (Atalho fora do modal) */}
-          {(currentCity || currentType || currentNeighborhood || activeRoomFilters > 0 || activeAdvancedFilters > 0) && (
-            <Button variant="ghost" size="icon" onClick={clearAll} className="h-10 w-10 rounded-full text-gray-400 hover:text-red-500 hover:bg-red-50 ml-2 hidden md:inline-flex" title="Limpar tudo">
+          {(currentCity ||
+            currentType ||
+            currentNeighborhood ||
+            activeRoomFilters > 0 ||
+            activeAdvancedFilters > 0) && (
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={clearAll}
+              className="ml-2 hidden h-10 w-10 rounded-full text-gray-400 hover:bg-red-50 hover:text-red-500 md:inline-flex"
+              title="Limpar tudo"
+            >
               <X size={18} />
             </Button>
           )}

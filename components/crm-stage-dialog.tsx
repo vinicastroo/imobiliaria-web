@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { useState } from 'react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
@@ -11,7 +11,13 @@ import { STAGE_COLORS, type ClientStage, type StageColorKey } from '@/components
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
 import { cn } from '@/lib/utils'
 
 interface CrmStageDialogProps {
@@ -47,9 +53,7 @@ function CrmStageDialogContent({
 }: Pick<CrmStageDialogProps, 'onOpenChange' | 'stageToEdit'>) {
   const queryClient = useQueryClient()
   const [name, setName] = useState(stageToEdit?.name ?? '')
-  const [color, setColor] = useState<StageColorKey>(
-    (stageToEdit?.color as StageColorKey) ?? 'blue'
-  )
+  const [color, setColor] = useState<StageColorKey>((stageToEdit?.color as StageColorKey) ?? 'blue')
 
   const isDefaultStage = !!stageToEdit?.systemKey
   const clientCount = stageToEdit?._count?.clients ?? 0
@@ -92,7 +96,9 @@ function CrmStageDialogContent({
 
       <div className="space-y-4">
         <div className="space-y-2">
-          <Label>Nome <span className="text-red-500">*</span></Label>
+          <Label>
+            Nome <span className="text-red-500">*</span>
+          </Label>
           <Input
             value={name}
             onChange={(e) => setName(e.target.value)}
@@ -105,28 +111,31 @@ function CrmStageDialogContent({
         <div className="space-y-2">
           <Label>Cor</Label>
           <div className="flex flex-wrap gap-2">
-            {(Object.entries(STAGE_COLORS) as [StageColorKey, typeof STAGE_COLORS[StageColorKey]][]).map(
-              ([key, config]) => (
-                <button
-                  key={key}
-                  type="button"
-                  title={config.label}
-                  onClick={() => setColor(key)}
-                  className={cn(
-                    'flex h-8 w-8 items-center justify-center rounded-full transition-transform hover:scale-110',
-                    config.dot,
-                    color === key && 'ring-2 ring-offset-2 ring-gray-400',
-                  )}
-                >
-                  {color === key && <Check className="h-4 w-4 text-white" />}
-                </button>
-              )
-            )}
+            {(
+              Object.entries(STAGE_COLORS) as [
+                StageColorKey,
+                (typeof STAGE_COLORS)[StageColorKey],
+              ][]
+            ).map(([key, config]) => (
+              <button
+                key={key}
+                type="button"
+                title={config.label}
+                onClick={() => setColor(key)}
+                className={cn(
+                  'flex h-8 w-8 items-center justify-center rounded-full transition-transform hover:scale-110',
+                  config.dot,
+                  color === key && 'ring-2 ring-gray-400 ring-offset-2',
+                )}
+              >
+                {color === key && <Check className="h-4 w-4 text-white" />}
+              </button>
+            ))}
           </div>
         </div>
 
         {isDefaultStage && (
-          <p className="text-xs text-muted-foreground">
+          <p className="text-muted-foreground text-xs">
             Esta é uma coluna padrão do CRM — pode ser renomeada e recolorida, mas não excluída.
           </p>
         )}
@@ -138,12 +147,16 @@ function CrmStageDialogContent({
             <Button
               variant="destructive"
               disabled={isPending || clientCount > 0}
-              title={clientCount > 0 ? 'Mova os contatos desta coluna antes de excluí-la' : undefined}
+              title={
+                clientCount > 0 ? 'Mova os contatos desta coluna antes de excluí-la' : undefined
+              }
               onClick={() => deleteMutation.mutate()}
             >
-              {deleteMutation.isPending
-                ? <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                : <Trash2 className="h-4 w-4 mr-2" />}
+              {deleteMutation.isPending ? (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ) : (
+                <Trash2 className="mr-2 h-4 w-4" />
+              )}
               Excluir
             </Button>
           )}
@@ -152,11 +165,8 @@ function CrmStageDialogContent({
           <Button variant="outline" disabled={isPending} onClick={() => onOpenChange(false)}>
             Cancelar
           </Button>
-          <Button
-            disabled={isPending || !name.trim()}
-            onClick={() => saveMutation.mutate()}
-          >
-            {saveMutation.isPending && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
+          <Button disabled={isPending || !name.trim()} onClick={() => saveMutation.mutate()}>
+            {saveMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             Salvar
           </Button>
         </div>

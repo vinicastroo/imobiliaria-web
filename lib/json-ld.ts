@@ -33,9 +33,7 @@ export function buildPropertyJsonLd(property: JsonLdPropertyInput, baseUrl: stri
     image: images,
     address: {
       '@type': 'PostalAddress',
-      streetAddress: property.street
-        ? `${property.street}, ${property.numberAddress}`
-        : undefined,
+      streetAddress: property.street ? `${property.street}, ${property.numberAddress}` : undefined,
       addressLocality: property.city,
       addressRegion: property.state,
       addressCountry: 'BR',

@@ -9,11 +9,19 @@ export const metadata: Metadata = {
     template: '%s | Imóveis Gilli',
     default: 'Imóveis Gilli - Imobiliária em Aurora e Região',
   },
-  description: 'Encontre os melhores imóveis com a Imóveis Gilli. Compra, venda e locação em Aurora e região de Santa Catarina.',
+  description:
+    'Encontre os melhores imóveis com a Imóveis Gilli. Compra, venda e locação em Aurora e região de Santa Catarina.',
   openGraph: {
     type: 'website',
     siteName: 'Imóveis Gilli',
-    images: [{ url: 'https://imoveisgilli.com.br/og-image.png', width: 1200, height: 630, alt: 'Imóveis Gilli' }],
+    images: [
+      {
+        url: 'https://imoveisgilli.com.br/og-image.png',
+        width: 1200,
+        height: 630,
+        alt: 'Imóveis Gilli',
+      },
+    ],
   },
   twitter: {
     card: 'summary_large_image',
@@ -47,10 +55,12 @@ export default async function GilliSiteLayout({ children }: { children: ReactNod
   const { primaryColor, secondaryColor } = await getTenantVisualConfig()
   return (
     <div
-      style={{
-        '--primary-color': primaryColor,
-        '--secondary-color': secondaryColor,
-      } as React.CSSProperties}
+      style={
+        {
+          '--primary-color': primaryColor,
+          '--secondary-color': secondaryColor,
+        } as React.CSSProperties
+      }
     >
       <script
         type="application/ld+json"

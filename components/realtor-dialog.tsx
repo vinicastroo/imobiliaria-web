@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { useState, useEffect, useCallback } from 'react'
 import { useForm } from 'react-hook-form'
@@ -14,13 +14,17 @@ import Cropper from 'react-easy-crop'
 import { getCroppedImg } from '@/utils/cropImage' // Importe a função que criamos acima
 
 import api from '@/services/api'
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Slider } from "@/components/ui/slider" // Se tiver slider no shadcn, senão use input range
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Slider } from '@/components/ui/slider' // Se tiver slider no shadcn, senão use input range
 import {
-  Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter
-} from "@/components/ui/dialog"
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from '@/components/ui/dialog'
 
 // Interface e Schema (Mantidos iguais)
 export interface Realtor {
@@ -72,8 +76,14 @@ export function RealtorDialog({ open, onOpenChange, realtorToEdit }: RealtorDial
   const [isCropping, setIsCropping] = useState(false)
 
   const queryClient = useQueryClient()
-  const { register, handleSubmit, reset, setValue, formState: { errors } } = useForm<RealtorSchema>({
-    resolver: zodResolver(realtorSchema)
+  const {
+    register,
+    handleSubmit,
+    reset,
+    setValue,
+    formState: { errors },
+  } = useForm<RealtorSchema>({
+    resolver: zodResolver(realtorSchema),
   })
 
   useEffect(() => {
@@ -109,9 +119,12 @@ export function RealtorDialog({ open, onOpenChange, realtorToEdit }: RealtorDial
   }
 
   // 2. Callback do EasyCrop quando o usuário move a imagem
-  const onCropComplete = useCallback((croppedArea: CroppedArea, croppedAreaPixels: CroppedAreaPixels) => {
-    setCroppedAreaPixels(croppedAreaPixels)
-  }, [])
+  const onCropComplete = useCallback(
+    (croppedArea: CroppedArea, croppedAreaPixels: CroppedAreaPixels) => {
+      setCroppedAreaPixels(croppedAreaPixels)
+    },
+    [],
+  )
 
   // 3. Confirmar Crop e Fazer Upload
   const handleCropSave = async () => {
@@ -166,22 +179,22 @@ export function RealtorDialog({ open, onOpenChange, realtorToEdit }: RealtorDial
       toast.success(realtorToEdit ? 'Atualizado!' : 'Cadastrado!')
       onOpenChange(false)
     },
-    onError: () => toast.error('Erro ao salvar')
+    onError: () => toast.error('Erro ao salvar'),
   })
 
   return (
     <Dialog open={open} onOpenChange={(val) => !isCropping && onOpenChange(val)}>
-      <DialogContent className={isCropping ? "sm:max-w-[600px]" : ""}>
+      <DialogContent className={isCropping ? 'sm:max-w-[600px]' : ''}>
         <DialogHeader>
           <DialogTitle>
-            {isCropping ? 'Ajustar Foto' : (realtorToEdit ? 'Editar Corretor' : 'Cadastrar Corretor')}
+            {isCropping ? 'Ajustar Foto' : realtorToEdit ? 'Editar Corretor' : 'Cadastrar Corretor'}
           </DialogTitle>
         </DialogHeader>
 
         {/* MODO CROP ATIVO */}
         {isCropping && imageSrc ? (
           <div className="flex flex-col gap-4">
-            <div className="relative w-full h-[300px] bg-black rounded-md overflow-hidden">
+            <div className="relative h-[300px] w-full overflow-hidden rounded-md bg-black">
               <Cropper
                 image={imageSrc}
                 crop={crop}
@@ -213,7 +226,11 @@ export function RealtorDialog({ open, onOpenChange, realtorToEdit }: RealtorDial
                 <X className="mr-2 h-4 w-4" /> Cancelar
               </Button>
               <Button onClick={handleCropSave} className="bg-[#17375F]" disabled={uploading}>
-                {uploading ? <Loader2 className="animate-spin mr-2" /> : <Check className="mr-2 h-4 w-4" />}
+                {uploading ? (
+                  <Loader2 className="mr-2 animate-spin" />
+                ) : (
+                  <Check className="mr-2 h-4 w-4" />
+                )}
                 Confirmar
               </Button>
             </DialogFooter>
@@ -221,9 +238,8 @@ export function RealtorDialog({ open, onOpenChange, realtorToEdit }: RealtorDial
         ) : (
           /* MODO FORMULÁRIO NORMAL */
           <form onSubmit={handleSubmit((data) => mutation.mutate(data))} className="space-y-4">
-
             <div className="flex flex-col items-center gap-2">
-              <div className="relative w-24 h-24 rounded-full overflow-hidden border bg-gray-100 flex items-center justify-center">
+              <div className="relative flex h-24 w-24 items-center justify-center overflow-hidden rounded-full border bg-gray-100">
                 {avatarPreview ? (
                   <Image src={avatarPreview} alt="Avatar" fill className="object-cover" />
                 ) : (
@@ -231,7 +247,10 @@ export function RealtorDialog({ open, onOpenChange, realtorToEdit }: RealtorDial
                 )}
               </div>
 
-              <Label htmlFor="avatar-upload" className="cursor-pointer text-sm text-blue-600 hover:underline">
+              <Label
+                htmlFor="avatar-upload"
+                className="cursor-pointer text-sm text-blue-600 hover:underline"
+              >
                 Alterar foto
               </Label>
               <Input
@@ -246,24 +265,30 @@ export function RealtorDialog({ open, onOpenChange, realtorToEdit }: RealtorDial
             <div className="space-y-2">
               <Label>Nome</Label>
               <Input {...register('name')} placeholder="Nome completo" />
-              {errors.name && <span className="text-red-500 text-xs">{errors.name.message}</span>}
+              {errors.name && <span className="text-xs text-red-500">{errors.name.message}</span>}
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label>CRECI</Label>
                 <Input {...register('creci')} placeholder="Ex: 12345-F" />
-                {errors.creci && <span className="text-red-500 text-xs">{errors.creci.message}</span>}
+                {errors.creci && (
+                  <span className="text-xs text-red-500">{errors.creci.message}</span>
+                )}
               </div>
               <div className="space-y-2">
                 <Label>Telefone</Label>
                 <Input {...register('phone')} placeholder="Ex: 5547999999999" />
-                {errors.phone && <span className="text-red-500 text-xs">{errors.phone.message}</span>}
+                {errors.phone && (
+                  <span className="text-xs text-red-500">{errors.phone.message}</span>
+                )}
               </div>
             </div>
 
             <DialogFooter>
-              <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Cancelar</Button>
+              <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+                Cancelar
+              </Button>
               <Button type="submit" className="bg-[#17375F]" disabled={mutation.isPending}>
                 {mutation.isPending ? <Loader2 className="animate-spin" /> : 'Salvar'}
               </Button>

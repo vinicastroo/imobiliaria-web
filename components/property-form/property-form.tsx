@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { useEffect } from 'react'
 import { EditorContent } from '@tiptap/react'
@@ -89,7 +89,7 @@ export function PropertyForm({ mode, propertyId, defaultValues }: PropertyFormPr
 
   return (
     <>
-      <div className="flex items-center justify-between mb-3">
+      <div className="mb-3 flex items-center justify-between">
         <div className="flex flex-col">
           <BackLink href="/admin/imoveis" />
           <h1 className="text-2xl font-bold text-[#17375F]">{title}</h1>
@@ -97,16 +97,8 @@ export function PropertyForm({ mode, propertyId, defaultValues }: PropertyFormPr
 
         <div className="flex items-center gap-2">
           {isEdit && defaultValues?.slug && (
-            <Button
-              type="button"
-              variant="outline"
-              size="lg"
-              asChild
-            >
-              <Link
-                href={`/imoveis/${defaultValues.slug}`}
-                target="_blank"
-              >
+            <Button type="button" variant="outline" size="lg" asChild>
+              <Link href={`/imoveis/${defaultValues.slug}`} target="_blank">
                 <ExternalLink className="mr-2 h-4 w-4" />
                 Ver no site
               </Link>
@@ -134,7 +126,7 @@ export function PropertyForm({ mode, propertyId, defaultValues }: PropertyFormPr
 
       <form onSubmit={onSubmit}>
         <Tabs defaultValue="geral" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 max-w-[400px] mb-3">
+          <TabsList className="mb-3 grid w-full max-w-[400px] grid-cols-2">
             <TabsTrigger value="geral" className="gap-2">
               <FileText size={16} /> Dados Gerais
             </TabsTrigger>
@@ -145,9 +137,9 @@ export function PropertyForm({ mode, propertyId, defaultValues }: PropertyFormPr
 
           {/* ===== DADOS GERAIS ===== */}
           <TabsContent value="geral">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
               {/* COLUNA ESQUERDA */}
-              <div className="md:col-span-2 space-y-6">
+              <div className="space-y-6 md:col-span-2">
                 <Card className="py-6">
                   <CardHeader>
                     <CardTitle>Informações do Imóvel</CardTitle>
@@ -155,14 +147,9 @@ export function PropertyForm({ mode, propertyId, defaultValues }: PropertyFormPr
                   <CardContent className="space-y-4">
                     <div className="space-y-2">
                       <Label>Nome do Imóvel</Label>
-                      <Input
-                        {...register('name')}
-                        placeholder="Ex: Apartamento Vista Mar"
-                      />
+                      <Input {...register('name')} placeholder="Ex: Apartamento Vista Mar" />
                       {errors.name && (
-                        <span className="text-xs text-red-500">
-                          {errors.name.message}
-                        </span>
+                        <span className="text-xs text-red-500">{errors.name.message}</span>
                       )}
                     </div>
 
@@ -173,36 +160,26 @@ export function PropertyForm({ mode, propertyId, defaultValues }: PropertyFormPr
                           <Input
                             {...register('code' as 'name')}
                             placeholder="Ex: APV123"
-                            disabled={
-                              typeof defaultValues?.code === 'number'
-                            }
+                            disabled={typeof defaultValues?.code === 'number'}
                             className={
-                              typeof defaultValues?.code === 'number'
-                                ? 'bg-gray-100 font-bold'
-                                : ''
+                              typeof defaultValues?.code === 'number' ? 'bg-gray-100 font-bold' : ''
                             }
                           />
                           {'code' in errors && errors.code && (
-                            <span className="text-xs text-red-500">
-                              {errors.code.message}
-                            </span>
+                            <span className="text-xs text-red-500">{errors.code.message}</span>
                           )}
                         </div>
                       )}
-                      <div
-                        className={`space-y-2 ${isEdit ? '' : 'col-span-2'}`}
-                      >
+                      <div className={`space-y-2 ${isEdit ? '' : 'col-span-2'}`}>
                         <Label>Slug (URL)</Label>
                         <Input {...register('slug')} maxLength={80} />
-                        <div className="flex justify-between items-center">
+                        <div className="flex items-center justify-between">
                           {errors.slug ? (
-                            <span className="text-xs text-red-500">
-                              {errors.slug.message}
-                            </span>
+                            <span className="text-xs text-red-500">{errors.slug.message}</span>
                           ) : (
                             <span />
                           )}
-                          <span className="text-xs text-muted-foreground">
+                          <span className="text-muted-foreground text-xs">
                             {(watch('slug') ?? '').length}/80
                           </span>
                         </div>
@@ -214,13 +191,20 @@ export function PropertyForm({ mode, propertyId, defaultValues }: PropertyFormPr
                         <Label>
                           Valor
                           {watch('priceOnRequest') && (
-                            <span className="ml-2 text-xs font-normal text-muted-foreground">(exibido como &quot;Sob consulta&quot;)</span>
+                            <span className="text-muted-foreground ml-2 text-xs font-normal">
+                              (exibido como &quot;Sob consulta&quot;)
+                            </span>
                           )}
                         </Label>
                         <div className="flex items-center gap-2">
                           <NumericFormat
                             value={watch('value')}
-                            onValueChange={(v) => setValue('value', v.formattedValue, { shouldValidate: true, shouldDirty: true })}
+                            onValueChange={(v) =>
+                              setValue('value', v.formattedValue, {
+                                shouldValidate: true,
+                                shouldDirty: true,
+                              })
+                            }
                             prefix="R$ "
                             thousandSeparator="."
                             decimalSeparator=","
@@ -228,20 +212,24 @@ export function PropertyForm({ mode, propertyId, defaultValues }: PropertyFormPr
                             placeholder="R$ 0,00"
                           />
                           {watch('transactionType') === 'ALUGUEL' && (
-                            <span className="text-sm text-muted-foreground whitespace-nowrap">/mês</span>
+                            <span className="text-muted-foreground text-sm whitespace-nowrap">
+                              /mês
+                            </span>
                           )}
                         </div>
                         {errors.value && (
-                          <span className="text-xs text-red-500">
-                            {errors.value.message}
-                          </span>
+                          <span className="text-xs text-red-500">{errors.value.message}</span>
                         )}
                       </div>
 
                       <div className="space-y-2">
                         <Label>Negociação</Label>
                         <Select
-                          onValueChange={(val) => setValue('transactionType', val as 'VENDA' | 'ALUGUEL', { shouldDirty: true })}
+                          onValueChange={(val) =>
+                            setValue('transactionType', val as 'VENDA' | 'ALUGUEL', {
+                              shouldDirty: true,
+                            })
+                          }
                           value={watch('transactionType')}
                         >
                           <SelectTrigger className="w-full">
@@ -276,9 +264,7 @@ export function PropertyForm({ mode, propertyId, defaultValues }: PropertyFormPr
                           </Select>
                         )}
                         {errors.type_id && (
-                          <span className="text-xs text-red-500">
-                            {errors.type_id.message}
-                          </span>
+                          <span className="text-xs text-red-500">{errors.type_id.message}</span>
                         )}
                       </div>
                     </div>
@@ -288,13 +274,17 @@ export function PropertyForm({ mode, propertyId, defaultValues }: PropertyFormPr
                         <Switch
                           id="priceOnRequest"
                           checked={watch('priceOnRequest')}
-                          onCheckedChange={(v) => setValue('priceOnRequest', v, { shouldDirty: true })}
+                          onCheckedChange={(v) =>
+                            setValue('priceOnRequest', v, { shouldDirty: true })
+                          }
                         />
                         <Label htmlFor="priceOnRequest" className="cursor-pointer font-normal">
                           Exibir como <strong>Sob consulta</strong>
                         </Label>
                       </div>
-                      <div className={`flex items-center gap-2 ${watch('priceOnRequest') ? 'opacity-40 pointer-events-none' : ''}`}>
+                      <div
+                        className={`flex items-center gap-2 ${watch('priceOnRequest') ? 'pointer-events-none opacity-40' : ''}`}
+                      >
                         <Switch
                           id="pricePrefix"
                           checked={watch('pricePrefix')}
@@ -319,20 +309,21 @@ export function PropertyForm({ mode, propertyId, defaultValues }: PropertyFormPr
 
                     <div className="space-y-2">
                       <Label>
-                        Empreendimento{' '}
-                        <span className="text-xs">(Opcional)</span>
+                        Empreendimento <span className="text-xs">(Opcional)</span>
                       </Label>
                       <Select
-                        onValueChange={(val) => setValue('enterpriseId', val === 'none_value' ? '' : val, { shouldDirty: true })}
+                        onValueChange={(val) =>
+                          setValue('enterpriseId', val === 'none_value' ? '' : val, {
+                            shouldDirty: true,
+                          })
+                        }
                         value={watch('enterpriseId') || undefined}
                       >
                         <SelectTrigger className="w-full">
                           <SelectValue placeholder="Selecione um empreendimento" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="none_value">
-                            -- Nenhum --
-                          </SelectItem>
+                          <SelectItem value="none_value">-- Nenhum --</SelectItem>
                           {enterprises.map((ent) => (
                             <SelectItem key={ent.id} value={ent.id}>
                               {ent.name}
@@ -350,27 +341,22 @@ export function PropertyForm({ mode, propertyId, defaultValues }: PropertyFormPr
                         placeholder="Breve descrição que aparece nos cards..."
                       />
                       {errors.summary && (
-                        <span className="text-xs text-red-500">
-                          {errors.summary.message}
-                        </span>
+                        <span className="text-xs text-red-500">{errors.summary.message}</span>
                       )}
                     </div>
 
                     <div className="space-y-2">
                       <Label>Descrição Completa</Label>
                       <div
-                        className={`border rounded-md ${errors.description
-                          ? 'border-red-500'
-                          : 'border-gray-200'
-                          } bg-white overflow-hidden focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2`}
+                        className={`rounded-md border ${
+                          errors.description ? 'border-red-500' : 'border-gray-200'
+                        } focus-within:ring-ring overflow-hidden bg-white focus-within:ring-2 focus-within:ring-offset-2`}
                       >
                         <MenuBarTiptap editor={editor} />
                         <EditorContent editor={editor} />
                       </div>
                       {errors.description && (
-                        <span className="text-xs text-red-500">
-                          {errors.description.message}
-                        </span>
+                        <span className="text-xs text-red-500">{errors.description.message}</span>
                       )}
                     </div>
                   </CardContent>
@@ -413,7 +399,9 @@ export function PropertyForm({ mode, propertyId, defaultValues }: PropertyFormPr
                       <InfrastructurePicker
                         items={infrastructures}
                         selected={watch('infrastructureIds') ?? []}
-                        onChange={(ids) => setValue('infrastructureIds', ids, { shouldDirty: true })}
+                        onChange={(ids) =>
+                          setValue('infrastructureIds', ids, { shouldDirty: true })
+                        }
                       />
                     )}
                   </CardContent>
@@ -421,7 +409,7 @@ export function PropertyForm({ mode, propertyId, defaultValues }: PropertyFormPr
               </div>
 
               {/* COLUNA DIREITA */}
-              <div className="md:col-span-1 space-y-6">
+              <div className="space-y-6 md:col-span-1">
                 <Card className="py-6">
                   <CardHeader>
                     <CardTitle>Características</CardTitle>
@@ -432,42 +420,54 @@ export function PropertyForm({ mode, propertyId, defaultValues }: PropertyFormPr
                         <Bed size={14} /> Quartos
                       </Label>
                       <Input type="number" min={0} {...register('bedrooms')} />
-                      {errors.bedrooms && <span className="text-xs text-red-500">{errors.bedrooms.message}</span>}
+                      {errors.bedrooms && (
+                        <span className="text-xs text-red-500">{errors.bedrooms.message}</span>
+                      )}
                     </div>
                     <div className="space-y-1">
                       <Label className="flex items-center gap-1">
                         <Bath size={14} /> Banheiros
                       </Label>
                       <Input type="number" min={0} {...register('bathrooms')} />
-                      {errors.bathrooms && <span className="text-xs text-red-500">{errors.bathrooms.message}</span>}
+                      {errors.bathrooms && (
+                        <span className="text-xs text-red-500">{errors.bathrooms.message}</span>
+                      )}
                     </div>
                     <div className="space-y-1">
                       <Label className="flex items-center gap-1">
                         <Bath size={14} /> Suítes
                       </Label>
                       <Input type="number" min={0} {...register('suites')} />
-                      {errors.suites && <span className="text-xs text-red-500">{errors.suites.message}</span>}
+                      {errors.suites && (
+                        <span className="text-xs text-red-500">{errors.suites.message}</span>
+                      )}
                     </div>
                     <div className="space-y-1">
                       <Label className="flex items-center gap-1">
                         <CarFront size={14} /> Vagas
                       </Label>
                       <Input type="number" min={0} {...register('parkingSpots')} />
-                      {errors.parkingSpots && <span className="text-xs text-red-500">{errors.parkingSpots.message}</span>}
+                      {errors.parkingSpots && (
+                        <span className="text-xs text-red-500">{errors.parkingSpots.message}</span>
+                      )}
                     </div>
                     <div className="space-y-1">
                       <Label className="flex items-center gap-1">
                         <Ruler size={14} /> Área Total
                       </Label>
                       <Input type="number" min={0} {...register('totalArea')} />
-                      {errors.totalArea && <span className="text-xs text-red-500">{errors.totalArea.message}</span>}
+                      {errors.totalArea && (
+                        <span className="text-xs text-red-500">{errors.totalArea.message}</span>
+                      )}
                     </div>
                     <div className="space-y-1">
                       <Label className="flex items-center gap-1">
                         <Ruler size={14} /> Área Priv.
                       </Label>
                       <Input type="number" min={0} {...register('privateArea')} />
-                      {errors.privateArea && <span className="text-xs text-red-500">{errors.privateArea.message}</span>}
+                      {errors.privateArea && (
+                        <span className="text-xs text-red-500">{errors.privateArea.message}</span>
+                      )}
                     </div>
                   </CardContent>
                 </Card>
@@ -481,9 +481,7 @@ export function PropertyForm({ mode, propertyId, defaultValues }: PropertyFormPr
                       <Label>CEP</Label>
                       <Input {...register('cep')} placeholder="00000-000" />
                       {errors.cep && (
-                        <span className="text-xs text-red-500">
-                          {errors.cep.message}
-                        </span>
+                        <span className="text-xs text-red-500">{errors.cep.message}</span>
                       )}
                     </div>
                     <div className="grid grid-cols-3 gap-2">
@@ -531,8 +529,7 @@ export function PropertyForm({ mode, propertyId, defaultValues }: PropertyFormPr
               <CardHeader>
                 <CardTitle>Galeria de Imagens</CardTitle>
                 <p className="text-sm text-gray-500">
-                  Faça o upload das fotos do imóvel aqui. Arraste para
-                  reordenar.
+                  Faça o upload das fotos do imóvel aqui. Arraste para reordenar.
                 </p>
               </CardHeader>
               <CardContent className="space-y-6">
@@ -548,9 +545,12 @@ export function PropertyForm({ mode, propertyId, defaultValues }: PropertyFormPr
                     </Label>
                   </div>
                   {!watermarkUrl && (
-                    <p className="text-xs text-muted-foreground">
+                    <p className="text-muted-foreground text-xs">
                       Você ainda não cadastrou a sua marca d&apos;água.{' '}
-                      <Link href="/admin/configuracoes" className="text-[#17375F] underline underline-offset-2 hover:opacity-80">
+                      <Link
+                        href="/admin/configuracoes"
+                        className="text-[#17375F] underline underline-offset-2 hover:opacity-80"
+                      >
                         Clique aqui
                       </Link>{' '}
                       para configurá-la.

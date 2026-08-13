@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { useState, useEffect, useMemo, useRef } from 'react'
 import { useRouter } from 'next/navigation'
@@ -82,7 +82,7 @@ export function usePropertyForm({ mode, propertyId, defaultValues }: UseProperty
   const isEdit = mode === 'edit'
 
   const formValues = useMemo(
-    () => defaultValues ? mapPropertyToFormData(defaultValues, isEdit) : undefined,
+    () => (defaultValues ? mapPropertyToFormData(defaultValues, isEdit) : undefined),
     [defaultValues, isEdit],
   )
 
@@ -112,16 +112,12 @@ export function usePropertyForm({ mode, propertyId, defaultValues }: UseProperty
   const { setValue, watch } = form
 
   const editor = useEditor({
-    extensions: [
-      StarterKit,
-      TextAlign.configure({ types: ['heading', 'paragraph'] }),
-    ],
+    extensions: [StarterKit, TextAlign.configure({ types: ['heading', 'paragraph'] })],
     content: '',
     immediatelyRender: false,
     editorProps: {
       attributes: {
-        class:
-          'min-h-[200px] w-full bg-transparent px-3 py-2 text-sm focus-visible:outline-none',
+        class: 'min-h-[200px] w-full bg-transparent px-3 py-2 text-sm focus-visible:outline-none',
       },
     },
     onUpdate({ editor: ed }) {
@@ -220,7 +216,9 @@ export function usePropertyForm({ mode, propertyId, defaultValues }: UseProperty
       if (mode === 'edit' && propertyId) params.set('excludeId', propertyId)
       const { data: check } = await api.get<{ available: boolean }>(`/imovel/check-slug?${params}`)
       if (!check.available) {
-        form.setError('slug', { message: 'Este slug já está em uso. Altere o nome ou edite o slug.' })
+        form.setError('slug', {
+          message: 'Este slug já está em uso. Altere o nome ou edite o slug.',
+        })
         toast.error('Este slug já está em uso. Altere o nome ou edite o slug.')
         return
       }
@@ -234,9 +232,9 @@ export function usePropertyForm({ mode, propertyId, defaultValues }: UseProperty
       const newImagesWithOrder = images
         .map((img, index) => ({ img, order: index }))
         .filter(({ img }) => img.type === 'new') as Array<{
-          img: Extract<ImageItem, { type: 'new' }>
-          order: number
-        }>
+        img: Extract<ImageItem, { type: 'new' }>
+        order: number
+      }>
 
       // Faz upload dos novos (se houver)
       const uploadedPaths: { path: string; fileName: string; order: number }[] = []

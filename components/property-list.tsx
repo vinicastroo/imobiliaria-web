@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { memo } from 'react'
 import Image from 'next/image'
@@ -32,7 +32,7 @@ interface FeatureProps {
   suffix?: string
 }
 
-const Feature = memo(function Feature({ icon: Icon, value, label, suffix = "" }: FeatureProps) {
+const Feature = memo(function Feature({ icon: Icon, value, label, suffix = '' }: FeatureProps) {
   if (!Number(value)) return null
   return (
     <TooltipProvider>
@@ -40,10 +40,15 @@ const Feature = memo(function Feature({ icon: Icon, value, label, suffix = "" }:
         <TooltipTrigger asChild>
           <div className="flex items-center gap-1.5 text-gray-600">
             <Icon size={16} />
-            <span className="text-sm font-medium">{value}{suffix}</span>
+            <span className="text-sm font-medium">
+              {value}
+              {suffix}
+            </span>
           </div>
         </TooltipTrigger>
-        <TooltipContent><p>{label}</p></TooltipContent>
+        <TooltipContent>
+          <p>{label}</p>
+        </TooltipContent>
       </Tooltip>
     </TooltipProvider>
   )
@@ -70,13 +75,32 @@ export function PropertyList() {
     code: searchParams.get('ref'),
   }
 
-  const { data: result, isLoading, isError, error, status, fetchStatus } = useQuery({
+  const {
+    data: result,
+    isLoading,
+    isError,
+    error,
+    status,
+    fetchStatus,
+  } = useQuery({
     queryKey: ['properties', page, ...Object.values(filters)],
     queryFn: () => getProperties({ page, ...filters }),
   })
 
-  console.log('[PropertyList] query state:', { status, fetchStatus, isLoading, isError, error, page, filters })
-  console.log('[PropertyList] result:', { properties: result?.properties?.length, totalCount: result?.totalCount, totalPages: result?.totalPages })
+  console.log('[PropertyList] query state:', {
+    status,
+    fetchStatus,
+    isLoading,
+    isError,
+    error,
+    page,
+    filters,
+  })
+  console.log('[PropertyList] result:', {
+    properties: result?.properties?.length,
+    totalCount: result?.totalCount,
+    totalPages: result?.totalPages,
+  })
 
   // CORREÇÃO 1: Usar totalPages direto da API (sem dividir novamente)
   const totalPages = result?.totalPages || 1
@@ -114,9 +138,9 @@ export function PropertyList() {
   }
 
   return (
-    <div className="w-full flex flex-col gap-6">
+    <div className="flex w-full flex-col gap-6">
       {/* Header com contagem */}
-      <div className="flex justify-between items-center">
+      <div className="flex items-center justify-between">
         {!isLoading && (
           <h2 className="text-lg font-bold text-gray-700">
             {/* CORREÇÃO 3: Exibir totalCount (ex: 130 Imóveis) e não totalPages */}
@@ -127,7 +151,7 @@ export function PropertyList() {
 
       {/* Loading Skeletons */}
       {isLoading && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
           {Array.from({ length: 6 }).map((_, i) => (
             <div key={i} className="flex flex-col space-y-3">
               <Skeleton className="h-[250px] w-full rounded-xl" />
@@ -148,14 +172,17 @@ export function PropertyList() {
       )}
 
       {/* Lista de Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
         {result?.properties.map((property) => (
-          <Card key={property.id} className="h-full overflow-hidden hover:shadow-md transition-all shadow-none duration-300 border-gray-200 flex flex-col">
+          <Card
+            key={property.id}
+            className="flex h-full flex-col overflow-hidden border-gray-200 shadow-none transition-all duration-300 hover:shadow-md"
+          >
             <PropertyGallery
-              items={property.files.map(file => ({
+              items={property.files.map((file) => ({
                 id: file.id,
                 img: file.path,
-                fileName: file.fileName
+                fileName: file.fileName,
               }))}
               path={`/imoveis/${property.slug}`}
               propertyName={property.name}
@@ -163,40 +190,59 @@ export function PropertyList() {
             />
 
             {/* Conteúdo */}
-            <Link href={`/imoveis/${property.slug}`} className="group flex flex-col flex-1">
-              <div className="flex-1 flex flex-col p-4">
+            <Link href={`/imoveis/${property.slug}`} className="group flex flex-1 flex-col">
+              <div className="flex flex-1 flex-col p-4">
                 <div className="mb-4">
-                  <h3 className="font-bold text-gray-900 line-clamp-1 text-lg group-hover:text-(--primary-color,#17375F) transition-colors">{property.name}</h3>
-                  {property.code && (
-                    <p className="text-xs text-gray-400">Ref: #{property.code}</p>
-                  )}
-                  <p className="text-sm text-gray-500">{property.city} - {property.neighborhood}</p>
-                  <p className="text-xs text-gray-400 mt-2 line-clamp-2">{property.summary}</p>
+                  <h3 className="line-clamp-1 text-lg font-bold text-gray-900 transition-colors group-hover:text-(--primary-color,#17375F)">
+                    {property.name}
+                  </h3>
+                  {property.code && <p className="text-xs text-gray-400">Ref: #{property.code}</p>}
+                  <p className="text-sm text-gray-500">
+                    {property.city} - {property.neighborhood}
+                  </p>
+                  <p className="mt-2 line-clamp-2 text-xs text-gray-400">{property.summary}</p>
                 </div>
 
                 <div className="mt-auto">
-                  <p className="text-xs font-bold text-(--primary-color,#17375F) uppercase mb-2">Informações</p>
+                  <p className="mb-2 text-xs font-bold text-(--primary-color,#17375F) uppercase">
+                    Informações
+                  </p>
                   <div className="flex flex-wrap gap-3">
                     <Feature icon={BedDouble} value={property.bedrooms} label="Quartos" />
                     <Feature icon={Bath} value={property.suites} label="Suítes" />
                     <Feature icon={Toilet} value={property.bathrooms} label="Banheiros" />
                     <Feature icon={CarFront} value={property.parkingSpots} label="Vagas" />
-                    <Feature icon={LayoutGrid} value={property.totalArea} label="Área Total" suffix=" m²" />
-                    <Feature icon={Ruler} value={property.privateArea} label="Área Privativa" suffix=" m²" />
+                    <Feature
+                      icon={LayoutGrid}
+                      value={property.totalArea}
+                      label="Área Total"
+                      suffix=" m²"
+                    />
+                    <Feature
+                      icon={Ruler}
+                      value={property.privateArea}
+                      label="Área Privativa"
+                      suffix=" m²"
+                    />
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2 mt-4">
-                  <Badge variant="outline" className={`font-normal text-xs ${property.transactionType === 'ALUGUEL' ? 'text-emerald-600 border-emerald-600' : ''}`}>
+                <div className="mt-4 flex items-center gap-2">
+                  <Badge
+                    variant="outline"
+                    className={`text-xs font-normal ${property.transactionType === 'ALUGUEL' ? 'border-emerald-600 text-emerald-600' : ''}`}
+                  >
                     {property.transactionType === 'ALUGUEL' ? 'Aluguel' : 'Venda'}
                   </Badge>
                   {property.type_property && (
-                    <Badge variant="outline" className="font-normal text-xs">{property.type_property.description}</Badge>
+                    <Badge variant="outline" className="text-xs font-normal">
+                      {property.type_property.description}
+                    </Badge>
                   )}
                 </div>
               </div>
 
-              <div className="border-t p-4 flex justify-end bg-gray-50/50">
+              <div className="flex justify-end border-t bg-gray-50/50 p-4">
                 <span className="text-xl font-bold text-(--primary-color,#17375F)">
                   {property.priceOnRequest
                     ? 'Sob consulta'
@@ -211,62 +257,58 @@ export function PropertyList() {
       </div>
 
       {/* Paginação */}
-      {
-        totalPages > 1 && (
-          <Pagination className="my-8 select-none">
-            <PaginationContent>
+      {totalPages > 1 && (
+        <Pagination className="my-8 select-none">
+          <PaginationContent>
+            {/* Botão Anterior */}
+            <PaginationItem>
+              <PaginationPrevious
+                onClick={() => handlePageChange(page - 1)}
+                aria-disabled={page <= 1}
+                tabIndex={page <= 1 ? -1 : 0}
+                className={page <= 1 ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
+              >
+                Anterior
+              </PaginationPrevious>
+            </PaginationItem>
 
-              {/* Botão Anterior */}
-              <PaginationItem>
-                <PaginationPrevious
-                  onClick={() => handlePageChange(page - 1)}
-                  aria-disabled={page <= 1}
-                  tabIndex={page <= 1 ? -1 : 0}
-                  className={page <= 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
-                >
-                  Anterior
-                </PaginationPrevious>
-              </PaginationItem>
-
-              {/* Números das Páginas */}
-              {getPaginationItems().map((item, index) => {
-                if (item === '...') {
-                  return (
-                    <PaginationItem key={`ellipsis-${index}`}>
-                      <PaginationEllipsis />
-                    </PaginationItem>
-                  )
-                }
-
+            {/* Números das Páginas */}
+            {getPaginationItems().map((item, index) => {
+              if (item === '...') {
                 return (
-                  <PaginationItem key={item}>
-                    <PaginationLink
-                      isActive={page === item}
-                      onClick={() => handlePageChange(item as number)}
-                      className="cursor-pointer"
-                    >
-                      {item}
-                    </PaginationLink>
+                  <PaginationItem key={`ellipsis-${index}`}>
+                    <PaginationEllipsis />
                   </PaginationItem>
                 )
-              })}
+              }
 
-              {/* Botão Próxima */}
-              <PaginationItem>
-                <PaginationNext
-                  onClick={() => handlePageChange(page + 1)}
-                  aria-disabled={page >= totalPages}
-                  tabIndex={page >= totalPages ? -1 : 0}
-                  className={page >= totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"}
-                >
-                  Próxima
-                </PaginationNext>
-              </PaginationItem>
+              return (
+                <PaginationItem key={item}>
+                  <PaginationLink
+                    isActive={page === item}
+                    onClick={() => handlePageChange(item as number)}
+                    className="cursor-pointer"
+                  >
+                    {item}
+                  </PaginationLink>
+                </PaginationItem>
+              )
+            })}
 
-            </PaginationContent>
-          </Pagination>
-        )
-      }
-    </div >
+            {/* Botão Próxima */}
+            <PaginationItem>
+              <PaginationNext
+                onClick={() => handlePageChange(page + 1)}
+                aria-disabled={page >= totalPages}
+                tabIndex={page >= totalPages ? -1 : 0}
+                className={page >= totalPages ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
+              >
+                Próxima
+              </PaginationNext>
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
+      )}
+    </div>
   )
 }

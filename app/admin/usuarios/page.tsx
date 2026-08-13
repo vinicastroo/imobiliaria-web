@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
@@ -108,12 +108,12 @@ export default function UsuariosPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col p-8 max-w-[1200px] mx-auto">
-      <div className="flex flex-col gap-4 mb-6">
+    <div className="mx-auto flex min-h-screen max-w-[1200px] flex-col bg-gray-50 p-8">
+      <div className="mb-6 flex flex-col gap-4">
         <BackLink href="/admin" />
-        <div className="flex justify-between items-center">
+        <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-[#17375F] flex items-center gap-2">
+            <h1 className="flex items-center gap-2 text-2xl font-bold text-[#17375F]">
               <Users2 className="h-7 w-7" />
               Usuários
             </h1>
@@ -160,7 +160,7 @@ export default function UsuariosPage() {
                       <Skeleton className="h-4 w-24" />
                     </TableCell>
                     <TableCell>
-                      <Skeleton className="h-8 w-20 ml-auto" />
+                      <Skeleton className="ml-auto h-8 w-20" />
                     </TableCell>
                   </TableRow>
                 ))}
@@ -170,7 +170,7 @@ export default function UsuariosPage() {
                 <TableRow key={user.id}>
                   <TableCell>
                     <Avatar className="h-10 w-10">
-                      <AvatarFallback className="bg-[#17375F] text-white text-sm">
+                      <AvatarFallback className="bg-[#17375F] text-sm text-white">
                         {getInitials(user.name)}
                       </AvatarFallback>
                     </Avatar>
@@ -178,11 +178,8 @@ export default function UsuariosPage() {
                   <TableCell className="font-medium">{user.name}</TableCell>
                   <TableCell className="text-gray-600">{user.email}</TableCell>
                   <TableCell>
-                    <Badge
-                      variant="outline"
-                      className={`${roleColors[user.role]} font-medium`}
-                    >
-                      <Shield className="h-3 w-3 mr-1" />
+                    <Badge variant="outline" className={`${roleColors[user.role]} font-medium`}>
+                      <Shield className="mr-1 h-3 w-3" />
                       {roleLabels[user.role]}
                     </Badge>
                   </TableCell>
@@ -190,12 +187,10 @@ export default function UsuariosPage() {
                     {user.realtorProfile ? (
                       <span className="text-sm">
                         {user.realtorProfile.name}
-                        <span className="text-gray-400 ml-1">
-                          ({user.realtorProfile.creci})
-                        </span>
+                        <span className="ml-1 text-gray-400">({user.realtorProfile.creci})</span>
                       </span>
                     ) : (
-                      <span className="text-gray-400 text-sm">-</span>
+                      <span className="text-sm text-gray-400">-</span>
                     )}
                   </TableCell>
                   <TableCell className="text-right">
@@ -225,7 +220,7 @@ export default function UsuariosPage() {
               {/* Empty State */}
               {!isLoading && users?.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={6} className="text-center py-8 text-gray-500">
+                  <TableCell colSpan={6} className="py-8 text-center text-gray-500">
                     Nenhum usuário cadastrado.
                   </TableCell>
                 </TableRow>
@@ -236,11 +231,7 @@ export default function UsuariosPage() {
       </Card>
 
       {/* Dialog de Criar/Editar */}
-      <UserDialog
-        open={isDialogOpen}
-        onOpenChange={setIsDialogOpen}
-        userToEdit={selectedUser}
-      />
+      <UserDialog open={isDialogOpen} onOpenChange={setIsDialogOpen} userToEdit={selectedUser} />
 
       {/* Dialog de Confirmação de Exclusão */}
       <AlertDialog open={!!deleteUser} onOpenChange={() => setDeleteUser(null)}>
@@ -248,17 +239,13 @@ export default function UsuariosPage() {
           <AlertDialogHeader>
             <AlertDialogTitle>Confirmar exclusão</AlertDialogTitle>
             <AlertDialogDescription>
-              Tem certeza que deseja excluir o usuário{' '}
-              <strong>{deleteUser?.name}</strong>? Esta ação não pode ser
-              desfeita.
+              Tem certeza que deseja excluir o usuário <strong>{deleteUser?.name}</strong>? Esta
+              ação não pode ser desfeita.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancelar</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={confirmDelete}
-              className="bg-red-500 hover:bg-red-600"
-            >
+            <AlertDialogAction onClick={confirmDelete} className="bg-red-500 hover:bg-red-600">
               Excluir
             </AlertDialogAction>
           </AlertDialogFooter>

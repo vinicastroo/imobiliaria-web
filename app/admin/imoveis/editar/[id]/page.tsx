@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { useParams } from 'next/navigation'
 import { useQuery } from '@tanstack/react-query'
@@ -30,13 +30,9 @@ export default function EditarImovelPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
-      <main className="flex-1 w-full mx-auto p-4 md:p-8 max-w-[1400px]">
-        <PropertyForm
-          mode="edit"
-          propertyId={id}
-          defaultValues={property}
-        />
+    <div className="flex min-h-screen flex-col bg-gray-50">
+      <main className="mx-auto w-full max-w-[1400px] flex-1 p-4 md:p-8">
+        <PropertyForm mode="edit" propertyId={id} defaultValues={property} />
       </main>
     </div>
   )

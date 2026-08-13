@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { useState } from 'react'
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts'
@@ -67,7 +67,7 @@ export function SourceChart({ data, loading }: SourceChartProps) {
 
   return (
     <Card className="h-full border-gray-200/80 shadow-[0_1px_3px_rgba(16,24,40,0.06)]">
-      <CardHeader className="pb-2 pt-5">
+      <CardHeader className="pt-5 pb-2">
         <CardTitle className="text-base font-semibold">Origem do Acesso</CardTitle>
       </CardHeader>
       <CardContent className="pt-2">
@@ -115,7 +115,9 @@ export function SourceChart({ data, loading }: SourceChartProps) {
                     <p className="text-2xl font-bold tracking-tight text-gray-900">
                       {total ? Math.round((hoveredEntry.value / total) * 100) : 0}%
                     </p>
-                    <p className="max-w-[100px] truncate text-[11px] text-gray-400">{hoveredEntry.name}</p>
+                    <p className="max-w-[100px] truncate text-[11px] text-gray-400">
+                      {hoveredEntry.name}
+                    </p>
                   </>
                 ) : (
                   <>
@@ -139,12 +141,17 @@ export function SourceChart({ data, loading }: SourceChartProps) {
                     hovered === entry.source ? 'bg-gray-50' : hovered ? 'opacity-50' : '',
                   )}
                 >
-                  <entry.icon size={15} weight="bold" className="shrink-0" style={{ color: entry.color }} />
+                  <entry.icon
+                    size={15}
+                    weight="bold"
+                    className="shrink-0"
+                    style={{ color: entry.color }}
+                  />
                   <span className="truncate text-gray-600">{entry.name}</span>
-                  <span className="ml-auto font-semibold tabular-nums text-gray-900">
+                  <span className="ml-auto font-semibold text-gray-900 tabular-nums">
                     {entry.value.toLocaleString('pt-BR')}
                   </span>
-                  <span className="w-9 text-right tabular-nums text-gray-400">
+                  <span className="w-9 text-right text-gray-400 tabular-nums">
                     {total ? Math.round((entry.value / total) * 100) : 0}%
                   </span>
                 </li>

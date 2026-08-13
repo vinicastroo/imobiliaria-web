@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { useEffect, useMemo, useState } from 'react'
 import { useForm, Controller } from 'react-hook-form'
@@ -37,11 +37,7 @@ import type { AdminAgency, AdminPlan } from '@/types/admin'
 const ownerSchema = z.object({
   name: z.string().min(1, 'Nome é obrigatório'),
   email: z.string().email('Email inválido'),
-  password: z
-    .string()
-    .min(6, 'Senha deve ter no mínimo 6 caracteres')
-    .optional()
-    .or(z.literal('')),
+  password: z.string().min(6, 'Senha deve ter no mínimo 6 caracteres').optional().or(z.literal('')),
 })
 
 type OwnerFormData = z.infer<typeof ownerSchema>
@@ -60,7 +56,7 @@ const agencySchema = z.object({
     .toLowerCase()
     .regex(
       /^([a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)+)?$/,
-      'Domínio inválido (ex: imoveisgilli.com.br)'
+      'Domínio inválido (ex: imoveisgilli.com.br)',
     )
     .optional()
     .or(z.literal(''))
@@ -68,9 +64,7 @@ const agencySchema = z.object({
   cnpj: z
     .string()
     .transform((val) => val.replace(/\D/g, ''))
-    .pipe(
-      z.string().refine((val) => val === '' || val.length === 14, 'CNPJ deve ter 14 dígitos')
-    )
+    .pipe(z.string().refine((val) => val === '' || val.length === 14, 'CNPJ deve ter 14 dígitos'))
     .optional()
     .or(z.literal(''))
     .nullable(),
@@ -271,18 +265,16 @@ export function AgencyEditSheet({ open, onOpenChange, agency }: AgencyEditSheetP
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="sm:max-w-[480px] overflow-y-auto">
+      <SheetContent className="overflow-y-auto sm:max-w-[480px]">
         <SheetHeader>
           <SheetTitle>Editar Imobiliária</SheetTitle>
-          <SheetDescription>
-            Atualize os dados da imobiliária e da assinatura.
-          </SheetDescription>
+          <SheetDescription>Atualize os dados da imobiliária e da assinatura.</SheetDescription>
         </SheetHeader>
 
-        <div className="space-y-6 px-4 pb-4 mt-4">
+        <div className="mt-4 space-y-6 px-4 pb-4">
           {/* Agency Details */}
           <div className="space-y-4">
-            <p className="text-sm font-medium text-primary">Dados da Imobiliária</p>
+            <p className="text-primary text-sm font-medium">Dados da Imobiliária</p>
 
             <div className="space-y-2">
               <Label htmlFor="edit-name">Nome da Imobiliária</Label>
@@ -307,7 +299,7 @@ export function AgencyEditSheet({ open, onOpenChange, agency }: AgencyEditSheetP
                   {...registerAgency('slug')}
                   className="flex-1"
                 />
-                <span className="text-sm text-muted-foreground whitespace-nowrap">
+                <span className="text-muted-foreground text-sm whitespace-nowrap">
                   .{process.env.NEXT_PUBLIC_PLATFORM_DOMAIN ?? 'codelabz.com.br'}
                 </span>
               </div>
@@ -334,11 +326,7 @@ export function AgencyEditSheet({ open, onOpenChange, agency }: AgencyEditSheetP
               <Label htmlFor="edit-cnpj">
                 CNPJ <span className="text-xs text-gray-400">(opcional)</span>
               </Label>
-              <Input
-                id="edit-cnpj"
-                placeholder="00.000.000/0000-00"
-                {...registerAgency('cnpj')}
-              />
+              <Input id="edit-cnpj" placeholder="00.000.000/0000-00" {...registerAgency('cnpj')} />
               {agencyErrors.cnpj && (
                 <span className="text-xs text-red-500">{agencyErrors.cnpj.message}</span>
               )}
@@ -347,11 +335,13 @@ export function AgencyEditSheet({ open, onOpenChange, agency }: AgencyEditSheetP
 
           <div className="flex items-center justify-between rounded-lg border p-3">
             <div className="flex items-center gap-2">
-              <Globe className="h-4 w-4 text-muted-foreground" />
+              <Globe className="text-muted-foreground h-4 w-4" />
               <div>
                 <p className="text-sm font-medium">Site público</p>
-                <p className="text-xs text-muted-foreground">
-                  {siteEnabled ? 'Site ativo para visitantes' : 'Site desativado (modo de implementação)'}
+                <p className="text-muted-foreground text-xs">
+                  {siteEnabled
+                    ? 'Site ativo para visitantes'
+                    : 'Site desativado (modo de implementação)'}
                 </p>
               </div>
             </div>
@@ -366,15 +356,11 @@ export function AgencyEditSheet({ open, onOpenChange, agency }: AgencyEditSheetP
 
           {/* Owner / Responsável */}
           <div className="space-y-4">
-            <p className="text-sm font-medium text-primary">Dados do Responsável</p>
+            <p className="text-primary text-sm font-medium">Dados do Responsável</p>
 
             <div className="space-y-2">
               <Label htmlFor="edit-owner-name">Nome</Label>
-              <Input
-                id="edit-owner-name"
-                placeholder="Nome completo"
-                {...registerOwner('name')}
-              />
+              <Input id="edit-owner-name" placeholder="Nome completo" {...registerOwner('name')} />
               {ownerErrors.name && (
                 <span className="text-xs text-red-500">{ownerErrors.name.message}</span>
               )}
@@ -395,7 +381,8 @@ export function AgencyEditSheet({ open, onOpenChange, agency }: AgencyEditSheetP
 
             <div className="space-y-2">
               <Label htmlFor="edit-owner-password">
-                Nova Senha <span className="text-xs text-gray-400">(deixe em branco para manter)</span>
+                Nova Senha{' '}
+                <span className="text-xs text-gray-400">(deixe em branco para manter)</span>
               </Label>
               <div className="relative">
                 <Input
@@ -407,7 +394,7 @@ export function AgencyEditSheet({ open, onOpenChange, agency }: AgencyEditSheetP
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  className="absolute top-1/2 right-3 -translate-y-1/2 text-gray-400 hover:text-gray-600"
                 >
                   {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
@@ -423,7 +410,7 @@ export function AgencyEditSheet({ open, onOpenChange, agency }: AgencyEditSheetP
               <Separator />
 
               <div className="space-y-4">
-                <p className="text-sm font-medium text-primary">Assinatura</p>
+                <p className="text-primary text-sm font-medium">Assinatura</p>
 
                 <div className="space-y-2">
                   <Label>Plano</Label>
@@ -479,7 +466,7 @@ export function AgencyEditSheet({ open, onOpenChange, agency }: AgencyEditSheetP
                   name="manualBilling"
                   control={subControl}
                   render={({ field }) => (
-                    <label className="flex items-center gap-2 cursor-pointer">
+                    <label className="flex cursor-pointer items-center gap-2">
                       <Checkbox
                         checked={field.value}
                         onCheckedChange={(checked) => field.onChange(checked === true)}
@@ -490,7 +477,7 @@ export function AgencyEditSheet({ open, onOpenChange, agency }: AgencyEditSheetP
                 />
 
                 {manualBilling && (
-                  <Badge className="bg-blue-100 text-blue-800 border-blue-200">
+                  <Badge className="border-blue-200 bg-blue-100 text-blue-800">
                     Cobrança manual ativada — Stripe ignorado
                   </Badge>
                 )}
@@ -498,8 +485,7 @@ export function AgencyEditSheet({ open, onOpenChange, agency }: AgencyEditSheetP
                 {!manualBilling && (
                   <div className="space-y-2">
                     <Label htmlFor="edit-customPrice">
-                      Preço Negociado (R$){' '}
-                      <span className="text-xs text-gray-400">(opcional)</span>
+                      Preço Negociado (R$) <span className="text-xs text-gray-400">(opcional)</span>
                     </Label>
                     <Input
                       id="edit-customPrice"
@@ -507,13 +493,12 @@ export function AgencyEditSheet({ open, onOpenChange, agency }: AgencyEditSheetP
                       step="0.01"
                       placeholder="0.00"
                       {...registerSub('customPrice', {
-                        setValueAs: (v) => (v === '' || v === undefined ? undefined : parseFloat(v)),
+                        setValueAs: (v) =>
+                          v === '' || v === undefined ? undefined : parseFloat(v),
                       })}
                     />
                     {subErrors.customPrice && (
-                      <span className="text-xs text-red-500">
-                        {subErrors.customPrice.message}
-                      </span>
+                      <span className="text-xs text-red-500">{subErrors.customPrice.message}</span>
                     )}
                   </div>
                 )}
@@ -524,7 +509,7 @@ export function AgencyEditSheet({ open, onOpenChange, agency }: AgencyEditSheetP
           <div className="pt-2">
             <Button
               type="button"
-              className="w-full bg-primary hover:bg-primary/90"
+              className="bg-primary hover:bg-primary/90 w-full"
               onClick={handleFormSubmit}
               disabled={isPending}
             >

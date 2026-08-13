@@ -18,26 +18,23 @@ export async function generateMetadata(): Promise<Metadata> {
     title,
     description,
     alternates: { canonical: `https://${host}` },
-    openGraph:  { title, description, url: `https://${host}`, type: 'website' },
+    openGraph: { title, description, url: `https://${host}`, type: 'website' },
   }
 }
 
 const TEMPLATES: Record<LayoutType, React.ComponentType<{ agencyId: string }>> = {
-  MODERN:  ModernTemplate,
+  MODERN: ModernTemplate,
   CLASSIC: ClassicTemplate,
   MINIMAL: MinimalTemplate,
 }
 
 export default async function TenantHomePage() {
   const headerStore = await headers()
-  const agencyId    = headerStore.get('x-tenant-id') ?? process.env.NEXT_PUBLIC_AGENCY_ID ?? ''
-  const layoutType  = (headerStore.get('x-tenant-layout') ?? 'MODERN') as LayoutType
-  const host        = headerStore.get('host')?.split(':')[0] ?? ''
+  const agencyId = headerStore.get('x-tenant-id') ?? process.env.NEXT_PUBLIC_AGENCY_ID ?? ''
+  const layoutType = (headerStore.get('x-tenant-layout') ?? 'MODERN') as LayoutType
+  const host = headerStore.get('host')?.split(':')[0] ?? ''
 
-  const [{ name }, { logoUrl }] = await Promise.all([
-    getTenantIdentity(),
-    getTenantVisualConfig(),
-  ])
+  const [{ name }, { logoUrl }] = await Promise.all([getTenantIdentity(), getTenantVisualConfig()])
 
   // Validate the header value — fall back to MODERN if tampered
   const SelectedTemplate = TEMPLATES[layoutType] ?? ModernTemplate

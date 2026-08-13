@@ -16,7 +16,7 @@ export function TopPropertiesList({ data, loading }: TopPropertiesListProps) {
 
   return (
     <Card className="h-full border-gray-200/80 shadow-[0_1px_3px_rgba(16,24,40,0.06)]">
-      <CardHeader className="pb-2 pt-5">
+      <CardHeader className="pt-5 pb-2">
         <CardTitle className="text-base font-semibold">Imóveis Mais Vistos</CardTitle>
       </CardHeader>
       <CardContent className="pt-2">
@@ -56,18 +56,18 @@ export function TopPropertiesList({ data, loading }: TopPropertiesListProps) {
                     <Link
                       href={`/admin/imoveis/editar/${item.id}`}
                       title="Abrir imóvel"
-                      className="shrink-0 text-gray-300 opacity-0 transition-opacity hover:text-primary group-hover:opacity-100"
+                      className="hover:text-primary shrink-0 text-gray-300 opacity-0 transition-opacity group-hover:opacity-100"
                     >
                       <SquareArrowOutUpRight size={14} />
                     </Link>
                   </div>
-                  <span className="shrink-0 text-sm font-semibold tabular-nums text-gray-900">
+                  <span className="shrink-0 text-sm font-semibold text-gray-900 tabular-nums">
                     {item.views.toLocaleString('pt-BR')}
                   </span>
                 </div>
-                <div className="ml-[30px] h-1.5 overflow-hidden rounded-r-full bg-primary/[0.08]">
+                <div className="bg-primary/[0.08] ml-[30px] h-1.5 overflow-hidden rounded-r-full">
                   <div
-                    className="h-full rounded-r-full bg-primary/80 transition-all duration-500 group-hover:bg-primary"
+                    className="bg-primary/80 group-hover:bg-primary h-full rounded-r-full transition-all duration-500"
                     style={{ width: `${Math.max(Math.round((item.views / max) * 100), 2)}%` }}
                   />
                 </div>

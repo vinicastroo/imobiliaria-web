@@ -1,24 +1,24 @@
-import type { NextAuthOptions } from "next-auth"
-import CredentialsProvider from "next-auth/providers/credentials"
+import type { NextAuthOptions } from 'next-auth'
+import CredentialsProvider from 'next-auth/providers/credentials'
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3333"
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3333'
 
 export const authOptions: NextAuthOptions = {
   session: {
-    strategy: "jwt",
+    strategy: 'jwt',
     maxAge: 30 * 24 * 60 * 60,
   },
 
   pages: {
-    signIn: "/login",
+    signIn: '/login',
   },
 
   providers: [
     CredentialsProvider({
-      name: "credentials",
+      name: 'credentials',
       credentials: {
-        email:    { label: "Email",    type: "email"    },
-        password: { label: "Senha",    type: "password" },
+        email: { label: 'Email', type: 'email' },
+        password: { label: 'Senha', type: 'password' },
       },
 
       // `req.headers` contains the headers set by the middleware, including
@@ -33,26 +33,26 @@ export const authOptions: NextAuthOptions = {
 
         try {
           const res = await fetch(`${API_URL}/sessions`, {
-            method:  "POST",
-            body:    JSON.stringify({
-              email:    credentials.email,
+            method: 'POST',
+            body: JSON.stringify({
+              email: credentials.email,
               password: credentials.password,
             }),
             headers: {
-              "Content-Type": "application/json",
-              ...(tenantId ? { "x-agency-id": tenantId } : {}),
+              'Content-Type': 'application/json',
+              ...(tenantId ? { 'x-agency-id': tenantId } : {}),
             },
           })
 
           const data = await res.json()
 
           if (!res.ok) {
-            throw new Error(data.message || "Credenciais inválidas")
+            throw new Error(data.message || 'Credenciais inválidas')
           }
 
           return data.user
         } catch (error) {
-          console.error("Erro no authorize:", error)
+          console.error('Erro no authorize:', error)
           return null
         }
       },
@@ -62,11 +62,11 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.id              = user.id
-        token.role            = user.role
-        token.agencyId        = user.agencyId        // this IS the tenantId
-        token.planId          = user.planId
-        token.features        = user.features
+        token.id = user.id
+        token.role = user.role
+        token.agencyId = user.agencyId // this IS the tenantId
+        token.planId = user.planId
+        token.features = user.features
         token.realtorProfileId = user.realtorProfileId
       }
       return token
@@ -76,12 +76,12 @@ export const authOptions: NextAuthOptions = {
       if (token) {
         session.user = {
           ...session.user,
-          id:               (token.id               as string)       ?? '',
-          role:             (token.role             as string | undefined) ?? null,
-          agencyId:         (token.agencyId         as string)       ?? null,
-          planId:           (token.planId           as string)       ?? null,
-          features:         (token.features         as string[])     ?? [],
-          realtorProfileId: (token.realtorProfileId as string)       ?? null,
+          id: (token.id as string) ?? '',
+          role: (token.role as string | undefined) ?? null,
+          agencyId: (token.agencyId as string) ?? null,
+          planId: (token.planId as string) ?? null,
+          features: (token.features as string[]) ?? [],
+          realtorProfileId: (token.realtorProfileId as string) ?? null,
         }
       }
       return session

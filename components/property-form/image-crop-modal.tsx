@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { useState, useCallback, useRef } from 'react'
 import Cropper from 'react-easy-crop'
@@ -114,12 +114,11 @@ export function ImageCropModal({
         <DialogHeader>
           <DialogTitle>Recortar imagem</DialogTitle>
           <DialogDescription>
-            Ajuste o recorte para o formato 16:9. Imagem {processedCount} de{' '}
-            {totalCount}.
+            Ajuste o recorte para o formato 16:9. Imagem {processedCount} de {totalCount}.
           </DialogDescription>
         </DialogHeader>
 
-        <div className="relative w-full aspect-video bg-gray-900 rounded-lg overflow-hidden">
+        <div className="relative aspect-video w-full overflow-hidden rounded-lg bg-gray-900">
           <Cropper
             image={imageSrc}
             crop={crop}
@@ -133,9 +132,7 @@ export function ImageCropModal({
         </div>
 
         <div className="flex items-center gap-3 px-1">
-          <span className="text-xs text-muted-foreground whitespace-nowrap">
-            Zoom
-          </span>
+          <span className="text-muted-foreground text-xs whitespace-nowrap">Zoom</span>
           <Slider
             value={[zoom]}
             min={MIN_ZOOM}
@@ -147,20 +144,11 @@ export function ImageCropModal({
         </div>
 
         <DialogFooter>
-          <Button
-            type="button"
-            variant="outline"
-            onClick={handleSkip}
-            disabled={isProcessing}
-          >
+          <Button type="button" variant="outline" onClick={handleSkip} disabled={isProcessing}>
             <SkipForward className="mr-2 h-4 w-4" />
             Pular recorte
           </Button>
-          <Button
-            type="button"
-            onClick={handleConfirm}
-            disabled={isProcessing}
-          >
+          <Button type="button" onClick={handleConfirm} disabled={isProcessing}>
             <Crop className="mr-2 h-4 w-4" />
             {isProcessing ? 'Processando...' : 'Confirmar recorte'}
           </Button>

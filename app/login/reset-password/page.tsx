@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { Suspense, useState } from 'react'
 import Link from 'next/link'
@@ -63,10 +63,10 @@ function ResetPasswordForm() {
       <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
         <div className="w-full max-w-[380px] space-y-4 text-center">
           <h1 className="text-xl font-bold text-red-600">Link inválido</h1>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-muted-foreground text-sm">
             Este link de redefinição de senha é inválido ou expirou.
           </p>
-          <Link href="/login/forgot-password" className="text-sm text-primary hover:underline">
+          <Link href="/login/forgot-password" className="text-primary text-sm hover:underline">
             Solicitar novo link
           </Link>
         </div>
@@ -77,7 +77,6 @@ function ResetPasswordForm() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
       <div className="w-full max-w-[380px] space-y-6">
-
         {success ? (
           <div className="space-y-4 text-center">
             <div className="flex justify-center">
@@ -85,11 +84,15 @@ function ResetPasswordForm() {
                 <CheckCircle2 className="h-8 w-8 text-green-600" />
               </div>
             </div>
-            <h1 className="text-2xl font-bold text-primary">Senha redefinida!</h1>
-            <p className="text-sm text-muted-foreground">
-              Sua senha foi atualizada com sucesso. Você será redirecionado para o login em instantes.
+            <h1 className="text-primary text-2xl font-bold">Senha redefinida!</h1>
+            <p className="text-muted-foreground text-sm">
+              Sua senha foi atualizada com sucesso. Você será redirecionado para o login em
+              instantes.
             </p>
-            <Link href="/login" className="inline-flex items-center gap-1.5 text-sm text-primary hover:underline">
+            <Link
+              href="/login"
+              className="text-primary inline-flex items-center gap-1.5 text-sm hover:underline"
+            >
               <ArrowLeft className="h-4 w-4" />
               Ir para o login agora
             </Link>
@@ -97,8 +100,8 @@ function ResetPasswordForm() {
         ) : (
           <>
             <div className="space-y-1 text-center">
-              <h1 className="text-2xl font-bold text-primary">Nova senha</h1>
-              <p className="text-sm text-muted-foreground">
+              <h1 className="text-primary text-2xl font-bold">Nova senha</h1>
+              <p className="text-muted-foreground text-sm">
                 Escolha uma nova senha para a sua conta.
               </p>
             </div>
@@ -118,7 +121,7 @@ function ResetPasswordForm() {
                   <button
                     type="button"
                     onClick={() => setShowPassword((v) => !v)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                    className="text-muted-foreground hover:text-foreground absolute top-1/2 right-3 -translate-y-1/2"
                     tabIndex={-1}
                     aria-label={showPassword ? 'Ocultar senha' : 'Mostrar senha'}
                   >
@@ -144,7 +147,7 @@ function ResetPasswordForm() {
                   <button
                     type="button"
                     onClick={() => setShowConfirm((v) => !v)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                    className="text-muted-foreground hover:text-foreground absolute top-1/2 right-3 -translate-y-1/2"
                     tabIndex={-1}
                     aria-label={showConfirm ? 'Ocultar confirmação' : 'Mostrar confirmação'}
                   >
@@ -156,7 +159,7 @@ function ResetPasswordForm() {
                 )}
               </div>
 
-              <Button type="submit" className="w-full h-11" disabled={isSubmitting}>
+              <Button type="submit" className="h-11 w-full" disabled={isSubmitting}>
                 {isSubmitting ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -169,7 +172,10 @@ function ResetPasswordForm() {
             </form>
 
             <div className="text-center">
-              <Link href="/login" className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-primary">
+              <Link
+                href="/login"
+                className="text-muted-foreground hover:text-primary inline-flex items-center gap-1.5 text-sm"
+              >
                 <ArrowLeft className="h-4 w-4" />
                 Voltar ao login
               </Link>

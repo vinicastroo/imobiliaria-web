@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { useState, useEffect, type ReactNode } from 'react'
 import { useForm, Controller } from 'react-hook-form'
@@ -233,17 +233,13 @@ export function UserDialog({ open, onOpenChange, userToEdit }: UserDialogProps) 
   const isLoading = createMutation.isPending || updateMutation.isPending
 
   // Lista de corretores para o select
-  const realtorsForSelect = isEditing
-    ? allRealtors || []
-    : availableRealtors || []
+  const realtorsForSelect = isEditing ? allRealtors || [] : availableRealtors || []
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
-          <DialogTitle>
-            {isEditing ? 'Editar Usuário' : 'Novo Usuário'}
-          </DialogTitle>
+          <DialogTitle>{isEditing ? 'Editar Usuário' : 'Novo Usuário'}</DialogTitle>
           <DialogDescription>
             {isEditing
               ? 'Atualize as informações do usuário.'
@@ -255,34 +251,24 @@ export function UserDialog({ open, onOpenChange, userToEdit }: UserDialogProps) 
           {/* Nome */}
           <div className="space-y-2">
             <Label htmlFor="name">Nome</Label>
-            <Input
-              id="name"
-              placeholder="Nome completo"
-              {...register('name')}
-            />
-            {errors.name && (
-              <span className="text-xs text-red-500">{errors.name.message}</span>
-            )}
+            <Input id="name" placeholder="Nome completo" {...register('name')} />
+            {errors.name && <span className="text-xs text-red-500">{errors.name.message}</span>}
           </div>
 
           {/* Email */}
           <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              type="email"
-              placeholder="email@exemplo.com"
-              {...register('email')}
-            />
-            {errors.email && (
-              <span className="text-xs text-red-500">{errors.email.message}</span>
-            )}
+            <Input id="email" type="email" placeholder="email@exemplo.com" {...register('email')} />
+            {errors.email && <span className="text-xs text-red-500">{errors.email.message}</span>}
           </div>
 
           {/* Senha */}
           <div className="space-y-2">
             <Label htmlFor="password">
-              Senha {isEditing && <span className="text-xs text-gray-400">(deixe vazio para manter)</span>}
+              Senha{' '}
+              {isEditing && (
+                <span className="text-xs text-gray-400">(deixe vazio para manter)</span>
+              )}
             </Label>
             <div className="relative">
               <Input
@@ -294,7 +280,7 @@ export function UserDialog({ open, onOpenChange, userToEdit }: UserDialogProps) 
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                className="absolute top-1/2 right-3 -translate-y-1/2 text-gray-400 hover:text-gray-600"
               >
                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
@@ -327,20 +313,18 @@ export function UserDialog({ open, onOpenChange, userToEdit }: UserDialogProps) 
 
           {/* Campos do corretor - aparecem quando perfil é CORRETOR e está criando */}
           {!isEditing && selectedRole === 'REALTOR' && (
-            <div className="space-y-4 p-4 bg-blue-50/50 rounded-lg border border-blue-100">
-              <p className="text-sm text-[#17375F] font-medium">
-                Perfil de Corretor
-              </p>
+            <div className="space-y-4 rounded-lg border border-blue-100 bg-blue-50/50 p-4">
+              <p className="text-sm font-medium text-[#17375F]">Perfil de Corretor</p>
 
               {hasAvailableRealtors && (
                 <div className="flex gap-2">
                   <button
                     type="button"
                     onClick={() => setRealtorMode('new')}
-                    className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm border transition-colors ${
+                    className={`flex items-center gap-2 rounded-md border px-3 py-2 text-sm transition-colors ${
                       realtorMode === 'new'
-                        ? 'bg-[#17375F] text-white border-[#17375F]'
-                        : 'bg-white text-gray-600 border-gray-200 hover:border-gray-300'
+                        ? 'border-[#17375F] bg-[#17375F] text-white'
+                        : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300'
                     }`}
                   >
                     <UserPlus size={14} />
@@ -349,10 +333,10 @@ export function UserDialog({ open, onOpenChange, userToEdit }: UserDialogProps) 
                   <button
                     type="button"
                     onClick={() => setRealtorMode('existing')}
-                    className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm border transition-colors ${
+                    className={`flex items-center gap-2 rounded-md border px-3 py-2 text-sm transition-colors ${
                       realtorMode === 'existing'
-                        ? 'bg-[#17375F] text-white border-[#17375F]'
-                        : 'bg-white text-gray-600 border-gray-200 hover:border-gray-300'
+                        ? 'border-[#17375F] bg-[#17375F] text-white'
+                        : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300'
                     }`}
                   >
                     <Link2 size={14} />
@@ -369,19 +353,11 @@ export function UserDialog({ open, onOpenChange, userToEdit }: UserDialogProps) 
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="creci">CRECI</Label>
-                      <Input
-                        id="creci"
-                        placeholder="Ex: 12345-SC"
-                        {...register('creci')}
-                      />
+                      <Input id="creci" placeholder="Ex: 12345-SC" {...register('creci')} />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="phone">Telefone</Label>
-                      <Input
-                        id="phone"
-                        placeholder="(47) 99999-9999"
-                        {...register('phone')}
-                      />
+                      <Input id="phone" placeholder="(47) 99999-9999" {...register('phone')} />
                     </div>
                   </div>
                 </>
@@ -418,7 +394,9 @@ export function UserDialog({ open, onOpenChange, userToEdit }: UserDialogProps) 
           {/* Se estiver EDITANDO: select para vincular a corretor existente */}
           {isEditing && (
             <div className="space-y-2">
-              <Label>Vincular a Corretor <span className="text-xs text-gray-400">(opcional)</span></Label>
+              <Label>
+                Vincular a Corretor <span className="text-xs text-gray-400">(opcional)</span>
+              </Label>
               <Controller
                 name="realtorId"
                 control={control}
@@ -453,11 +431,7 @@ export function UserDialog({ open, onOpenChange, userToEdit }: UserDialogProps) 
             >
               Cancelar
             </Button>
-            <Button
-              type="submit"
-              className="bg-[#17375F] hover:bg-[#122b4a]"
-              disabled={isLoading}
-            >
+            <Button type="submit" className="bg-[#17375F] hover:bg-[#122b4a]" disabled={isLoading}>
               {isLoading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />

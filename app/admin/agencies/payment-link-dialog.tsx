@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { useState } from 'react'
 import { Copy, ExternalLink, Check } from 'lucide-react'
@@ -41,16 +41,13 @@ export function PaymentLinkDialog({ open, onOpenChange, paymentLink }: PaymentLi
         <DialogHeader>
           <DialogTitle>Link de Pagamento</DialogTitle>
           <DialogDescription>
-            Imobiliaria cadastrada com sucesso! Envie o link abaixo para o cliente realizar o pagamento da assinatura.
+            Imobiliaria cadastrada com sucesso! Envie o link abaixo para o cliente realizar o
+            pagamento da assinatura.
           </DialogDescription>
         </DialogHeader>
 
         <div className="flex items-center gap-2">
-          <Input
-            readOnly
-            value={paymentLink ?? ''}
-            className="flex-1 text-sm"
-          />
+          <Input readOnly value={paymentLink ?? ''} className="flex-1 text-sm" />
           <Button variant="outline" size="icon" onClick={handleCopy}>
             {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
           </Button>

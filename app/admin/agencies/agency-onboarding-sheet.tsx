@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { useState } from 'react'
 
@@ -33,7 +33,7 @@ export function AgencyOnboardingSheet({ open, onOpenChange }: AgencyOnboardingSh
   return (
     <>
       <Sheet open={open} onOpenChange={onOpenChange}>
-        <SheetContent className="sm:max-w-[480px] overflow-y-auto">
+        <SheetContent className="overflow-y-auto sm:max-w-[480px]">
           <SheetHeader>
             <SheetTitle>Nova Imobiliaria</SheetTitle>
             <SheetDescription>

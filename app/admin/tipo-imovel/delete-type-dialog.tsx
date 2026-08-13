@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
@@ -14,8 +14,8 @@ import {
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogCancel,
-} from "@/components/ui/alert-dialog"
-import { Button } from "@/components/ui/button"
+} from '@/components/ui/alert-dialog'
+import { Button } from '@/components/ui/button'
 
 interface ApiError {
   response?: {
@@ -50,7 +50,7 @@ export function DeleteTypeDialog({ id, open, onOpenChange }: ModalDeleteTypeProp
       const message = apiError?.response?.data?.message || 'Ocorreu um erro ao excluir.'
 
       toast.error(message)
-    }
+    },
   })
 
   return (
@@ -66,11 +66,7 @@ export function DeleteTypeDialog({ id, open, onOpenChange }: ModalDeleteTypeProp
         <AlertDialogFooter>
           <AlertDialogCancel disabled={isPending}>Cancelar</AlertDialogCancel>
 
-          <Button
-            variant="destructive"
-            onClick={() => deleteType()}
-            disabled={isPending}
-          >
+          <Button variant="destructive" onClick={() => deleteType()} disabled={isPending}>
             {isPending ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />

@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { useQuery } from '@tanstack/react-query'
 import { HighlightedPropertiesGrid } from '@/components/highlighted-properties'
@@ -18,13 +18,13 @@ export function HighlightedPropertiesSection({ agencyId }: HighlightedProperties
   if (!isLoading && (!data?.properties || data.properties.length === 0)) return null
 
   return (
-    <section className="relative w-full py-16 px-4 bg-zinc-50 flex flex-col items-center overflow-hidden">
+    <section className="relative flex w-full flex-col items-center overflow-hidden bg-zinc-50 px-4 py-16">
       <div
-        className="absolute inset-0 -top-20 -left-20 opacity-40 pointer-events-none"
+        className="pointer-events-none absolute inset-0 -top-20 -left-20 opacity-40"
         style={{ backgroundImage: `url(${square.src})`, backgroundRepeat: 'no-repeat' }}
       />
 
-      <div className="text-center mb-10 z-10">
+      <div className="z-10 mb-10 text-center">
         <h2 className="text-2xl font-normal text-black">Imóveis em</h2>
         <h2 className="text-2xl font-bold text-(--primary-color,#17375F)">Destaque</h2>
       </div>

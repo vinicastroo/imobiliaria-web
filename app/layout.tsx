@@ -1,19 +1,19 @@
-import type { Metadata } from "next"
-import { Montserrat } from "next/font/google"
-import { getServerSession } from "next-auth"
-import { authOptions } from "@/lib/auth"
-import { getTenantVisualConfig, getGoogleFontsUrl } from "@/lib/visual-config"
-import { Providers } from "@/app/providers"
-import { Toaster } from "components/ui/sonner"
-import "./globals.css"
+import type { Metadata } from 'next'
+import { Montserrat } from 'next/font/google'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/lib/auth'
+import { getTenantVisualConfig, getGoogleFontsUrl } from '@/lib/visual-config'
+import { Providers } from '@/app/providers'
+import { Toaster } from 'components/ui/sonner'
+import './globals.css'
 
 // Montserrat is the platform base font — loaded statically via next/font.
 // It registers --font-montserrat CSS variable; globals.css body rule applies it
 // via var(--font-body, var(--font-montserrat, system-ui)).
 const montserrat = Montserrat({
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "700"],
-  variable: "--font-montserrat",
+  subsets: ['latin'],
+  weight: ['300', '400', '500', '700'],
+  variable: '--font-montserrat',
   display: 'swap',
 })
 
@@ -45,7 +45,9 @@ export default async function RootLayout({
     visualConfig.fontFamily !== 'Montserrat'
       ? `--font-body: '${visualConfig.fontFamily}', sans-serif;`
       : '',
-  ].filter(Boolean).join(' ')
+  ]
+    .filter(Boolean)
+    .join(' ')
 
   return (
     // montserrat.variable registers --font-montserrat without forcing it on body,
@@ -55,15 +57,11 @@ export default async function RootLayout({
         {(visualConfig.faviconUrl ?? visualConfig.iconUrl) && (
           <link rel="icon" href={visualConfig.faviconUrl ?? visualConfig.iconUrl ?? undefined} />
         )}
-        {fontLink && (
-          <link rel="preconnect" href="https://fonts.googleapis.com" />
-        )}
+        {fontLink && <link rel="preconnect" href="https://fonts.googleapis.com" />}
         {fontLink && (
           <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         )}
-        {fontLink && (
-          <link rel="stylesheet" href={fontLink} />
-        )}
+        {fontLink && <link rel="stylesheet" href={fontLink} />}
       </head>
       <body className="antialiased">
         {/* Tenant CSS variable overrides — rendered server-side, no layout shift */}

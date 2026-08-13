@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 // 1. Importe o Circle
 import { GoogleMap, useJsApiLoader, Marker, Circle } from '@react-google-maps/api'
@@ -13,7 +13,7 @@ interface PropertyGoogleMapProps {
 
 const containerStyle = {
   width: '100%',
-  height: '100%'
+  height: '100%',
 }
 
 // Opções visuais do Círculo (Usei a cor #17375F da sua marca)
@@ -22,12 +22,12 @@ const circleOptions = {
   strokeOpacity: 0.8,
   strokeWeight: 2,
   fillColor: '#17375F',
-  fillOpacity: 0.20, // 20% de opacidade para ver o mapa embaixo
+  fillOpacity: 0.2, // 20% de opacidade para ver o mapa embaixo
   clickable: false,
   draggable: false,
   editable: false,
   visible: true,
-  zIndex: 1
+  zIndex: 1,
 }
 
 function PropertyGoogleMap({ lat, lng, popupText, radius = 0 }: PropertyGoogleMapProps) {
@@ -35,7 +35,7 @@ function PropertyGoogleMap({ lat, lng, popupText, radius = 0 }: PropertyGoogleMa
     id: 'google-map-script',
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY as string,
     language: 'pt-BR',
-    region: 'BR'
+    region: 'BR',
   })
 
   const [map, setMap] = useState(null)
@@ -50,14 +50,14 @@ function PropertyGoogleMap({ lat, lng, popupText, radius = 0 }: PropertyGoogleMa
 
   if (!isLoaded) {
     return (
-      <div className="h-[400px] w-full bg-gray-100 animate-pulse rounded-lg flex items-center justify-center text-gray-400">
+      <div className="flex h-[400px] w-full animate-pulse items-center justify-center rounded-lg bg-gray-100 text-gray-400">
         Carregando mapa...
       </div>
     )
   }
 
   return (
-    <div className="h-[400px] w-full rounded-lg overflow-hidden border border-gray-200 shadow-sm">
+    <div className="h-[400px] w-full overflow-hidden rounded-lg border border-gray-200 shadow-sm">
       <GoogleMap
         mapContainerStyle={containerStyle}
         center={{ lat, lng }}
@@ -71,11 +71,7 @@ function PropertyGoogleMap({ lat, lng, popupText, radius = 0 }: PropertyGoogleMa
         }}
       >
         {/* Mantém o Pin (Marker) */}
-        <Marker
-          position={{ lat, lng }}
-          title={popupText}
-          
-        />
+        <Marker position={{ lat, lng }} title={popupText} />
 
         {/* 3. Renderiza o Círculo se houver raio > 0 */}
         {radius > 0 && (

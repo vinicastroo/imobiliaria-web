@@ -7,17 +7,17 @@ export const metadata: Metadata = {
 
 export default function SiteDesativadoPage() {
   return (
-    <main className="min-h-screen bg-gray-50 flex flex-col items-center justify-center text-center px-4">
+    <main className="flex min-h-screen flex-col items-center justify-center bg-gray-50 px-4 text-center">
       <div className="max-w-md space-y-6">
         <div className="flex justify-center">
-          <div className="bg-yellow-100 rounded-full p-6">
+          <div className="rounded-full bg-yellow-100 p-6">
             <Construction className="h-16 w-16 text-yellow-600" />
           </div>
         </div>
 
         <div className="space-y-2">
           <h1 className="text-3xl font-bold text-gray-800">Site em implementação</h1>
-          <p className="text-gray-500 text-lg">
+          <p className="text-lg text-gray-500">
             Estamos preparando tudo para você. Em breve o site estará disponível.
           </p>
         </div>

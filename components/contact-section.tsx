@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -13,16 +13,21 @@ import { Card, CardContent, CardHeader, CardTitle } from 'components/ui/card'
 import { Label } from 'components/ui/label'
 
 const contactSchema = z.object({
-  name: z.string().min(1, "Nome obrigatório"),
-  email: z.string().email("Email inválido").optional().or(z.literal('')),
-  phone: z.string().min(1, "Telefone obrigatório"),
-  description: z.string().min(1, "Mensagem obrigatória"),
+  name: z.string().min(1, 'Nome obrigatório'),
+  email: z.string().email('Email inválido').optional().or(z.literal('')),
+  phone: z.string().min(1, 'Telefone obrigatório'),
+  description: z.string().min(1, 'Mensagem obrigatória'),
 })
 
 type ContactFormData = z.infer<typeof contactSchema>
 
 export function ContactForm() {
-  const { register, handleSubmit, reset, formState: { isSubmitting } } = useForm<ContactFormData>({
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { isSubmitting },
+  } = useForm<ContactFormData>({
     resolver: zodResolver(contactSchema),
   })
 
@@ -38,9 +43,11 @@ export function ContactForm() {
   }
 
   return (
-    <Card className="w-full max-w-[544px] z-10 shadow-xl bg-white/90 py-6 backdrop-blur-sm">
+    <Card className="z-10 w-full max-w-[544px] bg-white/90 py-6 shadow-xl backdrop-blur-sm">
       <CardHeader>
-        <CardTitle className="text-center text-2xl text-(--primary-color,#17375F)">Entre em contato</CardTitle>
+        <CardTitle className="text-center text-2xl text-(--primary-color,#17375F)">
+          Entre em contato
+        </CardTitle>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
@@ -70,7 +77,11 @@ export function ContactForm() {
             />
           </div>
 
-          <Button type="submit" className="w-full bg-(--primary-color,#17375F) hover:bg-(--primary-color,#17375F)" disabled={isSubmitting}>
+          <Button
+            type="submit"
+            className="w-full bg-(--primary-color,#17375F) hover:bg-(--primary-color,#17375F)"
+            disabled={isSubmitting}
+          >
             {isSubmitting ? 'Enviando...' : 'Enviar Contato'}
           </Button>
         </form>
@@ -84,7 +95,7 @@ export function ContactSection() {
   return (
     <section
       id="contact"
-      className="relative w-full min-h-[600px] flex flex-col items-center justify-center p-4 bg-gradient-to-b from-[#fafafa] to-[#D0DEF8] overflow-hidden"
+      className="relative flex min-h-[600px] w-full flex-col items-center justify-center overflow-hidden bg-gradient-to-b from-[#fafafa] to-[#D0DEF8] p-4"
     >
       <ContactForm />
     </section>

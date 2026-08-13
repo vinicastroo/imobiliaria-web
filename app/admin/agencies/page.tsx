@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
@@ -24,8 +24,8 @@ import { AgencyEditSheet } from './agency-edit-sheet'
 import type { AdminAgency } from '@/types/admin'
 
 const PLATFORM_DOMAIN = process.env.NEXT_PUBLIC_PLATFORM_DOMAIN ?? 'codelabz.com.br'
-const BASE_URL        = process.env.NEXT_PUBLIC_BASE_URL ?? ''
-const IS_LOCAL_DEV    = BASE_URL.includes('localhost') || BASE_URL.includes('127.0.0.1')
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? ''
+const IS_LOCAL_DEV = BASE_URL.includes('localhost') || BASE_URL.includes('127.0.0.1')
 
 /** Returns the backoffice URL for an agency.
  *  - Local dev: always uses BASE_URL (tenant context comes from NEXT_PUBLIC_AGENCY_ID)
@@ -47,10 +47,10 @@ function formatCnpj(cnpj: string) {
 }
 
 const subscriptionStatusConfig = {
-  PENDING:  { label: 'Pendente',   className: 'bg-yellow-100 text-yellow-800 border-yellow-200' },
-  ACTIVE:   { label: 'Ativo',      className: 'bg-green-100 text-green-800 border-green-200' },
-  CANCELED: { label: 'Cancelado',  className: 'bg-red-100 text-red-800 border-red-200' },
-  EXPIRED:  { label: 'Expirado',   className: 'bg-gray-100 text-gray-600 border-gray-200' },
+  PENDING: { label: 'Pendente', className: 'bg-yellow-100 text-yellow-800 border-yellow-200' },
+  ACTIVE: { label: 'Ativo', className: 'bg-green-100 text-green-800 border-green-200' },
+  CANCELED: { label: 'Cancelado', className: 'bg-red-100 text-red-800 border-red-200' },
+  EXPIRED: { label: 'Expirado', className: 'bg-gray-100 text-gray-600 border-gray-200' },
 } as const
 
 export default function AgenciesPage() {
@@ -81,27 +81,24 @@ export default function AgenciesPage() {
   })
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
-      <main className="flex-1 w-full max-w-[1400px] mx-auto p-4 md:p-8">
-        <div className="flex flex-col gap-4 mb-6">
+    <div className="flex min-h-screen flex-col bg-gray-50">
+      <main className="mx-auto w-full max-w-[1400px] flex-1 p-4 md:p-8">
+        <div className="mb-6 flex flex-col gap-4">
           <BackLink href="/admin" />
 
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
             <div>
-              <h1 className="text-2xl font-bold text-primary">Gestão de Imobiliárias</h1>
+              <h1 className="text-primary text-2xl font-bold">Gestão de Imobiliárias</h1>
               <p className="text-gray-500">Gerencie as imobiliárias cadastradas na plataforma.</p>
             </div>
 
-            <Button
-              className="bg-primary hover:bg-primary/90"
-              onClick={() => setIsSheetOpen(true)}
-            >
+            <Button className="bg-primary hover:bg-primary/90" onClick={() => setIsSheetOpen(true)}>
               <Plus className="mr-2 h-4 w-4" /> Nova Imobiliária
             </Button>
           </div>
         </div>
 
-        <div className="rounded-md border bg-white py-3 px-4">
+        <div className="rounded-md border bg-white px-4 py-3">
           <Table>
             <TableHeader>
               <TableRow>
@@ -119,15 +116,15 @@ export default function AgenciesPage() {
               {isLoading ? (
                 <TableRow>
                   <TableCell colSpan={8} className="h-24 text-center">
-                    <div className="flex justify-center items-center gap-2 text-muted-foreground">
-                      <Loader2 className="animate-spin h-4 w-4" />
+                    <div className="text-muted-foreground flex items-center justify-center gap-2">
+                      <Loader2 className="h-4 w-4 animate-spin" />
                       Carregando...
                     </div>
                   </TableCell>
                 </TableRow>
               ) : agencies && agencies.length > 0 ? (
                 agencies.map((agency) => {
-                  const sub      = agency.subscription
+                  const sub = agency.subscription
                   const hasDiscount = sub?.customPrice && sub.customPrice !== sub.snapshotPrice
                   const isToggling = toggleStatus.isPending && toggleStatus.variables === agency.id
 
@@ -137,26 +134,28 @@ export default function AgenciesPage() {
                         <div className="flex flex-col">
                           <span className="font-medium">{agency.name}</span>
                           {agency.customDomain ? (
-                            <span className="text-xs text-muted-foreground">
+                            <span className="text-muted-foreground text-xs">
                               {agency.customDomain}
                             </span>
                           ) : agency.slug ? (
-                            <span className="text-xs text-muted-foreground">
+                            <span className="text-muted-foreground text-xs">
                               {agency.slug}.{PLATFORM_DOMAIN}
                             </span>
                           ) : (
-                            <span className="text-xs text-muted-foreground italic">sem domínio</span>
+                            <span className="text-muted-foreground text-xs italic">
+                              sem domínio
+                            </span>
                           )}
                         </div>
                       </TableCell>
-                      <TableCell className="text-sm text-muted-foreground">
+                      <TableCell className="text-muted-foreground text-sm">
                         {agency.cnpj ? formatCnpj(agency.cnpj) : '—'}
                       </TableCell>
                       <TableCell>
                         {sub ? (
                           sub.planName
                         ) : (
-                          <Badge className="bg-gray-100 text-gray-600 border-gray-200">
+                          <Badge className="border-gray-200 bg-gray-100 text-gray-600">
                             Sem plano
                           </Badge>
                         )}
@@ -166,7 +165,7 @@ export default function AgenciesPage() {
                           <div className="flex items-center gap-2">
                             <span>{formatCurrency(sub.effectivePrice)}</span>
                             {hasDiscount && (
-                              <Badge className="bg-green-100 text-green-800 border-green-200">
+                              <Badge className="border-green-200 bg-green-100 text-green-800">
                                 Desconto
                               </Badge>
                             )}
@@ -177,12 +176,12 @@ export default function AgenciesPage() {
                       </TableCell>
                       <TableCell className="text-center">
                         {sub ? (
-                          <div className="flex items-center justify-center gap-1 flex-wrap">
+                          <div className="flex flex-wrap items-center justify-center gap-1">
                             <Badge className={subscriptionStatusConfig[sub.status].className}>
                               {subscriptionStatusConfig[sub.status].label}
                             </Badge>
                             {sub.manualBilling && (
-                              <Badge className="bg-blue-100 text-blue-800 border-blue-200">
+                              <Badge className="border-blue-200 bg-blue-100 text-blue-800">
                                 Manual
                               </Badge>
                             )}
@@ -192,17 +191,20 @@ export default function AgenciesPage() {
                         )}
                       </TableCell>
                       <TableCell className="text-center">
-                        <div className="flex justify-center gap-3 text-xs text-muted-foreground">
+                        <div className="text-muted-foreground flex justify-center gap-3 text-xs">
                           <span title="Usuários">{agency.usage.users} usr</span>
                           <span title="Corretores">{agency.usage.realtors} cor</span>
                           <span title="Imóveis">{agency.usage.properties} imv</span>
                         </div>
                       </TableCell>
                       <TableCell className="text-center">
-                        <Badge className={agency.active
-                          ? 'bg-green-100 text-green-800 border-green-200'
-                          : 'bg-gray-100 text-gray-600 border-gray-200'
-                        }>
+                        <Badge
+                          className={
+                            agency.active
+                              ? 'border-green-200 bg-green-100 text-green-800'
+                              : 'border-gray-200 bg-gray-100 text-gray-600'
+                          }
+                        >
                           {agency.active ? 'Ativa' : 'Inativa'}
                         </Badge>
                       </TableCell>
@@ -211,7 +213,7 @@ export default function AgenciesPage() {
                           <Button
                             variant="ghost"
                             size="icon"
-                            className="h-8 w-8 text-muted-foreground hover:text-primary hover:bg-primary/5"
+                            className="text-muted-foreground hover:text-primary hover:bg-primary/5 h-8 w-8"
                             onClick={() => setAgencyToEdit(agency)}
                             title="Editar imobiliária"
                           >
@@ -221,7 +223,7 @@ export default function AgenciesPage() {
                             <Button
                               variant="ghost"
                               size="icon"
-                              className="h-8 w-8 text-muted-foreground hover:text-primary hover:bg-primary/5"
+                              className="text-muted-foreground hover:text-primary hover:bg-primary/5 h-8 w-8"
                               asChild
                               title="Acessar backoffice"
                             >
@@ -239,8 +241,8 @@ export default function AgenciesPage() {
                             size="icon"
                             className={`h-8 w-8 ${
                               agency.active
-                                ? 'text-red-400 hover:text-red-600 hover:bg-red-50'
-                                : 'text-green-500 hover:text-green-700 hover:bg-green-50'
+                                ? 'text-red-400 hover:bg-red-50 hover:text-red-600'
+                                : 'text-green-500 hover:bg-green-50 hover:text-green-700'
                             }`}
                             onClick={() => toggleStatus.mutate(agency.id)}
                             disabled={isToggling}
@@ -261,7 +263,7 @@ export default function AgenciesPage() {
                 })
               ) : (
                 <TableRow>
-                  <TableCell colSpan={8} className="h-24 text-center text-muted-foreground">
+                  <TableCell colSpan={8} className="text-muted-foreground h-24 text-center">
                     Nenhuma imobiliária encontrada.
                   </TableCell>
                 </TableRow>

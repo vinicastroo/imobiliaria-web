@@ -45,11 +45,7 @@ export async function applyWatermarkToBlob(imageBlob: Blob, watermarkUrl: string
     ctx.globalAlpha = 1
 
     return new Promise<Blob>((resolve) => {
-      canvas.toBlob(
-        (blob) => resolve(blob ?? imageBlob),
-        'image/jpeg',
-        0.9,
-      )
+      canvas.toBlob((blob) => resolve(blob ?? imageBlob), 'image/jpeg', 0.9)
     })
   } finally {
     URL.revokeObjectURL(objectUrl)

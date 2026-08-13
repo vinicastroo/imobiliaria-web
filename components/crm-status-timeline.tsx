@@ -1,8 +1,7 @@
-"use client"
+'use client'
 
 import { memo, useMemo } from 'react'
 import { ArrowRight, UserPlus, UserCheck, UserMinus } from 'lucide-react'
-
 
 type ClientLogType = 'CREATED' | 'STATUS_CHANGE' | 'ASSIGNED' | 'UNASSIGNED'
 
@@ -66,7 +65,7 @@ function buildTimelineEntries(
 
 function StageBadge({ name }: { name: string }) {
   return (
-    <span className="inline-flex items-center gap-1.5 font-medium text-foreground">
+    <span className="text-foreground inline-flex items-center gap-1.5 font-medium">
       <span className="h-2 w-2 rounded-full bg-gray-300" />
       {name}
     </span>
@@ -76,18 +75,18 @@ function StageBadge({ name }: { name: string }) {
 function EntryTitle({ entry }: { entry: ClientStatusLog }) {
   if (entry.type === 'CREATED') {
     return (
-      <p className="flex flex-wrap items-center gap-1.5 font-medium text-foreground">
-        <UserPlus className="h-3.5 w-3.5 text-muted-foreground" />
+      <p className="text-foreground flex flex-wrap items-center gap-1.5 font-medium">
+        <UserPlus className="text-muted-foreground h-3.5 w-3.5" />
         <span>Cliente criado</span>
         {entry.toStage && (
           <>
-            <span className="font-normal text-muted-foreground">como</span>
+            <span className="text-muted-foreground font-normal">como</span>
             <StageBadge name={entry.toStage} />
           </>
         )}
         {entry.realtor && (
           <span className="text-muted-foreground font-normal">
-            · responsável: <span className="font-medium text-foreground">{entry.realtor.name}</span>
+            · responsável: <span className="text-foreground font-medium">{entry.realtor.name}</span>
           </span>
         )}
       </p>
@@ -96,8 +95,8 @@ function EntryTitle({ entry }: { entry: ClientStatusLog }) {
 
   if (entry.type === 'ASSIGNED') {
     return (
-      <p className="flex flex-wrap items-center gap-1.5 font-medium text-foreground">
-        <UserCheck className="h-3.5 w-3.5 text-muted-foreground" />
+      <p className="text-foreground flex flex-wrap items-center gap-1.5 font-medium">
+        <UserCheck className="text-muted-foreground h-3.5 w-3.5" />
         Responsável definido:
         <span>{entry.realtor?.name ?? 'Corretor removido'}</span>
       </p>
@@ -106,8 +105,8 @@ function EntryTitle({ entry }: { entry: ClientStatusLog }) {
 
   if (entry.type === 'UNASSIGNED') {
     return (
-      <p className="flex flex-wrap items-center gap-1.5 font-medium text-foreground">
-        <UserMinus className="h-3.5 w-3.5 text-muted-foreground" />
+      <p className="text-foreground flex flex-wrap items-center gap-1.5 font-medium">
+        <UserMinus className="text-muted-foreground h-3.5 w-3.5" />
         Responsável removido
         {entry.realtor && (
           <span className="text-muted-foreground font-normal">({entry.realtor.name})</span>
@@ -119,7 +118,7 @@ function EntryTitle({ entry }: { entry: ClientStatusLog }) {
   return (
     <p className="flex flex-wrap items-center gap-1.5">
       {entry.fromStage && <StageBadge name={entry.fromStage} />}
-      <ArrowRight className="h-3 w-3 text-muted-foreground" />
+      <ArrowRight className="text-muted-foreground h-3 w-3" />
       {entry.toStage && <StageBadge name={entry.toStage} />}
     </p>
   )
@@ -138,20 +137,20 @@ export const CrmStatusTimeline = memo(function CrmStatusTimeline({
   if (entries.length === 0) return null
 
   return (
-    <ol className="relative ml-1.5 space-y-4 border-l border-border pl-5">
+    <ol className="border-border relative ml-1.5 space-y-4 border-l pl-5">
       {entries.map((entry) => (
         <li key={entry.id} className="relative text-xs">
-          <span className="absolute -left-[25px] top-0.5 h-2.5 w-2.5 rounded-full border-2 border-gray-300 bg-background ring-4 ring-background" />
+          <span className="bg-background ring-background absolute top-0.5 -left-[25px] h-2.5 w-2.5 rounded-full border-2 border-gray-300 ring-4" />
 
           <EntryTitle entry={entry} />
 
-          <p className="mt-0.5 text-muted-foreground">
+          <p className="text-muted-foreground mt-0.5">
             {formatDateTime(entry.createdAt)}
             {entry.changedBy && <> · por {entry.changedBy.name}</>}
           </p>
 
           {entry.note && (
-            <p className="mt-1 rounded-md bg-muted px-2 py-1.5 text-muted-foreground">
+            <p className="bg-muted text-muted-foreground mt-1 rounded-md px-2 py-1.5">
               {entry.note}
             </p>
           )}

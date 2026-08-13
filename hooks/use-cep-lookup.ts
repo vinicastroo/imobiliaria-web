@@ -12,10 +12,7 @@ interface CepResult {
   longitude?: string
 }
 
-export function useCepLookup(
-  cep: string,
-  onResult: (data: CepResult) => void,
-) {
+export function useCepLookup(cep: string, onResult: (data: CepResult) => void) {
   const lastCepRef = useRef<string>('')
 
   const debouncedLookup = useDebouncedCallback((value: string) => {

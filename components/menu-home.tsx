@@ -10,10 +10,6 @@ export async function MenubarHome({ socialLinks }: MenubarHomeProps = {}) {
   const { logoUrl, secondaryColor } = await getTenantVisualConfig()
 
   return (
-    <MenubarHomeClient
-      logoUrl={logoUrl}
-      primaryColor={secondaryColor}
-      socialLinks={socialLinks}
-    />
+    <MenubarHomeClient logoUrl={logoUrl} primaryColor={secondaryColor} socialLinks={socialLinks} />
   )
 }

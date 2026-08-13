@@ -2,32 +2,32 @@ export default function Loading() {
   return (
     <div className="min-h-screen bg-white">
       {/* MenubarHome Skeleton */}
-      <header className="flex justify-center items-center bg-[#17375F] w-full h-16">
-        <div className="w-full max-w-[1200px] mx-auto flex justify-between items-center px-4">
-          <div className="w-24 h-8 rounded bg-white/20 animate-pulse" />
-          <div className="hidden md:flex gap-6">
-            <div className="w-16 h-4 rounded bg-white/20 animate-pulse" />
-            <div className="w-20 h-4 rounded bg-white/20 animate-pulse" />
-            <div className="w-24 h-4 rounded bg-white/20 animate-pulse" />
+      <header className="flex h-16 w-full items-center justify-center bg-[#17375F]">
+        <div className="mx-auto flex w-full max-w-[1200px] items-center justify-between px-4">
+          <div className="h-8 w-24 animate-pulse rounded bg-white/20" />
+          <div className="hidden gap-6 md:flex">
+            <div className="h-4 w-16 animate-pulse rounded bg-white/20" />
+            <div className="h-4 w-20 animate-pulse rounded bg-white/20" />
+            <div className="h-4 w-24 animate-pulse rounded bg-white/20" />
           </div>
-          <div className="md:hidden w-8 h-8 rounded bg-white/20 animate-pulse" />
+          <div className="h-8 w-8 animate-pulse rounded bg-white/20 md:hidden" />
         </div>
       </header>
 
-      <div className="max-w-[1200px] mx-auto p-4 space-y-8 py-8 md:py-12">
+      <div className="mx-auto max-w-[1200px] space-y-8 p-4 py-8 md:py-12">
         {/* Image Gallery Skeleton */}
-        <div className="h-[350px] lg:h-[500px] bg-gray-200 rounded-xl animate-pulse" />
+        <div className="h-[350px] animate-pulse rounded-xl bg-gray-200 lg:h-[500px]" />
 
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-12">
           {/* Main Column */}
-          <div className="md:col-span-8 space-y-6">
-            <div className="border border-gray-200 rounded-xl p-6 space-y-6">
+          <div className="space-y-6 md:col-span-8">
+            <div className="space-y-6 rounded-xl border border-gray-200 p-6">
               {/* Title + Location */}
               <div className="space-y-3">
-                <div className="h-9 w-3/4 bg-gray-200 rounded animate-pulse" />
+                <div className="h-9 w-3/4 animate-pulse rounded bg-gray-200" />
                 <div className="flex items-center gap-2">
-                  <div className="h-4 w-4 bg-gray-200 rounded animate-pulse" />
-                  <div className="h-4 w-48 bg-gray-200 rounded animate-pulse" />
+                  <div className="h-4 w-4 animate-pulse rounded bg-gray-200" />
+                  <div className="h-4 w-48 animate-pulse rounded bg-gray-200" />
                 </div>
               </div>
 
@@ -35,10 +35,10 @@ export default function Loading() {
 
               {/* Features */}
               <div className="space-y-4">
-                <div className="h-4 w-24 bg-gray-200 rounded animate-pulse" />
+                <div className="h-4 w-24 animate-pulse rounded bg-gray-200" />
                 <div className="flex flex-wrap gap-4">
                   {Array.from({ length: 6 }).map((_, i) => (
-                    <div key={i} className="h-10 w-24 bg-gray-100 rounded-md animate-pulse" />
+                    <div key={i} className="h-10 w-24 animate-pulse rounded-md bg-gray-100" />
                   ))}
                 </div>
               </div>
@@ -47,42 +47,42 @@ export default function Loading() {
 
               {/* Description */}
               <div className="space-y-4">
-                <div className="h-4 w-32 bg-gray-200 rounded animate-pulse" />
-                <div className="h-16 w-full bg-gray-100 rounded animate-pulse border-l-4 border-gray-300" />
+                <div className="h-4 w-32 animate-pulse rounded bg-gray-200" />
+                <div className="h-16 w-full animate-pulse rounded border-l-4 border-gray-300 bg-gray-100" />
                 <div className="space-y-2">
-                  <div className="h-4 w-full bg-gray-200 rounded animate-pulse" />
-                  <div className="h-4 w-full bg-gray-200 rounded animate-pulse" />
-                  <div className="h-4 w-5/6 bg-gray-200 rounded animate-pulse" />
-                  <div className="h-4 w-2/3 bg-gray-200 rounded animate-pulse" />
+                  <div className="h-4 w-full animate-pulse rounded bg-gray-200" />
+                  <div className="h-4 w-full animate-pulse rounded bg-gray-200" />
+                  <div className="h-4 w-5/6 animate-pulse rounded bg-gray-200" />
+                  <div className="h-4 w-2/3 animate-pulse rounded bg-gray-200" />
                 </div>
               </div>
             </div>
           </div>
 
           {/* Sidebar */}
-          <div className="md:col-span-4 space-y-6">
-            <div className="border border-gray-200 rounded-xl p-6 space-y-6">
+          <div className="space-y-6 md:col-span-4">
+            <div className="space-y-6 rounded-xl border border-gray-200 p-6">
               {/* Price */}
-              <div className="flex justify-between items-center border-b pb-4">
-                <div className="h-8 w-16 bg-[#17375F]/10 rounded animate-pulse" />
-                <div className="h-8 w-32 bg-gray-200 rounded animate-pulse" />
+              <div className="flex items-center justify-between border-b pb-4">
+                <div className="h-8 w-16 animate-pulse rounded bg-[#17375F]/10" />
+                <div className="h-8 w-32 animate-pulse rounded bg-gray-200" />
               </div>
 
               {/* Realtors */}
               <div className="space-y-4">
-                <div className="h-4 w-40 bg-gray-200 rounded animate-pulse" />
+                <div className="h-4 w-40 animate-pulse rounded bg-gray-200" />
                 {Array.from({ length: 2 }).map((_, i) => (
                   <div key={i} className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-full bg-gray-200 animate-pulse shrink-0" />
-                    <div className="space-y-2 flex-1">
-                      <div className="h-4 w-28 bg-gray-200 rounded animate-pulse" />
-                      <div className="h-3 w-20 bg-gray-200 rounded animate-pulse" />
+                    <div className="h-12 w-12 shrink-0 animate-pulse rounded-full bg-gray-200" />
+                    <div className="flex-1 space-y-2">
+                      <div className="h-4 w-28 animate-pulse rounded bg-gray-200" />
+                      <div className="h-3 w-20 animate-pulse rounded bg-gray-200" />
                     </div>
                   </div>
                 ))}
               </div>
 
-              <div className="h-10 w-full bg-gray-200 rounded animate-pulse" />
+              <div className="h-10 w-full animate-pulse rounded bg-gray-200" />
             </div>
           </div>
         </div>

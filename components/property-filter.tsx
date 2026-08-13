@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { useRouter, usePathname, useSearchParams } from 'next/navigation'
 import { useForm, Controller } from 'react-hook-form'
@@ -11,7 +11,13 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { Separator } from '@/components/ui/separator'
 
 import { getCities } from '@/app/api/get-cities'
@@ -37,7 +43,13 @@ export function PropertyFilter() {
   const pathname = usePathname()
   const searchParams = useSearchParams()
 
-  const { control, handleSubmit, watch, reset, formState: { isLoading } } = useForm<SchemaQuestion>({
+  const {
+    control,
+    handleSubmit,
+    watch,
+    reset,
+    formState: { isLoading },
+  } = useForm<SchemaQuestion>({
     resolver: zodResolver(createSchema),
     defaultValues: {
       type: searchParams.get('tipoImovel') ?? '',
@@ -96,17 +108,23 @@ export function PropertyFilter() {
 
   const handleClearFilter = () => {
     reset({
-      city: '', type: '', neighborhood: '', bathrooms: '',
-      bedrooms: '', parkingSpots: '', privateArea: '', suites: '', totalArea: '',
+      city: '',
+      type: '',
+      neighborhood: '',
+      bathrooms: '',
+      bedrooms: '',
+      parkingSpots: '',
+      privateArea: '',
+      suites: '',
+      totalArea: '',
     })
     router.replace(pathname)
   }
 
   return (
     <Card className="w-full border-none shadow-none">
-      <CardContent className="p-4 space-y-4">
+      <CardContent className="space-y-4 p-4">
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
-
           <div className="space-y-2">
             <Label>Tipo Imóvel</Label>
             <Controller
@@ -114,11 +132,15 @@ export function PropertyFilter() {
               control={control}
               render={({ field }) => (
                 <Select onValueChange={field.onChange} value={field.value}>
-                  <SelectTrigger className='w-full'><SelectValue placeholder="Selecione" /></SelectTrigger>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Selecione" />
+                  </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="undefined">Todos</SelectItem>
                     {types?.map((t) => (
-                      <SelectItem key={t.id} value={t.description}>{t.description}</SelectItem>
+                      <SelectItem key={t.id} value={t.description}>
+                        {t.description}
+                      </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
@@ -133,11 +155,15 @@ export function PropertyFilter() {
               control={control}
               render={({ field }) => (
                 <Select onValueChange={field.onChange} value={field.value}>
-                  <SelectTrigger className='w-full'><SelectValue placeholder="Selecione" /></SelectTrigger>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Selecione" />
+                  </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="undefined">Todas</SelectItem>
                     {cities?.map((c) => (
-                      <SelectItem key={c.city} value={c.city}>{c.city}</SelectItem>
+                      <SelectItem key={c.city} value={c.city}>
+                        {c.city}
+                      </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
@@ -151,12 +177,20 @@ export function PropertyFilter() {
               name="neighborhood"
               control={control}
               render={({ field }) => (
-                <Select onValueChange={field.onChange} value={field.value} disabled={!neighborhoods}>
-                  <SelectTrigger className='w-full'><SelectValue placeholder="Selecione" /></SelectTrigger>
+                <Select
+                  onValueChange={field.onChange}
+                  value={field.value}
+                  disabled={!neighborhoods}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Selecione" />
+                  </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="undefined">Todos</SelectItem>
                     {neighborhoods?.map((n) => (
-                      <SelectItem key={n.neighborhood} value={n.neighborhood}>{n.neighborhood}</SelectItem>
+                      <SelectItem key={n.neighborhood} value={n.neighborhood}>
+                        {n.neighborhood}
+                      </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
@@ -170,32 +204,44 @@ export function PropertyFilter() {
 
           <div className="grid gap-3">
             <div className="flex items-center gap-2">
-              <Bed className="text-gray-400 w-5 h-5" />
+              <Bed className="h-5 w-5 text-gray-400" />
               <Input placeholder="Nº Quartos" {...control.register('bedrooms')} className="h-9" />
             </div>
             <div className="flex items-center gap-2">
-              <Bath className="text-gray-400 w-5 h-5" />
+              <Bath className="h-5 w-5 text-gray-400" />
               <Input placeholder="Nº Suítes" {...control.register('suites')} className="h-9" />
             </div>
             <div className="flex items-center gap-2">
-              <Bath className="text-gray-400 w-5 h-5" />
-              <Input placeholder="Nº Banheiros" {...control.register('bathrooms')} className="h-9" />
+              <Bath className="h-5 w-5 text-gray-400" />
+              <Input
+                placeholder="Nº Banheiros"
+                {...control.register('bathrooms')}
+                className="h-9"
+              />
             </div>
             <div className="flex items-center gap-2">
-              <CarFront className="text-gray-400 w-5 h-5" />
+              <CarFront className="h-5 w-5 text-gray-400" />
               <Input placeholder="Vagas" {...control.register('parkingSpots')} className="h-9" />
             </div>
             <div className="flex items-center gap-2">
-              <Ruler className="text-gray-400 w-5 h-5" />
-              <Input placeholder="Área Total (m²)" {...control.register('totalArea')} className="h-9" />
+              <Ruler className="h-5 w-5 text-gray-400" />
+              <Input
+                placeholder="Área Total (m²)"
+                {...control.register('totalArea')}
+                className="h-9"
+              />
             </div>
             <div className="flex items-center gap-2">
-              <Ruler className="text-gray-400 w-5 h-5" />
-              <Input placeholder="Área Priv. (m²)" {...control.register('privateArea')} className="h-9" />
+              <Ruler className="h-5 w-5 text-gray-400" />
+              <Input
+                placeholder="Área Priv. (m²)"
+                {...control.register('privateArea')}
+                className="h-9"
+              />
             </div>
           </div>
 
-          <div className="pt-2 flex flex-col gap-2">
+          <div className="flex flex-col gap-2 pt-2">
             <Button type="submit" className="w-full bg-[#17375F]" disabled={isLoading}>
               Filtrar
             </Button>

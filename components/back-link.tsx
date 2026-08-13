@@ -12,8 +12,8 @@ export function BackLink({ href = '/', className }: BackLinkProps) {
     <Link
       href={href}
       className={cn(
-        "flex items-center gap-2 text-sm text-muted-foreground hover:text-[#17375F] transition-colors w-fit mb-2",
-        className
+        'text-muted-foreground mb-2 flex w-fit items-center gap-2 text-sm transition-colors hover:text-[#17375F]',
+        className,
       )}
     >
       <ArrowLeft className="h-4 w-4" />

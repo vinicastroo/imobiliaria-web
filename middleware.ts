@@ -1,9 +1,9 @@
 import { getToken } from 'next-auth/jwt'
 import { NextRequest, NextResponse } from 'next/server'
 
-const PLATFORM_DOMAIN  = process.env.NEXT_PUBLIC_PLATFORM_DOMAIN ?? 'codelabz.com.br'
+const PLATFORM_DOMAIN = process.env.NEXT_PUBLIC_PLATFORM_DOMAIN ?? 'codelabz.com.br'
 const SUPER_ADMIN_HOST = `admin.${PLATFORM_DOMAIN}`
-const API_URL          = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3333'
+const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3333'
 
 const DEV_AGENCY_ID = process.env.NEXT_PUBLIC_AGENCY_ID
 
@@ -11,22 +11,19 @@ const DEV_AGENCY_ID = process.env.NEXT_PUBLIC_AGENCY_ID
 // Add new fully-custom tenants here; all others use the standard engine.
 const CUSTOM_SITE_PREFIXES: Record<string, string> = {
   'aurosimobiliaria.com.br': '/auros-site',
-  'imoveisgilli.com.br':     '/gilli-site',
+  'imoveisgilli.com.br': '/gilli-site',
 }
 
 // All rewritten prefixes — used by isPublicSitePage to avoid re-processing
 // requests that were already rewritten internally by Next.js.
-const ALL_SITE_PREFIXES = [
-  ...Object.values(CUSTOM_SITE_PREFIXES),
-  '/sites',
-]
+const ALL_SITE_PREFIXES = [...Object.values(CUSTOM_SITE_PREFIXES), '/sites']
 
 interface TenantContext {
-  id:             string
-  slug:           string
-  name:           string
-  siteEnabled:    boolean
-  layoutType:     'MODERN' | 'CLASSIC' | 'MINIMAL'
+  id: string
+  slug: string
+  name: string
+  siteEnabled: boolean
+  layoutType: 'MODERN' | 'CLASSIC' | 'MINIMAL'
   isCustomFolder: boolean
 }
 
@@ -76,7 +73,7 @@ async function applyAuthRules(
   tenantId: string | null,
 ): Promise<NextResponse> {
   const { pathname } = req.nextUrl
-  const token  = await getToken({ req, secret: process.env.NEXTAUTH_SECRET })
+  const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET })
   const isAuth = !!token
 
   const isSuperAdmin = token?.role === 'SUPER_ADMIN'
@@ -156,11 +153,12 @@ export async function middleware(req: NextRequest) {
 
   // ── 3. Local development — skip resolution, inject env-based tenant ─────
   if (isLocalDev(hostname)) {
-    const domainParam  = req.nextUrl.searchParams.get('domain')
+    const domainParam = req.nextUrl.searchParams.get('domain')
     const domainCookie = req.cookies.get('__dev_domain__')?.value
-    const effectiveDomain = domainParam ?? domainCookie ?? process.env.NEXT_PUBLIC_DEV_DOMAIN ?? null
+    const effectiveDomain =
+      domainParam ?? domainCookie ?? process.env.NEXT_PUBLIC_DEV_DOMAIN ?? null
 
-    let tenantId   = DEV_AGENCY_ID ?? null
+    let tenantId = DEV_AGENCY_ID ?? null
     let tenantSlug: string | null = null
     let tenantName: string | null = null
     let layoutType: TenantContext['layoutType'] = 'MODERN'
@@ -168,7 +166,7 @@ export async function middleware(req: NextRequest) {
     if (effectiveDomain) {
       const resolved = await fetchTenant(effectiveDomain)
       if (resolved) {
-        tenantId   = resolved.id
+        tenantId = resolved.id
         tenantSlug = resolved.slug
         tenantName = resolved.name
         layoutType = resolved.layoutType
@@ -176,15 +174,15 @@ export async function middleware(req: NextRequest) {
     }
 
     const requestHeaders = new Headers(req.headers)
-    if (tenantId)   requestHeaders.set('x-tenant-id',     tenantId)
-    if (tenantName) requestHeaders.set('x-tenant-name',   encodeURIComponent(tenantName))
+    if (tenantId) requestHeaders.set('x-tenant-id', tenantId)
+    if (tenantName) requestHeaders.set('x-tenant-name', encodeURIComponent(tenantName))
     if (layoutType) requestHeaders.set('x-tenant-layout', layoutType)
 
     const hasKnownPrefix = (effectiveDomain ?? '') in CUSTOM_SITE_PREFIXES
 
     let base: NextResponse
     if (isPublicSitePage(pathname) && (tenantSlug || hasKnownPrefix)) {
-      const prefix     = getSitePrefix(effectiveDomain ?? '', tenantSlug ?? '')
+      const prefix = getSitePrefix(effectiveDomain ?? '', tenantSlug ?? '')
       const rewriteUrl = new URL(prefix + (pathname === '/' ? '' : pathname), req.url)
       base = NextResponse.rewrite(rewriteUrl, { request: { headers: requestHeaders } })
     } else {
@@ -196,7 +194,11 @@ export async function middleware(req: NextRequest) {
       response.cookies.set('__tenant__', tenantId, { path: '/', httpOnly: false, sameSite: 'lax' })
     }
     if (domainParam) {
-      response.cookies.set('__dev_domain__', domainParam, { path: '/', httpOnly: false, sameSite: 'lax' })
+      response.cookies.set('__dev_domain__', domainParam, {
+        path: '/',
+        httpOnly: false,
+        sameSite: 'lax',
+      })
     }
     return response
   }
@@ -215,7 +217,7 @@ export async function middleware(req: NextRequest) {
     // to the platform domain — serve the site even if the API is temporarily
     // unavailable (cold start after deploy, etc.).
     if (isKnownCustomDomain && isPublicSitePage(pathname)) {
-      const prefix     = CUSTOM_SITE_PREFIXES[hostname]
+      const prefix = CUSTOM_SITE_PREFIXES[hostname]
       const rewriteUrl = new URL(prefix + (pathname === '/' ? '' : pathname), req.url)
       return NextResponse.rewrite(rewriteUrl)
     }
@@ -223,15 +225,15 @@ export async function middleware(req: NextRequest) {
   }
 
   const requestHeaders = new Headers(req.headers)
-  requestHeaders.set('x-tenant-id',     tenant.id)
-  requestHeaders.set('x-tenant-slug',   tenant.slug)
-  requestHeaders.set('x-tenant-name',   encodeURIComponent(tenant.name))
+  requestHeaders.set('x-tenant-id', tenant.id)
+  requestHeaders.set('x-tenant-slug', tenant.slug)
+  requestHeaders.set('x-tenant-name', encodeURIComponent(tenant.name))
   requestHeaders.set('x-tenant-layout', tenant.layoutType)
 
   if (isPublicSitePage(pathname)) {
-    const prefix     = getSitePrefix(hostname, tenant.slug)
+    const prefix = getSitePrefix(hostname, tenant.slug)
     const rewriteUrl = new URL(prefix + (pathname === '/' ? '' : pathname), req.url)
-    const response   = await applyAuthRules(
+    const response = await applyAuthRules(
       req,
       NextResponse.rewrite(rewriteUrl, { request: { headers: requestHeaders } }),
       tenant.id,

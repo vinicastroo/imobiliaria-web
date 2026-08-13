@@ -1,5 +1,5 @@
-import type { NextConfig } from "next";
-import { withSentryConfig } from "@sentry/nextjs";
+import type { NextConfig } from 'next'
+import { withSentryConfig } from '@sentry/nextjs'
 
 const nextConfig: NextConfig = {
   experimental: {
@@ -30,13 +30,12 @@ const nextConfig: NextConfig = {
     ],
     unoptimized: false,
   },
-};
-
+}
 
 export default withSentryConfig(nextConfig, {
-  org: "codelabz-logs",
-  project: "imobx-next",
+  org: 'codelabz-logs',
+  project: 'imobx-next',
   silent: !process.env.CI,
-  tunnelRoute: "/monitoring",
+  tunnelRoute: '/monitoring',
   disableLogger: true,
-});
+})

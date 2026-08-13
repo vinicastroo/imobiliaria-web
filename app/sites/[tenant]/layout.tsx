@@ -15,9 +15,7 @@ export default async function TenantSiteLayout({ children }: { children: ReactNo
           --site-font:       '${fontFamily}', sans-serif;
         }
       `}</style>
-      <div style={{ fontFamily: `'${fontFamily}', sans-serif` }}>
-        {children}
-      </div>
+      <div style={{ fontFamily: `'${fontFamily}', sans-serif` }}>{children}</div>
       <TrackingScripts />
     </>
   )

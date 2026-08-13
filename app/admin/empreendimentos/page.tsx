@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
@@ -70,120 +70,119 @@ export default function EmpreendimentosPage() {
   // Função auxiliar para cor do Badge de status
   const getStatusColor = (status?: string) => {
     switch (status) {
-      case 'Lançamento': return 'bg-blue-500 hover:bg-blue-600'
-      case 'Em Construção': return 'bg-yellow-500 hover:bg-yellow-600'
-      case 'Pronto para Morar': return 'bg-green-500 hover:bg-green-600'
-      default: return 'bg-gray-500 hover:bg-gray-600'
+      case 'Lançamento':
+        return 'bg-blue-500 hover:bg-blue-600'
+      case 'Em Construção':
+        return 'bg-yellow-500 hover:bg-yellow-600'
+      case 'Pronto para Morar':
+        return 'bg-green-500 hover:bg-green-600'
+      default:
+        return 'bg-gray-500 hover:bg-gray-600'
     }
   }
 
   return (
     <FeatureGate feature="enterprises">
-    <div className="min-h-screen bg-gray-50 flex flex-col">
-      <main className="flex-1 w-full max-w-[1200px] mx-auto p-4 md:p-8">
+      <div className="flex min-h-screen flex-col bg-gray-50">
+        <main className="mx-auto w-full max-w-[1200px] flex-1 p-4 md:p-8">
+          {/* Cabeçalho */}
+          <div className="mb-6 flex flex-col gap-4">
+            <BackLink href="/admin" />
 
-        {/* Cabeçalho */}
-        <div className="flex flex-col gap-4 mb-6">
-          <BackLink href="/admin" />
+            <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
+              <div>
+                <h1 className="text-2xl font-bold text-[#17375F]">Empreendimentos</h1>
+                <p className="text-gray-500">Gerencie os lançamentos e prédios.</p>
+              </div>
 
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <div>
-              <h1 className="text-2xl font-bold text-[#17375F]">Empreendimentos</h1>
-              <p className="text-gray-500">Gerencie os lançamentos e prédios.</p>
+              <Button onClick={handleCreate} className="bg-[#17375F] hover:bg-[#122b4a]">
+                <Building2 className="mr-2 h-4 w-4" /> Novo Empreendimento
+              </Button>
             </div>
-
-            <Button onClick={handleCreate} className="bg-[#17375F] hover:bg-[#122b4a]">
-              <Building2 className="mr-2 h-4 w-4" /> Novo Empreendimento
-            </Button>
           </div>
-        </div>
 
-        {/* Tabela */}
-        <Card className="border-none shadow-sm">
-          <div className="rounded-md border bg-white">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Nome</TableHead>
-                  <TableHead className="text-center">Imóveis Vinculados</TableHead>
-                  <TableHead className="text-right">Ações</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {isLoading ? (
+          {/* Tabela */}
+          <Card className="border-none shadow-sm">
+            <div className="rounded-md border bg-white">
+              <Table>
+                <TableHeader>
                   <TableRow>
-                    <TableCell colSpan={4} className="h-32 text-center">
-                      <div className="flex justify-center items-center gap-2 text-muted-foreground">
-                        <Loader2 className="animate-spin h-5 w-5" />
-                        Carregando empreendimentos...
-                      </div>
-                    </TableCell>
+                    <TableHead>Nome</TableHead>
+                    <TableHead className="text-center">Imóveis Vinculados</TableHead>
+                    <TableHead className="text-right">Ações</TableHead>
                   </TableRow>
-                ) : enterprises && enterprises.length > 0 ? (
-                  enterprises.map((item) => (
-                    <TableRow key={item.id}>
-                      <TableCell className="font-medium text-base">
-                        {item.name}
-                      </TableCell>
-
-                      <TableCell className="text-center">
-                        <Badge variant="outline" className="text-sm">
-                          {item._count?.properties || 0}
-                        </Badge>
-                      </TableCell>
-
-                      <TableCell className="text-right">
-                        <div className="flex justify-end gap-2">
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="text-blue-600 hover:text-blue-700 hover:bg-blue-50"
-                            onClick={() => handleEdit(item)}
-                            title="Editar"
-                          >
-                            <Pencil className="h-4 w-4" />
-                          </Button>
-
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="text-red-500 hover:text-red-600 hover:bg-red-50"
-                            onClick={() => handleDelete(item.id)}
-                            title="Excluir"
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
+                </TableHeader>
+                <TableBody>
+                  {isLoading ? (
+                    <TableRow>
+                      <TableCell colSpan={4} className="h-32 text-center">
+                        <div className="text-muted-foreground flex items-center justify-center gap-2">
+                          <Loader2 className="h-5 w-5 animate-spin" />
+                          Carregando empreendimentos...
                         </div>
                       </TableCell>
                     </TableRow>
-                  ))
-                ) : (
-                  <TableRow>
-                    <TableCell colSpan={4} className="h-32 text-center text-muted-foreground">
-                      Nenhum empreendimento cadastrado.
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </div>
-        </Card>
+                  ) : enterprises && enterprises.length > 0 ? (
+                    enterprises.map((item) => (
+                      <TableRow key={item.id}>
+                        <TableCell className="text-base font-medium">{item.name}</TableCell>
 
+                        <TableCell className="text-center">
+                          <Badge variant="outline" className="text-sm">
+                            {item._count?.properties || 0}
+                          </Badge>
+                        </TableCell>
 
-        <EnterpriseDialog
-          open={isDialogOpen}
-          onOpenChange={setIsDialogOpen}
-          itemToEdit={selectedItem}
-        />
+                        <TableCell className="text-right">
+                          <div className="flex justify-end gap-2">
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="text-blue-600 hover:bg-blue-50 hover:text-blue-700"
+                              onClick={() => handleEdit(item)}
+                              title="Editar"
+                            >
+                              <Pencil className="h-4 w-4" />
+                            </Button>
 
-        <DeleteEnterpriseDialog
-          open={isDeleteOpen}
-          onOpenChange={setIsDeleteOpen}
-          id={deleteId}
-        />
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="text-red-500 hover:bg-red-50 hover:text-red-600"
+                              onClick={() => handleDelete(item.id)}
+                              title="Excluir"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  ) : (
+                    <TableRow>
+                      <TableCell colSpan={4} className="text-muted-foreground h-32 text-center">
+                        Nenhum empreendimento cadastrado.
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            </div>
+          </Card>
 
-      </main>
-    </div>
+          <EnterpriseDialog
+            open={isDialogOpen}
+            onOpenChange={setIsDialogOpen}
+            itemToEdit={selectedItem}
+          />
+
+          <DeleteEnterpriseDialog
+            open={isDeleteOpen}
+            onOpenChange={setIsDeleteOpen}
+            id={deleteId}
+          />
+        </main>
+      </div>
     </FeatureGate>
   )
 }

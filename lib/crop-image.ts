@@ -8,10 +8,7 @@ interface PixelCrop {
 const OUTPUT_WIDTH = 1920
 const OUTPUT_HEIGHT = 1080
 
-export async function cropImage(
-  imageSrc: string,
-  pixelCrop: PixelCrop,
-): Promise<Blob> {
+export async function cropImage(imageSrc: string, pixelCrop: PixelCrop): Promise<Blob> {
   const image = await loadImage(imageSrc)
   const canvas = document.createElement('canvas')
   const ctx = canvas.getContext('2d')

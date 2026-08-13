@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { type Editor } from '@tiptap/react'
 import {
@@ -16,10 +16,10 @@ import {
   AlignLeft,
   AlignCenter,
   AlignRight,
-  AlignJustify
+  AlignJustify,
 } from 'lucide-react'
-import { Toggle } from "@/components/ui/toggle" // Componente do Shadcn
-import { Separator } from "@/components/ui/separator"
+import { Toggle } from '@/components/ui/toggle' // Componente do Shadcn
+import { Separator } from '@/components/ui/separator'
 
 interface MenuBarProps {
   editor: Editor | null
@@ -32,7 +32,6 @@ export default function MenuBar({ editor }: MenuBarProps) {
 
   return (
     <div className="flex flex-wrap items-center gap-1 p-1">
-
       {/* Grupo: Formatação Básica */}
       <Toggle
         size="sm"
@@ -61,7 +60,7 @@ export default function MenuBar({ editor }: MenuBarProps) {
         <Strikethrough className="h-4 w-4" />
       </Toggle>
 
-      <Separator orientation="vertical" className="h-6 mx-1" />
+      <Separator orientation="vertical" className="mx-1 h-6" />
 
       {/* Grupo: Cabeçalhos */}
       <Toggle
@@ -82,7 +81,7 @@ export default function MenuBar({ editor }: MenuBarProps) {
         <Heading2 className="h-4 w-4" />
       </Toggle>
 
-      <Separator orientation="vertical" className="h-6 mx-1" />
+      <Separator orientation="vertical" className="mx-1 h-6" />
 
       {/* Grupo: Listas */}
       <Toggle
@@ -103,7 +102,7 @@ export default function MenuBar({ editor }: MenuBarProps) {
         <ListOrdered className="h-4 w-4" />
       </Toggle>
 
-      <Separator orientation="vertical" className="h-6 mx-1" />
+      <Separator orientation="vertical" className="mx-1 h-6" />
 
       {/* Grupo: Alinhamento */}
       <Toggle
@@ -142,7 +141,7 @@ export default function MenuBar({ editor }: MenuBarProps) {
         <AlignJustify className="h-4 w-4" />
       </Toggle>
 
-      <Separator orientation="vertical" className="h-6 mx-1" />
+      <Separator orientation="vertical" className="mx-1 h-6" />
 
       {/* Grupo: Histórico */}
       <Toggle
@@ -162,7 +161,6 @@ export default function MenuBar({ editor }: MenuBarProps) {
       >
         <Redo className="h-4 w-4" />
       </Toggle>
-
     </div>
   )
 }

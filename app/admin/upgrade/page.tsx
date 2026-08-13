@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { useQuery } from '@tanstack/react-query'
 import { Check, X, Crown } from 'lucide-react'
@@ -37,7 +37,15 @@ function formatPrice(price: string | number) {
   return num.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
 }
 
-function UsageBar({ label, current, limit }: { label: string; current: number; limit: number | null }) {
+function UsageBar({
+  label,
+  current,
+  limit,
+}: {
+  label: string
+  current: number
+  limit: number | null
+}) {
   if (limit === null) return null
 
   const percentage = limit > 0 ? Math.min((current / limit) * 100, 100) : 0
@@ -47,7 +55,7 @@ function UsageBar({ label, current, limit }: { label: string; current: number; l
     <div className="space-y-1.5">
       <div className="flex justify-between text-sm">
         <span className="text-gray-600">{label}</span>
-        <span className={isNearLimit ? 'text-red-600 font-medium' : 'text-gray-500'}>
+        <span className={isNearLimit ? 'font-medium text-red-600' : 'text-gray-500'}>
           {current}/{limit}
         </span>
       </div>
@@ -72,9 +80,9 @@ export default function UpgradePage() {
 
   if (isLoadingUsage || isLoadingPlans) {
     return (
-      <div className="p-8 space-y-6">
+      <div className="space-y-6 p-8">
         <Skeleton className="h-8 w-64" />
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
           {Array.from({ length: 3 }).map((_, i) => (
             <Skeleton key={i} className="h-96" />
           ))}
@@ -86,13 +94,11 @@ export default function UpgradePage() {
   const currentPlan = planUsage?.plan
 
   return (
-    <div className="p-8 space-y-8">
+    <div className="space-y-8 p-8">
       <div>
         <h1 className="text-2xl font-bold text-gray-900">Planos e Assinatura</h1>
-        <p className="text-gray-500 mt-1">
-          {currentPlan
-            ? `Seu plano atual: ${currentPlan.name}`
-            : 'Nenhum plano associado'}
+        <p className="mt-1 text-gray-500">
+          {currentPlan ? `Seu plano atual: ${currentPlan.name}` : 'Nenhum plano associado'}
         </p>
       </div>
 
@@ -121,7 +127,7 @@ export default function UpgradePage() {
         </Card>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
         {plans?.map((plan) => {
           const isCurrent = currentPlan?.id === plan.id
           const isProfessional = plan.name === 'Professional'
@@ -131,15 +137,15 @@ export default function UpgradePage() {
               key={plan.id}
               className={`relative ${
                 isCurrent
-                  ? 'border-blue-500 border-2'
+                  ? 'border-2 border-blue-500'
                   : isProfessional
-                    ? 'border-[#17375F] border-2'
+                    ? 'border-2 border-[#17375F]'
                     : ''
               }`}
             >
               {isProfessional && !isCurrent && (
                 <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                  <Badge className="bg-[#17375F] text-white gap-1">
+                  <Badge className="gap-1 bg-[#17375F] text-white">
                     <Crown size={12} />
                     Mais popular
                   </Badge>
@@ -152,9 +158,9 @@ export default function UpgradePage() {
                 </div>
               )}
 
-              <CardHeader className="text-center pb-2">
+              <CardHeader className="pb-2 text-center">
                 <CardTitle className="text-xl">{plan.name}</CardTitle>
-                <p className="text-3xl font-bold text-[#17375F] mt-2">
+                <p className="mt-2 text-3xl font-bold text-[#17375F]">
                   {formatPrice(plan.defaultPrice)}
                   <span className="text-sm font-normal text-gray-500">/mes</span>
                 </p>
@@ -176,15 +182,15 @@ export default function UpgradePage() {
                   </div>
                 </div>
 
-                <div className="border-t pt-4 space-y-2">
+                <div className="space-y-2 border-t pt-4">
                   {allFeatureKeys.map((featureKey) => {
                     const hasFeature = plan.features.includes(featureKey)
                     return (
                       <div key={featureKey} className="flex items-center gap-2 text-sm">
                         {hasFeature ? (
-                          <Check size={16} className="text-green-500 shrink-0" />
+                          <Check size={16} className="shrink-0 text-green-500" />
                         ) : (
-                          <X size={16} className="text-gray-300 shrink-0" />
+                          <X size={16} className="shrink-0 text-gray-300" />
                         )}
                         <span className={hasFeature ? 'text-gray-700' : 'text-gray-400'}>
                           {featureLabels[featureKey] ?? featureKey}

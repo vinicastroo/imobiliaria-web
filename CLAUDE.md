@@ -61,10 +61,12 @@ O middleware (`middleware.ts`) resolve o tenant pelo hostname em cada requisiç�
 4. **Local dev** → usa `NEXT_PUBLIC_AGENCY_ID` ou cookie `__dev_domain__`
 
 O tenant ID é propagado via:
+
 - Header `x-tenant-id` (lido em Server Components com `headers()`)
 - Cookie `__tenant__` (lido em Client Components)
 
 Adicionar novo tenant customizado em `middleware.ts`:
+
 ```ts
 const CUSTOM_SITE_PREFIXES: Record<string, string> = {
   'novo-tenant.com.br': '/novo-site',
@@ -90,35 +92,44 @@ const CUSTOM_SITE_PREFIXES: Record<string, string> = {
 ## Componentes principais
 
 ### `components/menu.tsx`
+
 Sidebar do admin. Lógica:
+
 - `isSuperAdmin` → sempre mostra rotas de plataforma (Agencies, Plans)
 - `!isSuperAdminPanel` → mostra rotas do tenant (Imóveis, Corretores, etc.)
 
 ### `components/property-form/`
+
 Formulário completo de imóvel:
+
 - `property-schema.ts` — schema Zod (latitude/longitude opcionais)
 - `use-property-form.ts` — lógica de submit, upload, toast de erro de validação
 - `image-uploader.tsx` — drag & drop, crop, reordenação, limite de 15 fotos
 - `use-image-crop-queue.ts` — fila de crop sequencial
 
 ### TanStack Query
+
 - Usar `useQuery` para leitura, `useMutation` para escrita
 - Sempre chamar `queryClient.invalidateQueries` após mutations bem-sucedidas
 
 ## Convenções
 
 ### Ícones
+
 - Usar `lucide-react` para componentes client
 - Usar `@phosphor-icons/react/dist/ssr` para componentes server (SSR-safe)
 
 ### Cores do tenant
+
 - Cores primárias definidas como CSS vars: `--primary`, `--secondary`
 - Usar classes Tailwind `text-primary`, `bg-primary`, `border-primary`
 - **Nunca** hardcodar cores hex de tenant (ex: `#17375F`)
 
 ### Validação de formulários
+
 - Schema Zod em arquivo separado `*-schema.ts`
 - Usar segundo argumento do `handleSubmit` para mostrar toast no erro de validação:
+
 ```ts
 form.handleSubmit(onValid, (errors) => {
   const first = Object.values(errors).find(Boolean) as { message?: string }
@@ -127,6 +138,7 @@ form.handleSubmit(onValid, (errors) => {
 ```
 
 ### Componentes de lista
+
 - Usar `memo()` em itens de lista que renderizam frequentemente
 - Preferir Server Components para páginas de listagem
 

@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
@@ -80,14 +80,15 @@ export default function CrmPage() {
   return (
     <FeatureGate feature="clients">
       <div className="min-h-screen bg-gray-50">
-        <main className="w-full max-w-[1400px] mx-auto p-4 md:p-8">
-
-          <div className="flex flex-col gap-4 mb-6">
+        <main className="mx-auto w-full max-w-[1400px] p-4 md:p-8">
+          <div className="mb-6 flex flex-col gap-4">
             <BackLink href="/admin" />
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
               <div>
-                <h1 className="text-2xl font-bold text-primary">CRM</h1>
-                <p className="text-gray-500 text-sm">Acompanhe o relacionamento com seus contatos.</p>
+                <h1 className="text-primary text-2xl font-bold">CRM</h1>
+                <p className="text-sm text-gray-500">
+                  Acompanhe o relacionamento com seus contatos.
+                </p>
               </div>
               <Button onClick={handleCreate}>
                 <UserPlus className="mr-2 h-4 w-4" /> Novo Contato
@@ -96,8 +97,8 @@ export default function CrmPage() {
           </div>
 
           {isLoading ? (
-            <div className="flex justify-center items-center py-24 gap-2 text-muted-foreground">
-              <Loader2 className="animate-spin h-5 w-5" />
+            <div className="text-muted-foreground flex items-center justify-center gap-2 py-24">
+              <Loader2 className="h-5 w-5 animate-spin" />
               Carregando contatos...
             </div>
           ) : (
@@ -123,9 +124,7 @@ export default function CrmPage() {
             <AlertDialogContent>
               <AlertDialogHeader>
                 <AlertDialogTitle className="text-red-600">Excluir contato?</AlertDialogTitle>
-                <AlertDialogDescription>
-                  Essa ação não pode ser desfeita.
-                </AlertDialogDescription>
+                <AlertDialogDescription>Essa ação não pode ser desfeita.</AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
                 <AlertDialogCancel disabled={deleteMutation.isPending}>Cancelar</AlertDialogCancel>
@@ -134,13 +133,12 @@ export default function CrmPage() {
                   onClick={() => deleteMutation.mutate()}
                   disabled={deleteMutation.isPending}
                 >
-                  {deleteMutation.isPending && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
+                  {deleteMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                   Confirmar
                 </Button>
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>
-
         </main>
       </div>
     </FeatureGate>

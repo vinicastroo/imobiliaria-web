@@ -58,7 +58,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       title: property.name,
       description: property.summary,
       url: `https://imoveisgilli.com.br/imoveis/${property.slug}`,
-      type: "website",
+      type: 'website',
       images: [
         {
           url: ogImage,
@@ -69,7 +69,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       ],
     },
     twitter: {
-      card: "summary_large_image",
+      card: 'summary_large_image',
       title: property.name,
       description: property.summary,
       images: [ogImage],
@@ -81,9 +81,12 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 const getRecommendedProperties = unstable_cache(
   async (agencyId: string, city: string, currentId: string): Promise<RecommendedProperty[]> => {
     try {
-      const response = await api.get<GetPropertiesResponse>(`/imovel/todos?filter[city]=${encodeURIComponent(city)}&pageSize=5&visible=true`, {
-        headers: { 'x-agency-id': agencyId },
-      })
+      const response = await api.get<GetPropertiesResponse>(
+        `/imovel/todos?filter[city]=${encodeURIComponent(city)}&pageSize=5&visible=true`,
+        {
+          headers: { 'x-agency-id': agencyId },
+        },
+      )
       const data = response.data
       const allProperties = data.properties || []
       const filtered = allProperties.filter((p: Properties) => p.id !== currentId)
@@ -99,6 +102,7 @@ const getRecommendedProperties = unstable_cache(
         transactionType: prop.transactionType,
         city: prop.city,
         neighborhood: prop.neighborhood,
+        summary: prop.summary,
         bedrooms: prop.bedrooms,
         parkingSpots: prop.parkingSpots,
         totalArea: prop.totalArea,
@@ -109,18 +113,18 @@ const getRecommendedProperties = unstable_cache(
         type_property: prop.type_property,
         applyWatermark: prop.applyWatermark,
 
-        coverImage: prop.files && prop.files.length > 0
-          ? `${cloudFrontUrl}/${prop.files[0].fileName}`
-          : undefined
+        coverImage:
+          prop.files && prop.files.length > 0
+            ? `${cloudFrontUrl}/${prop.files[0].fileName}`
+            : undefined,
       }))
-
     } catch (error) {
-      console.error("Erro ao buscar recomendados:", error)
+      console.error('Erro ao buscar recomendados:', error)
       return []
     }
   },
   ['recommended-properties'],
-  { revalidate: 1800, tags: ['properties'] } // 30 minutos
+  { revalidate: 1800, tags: ['properties'] }, // 30 minutos
 )
 
 interface FeatureItemProps {
@@ -130,18 +134,23 @@ interface FeatureItemProps {
   suffix?: string
 }
 
-const FeatureItem = ({ icon: Icon, value, label, suffix = "" }: FeatureItemProps) => {
+const FeatureItem = ({ icon: Icon, value, label, suffix = '' }: FeatureItemProps) => {
   if (!Number(value)) return null
   return (
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
-          <div className="flex items-center gap-2 bg-[#EE9020]/5 px-3 py-2 rounded-md">
+          <div className="flex items-center gap-2 rounded-md bg-[#EE9020]/5 px-3 py-2">
             <Icon size={24} className="text-[#EE9020]" />
-            <span className="text-lg font-bold text-[#EE9020]">{value}{suffix}</span>
+            <span className="text-lg font-bold text-[#EE9020]">
+              {value}
+              {suffix}
+            </span>
           </div>
         </TooltipTrigger>
-        <TooltipContent><p>{label}</p></TooltipContent>
+        <TooltipContent>
+          <p>{label}</p>
+        </TooltipContent>
       </Tooltip>
     </TooltipProvider>
   )
@@ -190,40 +199,41 @@ export default async function PropertyPage({ params }: PageProps) {
       />
       <MenubarHome socialLinks={GILLI_SOCIAL} />
 
-      <div className="max-w-[1200px] mx-auto p-4 space-y-8 py-8 md:py-12">
-
+      <div className="mx-auto max-w-[1200px] space-y-8 p-4 py-8 md:py-12">
         <PropertyImagesCarousel
-          files={property.files.map(file => ({
+          files={property.files.map((file) => ({
             id: file.id,
             path: file.path,
-            fileName: file.fileName
+            fileName: file.fileName,
           }))}
           propertyName={property.name}
         />
 
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
-
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-12">
           {/* Coluna Principal (Detalhes) */}
-          <div className="md:col-span-8 space-y-6">
+          <div className="space-y-6 md:col-span-8">
             <Card className="border-gray-200 shadow-sm">
               <CardContent className="p-6">
-
                 {/* Cabeçalho */}
-                <div className="space-y-2 mb-6">
-                  <h1 className="text-3xl md:text-4xl font-bold text-[#0F172A]">{property.name}</h1>
-                  <div className="flex items-center justify-between text-gray-500 gap-1 flex-wrap">
-                    <div className='flex items-center gap-2'>
+                <div className="mb-6 space-y-2">
+                  <h1 className="text-3xl font-bold text-[#0F172A] md:text-4xl">{property.name}</h1>
+                  <div className="flex flex-wrap items-center justify-between gap-1 text-gray-500">
+                    <div className="flex items-center gap-2">
                       <MapPin size={18} />
-                      <span>{property.city} - {property.neighborhood}</span>
+                      <span>
+                        {property.city} - {property.neighborhood}
+                      </span>
                       {property.street && (
                         <>
                           <span className="mx-1 hidden sm:inline">•</span>
-                          <span className="hidden sm:inline">{property.street}, {property.numberAddress}</span>
+                          <span className="hidden sm:inline">
+                            {property.street}, {property.numberAddress}
+                          </span>
                         </>
                       )}
                     </div>
                     <div>
-                      <span className='text-xs bg-[#EE9020] text-white px-4 py-1 rounded-full'>
+                      <span className="rounded-full bg-[#EE9020] px-4 py-1 text-xs text-white">
                         Ref: {property.code || property.id.substring(0, 8).toUpperCase()}
                       </span>
                     </div>
@@ -234,14 +244,24 @@ export default async function PropertyPage({ params }: PageProps) {
 
                 {/* Features */}
                 <div>
-                  <h3 className="text-sm font-bold text-[#0F172A] uppercase mb-4">Informações</h3>
+                  <h3 className="mb-4 text-sm font-bold text-[#0F172A] uppercase">Informações</h3>
                   <div className="flex flex-wrap gap-4">
                     <FeatureItem icon={BedDouble} value={property.bedrooms} label="Quartos" />
                     <FeatureItem icon={Bath} value={property.suites} label="Suítes" />
                     <FeatureItem icon={Bath} value={property.bathrooms} label="Banheiros" />
                     <FeatureItem icon={CarFront} value={property.parkingSpots} label="Vagas" />
-                    <FeatureItem icon={Ruler} value={property.totalArea} label="Área Total" suffix=" m²" />
-                    <FeatureItem icon={Grid2X2} value={property.privateArea} label="Área Privativa" suffix=" m²" />
+                    <FeatureItem
+                      icon={Ruler}
+                      value={property.totalArea}
+                      label="Área Total"
+                      suffix=" m²"
+                    />
+                    <FeatureItem
+                      icon={Grid2X2}
+                      value={property.privateArea}
+                      label="Área Privativa"
+                      suffix=" m²"
+                    />
                   </div>
                 </div>
 
@@ -249,10 +269,16 @@ export default async function PropertyPage({ params }: PageProps) {
                   <>
                     <Separator className="my-6" />
                     <div>
-                      <h3 className="text-sm font-bold text-[#0F172A] uppercase mb-4">Infraestrutura</h3>
+                      <h3 className="mb-4 text-sm font-bold text-[#0F172A] uppercase">
+                        Infraestrutura
+                      </h3>
                       <div className="flex flex-wrap gap-2">
                         {property.property_infrastructures.map(({ infrastructure }) => (
-                          <Badge key={infrastructure.id} variant="outline" className="text-xs px-3 py-1  text-[#EE9020] border-[#EE9020]">
+                          <Badge
+                            key={infrastructure.id}
+                            variant="outline"
+                            className="border-[#EE9020] px-3 py-1 text-xs text-[#EE9020]"
+                          >
                             {infrastructure.name}
                           </Badge>
                         ))}
@@ -266,18 +292,18 @@ export default async function PropertyPage({ params }: PageProps) {
                 {/* Descrição */}
                 <div className="space-y-4">
                   <h3 className="text-sm font-bold text-[#0F172A] uppercase">Sobre o imóvel</h3>
-                  <p className="text-gray-600 italic border-l-4 border-[#EE9020] pl-4">
+                  <p className="border-l-4 border-[#EE9020] pl-4 text-gray-600 italic">
                     {property.summary}
                   </p>
 
                   <PropertyDescription description={property.description} />
                 </div>
 
-                {(property.latitude && property.longitude) && (
+                {property.latitude && property.longitude && (
                   <>
-                    <Separator className='my-10' />
+                    <Separator className="my-10" />
                     <div className="space-y-4">
-                      <h3 className="text-sm font-bold text-[#EE9020] uppercase flex items-center gap-2">
+                      <h3 className="flex items-center gap-2 text-sm font-bold text-[#EE9020] uppercase">
                         <MapPin size={18} />
                         Localização
                       </h3>
@@ -287,24 +313,27 @@ export default async function PropertyPage({ params }: PageProps) {
                         popupText={property.name}
                         radius={500}
                       />
-                      <p className="text-xs text-gray-400 text-center">
-                        A localização no mapa é aproximada. Consulte o corretor para o endereço exato.
+                      <p className="text-center text-xs text-gray-400">
+                        A localização no mapa é aproximada. Consulte o corretor para o endereço
+                        exato.
                       </p>
                     </div>
                   </>
                 )}
-
               </CardContent>
             </Card>
           </div>
 
           {/* Coluna Lateral (Preço e Corretores) */}
-          <div className="md:col-span-4 space-y-6">
+          <div className="space-y-6 md:col-span-4">
             {/* Card de Valor */}
-            <Card className="border-gray-200 shadow-sm sticky top-4">
-              <CardContent className="p-6 space-y-6">
-                <div className="flex justify-between items-center border-b pb-4">
-                  <Badge variant="secondary" className={`text-lg px-4 py-1 ${property.transactionType === 'ALUGUEL' ? 'bg-emerald-100 text-emerald-700' : 'bg-[#EE9020]/10 text-[#EE9020]'}`}>
+            <Card className="sticky top-4 border-gray-200 shadow-sm">
+              <CardContent className="space-y-6 p-6">
+                <div className="flex items-center justify-between border-b pb-4">
+                  <Badge
+                    variant="secondary"
+                    className={`px-4 py-1 text-lg ${property.transactionType === 'ALUGUEL' ? 'bg-emerald-100 text-emerald-700' : 'bg-[#EE9020]/10 text-[#EE9020]'}`}
+                  >
                     {property.transactionType === 'ALUGUEL' ? 'Aluguel' : 'Venda'}
                   </Badge>
                   <span className="text-2xl font-bold text-[#EE9020]">
@@ -318,19 +347,17 @@ export default async function PropertyPage({ params }: PageProps) {
 
                 {/* Lista de Corretores */}
                 <div>
-                  <h3 className="text-sm font-semibold text-gray-500 uppercase mb-4">Corretores Responsáveis</h3>
+                  <h3 className="mb-4 text-sm font-semibold text-gray-500 uppercase">
+                    Corretores Responsáveis
+                  </h3>
                   {realtors.length > 0 ? (
                     <div className="space-y-4">
                       {realtors.map((realtor: Realtor) => (
-                        <RealtorsCard
-                          key={realtor.id}
-                          realtor={realtor}
-                          property={property}
-                        />
+                        <RealtorsCard key={realtor.id} realtor={realtor} property={property} />
                       ))}
                     </div>
                   ) : (
-                    <div className="text-sm text-gray-500 text-center py-4 border border-dashed rounded-md">
+                    <div className="rounded-md border border-dashed py-4 text-center text-sm text-gray-500">
                       Entre em contato com a imobiliária.
                     </div>
                   )}

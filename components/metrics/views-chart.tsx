@@ -1,6 +1,14 @@
-"use client"
+'use client'
 
-import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
+import {
+  Area,
+  AreaChart,
+  CartesianGrid,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from 'recharts'
 import { TrendingUp } from 'lucide-react'
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -27,7 +35,8 @@ function ViewsTooltip({ active, payload, label }: ViewsTooltipProps) {
     <div className="rounded-lg border border-gray-200 bg-white px-3 py-2 shadow-[0_4px_12px_rgba(16,24,40,0.08)]">
       <p className="text-[11px] text-gray-400">{formatDay(String(label), true)}</p>
       <p className="text-sm font-semibold text-gray-900">
-        {payload[0].value?.toLocaleString('pt-BR')} visualizaç{payload[0].value === 1 ? 'ão' : 'ões'}
+        {payload[0].value?.toLocaleString('pt-BR')} visualizaç
+        {payload[0].value === 1 ? 'ão' : 'ões'}
       </p>
     </div>
   )
@@ -43,7 +52,7 @@ export function ViewsChart({ data, loading }: ViewsChartProps) {
 
   return (
     <Card className="border-gray-200/80 shadow-[0_1px_3px_rgba(16,24,40,0.06)]">
-      <CardHeader className="pb-0 pt-5">
+      <CardHeader className="pt-5 pb-0">
         <CardTitle className="text-base font-semibold">Visualizações por dia</CardTitle>
       </CardHeader>
       <CardContent className="pt-4">

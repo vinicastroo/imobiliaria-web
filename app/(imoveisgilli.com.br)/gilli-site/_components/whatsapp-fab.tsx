@@ -11,9 +11,9 @@ export function WhatsAppFab() {
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Falar pelo WhatsApp"
-      className="fixed bottom-6 right-6 z-50 flex items-center justify-center w-14 h-14 rounded-full bg-[#25D366] shadow-lg hover:bg-[#1ebe5d] transition-colors"
+      className="fixed right-6 bottom-6 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] shadow-lg transition-colors hover:bg-[#1ebe5d]"
     >
-      <WhatsappLogo size={30} weight="fill" className="text-white animate-pulse" />
+      <WhatsappLogo size={30} weight="fill" className="animate-pulse text-white" />
     </Link>
   )
 }

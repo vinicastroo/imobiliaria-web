@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { useState, useCallback, useRef } from 'react'
 import type { ImageItem } from './types'
@@ -20,7 +20,9 @@ async function convertHeicToJpeg(file: File): Promise<File> {
     const newName = file.name.replace(/\.(heic|heif)$/i, '.jpg')
     return new File([converted], newName, { type: 'image/jpeg' })
   } catch {
-    throw new Error(`Não foi possível converter "${file.name}". Converta para JPG ou PNG antes de enviar.`)
+    throw new Error(
+      `Não foi possível converter "${file.name}". Converta para JPG ou PNG antes de enviar.`,
+    )
   }
 }
 

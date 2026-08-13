@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
@@ -13,7 +13,7 @@ import {
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogCancel,
-} from "@/components/ui/alert-dialog"
+} from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
 
 interface DeleteClientDialogProps {
@@ -53,12 +53,8 @@ export function DeleteClientDialog({ open, onOpenChange, id }: DeleteClientDialo
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel disabled={isPending}>Cancelar</AlertDialogCancel>
-          <Button
-            variant="destructive"
-            onClick={() => deleteClient()}
-            disabled={isPending}
-          >
-            {isPending ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
+          <Button variant="destructive" onClick={() => deleteClient()} disabled={isPending}>
+            {isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
             Confirmar Exclusão
           </Button>
         </AlertDialogFooter>

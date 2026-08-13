@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
@@ -43,20 +43,20 @@ export default function PlansPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
-      <main className="flex-1 w-full max-w-[1200px] mx-auto p-4 md:p-8">
-        <div className="flex flex-col gap-4 mb-6">
+    <div className="flex min-h-screen flex-col bg-gray-50">
+      <main className="mx-auto w-full max-w-[1200px] flex-1 p-4 md:p-8">
+        <div className="mb-6 flex flex-col gap-4">
           <BackLink href="/admin" />
 
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
             <div>
-              <h1 className="text-2xl font-bold text-primary">Gestão de Planos</h1>
+              <h1 className="text-primary text-2xl font-bold">Gestão de Planos</h1>
               <p className="text-gray-500">Visualize e edite os planos da plataforma.</p>
             </div>
           </div>
         </div>
 
-        <div className="rounded-md border bg-white py-3 px-4">
+        <div className="rounded-md border bg-white px-4 py-3">
           <Table>
             <TableHeader>
               <TableRow>
@@ -74,8 +74,8 @@ export default function PlansPage() {
               {isLoading ? (
                 <TableRow>
                   <TableCell colSpan={8} className="h-24 text-center">
-                    <div className="flex justify-center items-center gap-2 text-muted-foreground">
-                      <Loader2 className="animate-spin h-4 w-4" />
+                    <div className="text-muted-foreground flex items-center justify-center gap-2">
+                      <Loader2 className="h-4 w-4 animate-spin" />
                       Carregando...
                     </div>
                   </TableCell>
@@ -93,8 +93,8 @@ export default function PlansPage() {
                       <Badge
                         className={
                           plan.active
-                            ? 'bg-green-100 text-green-800 border-green-200'
-                            : 'bg-gray-100 text-gray-600 border-gray-200'
+                            ? 'border-green-200 bg-green-100 text-green-800'
+                            : 'border-gray-200 bg-gray-100 text-gray-600'
                         }
                       >
                         {plan.active ? 'Ativo' : 'Inativo'}
@@ -104,7 +104,7 @@ export default function PlansPage() {
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="h-8 w-8 text-primary hover:text-primary/80 hover:bg-primary/5"
+                        className="text-primary hover:text-primary/80 hover:bg-primary/5 h-8 w-8"
                         onClick={() => handleOpenEdit(plan)}
                         title="Editar"
                       >
@@ -115,7 +115,7 @@ export default function PlansPage() {
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={8} className="h-24 text-center text-muted-foreground">
+                  <TableCell colSpan={8} className="text-muted-foreground h-24 text-center">
                     Nenhum plano encontrado.
                   </TableCell>
                 </TableRow>
@@ -124,11 +124,7 @@ export default function PlansPage() {
           </Table>
         </div>
 
-        <PlanEditDialog
-          open={isEditOpen}
-          onOpenChange={setIsEditOpen}
-          planToEdit={editPlan}
-        />
+        <PlanEditDialog open={isEditOpen} onOpenChange={setIsEditOpen} planToEdit={editPlan} />
       </main>
     </div>
   )

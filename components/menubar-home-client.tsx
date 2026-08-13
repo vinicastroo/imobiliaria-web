@@ -36,7 +36,7 @@ export function MenubarHomeClient({ logoUrl, primaryColor, socialLinks }: Menuba
       alt="Logo"
       width={120}
       height={120}
-      className="w-16 h-16 md:w-[120px] md:h-[120px] object-contain"
+      className="h-16 w-16 object-contain md:h-[120px] md:w-[120px]"
       priority
       unoptimized
     />
@@ -45,14 +45,13 @@ export function MenubarHomeClient({ logoUrl, primaryColor, socialLinks }: Menuba
   const bgStyle = { backgroundColor: primaryColor ?? '#17375F' }
 
   return (
-    <header className="flex justify-center items-center w-full relative z-50" style={bgStyle}>
-      <div className="w-full max-w-[1200px] flex justify-between items-center p-4">
-
+    <header className="relative z-50 flex w-full items-center justify-center" style={bgStyle}>
+      <div className="flex w-full max-w-[1200px] items-center justify-between p-4">
         {/* --- LOGO --- */}
         <Link href="/">{logoEl}</Link>
 
         {/* --- DESKTOP NAV --- */}
-        <nav className="hidden md:flex flex items-center gap-3">
+        <nav className="flex hidden items-center gap-3 md:flex">
           <div className="flex items-center gap-3">
             <SocialLink href={whatsappUrl} aria="WhatsApp">
               <WhatsappLogo size={20} />
@@ -67,7 +66,7 @@ export function MenubarHomeClient({ logoUrl, primaryColor, socialLinks }: Menuba
             )}
           </div>
 
-          <div className="flex items-center gap-6 text-white font-medium text-base">
+          <div className="flex items-center gap-6 text-base font-medium text-white">
             <NavLink href="/imoveis">Imóveis</NavLink>
             <NavLink href="/quem-somos">Quem somos</NavLink>
             <NavLink href="/#contact">Entre em contato</NavLink>
@@ -76,7 +75,7 @@ export function MenubarHomeClient({ logoUrl, primaryColor, socialLinks }: Menuba
 
         {/* --- BOTÃO HAMBÚRGUER --- */}
         <button
-          className="md:hidden text-white p-2 focus:outline-none"
+          className="p-2 text-white focus:outline-none md:hidden"
           onClick={toggleMenu}
           aria-label="Abrir menu"
         >
@@ -86,12 +85,16 @@ export function MenubarHomeClient({ logoUrl, primaryColor, socialLinks }: Menuba
 
       {/* --- MENU MOBILE FULL SCREEN --- */}
       {isMobileMenuOpen && (
-        <div className="fixed inset-0 z-[9999] flex flex-col animate-in fade-in slide-in-from-right duration-300" style={bgStyle}>
-
-          <div className="w-full max-w-[1200px] mx-auto flex justify-between items-center p-4">
-            <Link href="/" onClick={toggleMenu}>{logoEl}</Link>
+        <div
+          className="animate-in fade-in slide-in-from-right fixed inset-0 z-[9999] flex flex-col duration-300"
+          style={bgStyle}
+        >
+          <div className="mx-auto flex w-full max-w-[1200px] items-center justify-between p-4">
+            <Link href="/" onClick={toggleMenu}>
+              {logoEl}
+            </Link>
             <button
-              className="text-white p-2 flex justify-center items-center gap-2 focus:outline-none"
+              className="flex items-center justify-center gap-2 p-2 text-white focus:outline-none"
               onClick={toggleMenu}
               aria-label="Fechar menu"
             >
@@ -99,31 +102,31 @@ export function MenubarHomeClient({ logoUrl, primaryColor, socialLinks }: Menuba
             </button>
           </div>
 
-          <div className="flex-1 flex flex-col items-start justify-start gap-8 px-4">
+          <div className="flex flex-1 flex-col items-start justify-start gap-8 px-4">
             <Link
               href="/imoveis"
-              className="text-white text-lg border-b border-white/10 w-full pb-4 font-light hover:text-gray-300 transition-colors"
+              className="w-full border-b border-white/10 pb-4 text-lg font-light text-white transition-colors hover:text-gray-300"
               onClick={toggleMenu}
             >
               Imóveis
             </Link>
             <Link
               href="/quem-somos"
-              className="text-white text-lg border-b border-white/10 w-full pb-4 font-light hover:text-gray-300 transition-colors"
+              className="w-full border-b border-white/10 pb-4 text-lg font-light text-white transition-colors hover:text-gray-300"
               onClick={toggleMenu}
             >
               Quem somos
             </Link>
             <Link
               href="/#contact"
-              className="text-white text-lg border-b border-white/10 w-full pb-4 font-light hover:text-gray-300 transition-colors"
+              className="w-full border-b border-white/10 pb-4 text-lg font-light text-white transition-colors hover:text-gray-300"
               onClick={toggleMenu}
             >
               Entre em contato
             </Link>
           </div>
 
-          <div className="p-10 flex justify-center gap-8 border-t border-white/10 mx-8">
+          <div className="mx-8 flex justify-center gap-8 border-t border-white/10 p-10">
             <SocialLink href={whatsappUrl} aria="WhatsApp">
               <WhatsappLogo size={24} />
             </SocialLink>
@@ -142,13 +145,21 @@ export function MenubarHomeClient({ logoUrl, primaryColor, socialLinks }: Menuba
   )
 }
 
-function SocialLink({ href, aria, children }: { href: string; aria: string; children: React.ReactNode }) {
+function SocialLink({
+  href,
+  aria,
+  children,
+}: {
+  href: string
+  aria: string
+  children: React.ReactNode
+}) {
   return (
     <Link
       href={href}
       target="_blank"
       aria-label={aria}
-      className="text-white hover:text-gray-300 transition-colors p-1"
+      className="p-1 text-white transition-colors hover:text-gray-300"
     >
       {children}
     </Link>
@@ -157,7 +168,7 @@ function SocialLink({ href, aria, children }: { href: string; aria: string; chil
 
 function NavLink({ href, children }: { href: string; children: React.ReactNode }) {
   return (
-    <Link href={href} className="hover:underline hover:opacity-80 transition-opacity text-white">
+    <Link href={href} className="text-white transition-opacity hover:underline hover:opacity-80">
       {children}
     </Link>
   )

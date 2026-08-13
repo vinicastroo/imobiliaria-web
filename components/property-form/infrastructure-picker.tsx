@@ -1,22 +1,22 @@
-"use client"
+'use client'
 
-import { useState } from "react"
-import { Plus, Loader2, X } from "lucide-react"
-import { useQueryClient } from "@tanstack/react-query"
-import { toast } from "sonner"
+import { useState } from 'react'
+import { Plus, Loader2, X } from 'lucide-react'
+import { useQueryClient } from '@tanstack/react-query'
+import { toast } from 'sonner'
 
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Separator } from "@/components/ui/separator"
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Separator } from '@/components/ui/separator'
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogFooter,
-} from "@/components/ui/dialog"
-import api from "@/services/api"
-import type { Infrastructure } from "@/hooks/use-infrastructures"
+} from '@/components/ui/dialog'
+import api from '@/services/api'
+import type { Infrastructure } from '@/hooks/use-infrastructures'
 
 interface InfrastructurePickerProps {
   items: Infrastructure[]
@@ -27,7 +27,7 @@ interface InfrastructurePickerProps {
 export function InfrastructurePicker({ items, selected, onChange }: InfrastructurePickerProps) {
   const queryClient = useQueryClient()
   const [open, setOpen] = useState(false)
-  const [name, setName] = useState("")
+  const [name, setName] = useState('')
   const [isSaving, setIsSaving] = useState(false)
 
   const selectedItems = items.filter((item) => selected.includes(item.id))
@@ -43,13 +43,13 @@ export function InfrastructurePicker({ items, selected, onChange }: Infrastructu
 
     setIsSaving(true)
     try {
-      const res = await api.post<Infrastructure>("/infraestrutura", { name: trimmed })
-      await queryClient.invalidateQueries({ queryKey: ["infrastructures"] })
+      const res = await api.post<Infrastructure>('/infraestrutura', { name: trimmed })
+      await queryClient.invalidateQueries({ queryKey: ['infrastructures'] })
       onChange([...selected, res.data.id])
-      setName("")
-      toast.success("Item criado e selecionado!")
+      setName('')
+      toast.success('Item criado e selecionado!')
     } catch {
-      toast.error("Erro ao criar item")
+      toast.error('Erro ao criar item')
     } finally {
       setIsSaving(false)
     }
@@ -61,13 +61,13 @@ export function InfrastructurePicker({ items, selected, onChange }: Infrastructu
         {selectedItems.map((item) => (
           <span
             key={item.id}
-            className="inline-flex items-center gap-1 rounded-full border border-primary bg-primary px-3 py-1 text-sm font-medium text-primary-foreground"
+            className="border-primary bg-primary text-primary-foreground inline-flex items-center gap-1 rounded-full border px-3 py-1 text-sm font-medium"
           >
             {item.name}
             <button
               type="button"
               onClick={() => handleRemove(item.id)}
-              className="ml-0.5 rounded-full p-0.5 hover:bg-primary-foreground/20 transition-colors"
+              className="hover:bg-primary-foreground/20 ml-0.5 rounded-full p-0.5 transition-colors"
               aria-label={`Remover ${item.name}`}
             >
               <X className="h-3 w-3" />
@@ -80,14 +80,20 @@ export function InfrastructurePicker({ items, selected, onChange }: Infrastructu
           variant="outline"
           size="sm"
           onClick={() => setOpen(true)}
-          className="rounded-full px-4 border-dashed text-muted-foreground hover:text-foreground"
+          className="text-muted-foreground hover:text-foreground rounded-full border-dashed px-4"
         >
           <Plus className="h-3.5 w-3.5" />
-          {selectedItems.length === 0 ? "Adicionar infraestrutura" : "Adicionar"}
+          {selectedItems.length === 0 ? 'Adicionar infraestrutura' : 'Adicionar'}
         </Button>
       </div>
 
-      <Dialog open={open} onOpenChange={(v) => { setOpen(v); setName("") }}>
+      <Dialog
+        open={open}
+        onOpenChange={(v) => {
+          setOpen(v)
+          setName('')
+        }}
+      >
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle>Infraestrutura</DialogTitle>
@@ -95,10 +101,10 @@ export function InfrastructurePicker({ items, selected, onChange }: Infrastructu
 
           {unselectedItems.length > 0 ? (
             <>
-              <p className="text-sm text-muted-foreground -mt-2">
+              <p className="text-muted-foreground -mt-2 text-sm">
                 Clique para adicionar ao imóvel ou crie um novo abaixo.
               </p>
-              <div className="flex flex-wrap gap-2 max-h-48 overflow-y-auto py-1">
+              <div className="flex max-h-48 flex-wrap gap-2 overflow-y-auto py-1">
                 {unselectedItems.map((item) => (
                   <Button
                     key={item.id}
@@ -116,7 +122,7 @@ export function InfrastructurePicker({ items, selected, onChange }: Infrastructu
             </>
           ) : items.length > 0 ? (
             <>
-              <p className="text-sm text-muted-foreground -mt-2">
+              <p className="text-muted-foreground -mt-2 text-sm">
                 Todos os itens já foram selecionados. Crie um novo abaixo.
               </p>
               <Separator />
@@ -128,15 +134,15 @@ export function InfrastructurePicker({ items, selected, onChange }: Infrastructu
               placeholder="Nome do novo item..."
               value={name}
               onChange={(e) => setName(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && handleCreate()}
+              onKeyDown={(e) => e.key === 'Enter' && handleCreate()}
               autoFocus={items.length === 0}
             />
-            <Button
-              type="button"
-              onClick={handleCreate}
-              disabled={isSaving || !name.trim()}
-            >
-              {isSaving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
+            <Button type="button" onClick={handleCreate} disabled={isSaving || !name.trim()}>
+              {isSaving ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <Plus className="h-4 w-4" />
+              )}
             </Button>
           </div>
 

@@ -101,7 +101,16 @@ export async function getProperties({
     throw err
   }
 
-  console.log('[getProperties] resposta bruta | status:', response.status, '| totalCount:', response.data.totalCount, '| totalPages:', response.data.totalPages, '| properties.length:', response.data.properties?.length)
+  console.log(
+    '[getProperties] resposta bruta | status:',
+    response.status,
+    '| totalCount:',
+    response.data.totalCount,
+    '| totalPages:',
+    response.data.totalPages,
+    '| properties.length:',
+    response.data.properties?.length,
+  )
 
   if (!response.data.properties) {
     console.warn('[getProperties] campo "properties" ausente na resposta:', response.data)

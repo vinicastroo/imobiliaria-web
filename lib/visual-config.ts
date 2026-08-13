@@ -4,34 +4,34 @@ import { headers } from 'next/headers'
 export type LayoutType = 'MODERN' | 'CLASSIC' | 'MINIMAL'
 
 export interface VisualConfig {
-  logoUrl:        string | null
-  iconUrl:        string | null
-  faviconUrl:     string | null
-  metaPixelId:    string | null
-  gtmId:          string | null
-  primaryColor:   string
+  logoUrl: string | null
+  iconUrl: string | null
+  faviconUrl: string | null
+  metaPixelId: string | null
+  gtmId: string | null
+  primaryColor: string
   secondaryColor: string
-  fontFamily:     string
-  layoutType:     LayoutType
+  fontFamily: string
+  layoutType: LayoutType
   isCustomFolder: boolean
-  siteEnabled:    boolean
+  siteEnabled: boolean
 }
 
 export const PLATFORM_DEFAULTS: VisualConfig = {
-  logoUrl:        null,
-  iconUrl:        null,
-  faviconUrl:     null,
-  metaPixelId:    null,
-  gtmId:          null,
-  primaryColor:   '#EE9020',
+  logoUrl: null,
+  iconUrl: null,
+  faviconUrl: null,
+  metaPixelId: null,
+  gtmId: null,
+  primaryColor: '#EE9020',
   secondaryColor: '#0F172A',
-  fontFamily:     'Montserrat',
-  layoutType:     'MODERN',
+  fontFamily: 'Montserrat',
+  layoutType: 'MODERN',
   isCustomFolder: false,
-  siteEnabled:    true,
+  siteEnabled: true,
 }
 
-/** 
+/**
  * Font families available for tenant selection.
  * Key: display name stored in DB | Value: Google Fonts API query string
  * Empty string = loaded via next/font, no <link> needed.
@@ -82,31 +82,29 @@ export const getTenantVisualConfig = cache(async (): Promise<VisualConfig> => {
   if (!tenantId) return PLATFORM_DEFAULTS
 
   try {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/visual-config`,
-      {
-        headers: { 'x-agency-id': tenantId },
-      },
-    )
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/visual-config`, {
+      headers: { 'x-agency-id': tenantId },
+    })
 
     if (!res.ok) return PLATFORM_DEFAULTS
 
     const data = (await res.json()) as Partial<VisualConfig>
 
     return {
-      logoUrl:        data.logoUrl        ?? null,
-      iconUrl:        data.iconUrl        ?? null,
-      faviconUrl:     data.faviconUrl     ?? null,
-      metaPixelId:    data.metaPixelId    ?? null,
-      gtmId:          data.gtmId          ?? null,
-      primaryColor:   data.primaryColor   ?? PLATFORM_DEFAULTS.primaryColor,
+      logoUrl: data.logoUrl ?? null,
+      iconUrl: data.iconUrl ?? null,
+      faviconUrl: data.faviconUrl ?? null,
+      metaPixelId: data.metaPixelId ?? null,
+      gtmId: data.gtmId ?? null,
+      primaryColor: data.primaryColor ?? PLATFORM_DEFAULTS.primaryColor,
       secondaryColor: data.secondaryColor ?? PLATFORM_DEFAULTS.secondaryColor,
-      fontFamily: SUPPORTED_FONTS[data.fontFamily ?? ''] !== undefined
-        ? (data.fontFamily ?? PLATFORM_DEFAULTS.fontFamily)
-        : PLATFORM_DEFAULTS.fontFamily,
-      layoutType:     (data.layoutType    ?? PLATFORM_DEFAULTS.layoutType) as LayoutType,
+      fontFamily:
+        SUPPORTED_FONTS[data.fontFamily ?? ''] !== undefined
+          ? (data.fontFamily ?? PLATFORM_DEFAULTS.fontFamily)
+          : PLATFORM_DEFAULTS.fontFamily,
+      layoutType: (data.layoutType ?? PLATFORM_DEFAULTS.layoutType) as LayoutType,
       isCustomFolder: data.isCustomFolder ?? false,
-      siteEnabled:    data.siteEnabled    ?? true,
+      siteEnabled: data.siteEnabled ?? true,
     }
   } catch {
     return PLATFORM_DEFAULTS

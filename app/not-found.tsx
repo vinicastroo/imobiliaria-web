@@ -9,25 +9,24 @@ export const metadata: Metadata = {
 
 export default function Custom404() {
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4">
-      <div className="text-center space-y-6 max-w-md mx-auto">
-        <div className="flex justify-center mb-6">
-          <div className="bg-primary/10 p-4 rounded-full">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-gray-50 p-4">
+      <div className="mx-auto max-w-md space-y-6 text-center">
+        <div className="mb-6 flex justify-center">
+          <div className="bg-primary/10 rounded-full p-4">
             <FileQuestion size={64} className="text-primary" />
           </div>
         </div>
 
         <div className="space-y-2">
-          <h1 className="text-7xl font-extrabold text-primary">404</h1>
-          <h2 className="text-2xl font-bold text-gray-800">
-            Página não encontrada
-          </h2>
+          <h1 className="text-primary text-7xl font-extrabold">404</h1>
+          <h2 className="text-2xl font-bold text-gray-800">Página não encontrada</h2>
           <p className="text-gray-600">
-            Desculpe, não conseguimos encontrar a página que você está procurando. Ela pode ter sido movida ou não existir mais.
+            Desculpe, não conseguimos encontrar a página que você está procurando. Ela pode ter sido
+            movida ou não existir mais.
           </p>
         </div>
 
-        <div className="flex flex-col sm:flex-row gap-3 justify-center pt-4">
+        <div className="flex flex-col justify-center gap-3 pt-4 sm:flex-row">
           <Button asChild variant="default" className="gap-2">
             <Link href="/">
               <Home size={18} />
@@ -44,9 +43,7 @@ export default function Custom404() {
         </div>
       </div>
 
-      <div className="absolute bottom-8 text-sm text-gray-400">
-        Erro: 404 - Not Found
-      </div>
+      <div className="absolute bottom-8 text-sm text-gray-400">Erro: 404 - Not Found</div>
     </div>
   )
 }

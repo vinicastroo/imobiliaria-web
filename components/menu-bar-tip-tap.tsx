@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { Editor } from '@tiptap/react'
 import {
@@ -18,7 +18,7 @@ import {
   AlignJustify,
   Undo,
   Redo,
-  Minus
+  Minus,
 } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
@@ -33,11 +33,11 @@ const MenuButton = ({
   action,
   isActive = false,
   icon: Icon,
-  title
+  title,
 }: {
-  action: () => void,
-  isActive?: boolean,
-  icon: React.ElementType,
+  action: () => void
+  isActive?: boolean
+  icon: React.ElementType
   title: string
 }) => (
   <Button
@@ -48,8 +48,8 @@ const MenuButton = ({
     variant="ghost"
     size="sm"
     className={cn(
-      "h-8 w-8 p-0 data-[active=true]:bg-muted data-[active=true]:text-[#17375F]",
-      isActive && "bg-slate-200 text-[#17375F]"
+      'data-[active=true]:bg-muted h-8 w-8 p-0 data-[active=true]:text-[#17375F]',
+      isActive && 'bg-slate-200 text-[#17375F]',
     )}
     title={title}
     type="button"
@@ -65,10 +65,8 @@ export function MenuBarTiptap({ editor }: MenuBarProps) {
 
   // Helper para renderizar botões de forma consistente
 
-
   return (
-    <div className="flex flex-wrap items-center gap-1 p-1 border-b bg-gray-50/50 rounded-t-md">
-
+    <div className="flex flex-wrap items-center gap-1 rounded-t-md border-b bg-gray-50/50 p-1">
       {/* Grupo: Histórico */}
       <div className="flex items-center gap-1">
         <MenuButton
@@ -83,7 +81,7 @@ export function MenuBarTiptap({ editor }: MenuBarProps) {
         />
       </div>
 
-      <Separator orientation="vertical" className="h-6 mx-1" />
+      <Separator orientation="vertical" className="mx-1 h-6" />
 
       {/* Grupo: Formatação Básica */}
       <div className="flex items-center gap-1">
@@ -113,7 +111,7 @@ export function MenuBarTiptap({ editor }: MenuBarProps) {
         />
       </div>
 
-      <Separator orientation="vertical" className="h-6 mx-1" />
+      <Separator orientation="vertical" className="mx-1 h-6" />
 
       {/* Grupo: Cabeçalhos */}
       <div className="flex items-center gap-1">
@@ -137,7 +135,7 @@ export function MenuBarTiptap({ editor }: MenuBarProps) {
         />
       </div>
 
-      <Separator orientation="vertical" className="h-6 mx-1" />
+      <Separator orientation="vertical" className="mx-1 h-6" />
 
       {/* Grupo: Alinhamento (Requer @tiptap/extension-text-align) */}
       <div className="flex items-center gap-1">
@@ -167,7 +165,7 @@ export function MenuBarTiptap({ editor }: MenuBarProps) {
         />
       </div>
 
-      <Separator orientation="vertical" className="h-6 mx-1" />
+      <Separator orientation="vertical" className="mx-1 h-6" />
 
       {/* Grupo: Listas e Blocos */}
       <div className="flex items-center gap-1">

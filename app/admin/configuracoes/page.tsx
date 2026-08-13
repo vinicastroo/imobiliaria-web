@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useDropzone } from 'react-dropzone'
@@ -7,7 +7,21 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { Loader2, Upload, ImageIcon, ShieldAlert, Building2, CreditCard, Palette, Layout, LayoutDashboard, X, ChevronRight, Globe, BarChart3 } from 'lucide-react'
+import {
+  Loader2,
+  Upload,
+  ImageIcon,
+  ShieldAlert,
+  Building2,
+  CreditCard,
+  Palette,
+  Layout,
+  LayoutDashboard,
+  X,
+  ChevronRight,
+  Globe,
+  BarChart3,
+} from 'lucide-react'
 import Image from 'next/image'
 import { toast } from 'sonner'
 
@@ -16,7 +30,13 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { BackLink } from '@/components/back-link'
 import { revalidateVisualConfig } from '@/app/actions/revalidate-visual-config'
@@ -51,22 +71,34 @@ interface AgencyInfo {
 type LayoutType = 'MODERN' | 'CLASSIC' | 'MINIMAL'
 
 interface VisualConfigData {
-  logoUrl:        string | null
-  iconUrl:        string | null
-  faviconUrl:     string | null
-  metaPixelId:    string | null
-  gtmId:          string | null
-  primaryColor:   string
+  logoUrl: string | null
+  iconUrl: string | null
+  faviconUrl: string | null
+  metaPixelId: string | null
+  gtmId: string | null
+  primaryColor: string
   secondaryColor: string
-  fontFamily:     string
-  layoutType:     LayoutType
-  siteEnabled:    boolean
+  fontFamily: string
+  layoutType: LayoutType
+  siteEnabled: boolean
 }
 
 const LAYOUT_OPTIONS: { value: LayoutType; label: string; description: string }[] = [
-  { value: 'MODERN',  label: 'Moderno',    description: 'Hero em tela cheia com overlay e busca centralizada.' },
-  { value: 'CLASSIC', label: 'Clássico',   description: 'Header tradicional com banner colorido e grid de imóveis.' },
-  { value: 'MINIMAL', label: 'Minimalista', description: 'Tipografia clean, muito espaço em branco e foco no conteúdo.' },
+  {
+    value: 'MODERN',
+    label: 'Moderno',
+    description: 'Hero em tela cheia com overlay e busca centralizada.',
+  },
+  {
+    value: 'CLASSIC',
+    label: 'Clássico',
+    description: 'Header tradicional com banner colorido e grid de imóveis.',
+  },
+  {
+    value: 'MINIMAL',
+    label: 'Minimalista',
+    description: 'Tipografia clean, muito espaço em branco e foco no conteúdo.',
+  },
 ]
 
 const agencyInfoSchema = z.object({
@@ -102,15 +134,15 @@ export default function ConfiguracoesPage() {
   const [faviconPreview, setFaviconPreview] = useState<string | null>(null)
 
   const [visualEdits, setVisualEdits] = useState<{
-    primaryColor:   string
+    primaryColor: string
     secondaryColor: string
-    fontFamily:     string
-    layoutType:     LayoutType
+    fontFamily: string
+    layoutType: LayoutType
   } | null>(null)
 
   const [trackingEdits, setTrackingEdits] = useState<{
     metaPixelId: string
-    gtmId:       string
+    gtmId: string
   } | null>(null)
 
   const {
@@ -120,7 +152,16 @@ export default function ConfiguracoesPage() {
     formState: { errors, isDirty },
   } = useForm<AgencyInfoFormData>({
     resolver: zodResolver(agencyInfoSchema),
-    defaultValues: { name: '', cnpj: '', phone: '', email: '', address: '', city: '', state: '', zipCode: '' },
+    defaultValues: {
+      name: '',
+      cnpj: '',
+      phone: '',
+      email: '',
+      address: '',
+      city: '',
+      state: '',
+      zipCode: '',
+    },
   })
 
   const { data: agencyInfo, isLoading: isLoadingInfo } = useQuery<AgencyInfo>({
@@ -141,21 +182,25 @@ export default function ConfiguracoesPage() {
     enabled: isAllowed,
   })
 
-  const primaryColor   = visualEdits?.primaryColor   ?? visualConfig?.primaryColor   ?? '#0f172a'
+  const primaryColor = visualEdits?.primaryColor ?? visualConfig?.primaryColor ?? '#0f172a'
   const secondaryColor = visualEdits?.secondaryColor ?? visualConfig?.secondaryColor ?? '#e2e8f0'
-  const fontFamily     = visualEdits?.fontFamily     ?? visualConfig?.fontFamily     ?? 'Inter'
-  const layoutType     = visualEdits?.layoutType     ?? visualConfig?.layoutType     ?? 'MODERN'
+  const fontFamily = visualEdits?.fontFamily ?? visualConfig?.fontFamily ?? 'Inter'
+  const layoutType = visualEdits?.layoutType ?? visualConfig?.layoutType ?? 'MODERN'
 
   const metaPixelId = trackingEdits?.metaPixelId ?? visualConfig?.metaPixelId ?? ''
-  const gtmId       = trackingEdits?.gtmId       ?? visualConfig?.gtmId       ?? ''
+  const gtmId = trackingEdits?.gtmId ?? visualConfig?.gtmId ?? ''
 
   const setMetaPixelId = (v: string) => setTrackingEdits({ metaPixelId: v, gtmId })
-  const setGtmId       = (v: string) => setTrackingEdits({ metaPixelId, gtmId: v })
+  const setGtmId = (v: string) => setTrackingEdits({ metaPixelId, gtmId: v })
 
-  const setPrimaryColor   = (v: string)     => setVisualEdits({ primaryColor: v, secondaryColor, fontFamily, layoutType })
-  const setSecondaryColor = (v: string)     => setVisualEdits({ primaryColor, secondaryColor: v, fontFamily, layoutType })
-  const setFontFamily     = (v: string)     => setVisualEdits({ primaryColor, secondaryColor, fontFamily: v, layoutType })
-  const setLayoutType     = (v: LayoutType) => setVisualEdits({ primaryColor, secondaryColor, fontFamily, layoutType: v })
+  const setPrimaryColor = (v: string) =>
+    setVisualEdits({ primaryColor: v, secondaryColor, fontFamily, layoutType })
+  const setSecondaryColor = (v: string) =>
+    setVisualEdits({ primaryColor, secondaryColor: v, fontFamily, layoutType })
+  const setFontFamily = (v: string) =>
+    setVisualEdits({ primaryColor, secondaryColor, fontFamily: v, layoutType })
+  const setLayoutType = (v: LayoutType) =>
+    setVisualEdits({ primaryColor, secondaryColor, fontFamily, layoutType: v })
 
   useEffect(() => {
     if (agencyInfo) {
@@ -172,9 +217,9 @@ export default function ConfiguracoesPage() {
     }
   }, [agencyInfo, reset])
 
-
   const infoMutation = useMutation({
-    mutationFn: async (data: AgencyInfoFormData) => (await api.put('/agency-info', data)).data as AgencyInfo,
+    mutationFn: async (data: AgencyInfoFormData) =>
+      (await api.put('/agency-info', data)).data as AgencyInfo,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['agency-info'] })
       toast.success('Dados da imobiliária salvos com sucesso!')
@@ -184,7 +229,11 @@ export default function ConfiguracoesPage() {
 
   const settingsMutation = useMutation({
     mutationFn: async (formData: FormData) =>
-      (await api.put('/agency-settings', formData, { headers: { 'Content-Type': 'multipart/form-data' } })).data as AgencySettings,
+      (
+        await api.put('/agency-settings', formData, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        })
+      ).data as AgencySettings,
     onSuccess: async () => {
       queryClient.invalidateQueries({ queryKey: ['agency-settings'] })
       setLogoFile(null)
@@ -199,7 +248,8 @@ export default function ConfiguracoesPage() {
 
   const visualConfigMutation = useMutation({
     mutationFn: async () =>
-      (await api.put('/visual-config', { primaryColor, secondaryColor, fontFamily, layoutType })).data as VisualConfigData,
+      (await api.put('/visual-config', { primaryColor, secondaryColor, fontFamily, layoutType }))
+        .data as VisualConfigData,
     onSuccess: async () => {
       queryClient.invalidateQueries({ queryKey: ['visual-config'] })
       setVisualEdits(null)
@@ -213,8 +263,11 @@ export default function ConfiguracoesPage() {
     mutationFn: async (file: File) => {
       const formData = new FormData()
       formData.append('icon', file)
-      return (await api.put('/visual-config/icon', formData, { headers: { 'Content-Type': 'multipart/form-data' } }))
-        .data as { iconUrl: string }
+      return (
+        await api.put('/visual-config/icon', formData, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        })
+      ).data as { iconUrl: string }
     },
     onSuccess: async () => {
       queryClient.invalidateQueries({ queryKey: ['visual-config'] })
@@ -230,8 +283,11 @@ export default function ConfiguracoesPage() {
     mutationFn: async (file: File) => {
       const formData = new FormData()
       formData.append('favicon', file)
-      return (await api.put('/visual-config/favicon', formData, { headers: { 'Content-Type': 'multipart/form-data' } }))
-        .data as { faviconUrl: string }
+      return (
+        await api.put('/visual-config/favicon', formData, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        })
+      ).data as { faviconUrl: string }
     },
     onSuccess: async () => {
       queryClient.invalidateQueries({ queryKey: ['visual-config'] })
@@ -245,10 +301,12 @@ export default function ConfiguracoesPage() {
 
   const trackingMutation = useMutation({
     mutationFn: async () =>
-      (await api.put('/visual-config', {
-        metaPixelId: metaPixelId.trim() || null,
-        gtmId: gtmId.trim().toUpperCase() || null,
-      })).data as VisualConfigData,
+      (
+        await api.put('/visual-config', {
+          metaPixelId: metaPixelId.trim() || null,
+          gtmId: gtmId.trim().toUpperCase() || null,
+        })
+      ).data as VisualConfigData,
     onSuccess: async () => {
       queryClient.invalidateQueries({ queryKey: ['visual-config'] })
       setTrackingEdits(null)
@@ -273,7 +331,11 @@ export default function ConfiguracoesPage() {
     trackingMutation.mutate()
   }
 
-  const handleFileSelect = (file: File, setFile: (f: File) => void, setPreview: (p: string) => void) => {
+  const handleFileSelect = (
+    file: File,
+    setFile: (f: File) => void,
+    setPreview: (p: string) => void,
+  ) => {
     setFile(file)
     setPreview(URL.createObjectURL(file))
   }
@@ -291,10 +353,12 @@ export default function ConfiguracoesPage() {
 
   if (!isAllowed) {
     return (
-      <div className="flex flex-col items-center justify-center h-[60vh] text-center gap-4">
+      <div className="flex h-[60vh] flex-col items-center justify-center gap-4 text-center">
         <ShieldAlert className="h-16 w-16 text-gray-300" />
         <h2 className="text-xl font-semibold text-gray-600">Acesso restrito</h2>
-        <p className="text-sm text-gray-400">Apenas o proprietário da imobiliária pode acessar as configurações.</p>
+        <p className="text-sm text-gray-400">
+          Apenas o proprietário da imobiliária pode acessar as configurações.
+        </p>
       </div>
     )
   }
@@ -313,7 +377,7 @@ export default function ConfiguracoesPage() {
   const currentFavicon = faviconPreview ?? visualConfig?.faviconUrl ?? null
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col p-8 gap-6 max-w-[1200px] mx-auto">
+    <div className="mx-auto flex min-h-screen max-w-[1200px] flex-col gap-6 bg-gray-50 p-8">
       <div className="flex flex-col">
         <BackLink href="/admin/imoveis" />
         <h1 className="text-2xl font-bold text-[#17375F]">Configurações</h1>
@@ -331,7 +395,6 @@ export default function ConfiguracoesPage() {
 
         {/* ── Aba: Dados Gerais ─────────────────────────────────────────── */}
         <TabsContent value="dados-gerais" className="space-y-6">
-
           {/* Dados da Imobiliária */}
           <Card className="py-6">
             <CardHeader>
@@ -342,12 +405,17 @@ export default function ConfiguracoesPage() {
               <CardDescription>Informações cadastrais e de contato.</CardDescription>
             </CardHeader>
             <CardContent>
-              <form onSubmit={handleSubmit((data) => infoMutation.mutate(data))} className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <form
+                onSubmit={handleSubmit((data) => infoMutation.mutate(data))}
+                className="space-y-4"
+              >
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                   <div className="space-y-2">
                     <Label htmlFor="name">Nome *</Label>
                     <Input id="name" placeholder="Nome da imobiliária" {...register('name')} />
-                    {errors.name && <span className="text-xs text-red-500">{errors.name.message}</span>}
+                    {errors.name && (
+                      <span className="text-xs text-red-500">{errors.name.message}</span>
+                    )}
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="cnpj">CNPJ</Label>
@@ -355,24 +423,35 @@ export default function ConfiguracoesPage() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                   <div className="space-y-2">
                     <Label htmlFor="phone">Telefone</Label>
                     <Input id="phone" placeholder="(00) 00000-0000" {...register('phone')} />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="email">Email</Label>
-                    <Input id="email" type="email" placeholder="contato@imobiliaria.com" {...register('email')} />
-                    {errors.email && <span className="text-xs text-red-500">{errors.email.message}</span>}
+                    <Input
+                      id="email"
+                      type="email"
+                      placeholder="contato@imobiliaria.com"
+                      {...register('email')}
+                    />
+                    {errors.email && (
+                      <span className="text-xs text-red-500">{errors.email.message}</span>
+                    )}
                   </div>
                 </div>
 
                 <div className="space-y-2">
                   <Label htmlFor="address">Endereço</Label>
-                  <Input id="address" placeholder="Rua, número, complemento" {...register('address')} />
+                  <Input
+                    id="address"
+                    placeholder="Rua, número, complemento"
+                    {...register('address')}
+                  />
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                   <div className="space-y-2">
                     <Label htmlFor="city">Cidade</Label>
                     <Input id="city" placeholder="Cidade" {...register('city')} />
@@ -388,8 +467,19 @@ export default function ConfiguracoesPage() {
                 </div>
 
                 <div className="flex justify-end pt-2">
-                  <Button type="submit" className="bg-[#17375F] hover:bg-[#122b4a]" disabled={infoMutation.isPending || !isDirty}>
-                    {infoMutation.isPending ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Salvando...</> : 'Salvar dados'}
+                  <Button
+                    type="submit"
+                    className="bg-[#17375F] hover:bg-[#122b4a]"
+                    disabled={infoMutation.isPending || !isDirty}
+                  >
+                    {infoMutation.isPending ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Salvando...
+                      </>
+                    ) : (
+                      'Salvar dados'
+                    )}
                   </Button>
                 </div>
               </form>
@@ -408,24 +498,30 @@ export default function ConfiguracoesPage() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  <span className="text-lg font-semibold text-[#17375F]">{agencyInfo.plan.name}</span>
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                    <div className="p-4 bg-blue-50/50 rounded-lg border border-blue-100">
+                  <span className="text-lg font-semibold text-[#17375F]">
+                    {agencyInfo.plan.name}
+                  </span>
+                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                    <div className="rounded-lg border border-blue-100 bg-blue-50/50 p-4">
                       <p className="text-sm text-gray-500">Usuários</p>
                       <p className="text-xl font-bold text-[#17375F]">
                         {agencyInfo.plan.maxUsers < 0 ? 'Sem limite' : agencyInfo.plan.maxUsers}
                       </p>
                     </div>
-                    <div className="p-4 bg-blue-50/50 rounded-lg border border-blue-100">
+                    <div className="rounded-lg border border-blue-100 bg-blue-50/50 p-4">
                       <p className="text-sm text-gray-500">Corretores</p>
                       <p className="text-xl font-bold text-[#17375F]">
-                        {agencyInfo.plan.maxRealtors < 0 ? 'Sem limite' : agencyInfo.plan.maxRealtors}
+                        {agencyInfo.plan.maxRealtors < 0
+                          ? 'Sem limite'
+                          : agencyInfo.plan.maxRealtors}
                       </p>
                     </div>
-                    <div className="p-4 bg-blue-50/50 rounded-lg border border-blue-100">
+                    <div className="rounded-lg border border-blue-100 bg-blue-50/50 p-4">
                       <p className="text-sm text-gray-500">Imóveis</p>
                       <p className="text-xl font-bold text-[#17375F]">
-                        {agencyInfo.plan.maxProperties < 0 ? 'Sem limite' : agencyInfo.plan.maxProperties}
+                        {agencyInfo.plan.maxProperties < 0
+                          ? 'Sem limite'
+                          : agencyInfo.plan.maxProperties}
                       </p>
                     </div>
                   </div>
@@ -437,7 +533,6 @@ export default function ConfiguracoesPage() {
 
         {/* ── Aba: Visual do Site ───────────────────────────────────────── */}
         <TabsContent value="visual-do-site" className="space-y-6">
-
           {/* Logo do Sistema Interno */}
           <LogoSistemaCard
             currentIcon={currentIcon}
@@ -470,7 +565,6 @@ export default function ConfiguracoesPage() {
               <CardDescription>Cores, tipografia e layout do seu site público.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
-
               {/* Layout do Site */}
               <div className="space-y-3">
                 <div className="flex items-center gap-2">
@@ -478,22 +572,23 @@ export default function ConfiguracoesPage() {
                   <Label className="text-sm font-semibold">Layout do Site</Label>
                 </div>
                 <p className="text-xs text-gray-500">
-                  Escolha o estilo visual do seu site público. Não se aplica a sites com layout customizado.
+                  Escolha o estilo visual do seu site público. Não se aplica a sites com layout
+                  customizado.
                 </p>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
                   {LAYOUT_OPTIONS.map((option) => (
                     <button
                       key={option.value}
                       type="button"
                       onClick={() => setLayoutType(option.value)}
-                      className={`text-left p-4 rounded-lg border-2 transition-all ${
+                      className={`rounded-lg border-2 p-4 text-left transition-all ${
                         layoutType === option.value
                           ? 'border-[#17375F] bg-blue-50/50'
                           : 'border-gray-200 hover:border-gray-300'
                       }`}
                     >
-                      <p className="font-semibold text-sm text-gray-800">{option.label}</p>
-                      <p className="text-xs text-gray-500 mt-1">{option.description}</p>
+                      <p className="text-sm font-semibold text-gray-800">{option.label}</p>
+                      <p className="mt-1 text-xs text-gray-500">{option.description}</p>
                     </button>
                   ))}
                 </div>
@@ -502,7 +597,7 @@ export default function ConfiguracoesPage() {
               <div className="border-t" />
 
               {/* Cores */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                 <div className="space-y-2">
                   <Label>Cor Principal</Label>
                   <div className="flex items-center gap-3">
@@ -520,7 +615,10 @@ export default function ConfiguracoesPage() {
                       maxLength={7}
                     />
                   </div>
-                  <div className="h-8 w-full rounded-md border border-gray-100" style={{ backgroundColor: primaryColor }} />
+                  <div
+                    className="h-8 w-full rounded-md border border-gray-100"
+                    style={{ backgroundColor: primaryColor }}
+                  />
                 </div>
 
                 <div className="space-y-2">
@@ -540,7 +638,10 @@ export default function ConfiguracoesPage() {
                       maxLength={7}
                     />
                   </div>
-                  <div className="h-8 w-full rounded-md border border-gray-100" style={{ backgroundColor: secondaryColor }} />
+                  <div
+                    className="h-8 w-full rounded-md border border-gray-100"
+                    style={{ backgroundColor: secondaryColor }}
+                  />
                 </div>
               </div>
 
@@ -562,17 +663,19 @@ export default function ConfiguracoesPage() {
               </div>
 
               {/* Prévia */}
-              <div className="rounded-lg border p-4 space-y-3 bg-gray-50">
-                <p className="text-xs text-gray-400 uppercase font-semibold tracking-wide">Prévia</p>
+              <div className="space-y-3 rounded-lg border bg-gray-50 p-4">
+                <p className="text-xs font-semibold tracking-wide text-gray-400 uppercase">
+                  Prévia
+                </p>
                 <div className="flex flex-wrap items-center gap-3">
                   <div
-                    className="h-9 px-5 rounded-full flex items-center text-white text-sm font-medium shadow-sm"
+                    className="flex h-9 items-center rounded-full px-5 text-sm font-medium text-white shadow-sm"
                     style={{ backgroundColor: primaryColor, fontFamily }}
                   >
                     Botão Principal
                   </div>
                   <div
-                    className="h-9 px-5 rounded-full flex items-center text-white text-sm font-medium shadow-sm"
+                    className="flex h-9 items-center rounded-full px-5 text-sm font-medium text-white shadow-sm"
                     style={{ backgroundColor: secondaryColor, fontFamily }}
                   >
                     Botão Secundário
@@ -589,9 +692,14 @@ export default function ConfiguracoesPage() {
                   onClick={() => visualConfigMutation.mutate()}
                   disabled={visualConfigMutation.isPending}
                 >
-                  {visualConfigMutation.isPending
-                    ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Salvando...</>
-                    : 'Salvar aparência'}
+                  {visualConfigMutation.isPending ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Salvando...
+                    </>
+                  ) : (
+                    'Salvar aparência'
+                  )}
                 </Button>
               </div>
             </CardContent>
@@ -604,16 +712,25 @@ export default function ConfiguracoesPage() {
               <CardDescription>Logo e marca d&apos;água da sua imobiliária.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                 {/* Logo */}
                 <div className="space-y-3">
                   <div>
                     <p className="text-sm font-medium">Logo da Imobiliária</p>
-                    <p className="text-xs text-gray-500">Usada no painel e materiais da imobiliária.</p>
+                    <p className="text-xs text-gray-500">
+                      Usada no painel e materiais da imobiliária.
+                    </p>
                   </div>
-                  <div className="flex items-center justify-center w-full h-48 bg-gray-50 border-2 border-dashed border-gray-200 rounded-lg overflow-hidden">
+                  <div className="flex h-48 w-full items-center justify-center overflow-hidden rounded-lg border-2 border-dashed border-gray-200 bg-gray-50">
                     {currentLogo ? (
-                      <Image src={currentLogo} alt="Logo" width={300} height={150} className="object-contain max-h-full" unoptimized />
+                      <Image
+                        src={currentLogo}
+                        alt="Logo"
+                        width={300}
+                        height={150}
+                        className="max-h-full object-contain"
+                        unoptimized
+                      />
                     ) : (
                       <div className="flex flex-col items-center gap-2 text-gray-400">
                         <ImageIcon className="h-12 w-12" />
@@ -626,13 +743,23 @@ export default function ConfiguracoesPage() {
                     type="file"
                     accept="image/*"
                     className="hidden"
-                    onChange={(e) => { const f = e.target.files?.[0]; if (f) handleFileSelect(f, setLogoFile, setLogoPreview) }}
+                    onChange={(e) => {
+                      const f = e.target.files?.[0]
+                      if (f) handleFileSelect(f, setLogoFile, setLogoPreview)
+                    }}
                   />
-                  <Button type="button" variant="outline" className="w-full" onClick={() => logoInputRef.current?.click()}>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="w-full"
+                    onClick={() => logoInputRef.current?.click()}
+                  >
                     <Upload className="mr-2 h-4 w-4" />
                     {currentLogo ? 'Trocar logo' : 'Escolher logo'}
                   </Button>
-                  {logoFile && <p className="text-xs text-green-600">Selecionado: {logoFile.name}</p>}
+                  {logoFile && (
+                    <p className="text-xs text-green-600">Selecionado: {logoFile.name}</p>
+                  )}
                 </div>
 
                 {/* Marca d'água */}
@@ -641,12 +768,19 @@ export default function ConfiguracoesPage() {
                     <p className="text-sm font-medium">Marca d&apos;água</p>
                     <p className="text-xs text-gray-500">Aplicada sobre as fotos dos imóveis.</p>
                   </div>
-                  <div className="relative flex items-center justify-center w-full h-48 bg-gray-50 border-2 border-dashed border-gray-200 rounded-lg overflow-hidden">
+                  <div className="relative flex h-48 w-full items-center justify-center overflow-hidden rounded-lg border-2 border-dashed border-gray-200 bg-gray-50">
                     <div className="absolute inset-0 bg-gradient-to-br from-gray-100 via-gray-100 to-gray-300" />
                     {currentWatermark ? (
-                      <Image src={currentWatermark} alt="Marca d'água" width={300} height={150} className="object-contain max-h-full relative" unoptimized />
+                      <Image
+                        src={currentWatermark}
+                        alt="Marca d'água"
+                        width={300}
+                        height={150}
+                        className="relative max-h-full object-contain"
+                        unoptimized
+                      />
                     ) : (
-                      <div className="flex flex-col items-center gap-2 text-gray-400 relative">
+                      <div className="relative flex flex-col items-center gap-2 text-gray-400">
                         <ImageIcon className="h-12 w-12" />
                         <span className="text-sm">Nenhuma marca d&apos;água definida</span>
                       </div>
@@ -657,13 +791,23 @@ export default function ConfiguracoesPage() {
                     type="file"
                     accept="image/*"
                     className="hidden"
-                    onChange={(e) => { const f = e.target.files?.[0]; if (f) handleFileSelect(f, setWatermarkFile, setWatermarkPreview) }}
+                    onChange={(e) => {
+                      const f = e.target.files?.[0]
+                      if (f) handleFileSelect(f, setWatermarkFile, setWatermarkPreview)
+                    }}
                   />
-                  <Button type="button" variant="outline" className="w-full" onClick={() => watermarkInputRef.current?.click()}>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="w-full"
+                    onClick={() => watermarkInputRef.current?.click()}
+                  >
                     <Upload className="mr-2 h-4 w-4" />
                     {currentWatermark ? "Trocar marca d'água" : "Escolher marca d'água"}
                   </Button>
-                  {watermarkFile && <p className="text-xs text-green-600">Selecionado: {watermarkFile.name}</p>}
+                  {watermarkFile && (
+                    <p className="text-xs text-green-600">Selecionado: {watermarkFile.name}</p>
+                  )}
                 </div>
               </div>
 
@@ -673,9 +817,14 @@ export default function ConfiguracoesPage() {
                   onClick={handleSaveSettings}
                   disabled={settingsMutation.isPending || (!logoFile && !watermarkFile)}
                 >
-                  {settingsMutation.isPending
-                    ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Salvando...</>
-                    : 'Salvar identidade visual'}
+                  {settingsMutation.isPending ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Salvando...
+                    </>
+                  ) : (
+                    'Salvar identidade visual'
+                  )}
                 </Button>
               </div>
             </CardContent>
@@ -691,11 +840,12 @@ export default function ConfiguracoesPage() {
                 <CardTitle>Rastreamento e Anúncios</CardTitle>
               </div>
               <CardDescription>
-                Conecte ferramentas de marketing ao seu site público. Os scripts são adicionados automaticamente em todas as páginas do site.
+                Conecte ferramentas de marketing ao seu site público. Os scripts são adicionados
+                automaticamente em todas as páginas do site.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                 <div className="space-y-2">
                   <Label htmlFor="metaPixelId">Meta Pixel ID</Label>
                   <Input
@@ -706,7 +856,8 @@ export default function ConfiguracoesPage() {
                     className="font-mono"
                   />
                   <p className="text-xs text-gray-500">
-                    Encontre em Gerenciador de Eventos do Meta → Fontes de dados. Rastreia visitas para anúncios do Facebook e Instagram.
+                    Encontre em Gerenciador de Eventos do Meta → Fontes de dados. Rastreia visitas
+                    para anúncios do Facebook e Instagram.
                   </p>
                 </div>
 
@@ -727,8 +878,9 @@ export default function ConfiguracoesPage() {
 
               <div className="rounded-lg border border-blue-100 bg-blue-50/50 p-4">
                 <p className="text-sm text-gray-600">
-                  <strong>Precisa de outros scripts?</strong> Google Analytics, Google Ads, TikTok Pixel, Hotjar e qualquer outra
-                  ferramenta podem ser adicionados como tags dentro do seu contêiner do Google Tag Manager — sem precisar alterar o site.
+                  <strong>Precisa de outros scripts?</strong> Google Analytics, Google Ads, TikTok
+                  Pixel, Hotjar e qualquer outra ferramenta podem ser adicionados como tags dentro
+                  do seu contêiner do Google Tag Manager — sem precisar alterar o site.
                 </p>
               </div>
 
@@ -738,9 +890,14 @@ export default function ConfiguracoesPage() {
                   onClick={handleSaveTracking}
                   disabled={trackingMutation.isPending || !trackingEdits}
                 >
-                  {trackingMutation.isPending
-                    ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Salvando...</>
-                    : 'Salvar integrações'}
+                  {trackingMutation.isPending ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Salvando...
+                    </>
+                  ) : (
+                    'Salvar integrações'
+                  )}
                 </Button>
               </div>
             </CardContent>
@@ -754,24 +911,33 @@ export default function ConfiguracoesPage() {
 // ── Logo do Sistema Interno ────────────────────────────────────────────────────
 
 interface LogoSistemaCardProps {
-  currentIcon:    string | null
-  iconFile:       File | null
-  setIconFile:    (f: File | null) => void
+  currentIcon: string | null
+  iconFile: File | null
+  setIconFile: (f: File | null) => void
   setIconPreview: (p: string | null) => void
-  isPending:      boolean
-  onSave:         () => void
-  primaryColor:   string
+  isPending: boolean
+  onSave: () => void
+  primaryColor: string
 }
 
 function LogoSistemaCard({
-  currentIcon, iconFile, setIconFile, setIconPreview, isPending, onSave, primaryColor,
+  currentIcon,
+  iconFile,
+  setIconFile,
+  setIconPreview,
+  isPending,
+  onSave,
+  primaryColor,
 }: LogoSistemaCardProps) {
-  const onDrop = useCallback((accepted: File[]) => {
-    const file = accepted[0]
-    if (!file) return
-    setIconFile(file)
-    setIconPreview(URL.createObjectURL(file))
-  }, [setIconFile, setIconPreview])
+  const onDrop = useCallback(
+    (accepted: File[]) => {
+      const file = accepted[0]
+      if (!file) return
+      setIconFile(file)
+      setIconPreview(URL.createObjectURL(file))
+    },
+    [setIconFile, setIconPreview],
+  )
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
@@ -793,30 +959,34 @@ function LogoSistemaCard({
           <CardTitle>Logo do Sistema Interno</CardTitle>
         </div>
         <CardDescription>
-          Exibida na barra lateral do painel administrativo. Use uma versão minimalista — ícone, símbolo ou monograma.
+          Exibida na barra lateral do painel administrativo. Use uma versão minimalista — ícone,
+          símbolo ou monograma.
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="flex flex-col md:flex-row items-start gap-8">
-
+        <div className="flex flex-col items-start gap-8 md:flex-row">
           {/* Dropzone + ações */}
           <div className="flex-1 space-y-4">
             <div
               {...getRootProps()}
-              className={`relative flex flex-col items-center justify-center h-44 rounded-xl border-2 border-dashed transition-colors cursor-pointer select-none
-                ${isDragActive
+              className={`relative flex h-44 cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed transition-colors select-none ${
+                isDragActive
                   ? 'border-[#17375F] bg-blue-50/60'
                   : 'border-gray-200 bg-gray-50 hover:border-gray-300 hover:bg-gray-100/60'
-                }`}
+              }`}
             >
               <input {...getInputProps()} />
 
               {currentIcon ? (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={currentIcon} alt="Logo do painel" className="max-h-28 max-w-[200px] object-contain" />
+                <img
+                  src={currentIcon}
+                  alt="Logo do painel"
+                  className="max-h-28 max-w-[200px] object-contain"
+                />
               ) : (
                 <div className="flex flex-col items-center gap-2 text-gray-400">
-                  <div className="h-12 w-12 rounded-full bg-gray-200/70 flex items-center justify-center">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gray-200/70">
                     <Upload className="h-5 w-5" />
                   </div>
                   <p className="text-sm font-medium text-gray-500">
@@ -828,8 +998,8 @@ function LogoSistemaCard({
 
               {/* Badge "trocar" quando já tem imagem */}
               {currentIcon && (
-                <div className="absolute inset-0 flex items-center justify-center rounded-xl opacity-0 hover:opacity-100 transition-opacity bg-black/30">
-                  <span className="flex items-center gap-1.5 bg-white text-gray-800 text-xs font-medium px-3 py-1.5 rounded-full shadow">
+                <div className="absolute inset-0 flex items-center justify-center rounded-xl bg-black/30 opacity-0 transition-opacity hover:opacity-100">
+                  <span className="flex items-center gap-1.5 rounded-full bg-white px-3 py-1.5 text-xs font-medium text-gray-800 shadow">
                     <Upload className="h-3 w-3" />
                     Trocar imagem
                   </span>
@@ -839,9 +1009,13 @@ function LogoSistemaCard({
 
             {/* Arquivo selecionado */}
             {iconFile && (
-              <div className="flex items-center justify-between px-3 py-2 bg-blue-50 border border-blue-100 rounded-lg">
-                <p className="text-xs text-blue-700 font-medium truncate">{iconFile.name}</p>
-                <button type="button" onClick={clearSelection} className="text-blue-400 hover:text-blue-600 shrink-0 ml-2">
+              <div className="flex items-center justify-between rounded-lg border border-blue-100 bg-blue-50 px-3 py-2">
+                <p className="truncate text-xs font-medium text-blue-700">{iconFile.name}</p>
+                <button
+                  type="button"
+                  onClick={clearSelection}
+                  className="ml-2 shrink-0 text-blue-400 hover:text-blue-600"
+                >
                   <X className="h-4 w-4" />
                 </button>
               </div>
@@ -853,46 +1027,53 @@ function LogoSistemaCard({
               disabled={isPending || !iconFile}
               onClick={onSave}
             >
-              {isPending
-                ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Salvando...</>
-                : 'Salvar logo do painel'}
+              {isPending ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Salvando...
+                </>
+              ) : (
+                'Salvar logo do painel'
+              )}
             </Button>
           </div>
 
           {/* Prévia da sidebar */}
           <div className="shrink-0">
-            <p className="text-xs text-gray-400 uppercase font-semibold tracking-wide mb-3">Prévia</p>
+            <p className="mb-3 text-xs font-semibold tracking-wide text-gray-400 uppercase">
+              Prévia
+            </p>
             <div
-              className="w-[72px] h-56 rounded-xl flex flex-col items-center pt-4 pb-3 shadow-md gap-2 overflow-hidden"
+              className="flex h-56 w-[72px] flex-col items-center gap-2 overflow-hidden rounded-xl pt-4 pb-3 shadow-md"
               style={{ backgroundColor: primaryColor }}
             >
               {/* Toggle button placeholder */}
-              <div className="self-end w-4 h-4 bg-white/20 rounded-full mb-1 mr-1" />
+              <div className="mr-1 mb-1 h-4 w-4 self-end rounded-full bg-white/20" />
 
               {/* Logo area */}
-              <div className="h-9 w-9 rounded-lg bg-white/15 flex items-center justify-center overflow-hidden shrink-0">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-white/15">
                 {currentIcon ? (
                   // eslint-disable-next-line @next/next/no-img-element
-                  <img src={currentIcon} alt="" className="w-full h-full object-contain" />
+                  <img src={currentIcon} alt="" className="h-full w-full object-contain" />
                 ) : (
                   <ImageIcon className="h-4 w-4 text-white/40" />
                 )}
               </div>
 
               {/* Fake nav items */}
-              <div className="flex flex-col items-center gap-2 mt-2 w-full px-3">
-                <div className="w-8 h-8 bg-white/20 rounded-lg" />
-                <div className="w-8 h-8 bg-white/10 rounded-lg" />
-                <div className="w-8 h-8 bg-white/10 rounded-lg" />
-                <div className="w-8 h-8 bg-white/10 rounded-lg" />
+              <div className="mt-2 flex w-full flex-col items-center gap-2 px-3">
+                <div className="h-8 w-8 rounded-lg bg-white/20" />
+                <div className="h-8 w-8 rounded-lg bg-white/10" />
+                <div className="h-8 w-8 rounded-lg bg-white/10" />
+                <div className="h-8 w-8 rounded-lg bg-white/10" />
               </div>
 
               {/* Bottom divider + user */}
-              <div className="mt-auto w-full border-t border-white/10 pt-2 flex justify-center">
+              <div className="mt-auto flex w-full justify-center border-t border-white/10 pt-2">
                 <div className="h-8 w-8 rounded-full bg-white/20" />
               </div>
             </div>
-            <p className="text-[10px] text-gray-400 text-center mt-2 max-w-[72px] leading-tight">
+            <p className="mt-2 max-w-[72px] text-center text-[10px] leading-tight text-gray-400">
               Sidebar recolhida
             </p>
           </div>
@@ -905,28 +1086,43 @@ function LogoSistemaCard({
 // ── Favicon do Site ────────────────────────────────────────────────────────────
 
 interface FaviconCardProps {
-  currentFavicon:    string | null
-  faviconFile:       File | null
-  setFaviconFile:    (f: File | null) => void
+  currentFavicon: string | null
+  faviconFile: File | null
+  setFaviconFile: (f: File | null) => void
   setFaviconPreview: (p: string | null) => void
-  isPending:         boolean
-  onSave:            () => void
-  siteName:          string
+  isPending: boolean
+  onSave: () => void
+  siteName: string
 }
 
 function FaviconCard({
-  currentFavicon, faviconFile, setFaviconFile, setFaviconPreview, isPending, onSave, siteName,
+  currentFavicon,
+  faviconFile,
+  setFaviconFile,
+  setFaviconPreview,
+  isPending,
+  onSave,
+  siteName,
 }: FaviconCardProps) {
-  const onDrop = useCallback((accepted: File[]) => {
-    const file = accepted[0]
-    if (!file) return
-    setFaviconFile(file)
-    setFaviconPreview(URL.createObjectURL(file))
-  }, [setFaviconFile, setFaviconPreview])
+  const onDrop = useCallback(
+    (accepted: File[]) => {
+      const file = accepted[0]
+      if (!file) return
+      setFaviconFile(file)
+      setFaviconPreview(URL.createObjectURL(file))
+    },
+    [setFaviconFile, setFaviconPreview],
+  )
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
-    accept: { 'image/png': [], 'image/x-icon': [], 'image/vnd.microsoft.icon': [], 'image/svg+xml': [], 'image/webp': [] },
+    accept: {
+      'image/png': [],
+      'image/x-icon': [],
+      'image/vnd.microsoft.icon': [],
+      'image/svg+xml': [],
+      'image/webp': [],
+    },
     maxFiles: 1,
     multiple: false,
   })
@@ -944,42 +1140,48 @@ function FaviconCard({
           <CardTitle>Favicon do Site</CardTitle>
         </div>
         <CardDescription>
-          Ícone exibido na aba do navegador do seu site público. Use uma imagem quadrada de pelo menos 32x32px.
+          Ícone exibido na aba do navegador do seu site público. Use uma imagem quadrada de pelo
+          menos 32x32px.
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="flex flex-col md:flex-row items-start gap-8">
-
+        <div className="flex flex-col items-start gap-8 md:flex-row">
           {/* Dropzone + ações */}
           <div className="flex-1 space-y-4">
             <div
               {...getRootProps()}
-              className={`relative flex flex-col items-center justify-center h-44 rounded-xl border-2 border-dashed transition-colors cursor-pointer select-none
-                ${isDragActive
+              className={`relative flex h-44 cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed transition-colors select-none ${
+                isDragActive
                   ? 'border-[#17375F] bg-blue-50/60'
                   : 'border-gray-200 bg-gray-50 hover:border-gray-300 hover:bg-gray-100/60'
-                }`}
+              }`}
             >
               <input {...getInputProps()} />
 
               {currentFavicon ? (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={currentFavicon} alt="Favicon do site" className="h-16 w-16 object-contain" />
+                <img
+                  src={currentFavicon}
+                  alt="Favicon do site"
+                  className="h-16 w-16 object-contain"
+                />
               ) : (
                 <div className="flex flex-col items-center gap-2 text-gray-400">
-                  <div className="h-12 w-12 rounded-full bg-gray-200/70 flex items-center justify-center">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gray-200/70">
                     <Upload className="h-5 w-5" />
                   </div>
                   <p className="text-sm font-medium text-gray-500">
                     {isDragActive ? 'Solte a imagem aqui' : 'Arraste ou clique para escolher'}
                   </p>
-                  <p className="text-xs text-gray-400">PNG, ICO, SVG, WebP — quadrado, mínimo 32x32px</p>
+                  <p className="text-xs text-gray-400">
+                    PNG, ICO, SVG, WebP — quadrado, mínimo 32x32px
+                  </p>
                 </div>
               )}
 
               {currentFavicon && (
-                <div className="absolute inset-0 flex items-center justify-center rounded-xl opacity-0 hover:opacity-100 transition-opacity bg-black/30">
-                  <span className="flex items-center gap-1.5 bg-white text-gray-800 text-xs font-medium px-3 py-1.5 rounded-full shadow">
+                <div className="absolute inset-0 flex items-center justify-center rounded-xl bg-black/30 opacity-0 transition-opacity hover:opacity-100">
+                  <span className="flex items-center gap-1.5 rounded-full bg-white px-3 py-1.5 text-xs font-medium text-gray-800 shadow">
                     <Upload className="h-3 w-3" />
                     Trocar imagem
                   </span>
@@ -989,9 +1191,13 @@ function FaviconCard({
 
             {/* Arquivo selecionado */}
             {faviconFile && (
-              <div className="flex items-center justify-between px-3 py-2 bg-blue-50 border border-blue-100 rounded-lg">
-                <p className="text-xs text-blue-700 font-medium truncate">{faviconFile.name}</p>
-                <button type="button" onClick={clearSelection} className="text-blue-400 hover:text-blue-600 shrink-0 ml-2">
+              <div className="flex items-center justify-between rounded-lg border border-blue-100 bg-blue-50 px-3 py-2">
+                <p className="truncate text-xs font-medium text-blue-700">{faviconFile.name}</p>
+                <button
+                  type="button"
+                  onClick={clearSelection}
+                  className="ml-2 shrink-0 text-blue-400 hover:text-blue-600"
+                >
                   <X className="h-4 w-4" />
                 </button>
               </div>
@@ -1003,31 +1209,36 @@ function FaviconCard({
               disabled={isPending || !faviconFile}
               onClick={onSave}
             >
-              {isPending
-                ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Salvando...</>
-                : 'Salvar favicon'}
+              {isPending ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Salvando...
+                </>
+              ) : (
+                'Salvar favicon'
+              )}
             </Button>
           </div>
 
           {/* Prévia da aba do navegador */}
-          <div className="shrink-0 w-full md:w-64">
-            <p className="text-xs text-gray-400 uppercase font-semibold tracking-wide mb-3">Prévia</p>
+          <div className="w-full shrink-0 md:w-64">
+            <p className="mb-3 text-xs font-semibold tracking-wide text-gray-400 uppercase">
+              Prévia
+            </p>
             <div className="rounded-t-xl bg-gray-200 px-2 pt-2">
-              <div className="flex items-center gap-2 bg-white rounded-t-lg px-3 py-2 max-w-[210px] shadow-sm">
+              <div className="flex max-w-[210px] items-center gap-2 rounded-t-lg bg-white px-3 py-2 shadow-sm">
                 {currentFavicon ? (
                   // eslint-disable-next-line @next/next/no-img-element
-                  <img src={currentFavicon} alt="" className="h-4 w-4 object-contain shrink-0" />
+                  <img src={currentFavicon} alt="" className="h-4 w-4 shrink-0 object-contain" />
                 ) : (
-                  <Globe className="h-4 w-4 text-gray-300 shrink-0" />
+                  <Globe className="h-4 w-4 shrink-0 text-gray-300" />
                 )}
-                <span className="text-xs text-gray-600 truncate">{siteName}</span>
-                <X className="h-3 w-3 text-gray-400 shrink-0 ml-auto" />
+                <span className="truncate text-xs text-gray-600">{siteName}</span>
+                <X className="ml-auto h-3 w-3 shrink-0 text-gray-400" />
               </div>
             </div>
-            <div className="h-8 rounded-b-md bg-white border border-t-0 border-gray-100 shadow-sm" />
-            <p className="text-[10px] text-gray-400 mt-2 leading-tight">
-              Aba do navegador
-            </p>
+            <div className="h-8 rounded-b-md border border-t-0 border-gray-100 bg-white shadow-sm" />
+            <p className="mt-2 text-[10px] leading-tight text-gray-400">Aba do navegador</p>
           </div>
         </div>
       </CardContent>

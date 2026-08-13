@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
@@ -13,7 +13,7 @@ import {
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogCancel,
-} from "@/components/ui/alert-dialog"
+} from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
 
 interface Props {
@@ -36,7 +36,7 @@ export function DeleteEnterpriseDialog({ open, onOpenChange, id }: Props) {
     },
     onError: () => {
       toast.error('Erro ao remover. Verifique se existem imóveis vinculados.')
-    }
+    },
   })
 
   return (
@@ -49,18 +49,16 @@ export function DeleteEnterpriseDialog({ open, onOpenChange, id }: Props) {
           </AlertDialogTitle>
           <AlertDialogDescription>
             Essa ação não pode ser desfeita. Isso excluirá permanentemente o empreendimento.
-            <br /><br />
-            <strong>Nota:</strong> Se houver imóveis vinculados, eles perderão o vínculo, mas não serão excluídos (dependendo da sua regra de API).
+            <br />
+            <br />
+            <strong>Nota:</strong> Se houver imóveis vinculados, eles perderão o vínculo, mas não
+            serão excluídos (dependendo da sua regra de API).
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel disabled={isPending}>Cancelar</AlertDialogCancel>
-          <Button
-            variant="destructive"
-            onClick={() => deleteEnterprise()}
-            disabled={isPending}
-          >
-            {isPending ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
+          <Button variant="destructive" onClick={() => deleteEnterprise()} disabled={isPending}>
+            {isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
             Confirmar Exclusão
           </Button>
         </AlertDialogFooter>

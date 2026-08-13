@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { memo, useMemo, useState } from 'react'
 import {
@@ -89,7 +89,7 @@ const KanbanCard = memo(function KanbanCard({
       {...attributes}
       className={cn(
         'group relative rounded-xl border border-gray-200/80 bg-white p-3.5 shadow-[0_1px_2px_rgba(16,24,40,0.05)]',
-        'cursor-grab select-none touch-none transition-all duration-150',
+        'cursor-grab touch-none transition-all duration-150 select-none',
         'hover:-translate-y-px hover:border-gray-300 hover:shadow-[0_4px_12px_rgba(16,24,40,0.08)]',
         'active:cursor-grabbing',
         isDragging && 'opacity-0',
@@ -97,13 +97,18 @@ const KanbanCard = memo(function KanbanCard({
       )}
     >
       <div className="flex items-start justify-between gap-1">
-        <p className="flex-1 min-w-0 truncate text-sm font-semibold text-gray-900">{contact.name}</p>
-        <div className="absolute right-2 top-2 flex gap-0.5 rounded-lg bg-white/95 opacity-0 shadow-sm ring-1 ring-gray-100 transition-opacity group-hover:opacity-100">
+        <p className="min-w-0 flex-1 truncate text-sm font-semibold text-gray-900">
+          {contact.name}
+        </p>
+        <div className="absolute top-2 right-2 flex gap-0.5 rounded-lg bg-white/95 opacity-0 shadow-sm ring-1 ring-gray-100 transition-opacity group-hover:opacity-100">
           <Button
             variant="ghost"
             size="icon"
-            className="h-6 w-6 text-gray-400 hover:text-primary hover:bg-gray-50"
-            onClick={(e) => { e.stopPropagation(); onEdit(contact) }}
+            className="hover:text-primary h-6 w-6 text-gray-400 hover:bg-gray-50"
+            onClick={(e) => {
+              e.stopPropagation()
+              onEdit(contact)
+            }}
             onPointerDown={(e) => e.stopPropagation()}
           >
             <Pencil size={12} />
@@ -111,8 +116,11 @@ const KanbanCard = memo(function KanbanCard({
           <Button
             variant="ghost"
             size="icon"
-            className="h-6 w-6 text-gray-400 hover:text-red-500 hover:bg-red-50"
-            onClick={(e) => { e.stopPropagation(); onDelete(contact.id) }}
+            className="h-6 w-6 text-gray-400 hover:bg-red-50 hover:text-red-500"
+            onClick={(e) => {
+              e.stopPropagation()
+              onDelete(contact.id)
+            }}
             onPointerDown={(e) => e.stopPropagation()}
           >
             <Trash2 size={12} />
@@ -126,13 +134,15 @@ const KanbanCard = memo(function KanbanCard({
       </p>
 
       {contact.description && (
-        <p className="mt-1.5 text-xs leading-relaxed text-gray-400 line-clamp-2">{contact.description}</p>
+        <p className="mt-1.5 line-clamp-2 text-xs leading-relaxed text-gray-400">
+          {contact.description}
+        </p>
       )}
 
       {(contact.realtor || contact.followUpAt) && (
         <div className="mt-3 flex flex-wrap items-center justify-between gap-2 border-t border-gray-50 pt-2.5">
           {contact.realtor && (
-            <div className="flex min-w-0 items-center gap-1.5 rounded-full bg-gray-50 py-0.5 pl-0.5 pr-2 ring-1 ring-gray-100">
+            <div className="flex min-w-0 items-center gap-1.5 rounded-full bg-gray-50 py-0.5 pr-2 pl-0.5 ring-1 ring-gray-100">
               {contact.realtor.avatar ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
@@ -141,8 +151,8 @@ const KanbanCard = memo(function KanbanCard({
                   className="h-5 w-5 shrink-0 rounded-full object-cover"
                 />
               ) : (
-                <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary/15">
-                  <span className="text-[9px] font-bold text-primary">
+                <div className="bg-primary/15 flex h-5 w-5 shrink-0 items-center justify-center rounded-full">
+                  <span className="text-primary text-[9px] font-bold">
                     {contact.realtor.name.charAt(0).toUpperCase()}
                   </span>
                 </div>
@@ -156,7 +166,9 @@ const KanbanCard = memo(function KanbanCard({
             <div
               className={cn(
                 'ml-auto flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px]',
-                isOverdue ? 'bg-orange-50 font-medium text-orange-600' : 'bg-amber-50/70 text-amber-600',
+                isOverdue
+                  ? 'bg-orange-50 font-medium text-orange-600'
+                  : 'bg-amber-50/70 text-amber-600',
               )}
             >
               {isOverdue ? <BellRing size={11} /> : <Clock size={11} />}
@@ -200,21 +212,26 @@ function KanbanColumn({
 
       <div className="group flex shrink-0 items-center gap-2 px-3.5 py-3">
         <h3 className="truncate text-sm font-semibold text-gray-800">{stage.name}</h3>
-        <span className={cn('rounded-full px-2 py-0.5 text-[11px] font-semibold tabular-nums', colors.pill)}>
+        <span
+          className={cn(
+            'rounded-full px-2 py-0.5 text-[11px] font-semibold tabular-nums',
+            colors.pill,
+          )}
+        >
           {contacts.length}
         </span>
         {canManage && (
           <Button
             variant="ghost"
             size="icon"
-            className="h-5 w-5 shrink-0 text-gray-300 opacity-0 transition-opacity hover:text-gray-600 group-hover:opacity-100"
+            className="h-5 w-5 shrink-0 text-gray-300 opacity-0 transition-opacity group-hover:opacity-100 hover:text-gray-600"
             onClick={() => onEditStage(stage)}
           >
             <Settings2 size={12} />
           </Button>
         )}
         {overdueCount > 0 && (
-          <span className="ml-auto whitespace-nowrap rounded-full bg-orange-50 px-2 py-0.5 text-[11px] font-semibold text-orange-600 ring-1 ring-orange-100">
+          <span className="ml-auto rounded-full bg-orange-50 px-2 py-0.5 text-[11px] font-semibold whitespace-nowrap text-orange-600 ring-1 ring-orange-100">
             {overdueCount} atrasado{overdueCount > 1 ? 's' : ''}
           </span>
         )}
@@ -224,15 +241,11 @@ function KanbanColumn({
         ref={setNodeRef}
         className={cn(
           'thin-scrollbar mx-1.5 mb-1.5 flex min-h-[280px] flex-1 flex-col gap-2 overflow-y-auto rounded-xl p-2 transition-all',
-          isOver
-            ? cn(colors.hoverBg, 'ring-2 ring-inset', colors.hoverRing)
-            : 'bg-gray-50/80',
+          isOver ? cn(colors.hoverBg, 'ring-2 ring-inset', colors.hoverRing) : 'bg-gray-50/80',
         )}
       >
         {contacts.map((contact) => {
-          const isOverdue =
-            !!contact.followUpAt &&
-            new Date(contact.followUpAt) < now
+          const isOverdue = !!contact.followUpAt && new Date(contact.followUpAt) < now
 
           return (
             <KanbanCard
@@ -272,16 +285,17 @@ export function CrmKanbanBoard({
 }: CrmKanbanBoardProps) {
   const queryClient = useQueryClient()
   const [activeContact, setActiveContact] = useState<CrmContact | null>(null)
-  const [pendingChange, setPendingChange] = useState<{ contact: CrmContact; toStage: ClientStage } | null>(null)
+  const [pendingChange, setPendingChange] = useState<{
+    contact: CrmContact
+    toStage: ClientStage
+  } | null>(null)
   const [statusNote, setStatusNote] = useState('')
   const [stageDialogOpen, setStageDialogOpen] = useState(false)
   const [stageToEdit, setStageToEdit] = useState<ClientStage | null>(null)
 
   const canManageStages = !isRealtor
 
-  const sensors = useSensors(
-    useSensor(PointerSensor, { activationConstraint: { distance: 8 } })
-  )
+  const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 8 } }))
 
   const queryKey = ['crm-contacts', isRealtor ? realtorProfileId : 'all']
 
@@ -315,12 +329,10 @@ export function CrmKanbanBoard({
       await queryClient.cancelQueries({ queryKey })
       const previous = queryClient.getQueryData<CrmContact[]>(queryKey)
       const newStage = stages.find((s) => s.id === stageId)
-      queryClient.setQueryData<CrmContact[]>(queryKey, (old) =>
-        old?.map((c) =>
-          c.id === id
-            ? { ...c, stageId, stage: newStage ?? c.stage }
-            : c
-        ) ?? []
+      queryClient.setQueryData<CrmContact[]>(
+        queryKey,
+        (old) =>
+          old?.map((c) => (c.id === id ? { ...c, stageId, stage: newStage ?? c.stage } : c)) ?? [],
       )
       return { previous }
     },
@@ -391,7 +403,7 @@ export function CrmKanbanBoard({
             <Button
               variant="ghost"
               onClick={handleCreateStage}
-              className="h-7 rounded-full px-2.5 text-xs text-gray-400 hover:text-gray-600 hover:bg-gray-100"
+              className="h-7 rounded-full px-2.5 text-xs text-gray-400 hover:bg-gray-100 hover:text-gray-600"
             >
               <Plus size={15} className="mr-1" /> Nova coluna
             </Button>
@@ -401,15 +413,17 @@ export function CrmKanbanBoard({
 
       <DragOverlay dropAnimation={{ duration: 150, easing: 'ease' }}>
         {activeContact && (
-          <div className="rotate-2 scale-[1.03]">
-            <div className="w-64 cursor-grabbing select-none rounded-xl border border-gray-200 bg-white p-3.5 shadow-2xl ring-1 ring-black/5">
+          <div className="scale-[1.03] rotate-2">
+            <div className="w-64 cursor-grabbing rounded-xl border border-gray-200 bg-white p-3.5 shadow-2xl ring-1 ring-black/5 select-none">
               <p className="truncate text-sm font-semibold text-gray-900">{activeContact.name}</p>
               <p className="mt-1 flex items-center gap-1.5 text-xs text-gray-500">
                 <Phone size={11} className="text-gray-300" />
                 {activeContact.phone}
               </p>
               {activeContact.description && (
-                <p className="mt-1.5 text-xs leading-relaxed text-gray-400 line-clamp-2">{activeContact.description}</p>
+                <p className="mt-1.5 line-clamp-2 text-xs leading-relaxed text-gray-400">
+                  {activeContact.description}
+                </p>
               )}
             </div>
           </div>
@@ -422,7 +436,12 @@ export function CrmKanbanBoard({
         stageToEdit={stageToEdit}
       />
 
-      <Dialog open={!!pendingChange} onOpenChange={(open) => { if (!open) setPendingChange(null) }}>
+      <Dialog
+        open={!!pendingChange}
+        onOpenChange={(open) => {
+          if (!open) setPendingChange(null)
+        }}
+      >
         <DialogContent>
           <DialogHeader>
             <DialogTitle>
@@ -451,9 +470,7 @@ export function CrmKanbanBoard({
             <Button variant="outline" onClick={() => setPendingChange(null)}>
               Cancelar
             </Button>
-            <Button onClick={confirmStatusChange}>
-              Confirmar
-            </Button>
+            <Button onClick={confirmStatusChange}>Confirmar</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

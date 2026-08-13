@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { getTenantVisualConfig } from '@/lib/visual-config'
 import { Menubar } from '@/components/menu'
-import "@/app/globals.css"
+import '@/app/globals.css'
 
 export const metadata: Metadata = {
   robots: { index: false, follow: false },
@@ -10,20 +10,14 @@ export const metadata: Metadata = {
 // Server Component — fetches tenant visual config once per request.
 // getTenantVisualConfig() is deduplicated via React.cache, so the root
 // layout and this layout share a single network call.
-export default async function AdminLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const { iconUrl } = await getTenantVisualConfig()
 
   return (
     <div className="min-h-screen bg-gray-50">
       <Menubar logoUrl={iconUrl} />
 
-      <main className="pl-20 w-full">
-        {children}
-      </main>
+      <main className="w-full pl-20">{children}</main>
     </div>
   )
 }

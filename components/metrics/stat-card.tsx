@@ -16,7 +16,9 @@ export function StatCard({ title, value, subtitle, icon: Icon, loading }: StatCa
       <CardContent className="p-5">
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
-            <p className="text-[11px] font-semibold uppercase tracking-wider text-gray-400">{title}</p>
+            <p className="text-[11px] font-semibold tracking-wider text-gray-400 uppercase">
+              {title}
+            </p>
             {loading ? (
               <Skeleton className="mt-2 h-8 w-24" />
             ) : (
@@ -28,7 +30,7 @@ export function StatCard({ title, value, subtitle, icon: Icon, loading }: StatCa
               <p className="mt-1 truncate text-xs text-gray-400">{subtitle}</p>
             )}
           </div>
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary ring-1 ring-inset ring-primary/10">
+          <div className="bg-primary/10 text-primary ring-primary/10 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ring-1 ring-inset">
             <Icon size={18} />
           </div>
         </div>

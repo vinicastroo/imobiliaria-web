@@ -67,5 +67,12 @@ export interface PropertyData {
 }
 
 export type ImageItem =
-  | { type: 'existing'; id: string; path: string; fileName: string; thumb?: boolean; order?: number }
+  | {
+      type: 'existing'
+      id: string
+      path: string
+      fileName: string
+      thumb?: boolean
+      order?: number
+    }
   | { type: 'new'; id: string; file: File; preview: string }
