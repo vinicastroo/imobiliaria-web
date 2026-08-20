@@ -89,7 +89,7 @@ export default async function Footer() {
             className="flex items-center gap-2 opacity-80 transition-opacity hover:opacity-100"
           >
             <span>Desenvolvido por:</span>
-            <Image src="/codelabz.svg" alt="Code Labz" width={20} height={20} />
+            <Image src="/codelabz.svg" alt="Code Labz" width={92} height={16} />
           </Link>
         </div>
       </div>
