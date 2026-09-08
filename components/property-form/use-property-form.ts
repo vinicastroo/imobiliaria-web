@@ -93,6 +93,7 @@ export function usePropertyForm({ mode, propertyId, defaultValues }: UseProperty
       enterpriseId: '',
       realtorIds: [],
       infrastructureIds: [],
+      value: '',
       bedrooms: '0',
       bathrooms: '0',
       suites: '0',
@@ -254,8 +255,10 @@ export function usePropertyForm({ mode, propertyId, defaultValues }: UseProperty
         uploadedPaths.push(...results)
       }
 
+      const payload = { ...data, value: data.value ?? '' }
+
       if (mode === 'create') {
-        await api.post('/imovel', { ...data, files: uploadedPaths })
+        await api.post('/imovel', { ...payload, files: uploadedPaths })
         toast.success('Imóvel criado com sucesso!')
       } else {
         // Ordem das imagens existentes (sempre enviada para persistir reordenação)
@@ -268,7 +271,7 @@ export function usePropertyForm({ mode, propertyId, defaultValues }: UseProperty
           }))
 
         await api.put(`/imovel/${propertyId}`, {
-          ...data,
+          ...payload,
           files: uploadedPaths,
           existingFileOrders,
         })
