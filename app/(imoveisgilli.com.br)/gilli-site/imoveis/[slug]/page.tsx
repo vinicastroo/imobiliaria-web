@@ -46,7 +46,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   if (UUID_RE.test(slug)) return { robots: { index: false, follow: false } }
 
   const property = await getProperty(slug)
-  if (!property || property.visible === false) return { title: 'Imóvel indisponível' }
+  if (!property || property.visible === false) notFound()
 
   const ogImage = property.files?.[0]?.path ?? 'https://imoveisgilli.com.br/og-image.png'
 

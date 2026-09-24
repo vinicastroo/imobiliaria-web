@@ -43,7 +43,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const property = await getProperty(slug)
 
   if (!property || property.visible === false) {
-    return { title: 'Imóvel indisponível' }
+    notFound()
   }
 
   const ogImage = property.files?.[0]?.path || 'https://aurosimobiliaria.com.br/logo.png'

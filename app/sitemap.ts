@@ -16,20 +16,28 @@ interface Property {
 }
 
 async function getProperties(agencyId: string): Promise<Property[]> {
-  try {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/imovel?pageSize=1000&visible=true`,
-      {
-        headers: { 'x-agency-id': agencyId },
-        next: { revalidate: 3600 },
-      },
-    )
-    if (!res.ok) return []
+  const properties: Property[] = []
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://imobiliaria-api.vercel.app'
+  let page = 1
+  let totalPages = 1
+
+  do {
+    const res = await fetch(`${apiUrl}/imovel?page=${page}&pageSize=1000&visible=true`, {
+      headers: { 'x-agency-id': agencyId },
+      next: { revalidate: 3600 },
+    })
+    // Do not publish a successful but incomplete sitemap during API outages.
+    if (!res.ok) throw new Error(`Sitemap property lookup failed: ${res.status}`)
     const data = await res.json()
-    return data.properties ?? []
-  } catch {
-    return []
-  }
+    if (!Array.isArray(data.properties) || !Number.isInteger(data.totalPages) || data.totalPages < 0) {
+      throw new Error('Invalid sitemap property response')
+    }
+    properties.push(...data.properties)
+    totalPages = data.totalPages
+    page += 1
+  } while (page <= totalPages)
+
+  return properties
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -42,15 +50,19 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const staticRoutes: MetadataRoute.Sitemap = staticPaths.map((path) => ({
     url: `${baseUrl}${path}`,
-    lastModified: new Date(),
     changeFrequency: path === '/' || path === '/imoveis' ? 'daily' : 'monthly',
     priority: path === '/' ? 1 : path === '/imoveis' ? 0.9 : 0.5,
   }))
 
-  if (!agencyId) return staticRoutes
+  if (!agencyId) throw new Error('Missing agency context for sitemap')
 
   const properties = await getProperties(agencyId)
-  const propertyRoutes: MetadataRoute.Sitemap = properties.map((property) => ({
+  const uniqueProperties = [
+    ...new Map(
+      properties.filter((property) => property.slug).map((property) => [property.slug, property]),
+    ).values(),
+  ]
+  const propertyRoutes: MetadataRoute.Sitemap = uniqueProperties.map((property) => ({
     url: `${baseUrl}/imoveis/${property.slug}`,
     lastModified: new Date(property.updatedAt ?? property.createdAt),
     changeFrequency: 'weekly',

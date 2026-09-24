@@ -7,7 +7,8 @@ export default async function robots(): Promise<MetadataRoute.Robots> {
     rules: {
       userAgent: '*',
       allow: '/',
-      disallow: ['/login/', '/admin/', '/api/', '/_next/'],
+      // Public pages need Next.js scripts, styles and optimized images to render.
+      disallow: ['/login$', '/login/', '/admin$', '/admin/', '/api/'],
     },
     sitemap: `https://${host}/sitemap.xml`,
   }

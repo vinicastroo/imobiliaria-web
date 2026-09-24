@@ -27,7 +27,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   const property = await getProperty(slug)
 
-  if (!property || property.visible === false) return { title: 'Imóvel indisponível' }
+  if (!property || property.visible === false) notFound()
 
   const host = (await headers()).get('host')?.split(':')[0] ?? ''
 
