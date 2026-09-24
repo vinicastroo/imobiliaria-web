@@ -57,6 +57,42 @@ export interface Property {
   }[]
 }
 
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+
+// Resolve legacy IDs from the public, tenant-scoped catalogue. The admin ID
+// endpoint also returns hidden properties and cannot be used for public redirects.
+const getPublicPropertySlugs = unstable_cache(
+  async (agencyId: string) => {
+    const entries: { id: string; slug: string }[] = []
+    let page = 1
+    let totalPages = 1
+    do {
+      const response = await api.get('/imovel', {
+        params: { page, pageSize: 1000, visible: true },
+        headers: { 'x-agency-id': agencyId },
+      })
+      const data = response.data
+      if (
+        !Array.isArray(data.properties) ||
+        !Number.isInteger(data.totalPages) ||
+        data.totalPages < 0
+      ) {
+        throw new Error('Invalid public property catalogue')
+      }
+      entries.push(
+        ...data.properties
+          .filter((property: Property) => property.visible !== false && property.slug)
+          .map((property: Property) => ({ id: property.id, slug: property.slug })),
+      )
+      totalPages = data.totalPages
+      page += 1
+    } while (page <= totalPages)
+    return entries
+  },
+  ['public-property-slugs-v1'],
+  { revalidate: 300, tags: ['properties'] },
+)
+
 // Scope persistent cache entries to the agency; deduplicate metadata/page reads below.
 const getCachedProperty = unstable_cache(
   async (agencyId: string, slug: string) => {
@@ -82,6 +118,15 @@ export const getProperty = cache(async (slug: string) => {
   const headersList = await headers()
   const agencyId = headersList.get('x-tenant-id') ?? process.env.NEXT_PUBLIC_AGENCY_ID ?? ''
   if (!agencyId) throw new Error('Missing agency context for property lookup')
+
+  if (UUID_RE.test(slug)) {
+    const properties = await getPublicPropertySlugs(agencyId)
+    const match =
+      properties.find((property) => property.slug === slug) ??
+      properties.find((property) => property.id === slug)
+    if (!match) return undefined
+    slug = match.slug
+  }
 
   try {
     return await getCachedProperty(agencyId, slug)

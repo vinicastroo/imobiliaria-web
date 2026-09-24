@@ -5,24 +5,34 @@ import { MenubarHome } from '@/components/menu-home'
 import { getTenantIdentity } from '@/lib/tenant-info'
 import { buildBreadcrumbJsonLd } from '@/lib/json-ld'
 
-export async function generateMetadata(): Promise<Metadata> {
+export async function generateMetadata({
+  searchParams,
+}: {
+  searchParams: Promise<PropertySearchParams>
+}): Promise<Metadata> {
   const host = (await headers()).get('host')?.split(':')[0] ?? ''
   const { name } = await getTenantIdentity()
+  const canonical = propertyListingUrl(`https://${host}`, await searchParams)
   const title = `Imóveis | ${name}`
   const description = `Busque e filtre imóveis à venda e para alugar com a ${name}.`
 
   return {
     title,
     description,
-    alternates: { canonical: `https://${host}/imoveis` },
-    openGraph: { title, description, url: `https://${host}/imoveis`, type: 'website' },
+    alternates: { canonical },
+    openGraph: { title, description, url: canonical, type: 'website' },
   }
 }
-import { PropertyList } from '@/components/property-list'
+import { PropertyListServer } from '@/components/property-list-server'
+import { propertyListingUrl, type PropertySearchParams } from '@/lib/property-search'
 import { HorizontalFilter } from '@/components/horizontal-filter'
 import { SiteFooter } from '@/components/site-templates/site-footer'
 
-export default async function TenantImoveisPage() {
+export default async function TenantImoveisPage({
+  searchParams,
+}: {
+  searchParams: Promise<PropertySearchParams>
+}) {
   const host = (await headers()).get('host')?.split(':')[0] ?? ''
   const { name } = await getTenantIdentity()
   const breadcrumbJsonLd = buildBreadcrumbJsonLd(`https://${host}`, [
@@ -61,7 +71,7 @@ export default async function TenantImoveisPage() {
             </div>
           }
         >
-          <PropertyList />
+          <PropertyListServer searchParams={searchParams} />
         </Suspense>
       </div>
 

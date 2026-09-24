@@ -1,7 +1,8 @@
 import { Suspense } from 'react'
 import { Metadata } from 'next'
 import Footer from '../_components/footer'
-import { PropertyList } from '@/components/property-list'
+import { PropertyListServer } from '@/components/property-list-server'
+import { propertyListingUrl, type PropertySearchParams } from '@/lib/property-search'
 import { MenubarHome } from '@/components/menu-home'
 import { buildBreadcrumbJsonLd } from '@/lib/json-ld'
 
@@ -11,7 +12,7 @@ const GILLI_SOCIAL = {
 }
 import { HorizontalFilter } from '@/components/horizontal-filter'
 
-export const metadata: Metadata = {
+const baseMetadata: Metadata = {
   title: 'Imóveis Gilli | Imóveis',
   description:
     'Busque e filtre imóveis com a Imóveis Gilli. Compra, venda e locação em Aurora e região.',
@@ -41,12 +42,29 @@ export const metadata: Metadata = {
   },
 }
 
+export async function generateMetadata({
+  searchParams,
+}: {
+  searchParams: Promise<PropertySearchParams>
+}): Promise<Metadata> {
+  const canonical = propertyListingUrl('https://imoveisgilli.com.br', await searchParams)
+  return {
+    ...baseMetadata,
+    alternates: { canonical },
+    openGraph: { ...baseMetadata.openGraph, url: canonical },
+  }
+}
+
 const breadcrumbJsonLd = buildBreadcrumbJsonLd('https://imoveisgilli.com.br', [
   { name: 'Home', path: '' },
   { name: 'Imóveis', path: '/imoveis' },
 ])
 
-export default function GilliImoveisPage() {
+export default function GilliImoveisPage({
+  searchParams,
+}: {
+  searchParams: Promise<PropertySearchParams>
+}) {
   return (
     <main className="flex min-h-screen flex-col bg-gray-50 font-sans">
       <script
@@ -78,7 +96,7 @@ export default function GilliImoveisPage() {
             </div>
           }
         >
-          <PropertyList />
+          <PropertyListServer searchParams={searchParams} />
         </Suspense>
       </div>
 

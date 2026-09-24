@@ -62,19 +62,22 @@ interface GetPropertiesProps {
   code?: string | null
 }
 
-export async function getProperties({
-  bathrooms,
-  bedrooms,
-  city,
-  neighborhood,
-  parkingSpots,
-  privateArea,
-  suites,
-  totalArea,
-  type,
-  page,
-  code,
-}: GetPropertiesProps) {
+export async function getProperties(
+  {
+    bathrooms,
+    bedrooms,
+    city,
+    neighborhood,
+    parkingSpots,
+    privateArea,
+    suites,
+    totalArea,
+    type,
+    page,
+    code,
+  }: GetPropertiesProps,
+  agencyId?: string,
+) {
   const params = {
     bathrooms,
     bedrooms,
@@ -95,7 +98,10 @@ export async function getProperties({
 
   let response: AxiosResponse<GetPropertiesResponse>
   try {
-    response = await api.get<GetPropertiesResponse>('/imovel', { params })
+    response = await api.get<GetPropertiesResponse>('/imovel', {
+      params,
+      ...(agencyId ? { headers: { 'x-agency-id': agencyId } } : {}),
+    })
   } catch (err) {
     console.error('[getProperties] erro no fetch:', err)
     throw err
@@ -114,7 +120,7 @@ export async function getProperties({
 
   if (!response.data.properties) {
     console.warn('[getProperties] campo "properties" ausente na resposta:', response.data)
-    return { properties: [], totalPages: 1, totalCount: 0 }
+    throw new Error('Invalid property listing response')
   }
 
   let formattedData: Properties[] = []

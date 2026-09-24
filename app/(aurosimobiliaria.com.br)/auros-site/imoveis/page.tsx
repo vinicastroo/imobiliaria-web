@@ -1,12 +1,13 @@
 import { Suspense } from 'react'
 import { Metadata } from 'next'
 import Footer from '../_components/footer'
-import { PropertyList } from '@/components/property-list'
+import { PropertyListServer } from '@/components/property-list-server'
+import { propertyListingUrl, type PropertySearchParams } from '@/lib/property-search'
 import { MenubarHome } from '@/components/menu-home'
 import { HorizontalFilter } from '@/components/horizontal-filter'
 import { buildBreadcrumbJsonLd } from '@/lib/json-ld'
 
-export const metadata: Metadata = {
+const baseMetadata: Metadata = {
   title: 'Auros Corretora Imobiliária | Imóveis',
   description:
     'Busque e filtre imóveis à venda em Rio do Sul e Balneário Camboriú. Apartamentos, casas, terrenos e muito mais com a Auros Corretora Imobiliária.',
@@ -36,12 +37,29 @@ export const metadata: Metadata = {
   },
 }
 
+export async function generateMetadata({
+  searchParams,
+}: {
+  searchParams: Promise<PropertySearchParams>
+}): Promise<Metadata> {
+  const canonical = propertyListingUrl('https://aurosimobiliaria.com.br', await searchParams)
+  return {
+    ...baseMetadata,
+    alternates: { canonical },
+    openGraph: { ...baseMetadata.openGraph, url: canonical },
+  }
+}
+
 const breadcrumbJsonLd = buildBreadcrumbJsonLd('https://aurosimobiliaria.com.br', [
   { name: 'Home', path: '' },
   { name: 'Imóveis', path: '/imoveis' },
 ])
 
-export default function ImoveisPage() {
+export default function ImoveisPage({
+  searchParams,
+}: {
+  searchParams: Promise<PropertySearchParams>
+}) {
   return (
     <main className="flex min-h-screen flex-col bg-gray-50 font-sans">
       <script
@@ -73,7 +91,7 @@ export default function ImoveisPage() {
             </div>
           }
         >
-          <PropertyList />
+          <PropertyListServer searchParams={searchParams} />
         </Suspense>
       </div>
 
