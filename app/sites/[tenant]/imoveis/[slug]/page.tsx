@@ -3,7 +3,7 @@ import type { Metadata } from 'next'
 import { BedDouble, Bath, CarFront, Ruler, Grid2X2, MapPin } from 'lucide-react'
 
 import { getPropertyForPage } from '@/lib/property-page'
-import { trackView } from '@/lib/track-view'
+import { PropertyViewTracker } from '@/components/property-view-tracker'
 import { buildBreadcrumbJsonLd, buildPropertyJsonLd } from '@/lib/json-ld'
 import { MenubarHome } from '@/components/menu-home'
 import { PropertyImagesCarousel } from '@/components/property-images-carousel'
@@ -67,8 +67,6 @@ export default async function TenantPropertyPage({ params }: PageProps) {
   const agencyId = headersList.get('x-tenant-id') ?? process.env.NEXT_PUBLIC_AGENCY_ID ?? ''
   const host = headersList.get('host')?.split(':')[0] ?? ''
 
-  trackView(slug, agencyId, headersList.get('referer'))
-
   const priceDisplay = property.priceOnRequest
     ? 'Sob consulta'
     : property.pricePrefix
@@ -85,6 +83,7 @@ export default async function TenantPropertyPage({ params }: PageProps) {
 
   return (
     <main className="min-h-screen bg-gray-50">
+      <PropertyViewTracker propertyId={property.id} slug={property.slug} agencyId={agencyId} />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(propertyJsonLd) }}

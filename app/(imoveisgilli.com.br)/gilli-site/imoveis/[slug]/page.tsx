@@ -28,7 +28,7 @@ import type { Properties } from '@/app/api/get-properties'
 import { PropertyJourney } from '../../_components/property-journey'
 import { CopyLinkButton } from '@/components/copy-link-button'
 import { PropertyDescription } from '@/components/property-description'
-import { trackView } from '@/lib/track-view'
+import { PropertyViewTracker } from '@/components/property-view-tracker'
 
 interface PageProps {
   params: Promise<{ slug: string }>
@@ -158,8 +158,6 @@ export default async function PropertyPage({ params }: PageProps) {
   const headersList = await headers()
   const agencyId = headersList.get('x-tenant-id') ?? process.env.NEXT_PUBLIC_AGENCY_ID ?? ''
 
-  trackView(slug, agencyId, headersList.get('referer'))
-
   const realtors = property.realtors || []
   const recommended = await getRecommendedProperties(agencyId, property.city, property.id)
 
@@ -173,6 +171,7 @@ export default async function PropertyPage({ params }: PageProps) {
 
   return (
     <main className="min-h-screen bg-white">
+      <PropertyViewTracker propertyId={property.id} slug={property.slug} agencyId={agencyId} />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(propertyJsonLd) }}
