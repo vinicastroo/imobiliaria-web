@@ -184,6 +184,7 @@ export async function middleware(req: NextRequest) {
     if (isPublicSitePage(pathname) && (tenantSlug || hasKnownPrefix)) {
       const prefix = getSitePrefix(effectiveDomain ?? '', tenantSlug ?? '')
       const rewriteUrl = new URL(prefix + (pathname === '/' ? '' : pathname), req.url)
+      rewriteUrl.search = req.nextUrl.search
       base = NextResponse.rewrite(rewriteUrl, { request: { headers: requestHeaders } })
     } else {
       base = NextResponse.next({ request: { headers: requestHeaders } })
@@ -219,6 +220,7 @@ export async function middleware(req: NextRequest) {
     if (isKnownCustomDomain && isPublicSitePage(pathname)) {
       const prefix = CUSTOM_SITE_PREFIXES[hostname]
       const rewriteUrl = new URL(prefix + (pathname === '/' ? '' : pathname), req.url)
+      rewriteUrl.search = req.nextUrl.search
       return NextResponse.rewrite(rewriteUrl)
     }
     return NextResponse.redirect(`https://${PLATFORM_DOMAIN}`)
@@ -233,6 +235,7 @@ export async function middleware(req: NextRequest) {
   if (isPublicSitePage(pathname)) {
     const prefix = getSitePrefix(hostname, tenant.slug)
     const rewriteUrl = new URL(prefix + (pathname === '/' ? '' : pathname), req.url)
+    rewriteUrl.search = req.nextUrl.search
     const response = await applyAuthRules(
       req,
       NextResponse.rewrite(rewriteUrl, { request: { headers: requestHeaders } }),

@@ -59,6 +59,8 @@ export interface Property {
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 
+const CUID_RE = /^c[a-z0-9]{24}$/
+
 // Resolve legacy IDs from the public, tenant-scoped catalogue. The admin ID
 // endpoint also returns hidden properties and cannot be used for public redirects.
 const getPublicPropertySlugs = unstable_cache(
@@ -119,7 +121,7 @@ export const getProperty = cache(async (slug: string) => {
   const agencyId = headersList.get('x-tenant-id') ?? process.env.NEXT_PUBLIC_AGENCY_ID ?? ''
   if (!agencyId) throw new Error('Missing agency context for property lookup')
 
-  if (UUID_RE.test(slug)) {
+  if (UUID_RE.test(slug) || CUID_RE.test(slug)) {
     const properties = await getPublicPropertySlugs(agencyId)
     const match =
       properties.find((property) => property.slug === slug) ??
