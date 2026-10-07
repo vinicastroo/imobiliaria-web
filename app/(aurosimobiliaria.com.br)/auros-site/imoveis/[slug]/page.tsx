@@ -25,6 +25,12 @@ import { CopyLinkButton } from '@/components/copy-link-button'
 import { PropertyDescription } from '@/components/property-description'
 import { PropertyViewTracker } from '@/components/property-view-tracker'
 
+const AUROS_SOCIAL = {
+  whatsappUrl: 'https://api.whatsapp.com/send?phone=5547988163739&text=Ol%C3%A1',
+  instagramUrl: 'https://www.instagram.com/auroscorretoraimobiliaria/',
+  facebookUrl: 'https://www.facebook.com/AurosCorretoraImob?locale=pt_BR',
+}
+
 interface PageProps {
   params: Promise<{ slug: string }>
 }
@@ -175,7 +181,7 @@ export default async function PropertyPage({ params }: PageProps) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
-      <MenubarHome />
+      <MenubarHome socialLinks={AUROS_SOCIAL} />
 
       <div className="mx-auto max-w-[1200px] space-y-8 p-4 py-8 md:py-12">
         <PropertyImagesCarousel

@@ -29,7 +29,11 @@ async function getProperties(agencyId: string): Promise<Property[]> {
     // Do not publish a successful but incomplete sitemap during API outages.
     if (!res.ok) throw new Error(`Sitemap property lookup failed: ${res.status}`)
     const data = await res.json()
-    if (!Array.isArray(data.properties) || !Number.isInteger(data.totalPages) || data.totalPages < 0) {
+    if (
+      !Array.isArray(data.properties) ||
+      !Number.isInteger(data.totalPages) ||
+      data.totalPages < 0
+    ) {
       throw new Error('Invalid sitemap property response')
     }
     properties.push(...data.properties)
@@ -63,7 +67,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ).values(),
   ]
   const propertyRoutes: MetadataRoute.Sitemap = uniqueProperties.map((property) => ({
-    url: `${baseUrl}/imoveis/${property.slug}`,
+    url: `${baseUrl}/imoveis/${encodeURIComponent(property.slug)}`,
     lastModified: new Date(property.updatedAt ?? property.createdAt),
     changeFrequency: 'weekly',
     priority: 0.8,

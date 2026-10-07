@@ -52,13 +52,13 @@ const PropertyFeature = memo(function PropertyFeature({
 
 export interface HighlightedPropertiesGridProps {
   agencyId?: string
-  renderCTA?: (hasData: boolean) => React.ReactNode
+  cta?: React.ReactNode
   initialProperties?: Properties[]
 }
 
 export function HighlightedPropertiesGrid({
   agencyId,
-  renderCTA,
+  cta,
   initialProperties,
 }: HighlightedPropertiesGridProps) {
   const { data, isLoading } = useQuery({
@@ -181,7 +181,7 @@ export function HighlightedPropertiesGrid({
         })}
       </div>
 
-      {renderCTA?.(Boolean(data?.properties?.length))}
+      {Boolean(data?.properties?.length) && cta}
     </TooltipProvider>
   )
 }

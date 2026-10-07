@@ -9,6 +9,7 @@ const nextConfig: NextConfig = {
       'date-fns',
       '@tanstack/react-table',
     ],
+    turbopackFileSystemCacheForDev: true,
   },
   images: {
     formats: ['image/avif', 'image/webp'],

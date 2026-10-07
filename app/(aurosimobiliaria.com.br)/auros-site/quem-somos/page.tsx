@@ -56,6 +56,12 @@ import { TeamCarousel } from '@/components/team-carousel'
 import { HistoryCarousel } from '@/components/history-carousel'
 import Link from 'next/link'
 
+const AUROS_SOCIAL = {
+  whatsappUrl: 'https://api.whatsapp.com/send?phone=5547988163739&text=Ol%C3%A1',
+  instagramUrl: 'https://www.instagram.com/auroscorretoraimobiliaria/',
+  facebookUrl: 'https://www.facebook.com/AurosCorretoraImob?locale=pt_BR',
+}
+
 export default function QuemSomosPage() {
   return (
     <>
@@ -63,7 +69,7 @@ export default function QuemSomosPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(aboutPageJsonLd) }}
       />
-      <MenubarHome />
+      <MenubarHome socialLinks={AUROS_SOCIAL} />
       <div className="min-h-screen bg-white font-sans">
         <section className="relative overflow-hidden bg-[#17375F] py-10 text-white">
           <div className="relative z-10 container mx-auto space-y-4 px-4 text-center">

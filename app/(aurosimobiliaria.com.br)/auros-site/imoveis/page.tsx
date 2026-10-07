@@ -7,6 +7,12 @@ import { MenubarHome } from '@/components/menu-home'
 import { HorizontalFilter } from '@/components/horizontal-filter'
 import { buildBreadcrumbJsonLd } from '@/lib/json-ld'
 
+const AUROS_SOCIAL = {
+  whatsappUrl: 'https://api.whatsapp.com/send?phone=5547988163739&text=Ol%C3%A1',
+  instagramUrl: 'https://www.instagram.com/auroscorretoraimobiliaria/',
+  facebookUrl: 'https://www.facebook.com/AurosCorretoraImob?locale=pt_BR',
+}
+
 const baseMetadata: Metadata = {
   title: 'Auros Corretora Imobiliária | Imóveis',
   description:
@@ -66,7 +72,7 @@ export default function ImoveisPage({
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
-      <MenubarHome />
+      <MenubarHome socialLinks={AUROS_SOCIAL} />
 
       <section className="sticky top-0 z-30 border-b border-gray-200 bg-white shadow-none">
         <div className="mx-auto w-full max-w-[1280px] px-4 py-4 md:px-6">

@@ -160,7 +160,7 @@ async function applyAuthRules(
 // ─────────────────────────────────────────────────────────────────────────────
 // Main middleware
 // ─────────────────────────────────────────────────────────────────────────────
-export async function middleware(req: NextRequest) {
+export async function proxy(req: NextRequest) {
   const hostname = (req.headers.get('host') ?? '').split(':')[0].toLowerCase()
   const { pathname } = req.nextUrl
 

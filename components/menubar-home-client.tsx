@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { Facebook, Instagram, Menu, X } from 'lucide-react'
+import { Building2, Facebook, Instagram, Menu, X } from 'lucide-react'
 import { WhatsappLogo } from '@phosphor-icons/react'
 
 export interface SocialLinks {
@@ -18,21 +18,31 @@ interface MenubarHomeClientProps {
   socialLinks?: SocialLinks
 }
 
-const AUROS_SOCIAL: SocialLinks = {
-  whatsappUrl: 'https://api.whatsapp.com/send?phone=5547988163739&text=Ol%C3%A1',
-  instagramUrl: 'https://www.instagram.com/auroscorretoraimobiliaria/',
-  facebookUrl: 'https://www.facebook.com/AurosCorretoraImob?locale=pt_BR',
+/** Retorna preto ou branco, o que tiver mais contraste contra a cor de fundo informada. */
+function getContrastTextColor(hex: string): string {
+  const match = /^#?([\da-f]{6})$/i.exec(hex)
+  if (!match) return '#ffffff'
+  const value = parseInt(match[1], 16)
+  const r = (value >> 16) & 255
+  const g = (value >> 8) & 255
+  const b = value & 255
+  const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255
+  return luminance > 0.6 ? '#111827' : '#ffffff'
 }
 
 export function MenubarHomeClient({ logoUrl, primaryColor, socialLinks }: MenubarHomeClientProps) {
-  const { whatsappUrl, instagramUrl, facebookUrl } = socialLinks ?? AUROS_SOCIAL
+  const { whatsappUrl, instagramUrl, facebookUrl } = socialLinks ?? {}
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
   const toggleMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen)
 
-  const logoEl = (
+  const bgColor = primaryColor ?? '#17375F'
+  const textColor = getContrastTextColor(bgColor)
+  const bgStyle = { backgroundColor: bgColor }
+
+  const logoEl = logoUrl ? (
     <Image
-      src={logoUrl ?? '/logo-default.svg'}
+      src={logoUrl}
       alt="Logo"
       width={120}
       height={120}
@@ -40,9 +50,14 @@ export function MenubarHomeClient({ logoUrl, primaryColor, socialLinks }: Menuba
       priority
       unoptimized
     />
+  ) : (
+    <div
+      className="flex h-16 w-16 items-center justify-center rounded-lg md:h-[120px] md:w-[120px]"
+      style={{ backgroundColor: `${textColor}1a` }}
+    >
+      <Building2 className="h-1/2 w-1/2" style={{ color: textColor }} />
+    </div>
   )
-
-  const bgStyle = { backgroundColor: primaryColor ?? '#17375F' }
 
   return (
     <header className="relative z-50 flex w-full items-center justify-center" style={bgStyle}>
@@ -53,20 +68,27 @@ export function MenubarHomeClient({ logoUrl, primaryColor, socialLinks }: Menuba
         {/* --- DESKTOP NAV --- */}
         <nav className="flex hidden items-center gap-3 md:flex">
           <div className="flex items-center gap-3">
-            <SocialLink href={whatsappUrl} aria="WhatsApp">
-              <WhatsappLogo size={20} />
-            </SocialLink>
-            <SocialLink href={instagramUrl} aria="Instagram">
-              <Instagram size={16} />
-            </SocialLink>
+            {whatsappUrl && (
+              <SocialLink href={whatsappUrl} aria="WhatsApp" color={textColor}>
+                <WhatsappLogo size={20} />
+              </SocialLink>
+            )}
+            {instagramUrl && (
+              <SocialLink href={instagramUrl} aria="Instagram" color={textColor}>
+                <Instagram size={16} />
+              </SocialLink>
+            )}
             {facebookUrl && (
-              <SocialLink href={facebookUrl} aria="Facebook">
+              <SocialLink href={facebookUrl} aria="Facebook" color={textColor}>
                 <Facebook size={16} />
               </SocialLink>
             )}
           </div>
 
-          <div className="flex items-center gap-6 text-base font-medium text-white">
+          <div
+            className="flex items-center gap-6 text-base font-medium"
+            style={{ color: textColor }}
+          >
             <NavLink href="/imoveis">Imóveis</NavLink>
             <NavLink href="/quem-somos">Quem somos</NavLink>
             <NavLink href="/#contact">Entre em contato</NavLink>
@@ -75,7 +97,8 @@ export function MenubarHomeClient({ logoUrl, primaryColor, socialLinks }: Menuba
 
         {/* --- BOTÃO HAMBÚRGUER --- */}
         <button
-          className="p-2 text-white focus:outline-none md:hidden"
+          className="p-2 focus:outline-none md:hidden"
+          style={{ color: textColor }}
           onClick={toggleMenu}
           aria-label="Abrir menu"
         >
@@ -94,7 +117,8 @@ export function MenubarHomeClient({ logoUrl, primaryColor, socialLinks }: Menuba
               {logoEl}
             </Link>
             <button
-              className="flex items-center justify-center gap-2 p-2 text-white focus:outline-none"
+              className="flex items-center justify-center gap-2 p-2 focus:outline-none"
+              style={{ color: textColor }}
               onClick={toggleMenu}
               aria-label="Fechar menu"
             >
@@ -105,21 +129,24 @@ export function MenubarHomeClient({ logoUrl, primaryColor, socialLinks }: Menuba
           <div className="flex flex-1 flex-col items-start justify-start gap-8 px-4">
             <Link
               href="/imoveis"
-              className="w-full border-b border-white/10 pb-4 text-lg font-light text-white transition-colors hover:text-gray-300"
+              className="w-full border-b border-white/10 pb-4 text-lg font-light opacity-100 transition-opacity hover:opacity-70"
+              style={{ color: textColor }}
               onClick={toggleMenu}
             >
               Imóveis
             </Link>
             <Link
               href="/quem-somos"
-              className="w-full border-b border-white/10 pb-4 text-lg font-light text-white transition-colors hover:text-gray-300"
+              className="w-full border-b border-white/10 pb-4 text-lg font-light opacity-100 transition-opacity hover:opacity-70"
+              style={{ color: textColor }}
               onClick={toggleMenu}
             >
               Quem somos
             </Link>
             <Link
               href="/#contact"
-              className="w-full border-b border-white/10 pb-4 text-lg font-light text-white transition-colors hover:text-gray-300"
+              className="w-full border-b border-white/10 pb-4 text-lg font-light opacity-100 transition-opacity hover:opacity-70"
+              style={{ color: textColor }}
               onClick={toggleMenu}
             >
               Entre em contato
@@ -127,14 +154,18 @@ export function MenubarHomeClient({ logoUrl, primaryColor, socialLinks }: Menuba
           </div>
 
           <div className="mx-8 flex justify-center gap-8 border-t border-white/10 p-10">
-            <SocialLink href={whatsappUrl} aria="WhatsApp">
-              <WhatsappLogo size={24} />
-            </SocialLink>
-            <SocialLink href={instagramUrl} aria="Instagram">
-              <Instagram size={24} />
-            </SocialLink>
+            {whatsappUrl && (
+              <SocialLink href={whatsappUrl} aria="WhatsApp" color={textColor}>
+                <WhatsappLogo size={24} />
+              </SocialLink>
+            )}
+            {instagramUrl && (
+              <SocialLink href={instagramUrl} aria="Instagram" color={textColor}>
+                <Instagram size={24} />
+              </SocialLink>
+            )}
             {facebookUrl && (
-              <SocialLink href={facebookUrl} aria="Facebook">
+              <SocialLink href={facebookUrl} aria="Facebook" color={textColor}>
                 <Facebook size={24} />
               </SocialLink>
             )}
@@ -148,10 +179,12 @@ export function MenubarHomeClient({ logoUrl, primaryColor, socialLinks }: Menuba
 function SocialLink({
   href,
   aria,
+  color,
   children,
 }: {
   href: string
   aria: string
+  color: string
   children: React.ReactNode
 }) {
   return (
@@ -159,7 +192,8 @@ function SocialLink({
       href={href}
       target="_blank"
       aria-label={aria}
-      className="p-1 text-white transition-colors hover:text-gray-300"
+      className="p-1 transition-opacity hover:opacity-70"
+      style={{ color }}
     >
       {children}
     </Link>
@@ -168,7 +202,7 @@ function SocialLink({
 
 function NavLink({ href, children }: { href: string; children: React.ReactNode }) {
   return (
-    <Link href={href} className="text-white transition-opacity hover:underline hover:opacity-80">
+    <Link href={href} className="transition-opacity hover:underline hover:opacity-80">
       {children}
     </Link>
   )
