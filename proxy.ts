@@ -1,5 +1,6 @@
 import { getToken } from 'next-auth/jwt'
 import { NextRequest, NextResponse } from 'next/server'
+import { isLegacyPropertyId } from '@/lib/legacy-property-id'
 
 const PLATFORM_DOMAIN = process.env.NEXT_PUBLIC_PLATFORM_DOMAIN ?? 'codelabz.com.br'
 const SUPER_ADMIN_HOST = `admin.${PLATFORM_DOMAIN}`
@@ -79,6 +80,47 @@ function propertyErrorResponse(status: 404 | 503): NextResponse {
   )
 }
 
+// Resolves legacy ID URLs against the public catalogue only, so hidden
+// properties are never exposed through a redirect.
+async function legacyPropertyRedirect(
+  req: NextRequest,
+  agencyId: string,
+  id: string,
+): Promise<NextResponse> {
+  try {
+    let page = 1
+    let totalPages = 1
+    do {
+      const res = await fetch(`${API_URL}/imovel?page=${page}&pageSize=1000&visible=true`, {
+        headers: { 'x-agency-id': agencyId },
+        next: { revalidate: 300 },
+      })
+      if (!res.ok) return propertyErrorResponse(503)
+      const data = (await res.json()) as {
+        properties?: { id: string; slug: string; visible?: boolean }[]
+        totalPages?: number
+      }
+      if (!Array.isArray(data.properties) || !Number.isInteger(data.totalPages)) {
+        return propertyErrorResponse(503)
+      }
+      const match = data.properties.find(
+        (property) => property.id === id && property.visible !== false && property.slug,
+      )
+      if (match) {
+        return NextResponse.redirect(
+          new URL(`/imoveis/${encodeURIComponent(match.slug)}`, req.url),
+          301,
+        )
+      }
+      totalPages = data.totalPages as number
+      page += 1
+    } while (page <= totalPages)
+    return propertyErrorResponse(404)
+  } catch {
+    return propertyErrorResponse(503)
+  }
+}
+
 async function checkPublicProperty(
   req: NextRequest,
   agencyId: string,
@@ -92,6 +134,9 @@ async function checkPublicProperty(
   } catch {
     return propertyErrorResponse(404)
   }
+  // The slug endpoint cannot resolve IDs. Redirect here, before the page
+  // starts streaming, so crawlers get a real 301 instead of a meta refresh.
+  if (isLegacyPropertyId(slug)) return legacyPropertyRedirect(req, agencyId, slug)
 
   try {
     const res = await fetch(`${API_URL}/imovel/slug/${encodeURIComponent(slug)}`, {
