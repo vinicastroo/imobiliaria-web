@@ -6,7 +6,12 @@ export const propertySchema = z
     slug: z
       .string()
       .min(1, 'Slug é obrigatório')
-      .max(80, 'Slug não pode ultrapassar 80 caracteres'),
+      .max(80, 'Slug não pode ultrapassar 80 caracteres')
+      // The slug becomes the public URL; spaces or accents produce invalid sitemap entries.
+      .regex(
+        /^[a-z0-9-]+$/,
+        'Use apenas letras minúsculas, números e hífens (sem espaços ou acentos)',
+      ),
     code: z.union([z.string(), z.number()]).optional(),
     value: z.string().optional(),
     summary: z.string().min(1, 'Resumo é obrigatório'),

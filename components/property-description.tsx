@@ -25,7 +25,7 @@ export function PropertyDescription({ description }: PropertyDescriptionProps) {
         )}
       >
         <div
-          className="prose prose-slate prose-headings:text-[#17375F] prose-headings:font-bold prose-p:text-gray-600 prose-p:leading-relaxed prose-strong:text-[#17375F] prose-ul:list-disc prose-ul:pl-5 prose-li:marker:text-[#17375F] prose-li:text-gray-600 max-w-none [&_li]:mb-1 [&_li_p]:m-0 [&_p:empty]:hidden" // Remove parágrafos vazios que vêm do editor
+          className="prose prose-slate prose-headings:text-(--primary-color,#17375F) prose-headings:font-bold prose-p:text-gray-600 prose-p:leading-relaxed prose-strong:text-(--primary-color,#17375F) prose-ul:list-disc prose-ul:pl-5 prose-li:marker:text-(--primary-color,#17375F) prose-li:text-gray-600 max-w-none [&_li]:mb-1 [&_li_p]:m-0 [&_p:empty]:hidden" // Remove parágrafos vazios que vêm do editor
           dangerouslySetInnerHTML={{ __html: description }}
         />
 
@@ -39,7 +39,7 @@ export function PropertyDescription({ description }: PropertyDescriptionProps) {
         <Button
           variant="ghost"
           onClick={() => setIsExpanded(!isExpanded)}
-          className="flex h-auto items-center gap-2 p-0 font-semibold text-[#17375F] hover:bg-transparent hover:text-[#17375F]/80"
+          className="flex h-auto items-center gap-2 p-0 font-semibold text-(--primary-color,#17375F) hover:bg-transparent hover:opacity-80"
         >
           {isExpanded ? (
             <>

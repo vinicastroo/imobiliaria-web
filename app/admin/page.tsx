@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
-import { keepPreviousData, useQuery } from '@tanstack/react-query'
+import { useQuery } from '@tanstack/react-query'
 import { Eye, Flame, Globe } from 'lucide-react'
 
 import { cn } from '@/lib/utils'
@@ -40,13 +40,13 @@ export default function AdminDashboard() {
   const [period, setPeriod] = useState<Period>('30d')
 
   const { data, isLoading, isFetching } = useQuery({
-    queryKey: ['metrics', period],
+    queryKey: ['metrics', session?.user?.agencyId, session?.user?.id, period],
+    enabled: Boolean(session?.user?.agencyId) && (role === 'OWNER' || role === 'MANAGER'),
     queryFn: async () => {
       const res = await api.get<MetricsResponse>(`/metrics?period=${period}`)
       return res.data
     },
     staleTime: 5 * 60 * 1000,
-    placeholderData: keepPreviousData,
   })
 
   const topProperty = data?.topProperties[0]

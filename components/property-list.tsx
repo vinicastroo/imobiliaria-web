@@ -1,13 +1,12 @@
 'use client'
 
 import { memo } from 'react'
-import Image from 'next/image'
 import Link from 'next/link'
-import { useRouter, useSearchParams, usePathname } from 'next/navigation'
+import { useSearchParams, usePathname } from 'next/navigation'
 import { useQuery } from '@tanstack/react-query'
 import { BedDouble, Bath, CarFront, Ruler, LayoutGrid, Toilet } from 'lucide-react'
 
-import { Card, CardFooter } from '@/components/ui/card'
+import { Card } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Badge } from '@/components/ui/badge'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
@@ -21,6 +20,7 @@ import {
   PaginationPrevious,
 } from '@/components/ui/pagination'
 
+import { parsePropertySearch, propertyQueryKey } from '@/lib/property-search'
 import { getProperties } from '@/app/api/get-properties'
 import { PropertyGallery } from './property-gallery'
 
@@ -55,25 +55,12 @@ const Feature = memo(function Feature({ icon: Icon, value, label, suffix = '' }:
 })
 
 export function PropertyList() {
-  const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
 
-  const page = Number(searchParams.get('page')) || 1
-
-  // Extrai filtros da URL
-  const filters = {
-    type: searchParams.get('tipoImovel'),
-    city: searchParams.get('cidade'),
-    neighborhood: searchParams.get('bairro'),
-    bedrooms: searchParams.get('quartos'),
-    bathrooms: searchParams.get('banheiros'),
-    suites: searchParams.get('suites'),
-    parkingSpots: searchParams.get('garagem'),
-    totalArea: searchParams.get('areaTotal'),
-    privateArea: searchParams.get('areaTerreno'),
-    code: searchParams.get('ref'),
-  }
+  const { page, filters } = parsePropertySearch(
+    Object.fromEntries([...searchParams.keys()].map((key) => [key, searchParams.get(key)])),
+  )
 
   const {
     data: result,
@@ -83,7 +70,8 @@ export function PropertyList() {
     status,
     fetchStatus,
   } = useQuery({
-    queryKey: ['properties', page, ...Object.values(filters)],
+    queryKey: propertyQueryKey(page, filters),
+    staleTime: 60_000,
     queryFn: () => getProperties({ page, ...filters }),
   })
 
@@ -108,15 +96,12 @@ export function PropertyList() {
   // CORREÇÃO 2: Ler o totalCount para o texto do header
   const totalCount = result?.totalCount || 0
 
-  const handlePageChange = (newPage: number) => {
-    if (newPage < 1 || newPage > totalPages) return
-
+  const pageHref = (newPage: number) => {
     const params = new URLSearchParams(searchParams.toString())
-    params.set('page', newPage.toString())
-
-    router.push(`${pathname}?${params.toString()}`)
-
-    window.scrollTo({ top: 0, behavior: 'smooth' })
+    if (newPage === 1) params.delete('page')
+    else params.set('page', String(newPage))
+    const query = params.toString()
+    return query ? `${pathname}?${query}` : pathname
   }
 
   const getPaginationItems = () => {
@@ -141,7 +126,7 @@ export function PropertyList() {
     <div className="flex w-full flex-col gap-6">
       {/* Header com contagem */}
       <div className="flex items-center justify-between">
-        {!isLoading && (
+        {!isLoading && !isError && (
           <h2 className="text-lg font-bold text-gray-700">
             {/* CORREÇÃO 3: Exibir totalCount (ex: 130 Imóveis) e não totalPages */}
             {`${totalCount} ${totalCount === 1 ? 'Imóvel encontrado' : 'Imóveis encontrados'}`}
@@ -162,6 +147,12 @@ export function PropertyList() {
             </div>
           ))}
         </div>
+      )}
+
+      {isError && (
+        <Card role="alert" className="p-8 text-center text-gray-500">
+          Não foi possível carregar os imóveis. Tente novamente em instantes.
+        </Card>
       )}
 
       {/* Empty State */}
@@ -263,7 +254,7 @@ export function PropertyList() {
             {/* Botão Anterior */}
             <PaginationItem>
               <PaginationPrevious
-                onClick={() => handlePageChange(page - 1)}
+                href={page > 1 ? pageHref(page - 1) : undefined}
                 aria-disabled={page <= 1}
                 tabIndex={page <= 1 ? -1 : 0}
                 className={page <= 1 ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
@@ -286,7 +277,7 @@ export function PropertyList() {
                 <PaginationItem key={item}>
                   <PaginationLink
                     isActive={page === item}
-                    onClick={() => handlePageChange(item as number)}
+                    href={pageHref(item as number)}
                     className="cursor-pointer"
                   >
                     {item}
@@ -298,7 +289,7 @@ export function PropertyList() {
             {/* Botão Próxima */}
             <PaginationItem>
               <PaginationNext
-                onClick={() => handlePageChange(page + 1)}
+                href={page < totalPages ? pageHref(page + 1) : undefined}
                 aria-disabled={page >= totalPages}
                 tabIndex={page >= totalPages ? -1 : 0}
                 className={page >= totalPages ? 'pointer-events-none opacity-50' : 'cursor-pointer'}

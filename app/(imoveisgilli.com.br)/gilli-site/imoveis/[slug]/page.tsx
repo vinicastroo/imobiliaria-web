@@ -1,5 +1,4 @@
 import { Metadata } from 'next'
-import { notFound, redirect } from 'next/navigation'
 import { unstable_cache } from 'next/cache'
 import { headers } from 'next/headers'
 import { BedDouble, Bath, CarFront, Ruler, MapPin, Grid2X2 } from 'lucide-react'
@@ -14,7 +13,7 @@ import Footer from '../../_components/footer'
 import { PropertyImagesCarousel } from '@/components/property-images-carousel'
 
 import { RecommendedCarousel, RecommendedProperty } from '@/components/recommended-carousel'
-import { getProperty } from '@/app/api/get-property'
+import { getPropertyForPage } from '@/lib/property-page'
 import { buildBreadcrumbJsonLd, buildPropertyJsonLd } from '@/lib/json-ld'
 
 import { Card, CardContent } from '@/components/ui/card'
@@ -29,9 +28,7 @@ import type { Properties } from '@/app/api/get-properties'
 import { PropertyJourney } from '../../_components/property-journey'
 import { CopyLinkButton } from '@/components/copy-link-button'
 import { PropertyDescription } from '@/components/property-description'
-import { trackView } from '@/lib/track-view'
-
-const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+import { PropertyViewTracker } from '@/components/property-view-tracker'
 
 interface PageProps {
   params: Promise<{ slug: string }>
@@ -43,10 +40,7 @@ export interface GetPropertiesResponse {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params
 
-  if (UUID_RE.test(slug)) return { robots: { index: false, follow: false } }
-
-  const property = await getProperty(slug)
-  if (!property || property.visible === false) return { title: 'Imóvel indisponível' }
+  const property = await getPropertyForPage(slug)
 
   const ogImage = property.files?.[0]?.path ?? 'https://imoveisgilli.com.br/og-image.png'
 
@@ -159,22 +153,10 @@ const FeatureItem = ({ icon: Icon, value, label, suffix = '' }: FeatureItemProps
 export default async function PropertyPage({ params }: PageProps) {
   const { slug } = await params
 
-  if (UUID_RE.test(slug)) {
-    const property = await getProperty(slug)
-    if (property?.slug) redirect(`/imoveis/${property.slug}`)
-    notFound()
-  }
-
-  const property = await getProperty(slug)
-
-  if (!property || property.visible === false) {
-    notFound()
-  }
+  const property = await getPropertyForPage(slug)
 
   const headersList = await headers()
   const agencyId = headersList.get('x-tenant-id') ?? process.env.NEXT_PUBLIC_AGENCY_ID ?? ''
-
-  trackView(slug, agencyId, headersList.get('referer'))
 
   const realtors = property.realtors || []
   const recommended = await getRecommendedProperties(agencyId, property.city, property.id)
@@ -189,6 +171,7 @@ export default async function PropertyPage({ params }: PageProps) {
 
   return (
     <main className="min-h-screen bg-white">
+      <PropertyViewTracker propertyId={property.id} slug={property.slug} agencyId={agencyId} />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(propertyJsonLd) }}

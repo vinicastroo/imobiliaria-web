@@ -64,6 +64,52 @@ function getSitePrefix(hostname: string, tenantSlug: string): string {
   return CUSTOM_SITE_PREFIXES[hostname] ?? `/sites/${tenantSlug}`
 }
 
+function propertyErrorResponse(status: 404 | 503): NextResponse {
+  const title = status === 404 ? 'Imóvel não encontrado' : 'Imóvel temporariamente indisponível'
+  const message =
+    status === 404
+      ? 'Este imóvel não está mais disponível ou o endereço mudou.'
+      : 'Não foi possível carregar este imóvel agora. Tente novamente em instantes.'
+  return new NextResponse(
+    `<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="robots" content="noindex"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${title} | Auros</title></head><body style="margin:0;font-family:system-ui,sans-serif;color:#172033"><main style="max-width:640px;margin:15vh auto;padding:24px"><h1>${title}</h1><p>${message}</p><a href="/imoveis" style="color:#17375f">Ver imóveis disponíveis</a></main></body></html>`,
+    {
+      status,
+      headers: { 'content-type': 'text/html; charset=utf-8' },
+    },
+  )
+}
+
+async function checkPublicProperty(
+  req: NextRequest,
+  agencyId: string,
+): Promise<NextResponse | null> {
+  const match = req.nextUrl.pathname.match(/^\/imoveis\/([^/]+)\/?$/)
+  if (!match) return null
+
+  let slug: string
+  try {
+    slug = decodeURIComponent(match[1])
+  } catch {
+    return propertyErrorResponse(404)
+  }
+
+  try {
+    const res = await fetch(`${API_URL}/imovel/slug/${encodeURIComponent(slug)}`, {
+      headers: { 'x-agency-id': agencyId },
+      next: { revalidate: 60 },
+    })
+    if (res.status === 404) return propertyErrorResponse(404)
+    if (!res.ok) return propertyErrorResponse(503)
+
+    const property = (await res.json()) as { id?: string; visible?: boolean }
+    if (!property.id) return propertyErrorResponse(503)
+    if (property.visible === false) return propertyErrorResponse(404)
+    return null
+  } catch {
+    return propertyErrorResponse(503)
+  }
+}
+
 // ─────────────────────────────────────────────────────────────────────────────
 // Auth rules applied after tenant is resolved
 // ─────────────────────────────────────────────────────────────────────────────
@@ -114,7 +160,7 @@ async function applyAuthRules(
 // ─────────────────────────────────────────────────────────────────────────────
 // Main middleware
 // ─────────────────────────────────────────────────────────────────────────────
-export async function middleware(req: NextRequest) {
+export async function proxy(req: NextRequest) {
   const hostname = (req.headers.get('host') ?? '').split(':')[0].toLowerCase()
   const { pathname } = req.nextUrl
 
@@ -184,6 +230,7 @@ export async function middleware(req: NextRequest) {
     if (isPublicSitePage(pathname) && (tenantSlug || hasKnownPrefix)) {
       const prefix = getSitePrefix(effectiveDomain ?? '', tenantSlug ?? '')
       const rewriteUrl = new URL(prefix + (pathname === '/' ? '' : pathname), req.url)
+      rewriteUrl.search = req.nextUrl.search
       base = NextResponse.rewrite(rewriteUrl, { request: { headers: requestHeaders } })
     } else {
       base = NextResponse.next({ request: { headers: requestHeaders } })
@@ -219,6 +266,7 @@ export async function middleware(req: NextRequest) {
     if (isKnownCustomDomain && isPublicSitePage(pathname)) {
       const prefix = CUSTOM_SITE_PREFIXES[hostname]
       const rewriteUrl = new URL(prefix + (pathname === '/' ? '' : pathname), req.url)
+      rewriteUrl.search = req.nextUrl.search
       return NextResponse.rewrite(rewriteUrl)
     }
     return NextResponse.redirect(`https://${PLATFORM_DOMAIN}`)
@@ -231,8 +279,12 @@ export async function middleware(req: NextRequest) {
   requestHeaders.set('x-tenant-layout', tenant.layoutType)
 
   if (isPublicSitePage(pathname)) {
+    const propertyResponse = await checkPublicProperty(req, tenant.id)
+    if (propertyResponse) return propertyResponse
+
     const prefix = getSitePrefix(hostname, tenant.slug)
     const rewriteUrl = new URL(prefix + (pathname === '/' ? '' : pathname), req.url)
+    rewriteUrl.search = req.nextUrl.search
     const response = await applyAuthRules(
       req,
       NextResponse.rewrite(rewriteUrl, { request: { headers: requestHeaders } }),

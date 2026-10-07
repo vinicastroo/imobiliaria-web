@@ -57,135 +57,85 @@ export interface Property {
   }[]
 }
 
-// unstable_cache: cache persistente entre requests (revalida a cada 5min)
-// agencyId is included as a parameter so Next.js scopes the cache per tenant
-// Key bumped to 'property-v3' to bust stale null entries from previous deploys
-const getCachedProperty = unstable_cache(
-  async (agencyId: string, slug: string) => {
-    const baseURL = process.env.NEXT_PUBLIC_API_URL || 'https://imobiliaria-api.vercel.app'
-    console.log(
-      '[getCachedProperty] CACHE MISS — chamando API | agencyId:',
-      agencyId || '(vazio!)',
-      '| slug:',
-      slug,
-      '| url:',
-      `${baseURL}/imovel/slug/${slug}`,
-    )
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 
-    // Diagnóstico extra: raw fetch para comparar com axios
-    try {
-      const rawRes = await fetch(`${baseURL}/imovel/slug/${encodeURIComponent(slug)}`, {
-        headers: { 'x-agency-id': agencyId },
-      })
-      console.log(
-        '[getCachedProperty] raw fetch status:',
-        rawRes.status,
-        '| slug:',
-        slug,
-        '| agencyId:',
-        agencyId || '(vazio!)',
-      )
-    } catch (fetchErr) {
-      console.error('[getCachedProperty] raw fetch falhou:', fetchErr)
-    }
+const CUID_RE = /^c[a-z0-9]{24}$/
 
-    try {
-      const response = await api.get<Property>(`/imovel/slug/${slug}`, {
+// Resolve legacy IDs from the public, tenant-scoped catalogue. The admin ID
+// endpoint also returns hidden properties and cannot be used for public redirects.
+const getPublicPropertySlugs = unstable_cache(
+  async (agencyId: string) => {
+    const entries: { id: string; slug: string }[] = []
+    let page = 1
+    let totalPages = 1
+    do {
+      const response = await api.get('/imovel', {
+        params: { page, pageSize: 1000, visible: true },
         headers: { 'x-agency-id': agencyId },
       })
       const data = response.data
-
-      console.log(
-        '[getCachedProperty] API ok | slug:',
-        slug,
-        '| property.id:',
-        data?.id,
-        '| property.name:',
-        data?.name,
-      )
-
-      if (!data) {
-        console.warn('[getCachedProperty] API retornou status 200 mas body vazio | slug:', slug)
-        return null
+      if (
+        !Array.isArray(data.properties) ||
+        !Number.isInteger(data.totalPages) ||
+        data.totalPages < 0
+      ) {
+        throw new Error('Invalid public property catalogue')
       }
-
-      const baseUrl = `https://d2wss3tmei5yh1.cloudfront.net`
-      const items =
-        data.files.length > 0
-          ? data.files.map((file) => ({
-              img: `${baseUrl}/${file.fileName}`,
-            }))
-          : []
-
-      return { ...data, items }
-    } catch (error) {
-      const status = isAxiosError(error) ? error.response?.status : 'unknown'
-      const responseBody = isAxiosError(error) ? JSON.stringify(error.response?.data) : null
-      const baseURL = process.env.NEXT_PUBLIC_API_URL || 'https://imobiliaria-api.vercel.app'
-      console.error(
-        '[getCachedProperty] erro | agencyId:',
-        agencyId || '(vazio!)',
-        '| slug:',
-        slug,
-        '| status:',
-        status,
-        '| body:',
-        responseBody,
-        '| url completa:',
-        `${baseURL}/imovel/slug/${slug}`,
+      entries.push(
+        ...data.properties
+          .filter((property: Property) => property.visible !== false && property.slug)
+          .map((property: Property) => ({ id: property.id, slug: property.slug })),
       )
-      throw error
-    }
+      totalPages = data.totalPages
+      page += 1
+    } while (page <= totalPages)
+    return entries
   },
-  // Key bumped to 'property-v4' to bust stale null entries cached by previous versions
-  ['property-v4'],
-  { revalidate: 300, tags: ['properties'] }, // 5 minutos
+  ['public-property-slugs-v1'],
+  { revalidate: 300, tags: ['properties'] },
+)
+
+// Scope persistent cache entries to the agency; deduplicate metadata/page reads below.
+const getCachedProperty = unstable_cache(
+  async (agencyId: string, slug: string) => {
+    const response = await api.get<Property>(`/imovel/slug/${encodeURIComponent(slug)}`, {
+      headers: { 'x-agency-id': agencyId },
+    })
+    const data = response.data
+
+    // An invalid API response is a service failure, not a missing property.
+    if (!data?.id) throw new Error('Invalid property API response')
+
+    const baseUrl = 'https://d2wss3tmei5yh1.cloudfront.net'
+    const items = data.files.map((file) => ({ img: `${baseUrl}/${file.fileName}` }))
+    return { ...data, items }
+  },
+  ['property-v5'],
+  { revalidate: 300, tags: ['properties'] },
 )
 
 export const getProperty = cache(async (slug: string) => {
-  if (!slug) {
-    console.warn('[getProperty] slug vazio ou undefined')
-    return undefined
-  }
+  if (!slug) return undefined
 
   const headersList = await headers()
   const agencyId = headersList.get('x-tenant-id') ?? process.env.NEXT_PUBLIC_AGENCY_ID ?? ''
+  if (!agencyId) throw new Error('Missing agency context for property lookup')
 
-  console.log(
-    '[getProperty] slug:',
-    slug,
-    '| agencyId resolvido:',
-    agencyId || '(vazio!)',
-    '| x-tenant-id header:',
-    headersList.get('x-tenant-id'),
-    '| NEXT_PUBLIC_AGENCY_ID:',
-    process.env.NEXT_PUBLIC_AGENCY_ID,
-  )
+  if (UUID_RE.test(slug) || CUID_RE.test(slug)) {
+    const properties = await getPublicPropertySlugs(agencyId)
+    const match =
+      properties.find((property) => property.slug === slug) ??
+      properties.find((property) => property.id === slug)
+    if (!match) return undefined
+    slug = match.slug
+  }
 
   try {
-    const result = await getCachedProperty(agencyId, slug)
-
-    if (result === null) {
-      console.error(
-        '[getProperty] resultado null (404 cacheado ou property não existe) | slug:',
-        slug,
-        '| agencyId:',
-        agencyId,
-      )
-    } else {
-      console.log('[getProperty] property encontrada | slug:', slug, '| id:', result.id)
-    }
-
-    return result ?? undefined
-  } catch (err) {
-    console.error(
-      '[getProperty] exceção capturada | slug:',
-      slug,
-      '| agencyId:',
-      agencyId,
-      '| erro:',
-      err,
-    )
-    return undefined
+    return await getCachedProperty(agencyId, slug)
+  } catch (error) {
+    // Only a real 404 should cause notFound() and its automatic noindex tag.
+    // Let outages reach the error boundary instead of removing valid pages.
+    if (isAxiosError(error) && error.response?.status === 404) return undefined
+    throw error
   }
 })
