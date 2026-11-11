@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { getSession } from 'next-auth/react'
+import { getSession, signOut } from 'next-auth/react'
 
 const baseURL = process.env.NEXT_PUBLIC_API_URL || 'https://imobiliaria-api.vercel.app'
 
@@ -9,6 +9,18 @@ const api = axios.create({
 
 // Cache em memória — reseta a cada refresh/navegação, nunca persiste valor de outra sessão
 let cachedTenantId: string | null = null
+
+// Sessões criadas antes da API emitir o accessToken não conseguem se autenticar
+// quando a API passar a exigir o token: força um novo login (uma vez por página).
+let signingOut = false
+
+function forceRelogin() {
+  if (!signingOut) {
+    signingOut = true
+    void signOut({ callbackUrl: '/login' })
+  }
+  return Promise.reject(new axios.CanceledError('Sessão sem accessToken: novo login necessário'))
+}
 
 async function resolveTenantId(): Promise<string> {
   if (cachedTenantId) {
@@ -37,10 +49,10 @@ api.interceptors.request.use(
       const session = await getSession()
 
       if (session?.user) {
+        if (!session.accessToken) return forceRelogin()
+
         config.headers['x-user-id'] = session.user.id
-        if (session.accessToken) {
-          config.headers.Authorization = `Bearer ${session.accessToken}`
-        }
+        config.headers.Authorization = `Bearer ${session.accessToken}`
 
         if (session.user.agencyId) {
           config.headers['x-agency-id'] = session.user.agencyId
