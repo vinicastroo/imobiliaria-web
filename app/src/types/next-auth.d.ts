@@ -8,9 +8,11 @@ declare module 'next-auth' {
     planId: string | null
     features: string[]
     realtorProfileId: string | null
+    accessToken?: string | null
   }
 
   interface Session {
+    accessToken: string | null
     user: {
       id: string
       role: string | null
@@ -30,5 +32,6 @@ declare module 'next-auth/jwt' {
     planId: string | null
     features: string[]
     realtorProfileId: string | null
+    accessToken?: string | null
   }
 }

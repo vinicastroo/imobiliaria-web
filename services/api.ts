@@ -38,6 +38,9 @@ api.interceptors.request.use(
 
       if (session?.user) {
         config.headers['x-user-id'] = session.user.id
+        if (session.accessToken) {
+          config.headers.Authorization = `Bearer ${session.accessToken}`
+        }
 
         if (session.user.agencyId) {
           config.headers['x-agency-id'] = session.user.agencyId

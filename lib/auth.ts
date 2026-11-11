@@ -50,7 +50,8 @@ export const authOptions: NextAuthOptions = {
             throw new Error(data.message || 'Credenciais inválidas')
           }
 
-          return data.user
+          // accessToken: JWT assinado pela API (vazio se API_JWT_SECRET não existir lá)
+          return { ...data.user, accessToken: data.accessToken ?? null }
         } catch (error) {
           console.error('Erro no authorize:', error)
           return null
@@ -68,6 +69,7 @@ export const authOptions: NextAuthOptions = {
         token.planId = user.planId
         token.features = user.features
         token.realtorProfileId = user.realtorProfileId
+        token.accessToken = user.accessToken ?? null
       }
       return token
     },
@@ -83,6 +85,9 @@ export const authOptions: NextAuthOptions = {
           features: (token.features as string[]) ?? [],
           realtorProfileId: (token.realtorProfileId as string) ?? null,
         }
+        // O admin chama a API direto do navegador, então o token precisa
+        // chegar ao cliente (enviado como Authorization pelo services/api).
+        session.accessToken = (token.accessToken as string | undefined) ?? null
       }
       return session
     },
