@@ -1,5 +1,6 @@
 import { cache } from 'react'
 import { headers } from 'next/headers'
+import { apiUrl } from '@/lib/api-url'
 
 export type LayoutType = 'MODERN' | 'CLASSIC' | 'MINIMAL'
 
@@ -65,7 +66,7 @@ async function resolveTenantId(): Promise<string | null> {
   try {
     const hostname = host.split(':')[0]
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/resolve-tenant?hostname=${encodeURIComponent(hostname)}`,
+      `${apiUrl('')}/resolve-tenant?hostname=${encodeURIComponent(hostname)}`,
       { next: { revalidate: 300, tags: ['tenant'] } },
     )
     if (!res.ok) return null
@@ -85,7 +86,7 @@ export const getTenantVisualConfig = cache(async (): Promise<VisualConfig> => {
     // O cache do fetch inclui os headers na chave, então cada agência tem sua
     // entrada. Invalidado pelo admin via revalidateVisualConfig(); sem cache,
     // todo render acordava o banco (Neon cobra por tempo de compute ativo).
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/visual-config`, {
+    const res = await fetch(`${apiUrl('')}/visual-config`, {
       headers: { 'x-agency-id': tenantId },
       next: { revalidate: 86400, tags: ['visual-config'] },
     })

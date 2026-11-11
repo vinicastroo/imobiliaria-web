@@ -1,7 +1,8 @@
 import { cache } from 'react'
 import { headers } from 'next/headers'
+import { apiUrl } from '@/lib/api-url'
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3333'
+const API_URL = apiUrl('http://localhost:3333')
 const FALLBACK_NAME = 'Portal Imobiliário'
 
 export interface TenantIdentity {

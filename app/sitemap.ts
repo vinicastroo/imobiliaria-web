@@ -1,5 +1,6 @@
 import { headers } from 'next/headers'
 import { MetadataRoute } from 'next'
+import { apiUrl } from '@/lib/api-url'
 
 // Rotas estáticas por tenant — adicione aqui ao criar novos tenants
 const TENANT_STATIC_PATHS: Record<string, string[]> = {
@@ -17,12 +18,12 @@ interface Property {
 
 async function getProperties(agencyId: string): Promise<Property[]> {
   const properties: Property[] = []
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://imobiliaria-api.vercel.app'
+  const API_URL = apiUrl('https://imobiliaria-api.vercel.app')
   let page = 1
   let totalPages = 1
 
   do {
-    const res = await fetch(`${apiUrl}/imovel?page=${page}&pageSize=1000&visible=true`, {
+    const res = await fetch(`${API_URL}/imovel?page=${page}&pageSize=1000&visible=true`, {
       headers: { 'x-agency-id': agencyId },
       next: { revalidate: 3600, tags: ['properties'] },
     })
