@@ -53,7 +53,7 @@ O tenant é propagado via header `x-tenant-id` (Server Components) e cookie `__t
 
 ## ✨ Funcionalidades
 
-- 🏠 **Gestão de imóveis** — cadastro, edição, fotos com crop/reordenação (limite de 15 por imóvel), imóveis em destaque
+- 🏠 **Gestão de imóveis** — cadastro, edição, fotos com crop/reordenação (limite de 20 por imóvel), imóveis em destaque
 - 👥 **CRM** — kanban de pipeline de vendas, timeline de contatos, origem de leads
 - 📊 **Dashboard de métricas** — visualizações por dia, origem de tráfego, imóveis mais vistos
 - 🏢 **Multi-tenant** — sites públicos white-label por domínio, cores e identidade visual configuráveis por imobiliária
