@@ -1,6 +1,8 @@
 'use client'
 
-const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://imobiliaria-api.vercel.app'
+import { apiUrl } from '@/lib/api-url'
+
+const API_URL = apiUrl('https://imobiliaria-api.vercel.app')
 const VISITOR_ID_KEY = '__visitor_id__'
 const VIEWS_KEY = '__property_views_v1__'
 const VIEW_TTL = 24 * 60 * 60 * 1000
@@ -51,7 +53,7 @@ export function trackView(propertyId: string, slug: string, agencyId: string): P
 
   const request = (async () => {
     try {
-      const response = await fetch(`${apiUrl}/imovel/view`, {
+      const response = await fetch(`${API_URL}/imovel/view`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'x-agency-id': agencyId },
         body: JSON.stringify({

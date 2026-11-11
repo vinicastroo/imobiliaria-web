@@ -1,7 +1,8 @@
 import type { NextAuthOptions } from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
+import { apiUrl } from '@/lib/api-url'
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3333'
+const API_URL = apiUrl('http://localhost:3333')
 
 export const authOptions: NextAuthOptions = {
   session: {
