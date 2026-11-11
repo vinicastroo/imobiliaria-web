@@ -24,7 +24,7 @@ async function getProperties(agencyId: string): Promise<Property[]> {
   do {
     const res = await fetch(`${apiUrl}/imovel?page=${page}&pageSize=1000&visible=true`, {
       headers: { 'x-agency-id': agencyId },
-      next: { revalidate: 3600 },
+      next: { revalidate: 3600, tags: ['properties'] },
     })
     // Do not publish a successful but incomplete sitemap during API outages.
     if (!res.ok) throw new Error(`Sitemap property lookup failed: ${res.status}`)

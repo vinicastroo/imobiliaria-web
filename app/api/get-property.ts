@@ -89,7 +89,7 @@ const getPublicPropertySlugs = unstable_cache(
     return entries
   },
   ['public-property-slugs-v1'],
-  { revalidate: 300, tags: ['properties'] },
+  { revalidate: 86400, tags: ['properties'] },
 )
 
 // Scope persistent cache entries to the agency; deduplicate metadata/page reads below.
@@ -108,7 +108,7 @@ const getCachedProperty = unstable_cache(
     return { ...data, items }
   },
   ['property-v5'],
-  { revalidate: 300, tags: ['properties'] },
+  { revalidate: 86400, tags: ['properties'] },
 )
 
 export const getProperty = cache(async (slug: string) => {

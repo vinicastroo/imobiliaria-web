@@ -62,7 +62,7 @@ const getRecommendedProperties = unstable_cache(
     }
   },
   ['tenant-recommended-properties'],
-  { revalidate: 1800, tags: ['properties'] },
+  { revalidate: 86400, tags: ['properties'] },
 )
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {

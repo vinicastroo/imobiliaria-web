@@ -9,6 +9,7 @@ import { toast } from 'sonner'
 import { Loader2, Eye, EyeOff, Globe } from 'lucide-react'
 
 import api from '@/services/api'
+import { revalidateVisualConfig } from '@/app/actions/revalidate-visual-config'
 
 import {
   Sheet,
@@ -215,8 +216,9 @@ export function AgencyEditSheet({ open, onOpenChange, agency }: AgencyEditSheetP
   const siteEnabledMutation = useMutation({
     mutationFn: async (value: boolean) =>
       (await api.patch(`/admin/agencies/${agency?.id}/site-enabled`, { siteEnabled: value })).data,
-    onSuccess: (data: { siteEnabled: boolean }) => {
+    onSuccess: async (data: { siteEnabled: boolean }) => {
       setSiteEnabled(data.siteEnabled)
+      await revalidateVisualConfig()
       queryClient.invalidateQueries({ queryKey: ['admin-agencies'] })
       toast.success(data.siteEnabled ? 'Site ativado.' : 'Site desativado.')
     },

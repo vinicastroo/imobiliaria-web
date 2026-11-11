@@ -119,7 +119,7 @@ const getRecommendedProperties = unstable_cache(
     }
   },
   ['recommended-properties'],
-  { revalidate: 1800, tags: ['properties'] }, // 30 minutos
+  { revalidate: 86400, tags: ['properties'] }, // invalidado pelo admin
 )
 
 interface FeatureItemProps {
