@@ -82,8 +82,12 @@ export const getTenantVisualConfig = cache(async (): Promise<VisualConfig> => {
   if (!tenantId) return PLATFORM_DEFAULTS
 
   try {
+    // O cache do fetch inclui os headers na chave, então cada agência tem sua
+    // entrada. Invalidado pelo admin via revalidateVisualConfig(); sem cache,
+    // todo render acordava o banco (Neon cobra por tempo de compute ativo).
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/visual-config`, {
       headers: { 'x-agency-id': tenantId },
+      next: { revalidate: 86400, tags: ['visual-config'] },
     })
 
     if (!res.ok) return PLATFORM_DEFAULTS
