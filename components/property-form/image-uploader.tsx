@@ -193,7 +193,7 @@ export function ImageUploader({
     dismissCrop,
   } = useImageCropQueue(images, onImagesChange)
 
-  const MAX_IMAGES = 15
+  const MAX_IMAGES = 20
   const remaining = MAX_IMAGES - images.length
   const isAtLimit = remaining <= 0
 

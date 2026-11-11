@@ -104,7 +104,7 @@ Formulário completo de imóvel:
 
 - `property-schema.ts` — schema Zod (latitude/longitude opcionais)
 - `use-property-form.ts` — lógica de submit, upload, toast de erro de validação
-- `image-uploader.tsx` — drag & drop, crop, reordenação, limite de 15 fotos
+- `image-uploader.tsx` — drag & drop, crop, reordenação, limite de 20 fotos
 - `use-image-crop-queue.ts` — fila de crop sequencial
 
 ### TanStack Query
