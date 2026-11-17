@@ -1,6 +1,12 @@
 import { getToken } from 'next-auth/jwt'
 import { NextRequest, NextResponse } from 'next/server'
 import { isLegacyPropertyId } from '@/lib/legacy-property-id'
+import {
+  PROPERTY_FOUND_TTL,
+  PROPERTY_MISSING_TTL,
+  readPropertyProxyCache,
+  writePropertyProxyCache,
+} from '@/lib/proxy-property-cache'
 
 const PLATFORM_DOMAIN = process.env.NEXT_PUBLIC_PLATFORM_DOMAIN ?? 'codelabz.com.br'
 const SUPER_ADMIN_HOST = `admin.${PLATFORM_DOMAIN}`
@@ -87,13 +93,20 @@ async function legacyPropertyRedirect(
   agencyId: string,
   id: string,
 ): Promise<NextResponse> {
+  const redirectTo = (slug: string) =>
+    NextResponse.redirect(new URL(`/imoveis/${encodeURIComponent(slug)}`, req.url), 301)
+
+  const cacheKey = `legacy-property-slug:${agencyId}:${id}`
+  const cached = await readPropertyProxyCache<{ slug: string | null }>(cacheKey)
+  if (cached) return cached.slug ? redirectTo(cached.slug) : propertyErrorResponse(404)
+
   try {
     let page = 1
     let totalPages = 1
     do {
       const res = await fetch(`${API_URL}/imovel?page=${page}&pageSize=1000&visible=true`, {
         headers: { 'x-agency-id': agencyId },
-        next: { revalidate: 300 },
+        cache: 'no-store',
       })
       if (!res.ok) return propertyErrorResponse(503)
       const data = (await res.json()) as {
@@ -107,14 +120,13 @@ async function legacyPropertyRedirect(
         (property) => property.id === id && property.visible !== false && property.slug,
       )
       if (match) {
-        return NextResponse.redirect(
-          new URL(`/imoveis/${encodeURIComponent(match.slug)}`, req.url),
-          301,
-        )
+        await writePropertyProxyCache(cacheKey, { slug: match.slug }, PROPERTY_FOUND_TTL)
+        return redirectTo(match.slug)
       }
       totalPages = data.totalPages as number
       page += 1
     } while (page <= totalPages)
+    await writePropertyProxyCache(cacheKey, { slug: null }, PROPERTY_MISSING_TTL)
     return propertyErrorResponse(404)
   } catch {
     return propertyErrorResponse(503)
@@ -138,17 +150,30 @@ async function checkPublicProperty(
   // starts streaming, so crawlers get a real 301 instead of a meta refresh.
   if (isLegacyPropertyId(slug)) return legacyPropertyRedirect(req, agencyId, slug)
 
+  // A chave inclui a imobiliária: o mesmo slug pode existir em tenants diferentes.
+  const cacheKey = `property-status:${agencyId}:${slug}`
+  const cached = await readPropertyProxyCache<{ found: boolean }>(cacheKey)
+  if (cached) return cached.found ? null : propertyErrorResponse(404)
+
+  const missing = async () => {
+    await writePropertyProxyCache(cacheKey, { found: false }, PROPERTY_MISSING_TTL)
+    return propertyErrorResponse(404)
+  }
+
   try {
     const res = await fetch(`${API_URL}/imovel/slug/${encodeURIComponent(slug)}`, {
       headers: { 'x-agency-id': agencyId },
-      next: { revalidate: 60 },
+      cache: 'no-store',
     })
-    if (res.status === 404) return propertyErrorResponse(404)
+    if (res.status === 404) return missing()
+    // Falha da API não é cacheada: a próxima visita tenta de novo.
     if (!res.ok) return propertyErrorResponse(503)
 
     const property = (await res.json()) as { id?: string; visible?: boolean }
     if (!property.id) return propertyErrorResponse(503)
-    if (property.visible === false) return propertyErrorResponse(404)
+    if (property.visible === false) return missing()
+
+    await writePropertyProxyCache(cacheKey, { found: true }, PROPERTY_FOUND_TTL)
     return null
   } catch {
     return propertyErrorResponse(503)
