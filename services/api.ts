@@ -10,8 +10,8 @@ const api = axios.create({
 // Cache em memória — reseta a cada refresh/navegação, nunca persiste valor de outra sessão
 let cachedTenantId: string | null = null
 
-// Sessões criadas antes da API emitir o accessToken não conseguem se autenticar
-// quando a API passar a exigir o token: força um novo login (uma vez por página).
+// A API exige o accessToken em toda rota privada. Sessão sem token (criada antes
+// de a API emiti-lo) ou com token recusado força um novo login, uma vez por página.
 let signingOut = false
 
 function forceRelogin() {
@@ -97,6 +97,16 @@ api.interceptors.response.use(
     return response
   },
   (error) => {
+    // A API recusou o token (expirado ou inválido): a sessão do next-auth não
+    // serve mais para nada, então volta para o login em vez de mostrar erros.
+    if (
+      typeof window !== 'undefined' &&
+      error.response?.status === 401 &&
+      error.config?.headers?.Authorization
+    ) {
+      void forceRelogin().catch(() => undefined)
+    }
+
     console.error('[api] erro na resposta:', {
       url: error.config?.url,
       status: error.response?.status,

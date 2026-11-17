@@ -77,7 +77,8 @@ const getRecommendedProperties = unstable_cache(
   async (agencyId: string, city: string, currentId: string): Promise<RecommendedProperty[]> => {
     try {
       const response = await api.get<GetPropertiesResponse>(
-        `/imovel/todos?filter[city]=${encodeURIComponent(city)}&pageSize=5&visible=true`,
+        // Rota pública: só devolve imóveis visíveis e não exige login
+        `/imovel?city=${encodeURIComponent(city)}&pageSize=5`,
         {
           headers: { 'x-agency-id': agencyId },
         },
@@ -118,7 +119,7 @@ const getRecommendedProperties = unstable_cache(
       return []
     }
   },
-  ['recommended-properties'],
+  ['recommended-properties-v2'],
   { revalidate: 86400, tags: ['properties'] }, // invalidado pelo admin
 )
 
