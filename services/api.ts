@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios, { type InternalAxiosRequestConfig } from 'axios'
 import { getSession, signOut } from 'next-auth/react'
 
 const baseURL = process.env.NEXT_PUBLIC_API_URL || 'https://imobiliaria-api.vercel.app'
@@ -20,6 +20,19 @@ function forceRelogin() {
     void signOut({ callbackUrl: '/login' })
   }
   return Promise.reject(new axios.CanceledError('Sessão sem accessToken: novo login necessário'))
+}
+
+// Rotas públicas que a API deixa guardar na CDN da Vercel quando a imobiliária
+// vai na URL (?agency=). Assim o visitante não acorda o banco a cada filtro.
+// Só vale para visitante anônimo: com login a API nunca guarda a resposta.
+const CDN_CACHED_PATHS = [/^\/imovel\/cidades$/, /^\/imovel\/bairro\/[^/]+$/, /^\/tipo-imovel\/?$/]
+
+function addCdnCacheAgency(config: InternalAxiosRequestConfig) {
+  const agency = config.headers['x-agency-id']
+  const path = (config.url ?? '').split('?')[0]
+  if (config.method?.toLowerCase() !== 'get' || typeof agency !== 'string' || !agency) return
+  if (!CDN_CACHED_PATHS.some((pattern) => pattern.test(path))) return
+  config.params = { ...config.params, agency }
 }
 
 async function resolveTenantId(): Promise<string> {
@@ -70,10 +83,13 @@ api.interceptors.request.use(
             config.url,
           )
         }
-      } else if (!config.headers['x-agency-id']) {
-        const tenantId = await resolveTenantId()
-        config.headers['x-agency-id'] = tenantId
-        console.log('[api] x-agency-id final:', tenantId, '| url:', config.url)
+      } else {
+        if (!config.headers['x-agency-id']) {
+          const tenantId = await resolveTenantId()
+          config.headers['x-agency-id'] = tenantId
+          console.log('[api] x-agency-id final:', tenantId, '| url:', config.url)
+        }
+        addCdnCacheAgency(config)
       }
     }
 
