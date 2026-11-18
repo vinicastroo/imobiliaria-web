@@ -25,7 +25,12 @@ function forceRelogin() {
 // Rotas públicas que a API deixa guardar na CDN da Vercel quando a imobiliária
 // vai na URL (?agency=). Assim o visitante não acorda o banco a cada filtro.
 // Só vale para visitante anônimo: com login a API nunca guarda a resposta.
-const CDN_CACHED_PATHS = [/^\/imovel\/cidades$/, /^\/imovel\/bairro\/[^/]+$/, /^\/tipo-imovel\/?$/]
+const CDN_CACHED_PATHS = [
+  /^\/imovel\/?$/,
+  /^\/imovel\/cidades$/,
+  /^\/imovel\/bairro\/[^/]+$/,
+  /^\/tipo-imovel\/?$/,
+]
 
 function addCdnCacheAgency(config: InternalAxiosRequestConfig) {
   const agency = config.headers['x-agency-id']
