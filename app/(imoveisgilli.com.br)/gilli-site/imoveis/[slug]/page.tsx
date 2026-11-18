@@ -72,8 +72,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 // agencyId is the first parameter so Next.js scopes the cache per tenant
-const getRecommendedProperties = unstable_cache(
-  async (agencyId: string, city: string, currentId: string): Promise<RecommendedProperty[]> => {
+// A chave é a cidade, não o imóvel: todos os imóveis da mesma cidade dividem
+// uma única ida à API. O imóvel atual é retirado depois, fora do cache.
+const getCityProperties = unstable_cache(
+  async (agencyId: string, city: string): Promise<RecommendedProperty[]> => {
     try {
       const response = await api.get<GetPropertiesResponse>(
         // Rota pública: só devolve imóveis visíveis e não exige login
@@ -84,10 +86,9 @@ const getRecommendedProperties = unstable_cache(
       )
       const data = response.data
       const allProperties = data.properties || []
-      const filtered = allProperties.filter((p: Properties) => p.id !== currentId)
       const cloudFrontUrl = `https://d2wss3tmei5yh1.cloudfront.net`
 
-      return filtered.map((prop: Properties) => ({
+      return allProperties.map((prop: Properties) => ({
         id: prop.id,
         name: prop.name,
         slug: prop.slug,
@@ -118,7 +119,7 @@ const getRecommendedProperties = unstable_cache(
       return []
     }
   },
-  ['recommended-properties-v2'],
+  ['recommended-properties-by-city-v1'],
   { revalidate: 86400, tags: ['properties'] }, // invalidado pelo admin
 )
 
@@ -160,7 +161,9 @@ export default async function PropertyPage({ params }: PageProps) {
   const agencyId = headersList.get('x-tenant-id') ?? process.env.NEXT_PUBLIC_AGENCY_ID ?? ''
 
   const realtors = property.realtors || []
-  const recommended = await getRecommendedProperties(agencyId, property.city, property.id)
+  const recommended = (await getCityProperties(agencyId, property.city)).filter(
+    (item) => item.id !== property.id,
+  )
 
   const baseUrl = 'https://imoveisgilli.com.br'
   const propertyJsonLd = buildPropertyJsonLd(property, baseUrl)

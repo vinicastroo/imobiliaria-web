@@ -26,8 +26,10 @@ interface PageProps {
 }
 
 // agencyId is the first parameter so Next.js scopes the cache per tenant
-const getRecommendedProperties = unstable_cache(
-  async (agencyId: string, city: string, currentId: string): Promise<RecommendedProperty[]> => {
+// A chave é a cidade, não o imóvel: todos os imóveis da mesma cidade dividem
+// uma única ida à API. O imóvel atual é retirado depois, fora do cache.
+const getCityProperties = unstable_cache(
+  async (agencyId: string, city: string): Promise<RecommendedProperty[]> => {
     try {
       const response = await api.get<{ properties: Properties[] }>(
         // Rota pública: só devolve imóveis visíveis e não exige login
@@ -36,33 +38,31 @@ const getRecommendedProperties = unstable_cache(
       )
       const properties = response.data.properties ?? []
 
-      return properties
-        .filter((prop) => prop.id !== currentId)
-        .map((prop) => ({
-          id: prop.id,
-          name: prop.name,
-          slug: prop.slug,
-          value: prop.value,
-          priceOnRequest: prop.priceOnRequest,
-          pricePrefix: prop.pricePrefix,
-          transactionType: prop.transactionType,
-          city: prop.city,
-          neighborhood: prop.neighborhood,
-          summary: prop.summary,
-          bedrooms: prop.bedrooms,
-          suites: prop.suites,
-          bathrooms: prop.bathrooms,
-          parkingSpots: prop.parkingSpots,
-          totalArea: prop.totalArea,
-          privateArea: prop.privateArea,
-          type_property: prop.type_property,
-          coverImage: prop.files[0]?.path,
-        }))
+      return properties.map((prop) => ({
+        id: prop.id,
+        name: prop.name,
+        slug: prop.slug,
+        value: prop.value,
+        priceOnRequest: prop.priceOnRequest,
+        pricePrefix: prop.pricePrefix,
+        transactionType: prop.transactionType,
+        city: prop.city,
+        neighborhood: prop.neighborhood,
+        summary: prop.summary,
+        bedrooms: prop.bedrooms,
+        suites: prop.suites,
+        bathrooms: prop.bathrooms,
+        parkingSpots: prop.parkingSpots,
+        totalArea: prop.totalArea,
+        privateArea: prop.privateArea,
+        type_property: prop.type_property,
+        coverImage: prop.files[0]?.path,
+      }))
     } catch {
       return []
     }
   },
-  ['tenant-recommended-properties-v2'],
+  ['tenant-recommended-properties-by-city-v1'],
   { revalidate: 86400, tags: ['properties'] },
 )
 
@@ -116,7 +116,9 @@ export default async function TenantPropertyPage({ params }: PageProps) {
   const agencyId = headersList.get('x-tenant-id') ?? process.env.NEXT_PUBLIC_AGENCY_ID ?? ''
   const host = headersList.get('host')?.split(':')[0] ?? ''
 
-  const recommended = await getRecommendedProperties(agencyId, property.city, property.id)
+  const recommended = (await getCityProperties(agencyId, property.city)).filter(
+    (item) => item.id !== property.id,
+  )
 
   const priceDisplay = property.priceOnRequest
     ? 'Sob consulta'

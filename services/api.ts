@@ -96,6 +96,10 @@ api.interceptors.request.use(
         }
         addCdnCacheAgency(config)
       }
+    } else if (!config.headers.Authorization) {
+      // Servidor do site (SSR): não há sessão, a imobiliária vem no header passado
+      // por quem chama. Mesma regra do visitante anônimo, para a resposta sair da CDN.
+      addCdnCacheAgency(config)
     }
 
     return config
