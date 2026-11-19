@@ -161,7 +161,9 @@ async function checkPublicProperty(
   }
 
   try {
-    const res = await fetch(`${API_URL}/imovel/slug/${encodeURIComponent(slug)}`, {
+    // ?agency= deixa a API guardar a resposta na CDN (ver services/api.ts)
+    const url = `${API_URL}/imovel/slug/${encodeURIComponent(slug)}?agency=${encodeURIComponent(agencyId)}`
+    const res = await fetch(url, {
       headers: { 'x-agency-id': agencyId },
       cache: 'no-store',
     })

@@ -27,6 +27,7 @@ function forceRelogin() {
 // Só vale para visitante anônimo: com login a API nunca guarda a resposta.
 const CDN_CACHED_PATHS = [
   /^\/imovel\/?$/,
+  /^\/imovel\/slug\/[^/]+$/,
   /^\/imovel\/cidades$/,
   /^\/imovel\/bairro\/[^/]+$/,
   /^\/tipo-imovel\/?$/,
