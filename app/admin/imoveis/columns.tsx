@@ -1,20 +1,16 @@
 'use client'
 
 import { ColumnDef } from '@tanstack/react-table'
-import { MoreHorizontal, Pencil, Eye, EyeOff, Trash2, Star, StarOff } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
-import Link from 'next/link'
+import { Eye, EyeOff, ExternalLink, Home, Star, StarOff } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+
+import { RowActions } from '@/components/admin/states'
+import type { DataTableColumnMeta } from '@/components/data-table'
+import { cn } from '@/lib/utils'
 
 export interface Property {
   id: string
+  code?: number | string | null
   name: string
   value: string
   slug: string
@@ -23,9 +19,12 @@ export interface Property {
   street: string
   visible: boolean
   highlighted: boolean
+  priceOnRequest?: boolean
+  transactionType?: 'VENDA' | 'ALUGUEL' | string | null
+  files?: { path: string }[]
   type_property: {
     description: string
-  }
+  } | null
 }
 
 interface ColumnsProps {
@@ -34,6 +33,8 @@ interface ColumnsProps {
   onDelete: (id: string) => void
 }
 
+const meta = (m: DataTableColumnMeta) => m
+
 // Função para criar colunas injetando funções de ação
 export const getColumns = ({
   onToggleStatus,
@@ -41,128 +42,151 @@ export const getColumns = ({
   onDelete,
 }: ColumnsProps): ColumnDef<Property>[] => [
   {
-    accessorKey: 'code',
-    header: 'Código',
-    cell: ({ row }) => (
-      <span className="rounded-full px-3 py-2 text-xs font-bold text-blue-900">
-        {row.getValue('code')}
-      </span>
-    ),
-  },
-  {
-    accessorKey: 'highlighted',
-    header: '',
-    cell: ({ row }) =>
-      row.getValue('highlighted') ? (
-        <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-      ) : null,
-  },
-  {
-    accessorKey: 'type_property.description',
-    header: 'Tipo',
-  },
-  {
-    accessorKey: 'name',
-    header: 'Nome',
+    id: 'property',
+    header: 'Imóvel',
+    meta: meta({ noTruncate: true, cellClassName: 'w-full min-w-[280px] whitespace-normal' }),
+    cell: ({ row }) => <PropertyCell property={row.original} />,
   },
   {
     accessorKey: 'value',
     header: 'Valor',
-  },
-  {
-    accessorKey: 'slug',
-    header: 'Slug',
-    cell: ({ row }) => (
-      <div className="max-w-[150px] overflow-x-hidden rounded px-2 py-1">
-        <span className="text-xs text-gray-500">{row.getValue('slug')}</span>
-      </div>
-    ),
-  },
-
-  {
-    accessorKey: 'city',
-    header: 'Cidade',
-  },
-  {
-    accessorKey: 'neighborhood',
-    header: 'Bairro',
-  },
-  {
-    accessorKey: 'visible',
-    header: 'Situação',
+    meta: meta({ noTruncate: true, headClassName: 'text-right', cellClassName: 'text-right' }),
     cell: ({ row }) => {
-      const isVisible = row.getValue('visible')
+      const p = row.original
+      if (p.priceOnRequest) {
+        return <span className="text-muted-foreground text-sm">Sob consulta</span>
+      }
       return (
-        <span
-          className={`rounded-full px-2 py-1 text-xs font-semibold ${isVisible ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}
-        >
-          {isVisible ? 'Ativo' : 'Inativo'}
+        <span className="font-semibold text-gray-900 tabular-nums">
+          {p.value}
+          {p.transactionType === 'ALUGUEL' && (
+            <span className="text-muted-foreground text-xs font-normal">/mês</span>
+          )}
         </span>
       )
     },
   },
   {
-    id: 'actions',
+    id: 'location',
+    header: 'Local',
+    meta: meta({ noTruncate: true, cellClassName: 'min-w-[160px] whitespace-normal' }),
     cell: ({ row }) => {
-      const property = row.original
-
+      const { city, neighborhood } = row.original
+      if (!city && !neighborhood) return <span className="text-muted-foreground">—</span>
       return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Abrir menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Ações</DropdownMenuLabel>
-
-            <DropdownMenuItem asChild>
-              <Link
-                href={`/admin/imoveis/editar/${property.id}`}
-                className="flex cursor-pointer items-center"
-              >
-                <Pencil className="mr-2 h-4 w-4" /> Editar
-              </Link>
-            </DropdownMenuItem>
-
-            <DropdownMenuItem onClick={() => onToggleStatus(property.id, property.visible)}>
-              {property.visible ? (
-                <>
-                  <EyeOff className="mr-2 h-4 w-4" /> Desativar
-                </>
-              ) : (
-                <>
-                  <Eye className="mr-2 h-4 w-4" /> Ativar
-                </>
-              )}
-            </DropdownMenuItem>
-
-            <DropdownMenuItem
-              onClick={() => onToggleHighlighted(property.id, property.highlighted)}
-            >
-              {property.highlighted ? (
-                <>
-                  <StarOff className="mr-2 h-4 w-4" /> Remover destaque
-                </>
-              ) : (
-                <>
-                  <Star className="mr-2 h-4 w-4" /> Destacar
-                </>
-              )}
-            </DropdownMenuItem>
-
-            <DropdownMenuSeparator />
-
-            <DropdownMenuItem
-              onClick={() => onDelete(property.id)}
-              className="text-red-600 focus:bg-red-50 focus:text-red-600"
-            >
-              <Trash2 className="mr-2 h-4 w-4 text-red-600" /> Excluir
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <div className="leading-tight">
+          <p className="text-sm text-gray-900">{neighborhood || '—'}</p>
+          <p className="text-muted-foreground text-xs">{city}</p>
+        </div>
       )
     },
   },
+  {
+    accessorKey: 'visible',
+    header: 'Situação',
+    meta: meta({ noTruncate: true }),
+    cell: ({ row }) => {
+      const { visible, highlighted } = row.original
+      return (
+        <div className="flex flex-wrap items-center gap-1.5">
+          <span
+            className={cn(
+              'inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-xs font-medium',
+              visible ? 'bg-emerald-50 text-emerald-700' : 'bg-gray-100 text-gray-600',
+            )}
+          >
+            <span
+              className={cn('size-1.5 rounded-full', visible ? 'bg-emerald-500' : 'bg-gray-400')}
+              aria-hidden="true"
+            />
+            {visible ? 'No site' : 'Oculto'}
+          </span>
+          {highlighted && (
+            <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2 py-0.5 text-xs font-medium text-amber-700">
+              <Star className="size-3 fill-amber-400 text-amber-400" aria-hidden="true" />
+              Destaque
+            </span>
+          )}
+        </div>
+      )
+    },
+  },
+  {
+    id: 'actions',
+    header: () => <span className="sr-only">Ações</span>,
+    meta: meta({ noTruncate: true, cellClassName: 'w-12 text-right' }),
+    cell: ({ row }) => (
+      <PropertyActions
+        property={row.original}
+        onToggleStatus={onToggleStatus}
+        onToggleHighlighted={onToggleHighlighted}
+        onDelete={onDelete}
+      />
+    ),
+  },
 ]
+
+function PropertyCell({ property }: { property: Property }) {
+  const photo = property.files?.[0]?.path
+  return (
+    <div className="flex items-center gap-3">
+      <div className="bg-muted relative flex h-[42px] w-14 shrink-0 items-center justify-center overflow-hidden rounded-lg">
+        {photo ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={photo} alt="" loading="lazy" className="h-full w-full object-cover" />
+        ) : (
+          <Home className="text-muted-foreground size-4" aria-hidden="true" />
+        )}
+      </div>
+      <div className="min-w-0">
+        <p className="line-clamp-2 font-medium text-gray-900" title={property.name}>
+          {property.name}
+        </p>
+        <p className="text-muted-foreground mt-0.5 text-xs">
+          {property.code != null && (
+            <span className="font-medium tabular-nums">#{property.code}</span>
+          )}
+          {property.code != null && property.type_property?.description && ' · '}
+          {property.type_property?.description}
+        </p>
+      </div>
+    </div>
+  )
+}
+
+function PropertyActions({
+  property,
+  onToggleStatus,
+  onToggleHighlighted,
+  onDelete,
+}: { property: Property } & ColumnsProps) {
+  const router = useRouter()
+  return (
+    <RowActions
+      label={property.name}
+      onEdit={() => router.push(`/admin/imoveis/editar/${property.id}`)}
+      onDelete={() => onDelete(property.id)}
+      extra={[
+        ...(property.slug
+          ? [
+              {
+                label: 'Ver no site',
+                icon: ExternalLink,
+                onSelect: () => window.open(`/imoveis/${property.slug}`, '_blank', 'noopener'),
+              },
+            ]
+          : []),
+        {
+          label: property.visible ? 'Ocultar do site' : 'Mostrar no site',
+          icon: property.visible ? EyeOff : Eye,
+          onSelect: () => onToggleStatus(property.id, property.visible),
+        },
+        {
+          label: property.highlighted ? 'Remover destaque' : 'Destacar',
+          icon: property.highlighted ? StarOff : Star,
+          onSelect: () => onToggleHighlighted(property.id, property.highlighted),
+        },
+      ]}
+    />
+  )
+}

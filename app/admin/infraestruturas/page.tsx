@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
-import { Loader2, Trash2, Plus } from 'lucide-react'
+import { Layers, Loader2, Plus } from 'lucide-react'
 import { toast } from 'sonner'
 
 import api from '@/services/api'
@@ -26,7 +26,13 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
-import { BackLink } from '@/components/back-link'
+import { AdminPage, DataCard, PageHeader } from '@/components/admin/page'
+import {
+  EmptyState,
+  RowActions,
+  TableMessageRow,
+  TableSkeletonRows,
+} from '@/components/admin/states'
 
 interface Infrastructure {
   id: string
@@ -83,113 +89,103 @@ export default function InfraestruturaPage() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-gray-50">
-      <main className="mx-auto w-full max-w-[1200px] flex-1 p-4 md:p-8">
-        <div className="mb-6 flex flex-col gap-4">
-          <BackLink href="/admin" />
+    <AdminPage>
+      <PageHeader
+        title="Infraestrutura"
+        description="Itens de infraestrutura disponíveis para os imóveis (piscina, churrasqueira, portaria…)."
+      />
 
-          <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
-            <div>
-              <h1 className="text-primary text-2xl font-bold">Infraestrutura</h1>
-              <p className="text-gray-500">
-                Gerencie os itens de infraestrutura disponíveis para os imóveis.
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* Formulário de adição */}
-        <div className="mb-6 flex gap-2">
-          <Input
-            placeholder="Nome do item (ex: Piscina, Churrasqueira...)"
-            value={newName}
-            onChange={(e) => setNewName(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && handleAdd()}
-            className="max-w-sm bg-white"
-          />
-          <Button
-            onClick={handleAdd}
-            disabled={isAdding || !newName.trim()}
-            className="bg-primary hover:bg-primary/90"
-          >
-            {isAdding ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
-            Adicionar
-          </Button>
-        </div>
-
-        <div className="rounded-md border bg-white px-4 py-3">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="w-[100px]">ID</TableHead>
-                <TableHead>Nome</TableHead>
-                <TableHead className="text-right">Ações</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {isLoading ? (
-                <TableRow>
-                  <TableCell colSpan={3} className="h-24 text-center">
-                    <div className="text-muted-foreground flex items-center justify-center gap-2">
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                      Carregando...
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ) : items && items.length > 0 ? (
-                items.map((item) => (
-                  <TableRow key={item.id}>
-                    <TableCell className="text-muted-foreground font-mono text-xs">
-                      {item.id.substring(0, 8)}...
-                    </TableCell>
-                    <TableCell className="font-medium">{item.name}</TableCell>
-                    <TableCell className="text-right">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-8 w-8 text-red-500 hover:bg-red-50 hover:text-red-600"
-                        onClick={() => setDeleteId(item.id)}
-                        title="Excluir"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell colSpan={3} className="text-muted-foreground h-24 text-center">
-                    Nenhum item cadastrado. Adicione o primeiro acima.
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </div>
-
-        <AlertDialog open={!!deleteId} onOpenChange={(open) => !open && setDeleteId(null)}>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>Remover item de infraestrutura?</AlertDialogTitle>
-              <AlertDialogDescription>
-                Esta ação não pode ser desfeita. O item será removido de todos os imóveis que o
-                utilizam.
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>Cancelar</AlertDialogCancel>
-              <AlertDialogAction
-                onClick={handleDelete}
-                disabled={isDeleting}
-                className="bg-red-600 hover:bg-red-700"
+      <DataCard
+        toolbar={
+          <>
+            <form
+              className="flex w-full gap-2 sm:max-w-md"
+              onSubmit={(e) => {
+                e.preventDefault()
+                handleAdd()
+              }}
+            >
+              <Input
+                aria-label="Nome do novo item"
+                placeholder="Novo item (ex.: Piscina, Churrasqueira)"
+                value={newName}
+                onChange={(e) => setNewName(e.target.value)}
+              />
+              <Button
+                type="submit"
+                disabled={isAdding || !newName.trim()}
+                className="w-28 shrink-0"
               >
-                {isDeleting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-                Remover
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
-      </main>
-    </div>
+                {isAdding ? (
+                  <Loader2 className="size-4 animate-spin" />
+                ) : (
+                  <Plus className="size-4" />
+                )}
+                Adicionar
+              </Button>
+            </form>
+            <p className="text-muted-foreground text-sm">
+              {items ? `${items.length} ${items.length === 1 ? 'item' : 'itens'}` : '\u00a0'}
+            </p>
+          </>
+        }
+      >
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="pl-4">Nome</TableHead>
+              <TableHead className="w-16 pr-4 text-right">
+                <span className="sr-only">Ações</span>
+              </TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {isLoading ? (
+              <TableSkeletonRows columns={2} />
+            ) : items && items.length > 0 ? (
+              items.map((item) => (
+                <TableRow key={item.id}>
+                  <TableCell className="pl-4 font-medium">{item.name}</TableCell>
+                  <TableCell className="pr-4 text-right">
+                    <RowActions label={item.name} onDelete={() => setDeleteId(item.id)} />
+                  </TableCell>
+                </TableRow>
+              ))
+            ) : (
+              <TableMessageRow colSpan={2}>
+                <EmptyState
+                  icon={Layers}
+                  title="Nenhum item cadastrado"
+                  description="Adicione o primeiro item no campo acima. Ele fica disponível em todos os imóveis."
+                />
+              </TableMessageRow>
+            )}
+          </TableBody>
+        </Table>
+      </DataCard>
+
+      <AlertDialog open={!!deleteId} onOpenChange={(open) => !open && setDeleteId(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Remover item de infraestrutura?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Esta ação não pode ser desfeita. O item será removido de todos os imóveis que o
+              utilizam.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDelete}
+              disabled={isDeleting}
+              className="bg-red-600 hover:bg-red-700"
+            >
+              {isDeleting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+              Remover
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </AdminPage>
   )
 }

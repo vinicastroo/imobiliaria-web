@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
 import { Skeleton } from '@/components/ui/skeleton'
+import { AdminPage, FormSection, PageHeader } from '@/components/admin/page'
 import { Button } from '@/components/ui/button'
 
 import { usePlanUsage } from '@/hooks/use-plan-usage'
@@ -23,8 +24,8 @@ interface Plan {
 }
 
 const featureLabels: Record<string, string> = {
-  properties: 'Gestao de Imoveis',
-  realtors: 'Gestao de Corretores',
+  properties: 'Gestão de imóveis',
+  realtors: 'Gestão de corretores',
   type_properties: 'Tipos de Imovel',
   enterprises: 'Empreendimentos',
   clients: 'Clientes',
@@ -61,7 +62,7 @@ function UsageBar({
       </div>
       <Progress
         value={percentage}
-        className={`h-2 ${isNearLimit ? '[&>div]:bg-red-500' : '[&>div]:bg-blue-500'}`}
+        className={`h-2 ${isNearLimit ? '[&>div]:bg-red-500' : '[&>div]:bg-primary'}`}
       />
     </div>
   )
@@ -80,36 +81,38 @@ export default function UpgradePage() {
 
   if (isLoadingUsage || isLoadingPlans) {
     return (
-      <div className="space-y-6 p-8">
-        <Skeleton className="h-8 w-64" />
+      <AdminPage>
+        <PageHeader title="Planos e assinatura" description="Carregando seu plano…" />
+        <Skeleton className="mb-8 h-40 w-full rounded-xl" />
         <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
           {Array.from({ length: 3 }).map((_, i) => (
-            <Skeleton key={i} className="h-96" />
+            <Skeleton key={i} className="h-96 rounded-xl" />
           ))}
         </div>
-      </div>
+      </AdminPage>
     )
   }
 
   const currentPlan = planUsage?.plan
 
   return (
-    <div className="space-y-8 p-8">
-      <div>
-        <h1 className="text-2xl font-bold text-gray-900">Planos e Assinatura</h1>
-        <p className="mt-1 text-gray-500">
-          {currentPlan ? `Seu plano atual: ${currentPlan.name}` : 'Nenhum plano associado'}
-        </p>
-      </div>
+    <AdminPage>
+      <PageHeader
+        title="Planos e assinatura"
+        description={
+          currentPlan ? `Seu plano atual: ${currentPlan.name}` : 'Nenhum plano associado'
+        }
+      />
 
       {planUsage?.usage && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg">Uso do Plano</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
+        <FormSection
+          title="Uso do plano"
+          description="Quanto do limite do seu plano já está em uso."
+          className="mb-8"
+        >
+          <div className="space-y-4">
             <UsageBar
-              label="Usuarios"
+              label="Usuários"
               current={planUsage.usage.users.current}
               limit={planUsage.usage.users.limit}
             />
@@ -119,12 +122,12 @@ export default function UpgradePage() {
               limit={planUsage.usage.realtors.limit}
             />
             <UsageBar
-              label="Imoveis"
+              label="Imóveis"
               current={planUsage.usage.properties.current}
               limit={planUsage.usage.properties.limit}
             />
-          </CardContent>
-        </Card>
+          </div>
+        </FormSection>
       )}
 
       <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
@@ -137,9 +140,9 @@ export default function UpgradePage() {
               key={plan.id}
               className={`relative ${
                 isCurrent
-                  ? 'border-2 border-blue-500'
+                  ? 'border-primary border-2'
                   : isProfessional
-                    ? 'border-primary border-2'
+                    ? 'border-primary/40 border-2'
                     : ''
               }`}
             >
@@ -147,14 +150,14 @@ export default function UpgradePage() {
                 <div className="absolute -top-3 left-1/2 -translate-x-1/2">
                   <Badge className="bg-primary gap-1 text-white">
                     <Crown size={12} />
-                    Mais popular
+                    Recomendado
                   </Badge>
                 </div>
               )}
 
               {isCurrent && (
                 <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                  <Badge className="bg-blue-500 text-white">Plano atual</Badge>
+                  <Badge className="bg-primary text-white">Plano atual</Badge>
                 </div>
               )}
 
@@ -162,14 +165,14 @@ export default function UpgradePage() {
                 <CardTitle className="text-xl">{plan.name}</CardTitle>
                 <p className="text-primary mt-2 text-3xl font-bold">
                   {formatPrice(plan.defaultPrice)}
-                  <span className="text-sm font-normal text-gray-500">/mes</span>
+                  <span className="text-sm font-normal text-gray-500">/mês</span>
                 </p>
               </CardHeader>
 
               <CardContent className="space-y-6">
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Usuarios</span>
+                    <span className="text-gray-600">Usuários</span>
                     <span className="font-medium">{plan.maxUsers}</span>
                   </div>
                   <div className="flex justify-between">
@@ -177,7 +180,7 @@ export default function UpgradePage() {
                     <span className="font-medium">{plan.maxRealtors}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Imoveis</span>
+                    <span className="text-gray-600">Imóveis</span>
                     <span className="font-medium">{plan.maxProperties}</span>
                   </div>
                 </div>
@@ -188,7 +191,7 @@ export default function UpgradePage() {
                     return (
                       <div key={featureKey} className="flex items-center gap-2 text-sm">
                         {hasFeature ? (
-                          <Check size={16} className="shrink-0 text-green-500" />
+                          <Check size={16} className="text-primary shrink-0" />
                         ) : (
                           <X size={16} className="shrink-0 text-gray-300" />
                         )}
@@ -212,6 +215,6 @@ export default function UpgradePage() {
           )
         })}
       </div>
-    </div>
+    </AdminPage>
   )
 }

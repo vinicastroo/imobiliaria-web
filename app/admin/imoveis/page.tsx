@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { keepPreviousData, useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { AxiosError } from 'axios'
-import { Plus } from 'lucide-react'
+import { Home, Plus } from 'lucide-react'
 import { toast } from 'sonner'
 import { useDebounce } from 'use-debounce'
 
@@ -14,6 +14,8 @@ import { revalidateProperties } from '@/app/actions/revalidate-properties'
 import { DataTable, FilterOption } from '@/components/data-table'
 import { getColumns } from './columns'
 import { Button } from '@/components/ui/button'
+import { AdminPage, PageHeader } from '@/components/admin/page'
+import { EmptyState } from '@/components/admin/states'
 import { ModalDeleteProperty } from './model-delete-property'
 
 // Interface da resposta da API
@@ -69,8 +71,8 @@ export default function AdminImoveisPage() {
       label: 'Situação',
       type: 'select',
       options: [
-        { label: 'Ativo', value: 'true' },
-        { label: 'Inativo', value: 'false' },
+        { label: 'No site', value: 'true' },
+        { label: 'Oculto', value: 'false' },
       ],
     },
   ]
@@ -172,58 +174,65 @@ export default function AdminImoveisPage() {
     onDelete: handleDeleteClick,
   })
 
+  const total = data?.totalCount
+  const goCreate = () => router.push('/admin/imoveis/criar')
+
   return (
-    <div className="flex min-h-screen flex-col bg-gray-50">
-      <main className="mx-auto w-full flex-1 p-4 md:p-8">
-        {/* Cabeçalho da Página */}
-        <div className="mb-4 flex flex-col gap-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-primary text-2xl font-bold">Gerenciamento de Imóveis</h1>
-              <p className="text-gray-500">Listagem e controle dos imóveis cadastrados</p>
-            </div>
+    <AdminPage width="wide">
+      <PageHeader
+        title="Imóveis"
+        description="Cadastre, publique e acompanhe os imóveis da imobiliária."
+        actions={
+          <Button onClick={goCreate} className="bg-primary hover:bg-primary/90">
+            <Plus className="size-4" /> Novo imóvel
+          </Button>
+        }
+      />
 
-            <Button
-              onClick={() => router.push('/admin/imoveis/criar')}
-              className="bg-primary hover:bg-primary/90"
-            >
-              <Plus className="mr-2 h-4 w-4" /> Criar Imóvel
-            </Button>
-          </div>
-        </div>
-
-        {/* Tabela com Filtros Avançados */}
-        <DataTable
-          columns={columns}
-          data={data?.properties || []}
-          pageCount={data ? Math.ceil(data.totalCount / pagination.pageSize) : -1}
-          pagination={pagination}
-          setPagination={setPagination}
-          isLoading={isLoading}
-
-          // Props do Filtro Complexo
-          filterOptions={filterOptions}
-          onFilterChange={(columnId, value) => {
-            setFilterColumn(columnId)
-            const newValue = value === 'ALL_VALUES_RESET' ? '' : value
-            setFilterValue(newValue)
-
-            setPagination((prev) => ({ ...prev, pageIndex: 0 }))
-          }}
-
-          filterValue={filterValue}
-          setFilterValue={setFilterValue}
-        />
-
-        {/* Modal de Delete */}
-        {deleteModalOpen && selectedId && (
-          <ModalDeleteProperty
-            open={deleteModalOpen}
-            handleClose={handleCloseDeleteModal}
-            id={selectedId}
+      <DataTable
+        columns={columns}
+        data={data?.properties || []}
+        pageCount={data ? Math.ceil(data.totalCount / pagination.pageSize) : -1}
+        pagination={pagination}
+        setPagination={setPagination}
+        isLoading={isLoading}
+        filterOptions={filterOptions}
+        onFilterChange={(columnId, value) => {
+          setFilterColumn(columnId)
+          const newValue = value === 'ALL_VALUES_RESET' ? '' : value
+          setFilterValue(newValue)
+          setPagination((prev) => ({ ...prev, pageIndex: 0 }))
+        }}
+        filterValue={filterValue}
+        setFilterValue={setFilterValue}
+        toolbarEnd={
+          total !== undefined ? (
+            <span className="text-muted-foreground text-sm whitespace-nowrap tabular-nums">
+              {total.toLocaleString('pt-BR')} {total === 1 ? 'imóvel' : 'imóveis'}
+            </span>
+          ) : null
+        }
+        emptyState={
+          <EmptyState
+            icon={Home}
+            title="Nenhum imóvel cadastrado"
+            description="Cadastre o primeiro imóvel e ele aparece no site da imobiliária."
+            action={
+              <Button onClick={goCreate} className="bg-primary hover:bg-primary/90">
+                <Plus className="size-4" /> Cadastrar imóvel
+              </Button>
+            }
           />
-        )}
-      </main>
-    </div>
+        }
+      />
+
+      {deleteModalOpen && selectedId && (
+        <ModalDeleteProperty
+          open={deleteModalOpen}
+          handleClose={handleCloseDeleteModal}
+          id={selectedId}
+        />
+      )}
+    </AdminPage>
   )
 }

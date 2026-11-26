@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { Loader2, Plus, ExternalLink, PowerOff, Power, Pencil } from 'lucide-react'
+import { Building2, Loader2, Plus, ExternalLink, PowerOff, Power } from 'lucide-react'
 import { toast } from 'sonner'
 
 import api from '@/services/api'
@@ -17,7 +17,13 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { Badge } from '@/components/ui/badge'
-import { BackLink } from '@/components/back-link'
+import { AdminPage, DataCard, PageHeader } from '@/components/admin/page'
+import {
+  EmptyState,
+  RowActions,
+  TableMessageRow,
+  TableSkeletonRows,
+} from '@/components/admin/states'
 
 import { AgencyOnboardingSheet } from './agency-onboarding-sheet'
 import { AgencyEditSheet } from './agency-edit-sheet'
@@ -81,204 +87,175 @@ export default function AgenciesPage() {
   })
 
   return (
-    <div className="flex min-h-screen flex-col bg-gray-50">
-      <main className="mx-auto w-full max-w-[1400px] flex-1 p-4 md:p-8">
-        <div className="mb-6 flex flex-col gap-4">
-          <BackLink href="/admin" />
+    <AdminPage width="wide">
+      <PageHeader
+        title="Imobiliárias"
+        description="Imobiliárias cadastradas na plataforma, com plano, assinatura e uso."
+        actions={
+          <Button onClick={() => setIsSheetOpen(true)}>
+            <Plus className="h-4 w-4" /> Nova imobiliária
+          </Button>
+        }
+      />
 
-          <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
-            <div>
-              <h1 className="text-primary text-2xl font-bold">Gestão de Imobiliárias</h1>
-              <p className="text-gray-500">Gerencie as imobiliárias cadastradas na plataforma.</p>
-            </div>
+      <DataCard>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Nome / Subdomínio</TableHead>
+              <TableHead>CNPJ</TableHead>
+              <TableHead>Plano</TableHead>
+              <TableHead>Preço Efetivo</TableHead>
+              <TableHead className="text-center">Assinatura</TableHead>
+              <TableHead className="text-center">Uso</TableHead>
+              <TableHead className="text-center">Status</TableHead>
+              <TableHead className="text-right">Ações</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {isLoading ? (
+              <TableSkeletonRows columns={8} />
+            ) : agencies && agencies.length > 0 ? (
+              agencies.map((agency) => {
+                const sub = agency.subscription
+                const hasDiscount = sub?.customPrice && sub.customPrice !== sub.snapshotPrice
+                const isToggling = toggleStatus.isPending && toggleStatus.variables === agency.id
 
-            <Button className="bg-primary hover:bg-primary/90" onClick={() => setIsSheetOpen(true)}>
-              <Plus className="mr-2 h-4 w-4" /> Nova Imobiliária
-            </Button>
-          </div>
-        </div>
-
-        <div className="rounded-md border bg-white px-4 py-3">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Nome / Subdomínio</TableHead>
-                <TableHead>CNPJ</TableHead>
-                <TableHead>Plano</TableHead>
-                <TableHead>Preço Efetivo</TableHead>
-                <TableHead className="text-center">Assinatura</TableHead>
-                <TableHead className="text-center">Uso</TableHead>
-                <TableHead className="text-center">Status</TableHead>
-                <TableHead className="text-right">Ações</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {isLoading ? (
-                <TableRow>
-                  <TableCell colSpan={8} className="h-24 text-center">
-                    <div className="text-muted-foreground flex items-center justify-center gap-2">
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                      Carregando...
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ) : agencies && agencies.length > 0 ? (
-                agencies.map((agency) => {
-                  const sub = agency.subscription
-                  const hasDiscount = sub?.customPrice && sub.customPrice !== sub.snapshotPrice
-                  const isToggling = toggleStatus.isPending && toggleStatus.variables === agency.id
-
-                  return (
-                    <TableRow key={agency.id} className={agency.active ? '' : 'opacity-60'}>
-                      <TableCell>
-                        <div className="flex flex-col">
-                          <span className="font-medium">{agency.name}</span>
-                          {agency.customDomain ? (
-                            <span className="text-muted-foreground text-xs">
-                              {agency.customDomain}
-                            </span>
-                          ) : agency.slug ? (
-                            <span className="text-muted-foreground text-xs">
-                              {agency.slug}.{PLATFORM_DOMAIN}
-                            </span>
-                          ) : (
-                            <span className="text-muted-foreground text-xs italic">
-                              sem domínio
-                            </span>
-                          )}
-                        </div>
-                      </TableCell>
-                      <TableCell className="text-muted-foreground text-sm">
-                        {agency.cnpj ? formatCnpj(agency.cnpj) : '—'}
-                      </TableCell>
-                      <TableCell>
-                        {sub ? (
-                          sub.planName
+                return (
+                  <TableRow key={agency.id} className={agency.active ? '' : 'opacity-60'}>
+                    <TableCell>
+                      <div className="flex flex-col">
+                        <span className="font-medium">{agency.name}</span>
+                        {agency.customDomain ? (
+                          <span className="text-muted-foreground text-xs">
+                            {agency.customDomain}
+                          </span>
+                        ) : agency.slug ? (
+                          <span className="text-muted-foreground text-xs">
+                            {agency.slug}.{PLATFORM_DOMAIN}
+                          </span>
                         ) : (
-                          <Badge className="border-gray-200 bg-gray-100 text-gray-600">
-                            Sem plano
-                          </Badge>
+                          <span className="text-muted-foreground text-xs italic">sem domínio</span>
                         )}
-                      </TableCell>
-                      <TableCell>
-                        {sub ? (
-                          <div className="flex items-center gap-2">
-                            <span>{formatCurrency(sub.effectivePrice)}</span>
-                            {hasDiscount && (
-                              <Badge className="border-green-200 bg-green-100 text-green-800">
-                                Desconto
-                              </Badge>
-                            )}
-                          </div>
-                        ) : (
-                          '—'
-                        )}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {sub ? (
-                          <div className="flex flex-wrap items-center justify-center gap-1">
-                            <Badge className={subscriptionStatusConfig[sub.status].className}>
-                              {subscriptionStatusConfig[sub.status].label}
-                            </Badge>
-                            {sub.manualBilling && (
-                              <Badge className="border-blue-200 bg-blue-100 text-blue-800">
-                                Manual
-                              </Badge>
-                            )}
-                          </div>
-                        ) : (
-                          '—'
-                        )}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        <div className="text-muted-foreground flex justify-center gap-3 text-xs">
-                          <span title="Usuários">{agency.usage.users} usr</span>
-                          <span title="Corretores">{agency.usage.realtors} cor</span>
-                          <span title="Imóveis">{agency.usage.properties} imv</span>
-                        </div>
-                      </TableCell>
-                      <TableCell className="text-center">
-                        <Badge
-                          className={
-                            agency.active
-                              ? 'border-green-200 bg-green-100 text-green-800'
-                              : 'border-gray-200 bg-gray-100 text-gray-600'
-                          }
-                        >
-                          {agency.active ? 'Ativa' : 'Inativa'}
+                      </div>
+                    </TableCell>
+                    <TableCell className="text-muted-foreground text-sm">
+                      {agency.cnpj ? formatCnpj(agency.cnpj) : '—'}
+                    </TableCell>
+                    <TableCell>
+                      {sub ? (
+                        sub.planName
+                      ) : (
+                        <Badge className="border-transparent bg-gray-100 text-gray-600">
+                          Sem plano
                         </Badge>
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <div className="flex items-center justify-end gap-1">
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="text-muted-foreground hover:text-primary hover:bg-primary/5 h-8 w-8"
-                            onClick={() => setAgencyToEdit(agency)}
-                            title="Editar imobiliária"
-                          >
-                            <Pencil className="h-4 w-4" />
-                          </Button>
-                          {getBackofficeUrl(agency) && (
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              className="text-muted-foreground hover:text-primary hover:bg-primary/5 h-8 w-8"
-                              asChild
-                              title="Acessar backoffice"
-                            >
-                              <a
-                                href={getBackofficeUrl(agency)!}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                              >
-                                <ExternalLink className="h-4 w-4" />
-                              </a>
-                            </Button>
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      {sub ? (
+                        <div className="flex items-center gap-2">
+                          <span className="tabular-nums">{formatCurrency(sub.effectivePrice)}</span>
+                          {hasDiscount && (
+                            <Badge className="border-transparent bg-emerald-50 text-emerald-700">
+                              Desconto
+                            </Badge>
                           )}
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className={`h-8 w-8 ${
-                              agency.active
-                                ? 'text-red-400 hover:bg-red-50 hover:text-red-600'
-                                : 'text-green-500 hover:bg-green-50 hover:text-green-700'
-                            }`}
-                            onClick={() => toggleStatus.mutate(agency.id)}
-                            disabled={isToggling}
-                            title={agency.active ? 'Desativar' : 'Ativar'}
-                          >
-                            {isToggling ? (
-                              <Loader2 className="h-4 w-4 animate-spin" />
-                            ) : agency.active ? (
-                              <PowerOff className="h-4 w-4" />
-                            ) : (
-                              <Power className="h-4 w-4" />
-                            )}
-                          </Button>
                         </div>
-                      </TableCell>
-                    </TableRow>
-                  )
-                })
-              ) : (
-                <TableRow>
-                  <TableCell colSpan={8} className="text-muted-foreground h-24 text-center">
-                    Nenhuma imobiliária encontrada.
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </div>
+                      ) : (
+                        '—'
+                      )}
+                    </TableCell>
+                    <TableCell className="text-center">
+                      {sub ? (
+                        <div className="flex flex-wrap items-center justify-center gap-1">
+                          <Badge className={subscriptionStatusConfig[sub.status].className}>
+                            {subscriptionStatusConfig[sub.status].label}
+                          </Badge>
+                          {sub.manualBilling && (
+                            <Badge className="bg-primary/10 text-primary border-transparent">
+                              Manual
+                            </Badge>
+                          )}
+                        </div>
+                      ) : (
+                        '—'
+                      )}
+                    </TableCell>
+                    <TableCell className="text-center">
+                      <div className="text-muted-foreground flex justify-center gap-3 text-xs tabular-nums">
+                        <span title="Usuários">{agency.usage.users} usuários</span>
+                        <span title="Corretores">{agency.usage.realtors} corretores</span>
+                        <span title="Imóveis">{agency.usage.properties} imóveis</span>
+                      </div>
+                    </TableCell>
+                    <TableCell className="text-center">
+                      <Badge
+                        className={
+                          agency.active
+                            ? 'border-transparent bg-emerald-50 text-emerald-700'
+                            : 'border-transparent bg-gray-100 text-gray-600'
+                        }
+                      >
+                        {isToggling && <Loader2 className="h-3 w-3 animate-spin" />}
+                        {agency.active ? 'Ativa' : 'Inativa'}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <RowActions
+                        label={agency.name}
+                        onEdit={() => setAgencyToEdit(agency)}
+                        extra={[
+                          ...(getBackofficeUrl(agency)
+                            ? [
+                                {
+                                  label: 'Acessar painel',
+                                  icon: ExternalLink,
+                                  onSelect: () =>
+                                    window.open(
+                                      getBackofficeUrl(agency)!,
+                                      '_blank',
+                                      'noopener,noreferrer',
+                                    ),
+                                },
+                              ]
+                            : []),
+                          {
+                            label: agency.active ? 'Desativar' : 'Ativar',
+                            icon: agency.active ? PowerOff : Power,
+                            onSelect: () => {
+                              if (!isToggling) toggleStatus.mutate(agency.id)
+                            },
+                          },
+                        ]}
+                      />
+                    </TableCell>
+                  </TableRow>
+                )
+              })
+            ) : (
+              <TableMessageRow colSpan={8}>
+                <EmptyState
+                  icon={Building2}
+                  title="Nenhuma imobiliária cadastrada"
+                  description="Cadastre a primeira imobiliária para ela ganhar o painel e o site."
+                  action={
+                    <Button onClick={() => setIsSheetOpen(true)}>
+                      <Plus className="h-4 w-4" /> Nova imobiliária
+                    </Button>
+                  }
+                />
+              </TableMessageRow>
+            )}
+          </TableBody>
+        </Table>
+      </DataCard>
 
-        <AgencyOnboardingSheet open={isSheetOpen} onOpenChange={setIsSheetOpen} />
-        <AgencyEditSheet
-          open={!!agencyToEdit}
-          onOpenChange={(v) => !v && setAgencyToEdit(null)}
-          agency={agencyToEdit}
-        />
-      </main>
-    </div>
+      <AgencyOnboardingSheet open={isSheetOpen} onOpenChange={setIsSheetOpen} />
+      <AgencyEditSheet
+        open={!!agencyToEdit}
+        onOpenChange={(v) => !v && setAgencyToEdit(null)}
+        agency={agencyToEdit}
+      />
+    </AdminPage>
   )
 }

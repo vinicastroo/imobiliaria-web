@@ -3,14 +3,12 @@
 import { useMemo, useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useSession } from 'next-auth/react'
-import { Loader2, Trash2, Pencil, Users, HandHelping, UserX } from 'lucide-react'
+import { Users, UserPlus, HandHelping, UserX } from 'lucide-react'
 import { toast } from 'sonner'
 
 import api from '@/services/api'
 
 import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { Card } from '@/components/ui/card'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import {
   Table,
@@ -20,7 +18,13 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { BackLink } from '@/components/back-link'
+import { AdminPage, DataCard, PageHeader } from '@/components/admin/page'
+import {
+  EmptyState,
+  RowActions,
+  TableMessageRow,
+  TableSkeletonRows,
+} from '@/components/admin/states'
 import { FeatureGate } from '@/components/feature-gate'
 
 import { ClientDialog } from '@/components/client-dialog'
@@ -112,173 +116,198 @@ export default function ClientesPage() {
     setIsDeleteOpen(true)
   }
 
-  const colSpan = 7
+  const colSpan = 6
+
+  const counts = useMemo(
+    () => ({
+      ALL: clients?.length ?? 0,
+      WEBSITE: clients?.filter((c) => c.origin === 'WEBSITE').length ?? 0,
+      MANUAL: clients?.filter((c) => c.origin === 'MANUAL').length ?? 0,
+    }),
+    [clients],
+  )
 
   return (
     <FeatureGate feature="clients">
-      <div className="flex min-h-screen flex-col bg-gray-50">
-        <main className="mx-auto w-full max-w-[1200px] flex-1 p-4 md:p-8">
-          <div className="mb-6 flex flex-col gap-4">
-            <BackLink href="/admin" />
+      <AdminPage>
+        <PageHeader
+          title="Clientes"
+          description="Contatos que chegaram pelo site ou foram cadastrados pela equipe."
+          actions={
+            !isRealtor && (
+              <Button onClick={handleCreate}>
+                <UserPlus className="size-4" /> Novo cliente
+              </Button>
+            )
+          }
+        />
 
-            <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
-              <div>
-                <h1 className="text-primary text-2xl font-bold">Clientes</h1>
-                <p className="text-gray-500">Gerencie seus clientes e seus interesses.</p>
-              </div>
-
-              {!isRealtor && (
-                <Button onClick={handleCreate} className="bg-primary hover:bg-primary/90">
-                  <Users className="mr-2 h-4 w-4" /> Novo Cliente
-                </Button>
-              )}
-            </div>
-          </div>
-
-          <Tabs
-            value={originFilter}
-            onValueChange={(v) => setOriginFilter(v as OriginFilter)}
-            className="mb-4"
-          >
-            <TabsList>
-              <TabsTrigger value="ALL">Todos</TabsTrigger>
-              <TabsTrigger value="WEBSITE">Do Site</TabsTrigger>
-              <TabsTrigger value="MANUAL">Manuais</TabsTrigger>
-            </TabsList>
-          </Tabs>
-
-          <Card className="border-none shadow-sm">
-            <div className="rounded-md border bg-white">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Nome</TableHead>
-                    <TableHead>Telefone</TableHead>
-                    <TableHead>Email</TableHead>
-                    <TableHead>Origem</TableHead>
-                    <TableHead>Responsável</TableHead>
-                    <TableHead className="max-w-[200px]">Observações</TableHead>
-                    <TableHead className="text-right">Ações</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {isLoading ? (
-                    <TableRow>
-                      <TableCell colSpan={colSpan} className="h-32 text-center">
-                        <div className="text-muted-foreground flex items-center justify-center gap-2">
-                          <Loader2 className="h-5 w-5 animate-spin" />
-                          Carregando clientes...
-                        </div>
+        <DataCard
+          toolbar={
+            <>
+              <Tabs value={originFilter} onValueChange={(v) => setOriginFilter(v as OriginFilter)}>
+                <TabsList>
+                  <TabsTrigger value="ALL">
+                    Todos{' '}
+                    <span className="text-muted-foreground ml-1 tabular-nums">{counts.ALL}</span>
+                  </TabsTrigger>
+                  <TabsTrigger value="WEBSITE">
+                    Do site{' '}
+                    <span className="text-muted-foreground ml-1 tabular-nums">
+                      {counts.WEBSITE}
+                    </span>
+                  </TabsTrigger>
+                  <TabsTrigger value="MANUAL">
+                    Manuais{' '}
+                    <span className="text-muted-foreground ml-1 tabular-nums">{counts.MANUAL}</span>
+                  </TabsTrigger>
+                </TabsList>
+              </Tabs>
+              <p className="text-muted-foreground text-sm">
+                {clients
+                  ? `${filteredClients.length} ${filteredClients.length === 1 ? 'cliente' : 'clientes'}`
+                  : '\u00a0'}
+              </p>
+            </>
+          }
+        >
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="pl-4">Cliente</TableHead>
+                <TableHead>Telefone</TableHead>
+                <TableHead>Origem</TableHead>
+                <TableHead>Responsável</TableHead>
+                <TableHead>Observações</TableHead>
+                <TableHead className="w-16 pr-4 text-right">
+                  <span className="sr-only">Ações</span>
+                </TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {isLoading ? (
+                <TableSkeletonRows columns={colSpan} />
+              ) : filteredClients.length > 0 ? (
+                filteredClients.map((client) => {
+                  const canClaim = isRealtor && client.origin === 'WEBSITE' && !client.realtorId
+                  const canUnclaim = isOwnerOrAdmin && !!client.realtorId
+                  const extra = [
+                    ...(canClaim
+                      ? [
+                          {
+                            label: 'Assumir cliente',
+                            icon: HandHelping,
+                            onSelect: () =>
+                              !claimMutation.isPending && claimMutation.mutate(client.id),
+                          },
+                        ]
+                      : []),
+                    ...(canUnclaim
+                      ? [
+                          {
+                            label: 'Liberar responsável',
+                            icon: UserX,
+                            onSelect: () =>
+                              !unclaimMutation.isPending && unclaimMutation.mutate(client.id),
+                          },
+                        ]
+                      : []),
+                  ]
+                  const hasActions = extra.length > 0 || !isRealtor
+                  return (
+                    <TableRow key={client.id}>
+                      <TableCell className="pl-4">
+                        <span
+                          className="block max-w-[220px] truncate font-medium"
+                          title={client.name}
+                        >
+                          {client.name}
+                        </span>
+                        {client.email && (
+                          <span
+                            className="text-muted-foreground block max-w-[220px] truncate text-xs"
+                            title={client.email}
+                          >
+                            {client.email}
+                          </span>
+                        )}
                       </TableCell>
-                    </TableRow>
-                  ) : filteredClients.length > 0 ? (
-                    filteredClients.map((client) => (
-                      <TableRow key={client.id}>
-                        <TableCell className="font-medium">{client.name}</TableCell>
-                        <TableCell>{client.phone}</TableCell>
-                        <TableCell className="text-gray-500">{client.email || '—'}</TableCell>
-                        <TableCell>
-                          {client.origin === 'WEBSITE' ? (
-                            <Badge className="border-blue-200 bg-blue-100 text-blue-700">
-                              Site
-                            </Badge>
-                          ) : (
-                            <Badge variant="secondary">Manual</Badge>
-                          )}
-                        </TableCell>
-                        <TableCell>
-                          {client.realtor ? (
-                            <span className="text-primary text-sm font-medium">
-                              {client.realtor.name}
-                            </span>
-                          ) : client.origin === 'WEBSITE' ? (
-                            <span className="text-sm text-amber-600">Não atribuído</span>
-                          ) : (
-                            <span className="text-sm text-gray-400">—</span>
-                          )}
-                        </TableCell>
-                        <TableCell className="max-w-[200px] truncate text-gray-500">
-                          {client.description}
-                        </TableCell>
-                        <TableCell className="text-right">
-                          <div className="flex justify-end gap-1">
-                            {isRealtor && client.origin === 'WEBSITE' && !client.realtorId && (
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                className="text-emerald-600 hover:bg-emerald-50 hover:text-emerald-700"
-                                onClick={() => claimMutation.mutate(client.id)}
-                                disabled={claimMutation.isPending}
-                                title="Assumir responsabilidade"
-                              >
-                                <HandHelping className="h-4 w-4" />
-                              </Button>
-                            )}
-
-                            {isOwnerOrAdmin && client.realtorId && (
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                className="text-amber-600 hover:bg-amber-50 hover:text-amber-700"
-                                onClick={() => unclaimMutation.mutate(client.id)}
-                                disabled={unclaimMutation.isPending}
-                                title="Liberar responsável"
-                              >
-                                <UserX className="h-4 w-4" />
-                              </Button>
-                            )}
-
-                            {!isRealtor && (
-                              <>
-                                <Button
-                                  variant="ghost"
-                                  size="icon"
-                                  className="text-blue-600 hover:bg-blue-50 hover:text-blue-700"
-                                  onClick={() => handleEdit(client)}
-                                  title="Editar"
-                                >
-                                  <Pencil className="h-4 w-4" />
-                                </Button>
-
-                                <Button
-                                  variant="ghost"
-                                  size="icon"
-                                  className="text-red-500 hover:bg-red-50 hover:text-red-600"
-                                  onClick={() => handleDelete(client.id)}
-                                  title="Excluir"
-                                >
-                                  <Trash2 className="h-4 w-4" />
-                                </Button>
-                              </>
-                            )}
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    ))
-                  ) : (
-                    <TableRow>
+                      <TableCell className="tabular-nums">{client.phone}</TableCell>
+                      <TableCell>
+                        {client.origin === 'WEBSITE' ? (
+                          <span className="bg-primary/10 text-primary inline-flex h-6 items-center rounded-full px-2.5 text-xs font-medium">
+                            Site
+                          </span>
+                        ) : (
+                          <span className="bg-muted text-muted-foreground inline-flex h-6 items-center rounded-full px-2.5 text-xs font-medium">
+                            Manual
+                          </span>
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        {client.realtor ? (
+                          <span className="text-sm font-medium">{client.realtor.name}</span>
+                        ) : client.origin === 'WEBSITE' ? (
+                          <span className="inline-flex h-6 items-center rounded-full bg-amber-50 px-2.5 text-xs font-medium text-amber-700 ring-1 ring-amber-200 ring-inset">
+                            Sem responsável
+                          </span>
+                        ) : (
+                          <span className="text-muted-foreground text-sm">—</span>
+                        )}
+                      </TableCell>
                       <TableCell
-                        colSpan={colSpan}
-                        className="text-muted-foreground h-32 text-center"
+                        className="text-muted-foreground max-w-[240px] truncate"
+                        title={client.description}
                       >
-                        Nenhum cliente encontrado.
+                        {client.description || '—'}
+                      </TableCell>
+                      <TableCell className="pr-4 text-right">
+                        {hasActions && (
+                          <RowActions
+                            label={client.name}
+                            extra={extra}
+                            onEdit={!isRealtor ? () => handleEdit(client) : undefined}
+                            onDelete={!isRealtor ? () => handleDelete(client.id) : undefined}
+                          />
+                        )}
                       </TableCell>
                     </TableRow>
-                  )}
-                </TableBody>
-              </Table>
-            </div>
-          </Card>
+                  )
+                })
+              ) : (
+                <TableMessageRow colSpan={colSpan}>
+                  <EmptyState
+                    icon={Users}
+                    title={
+                      originFilter === 'ALL'
+                        ? 'Nenhum cliente ainda'
+                        : originFilter === 'WEBSITE'
+                          ? 'Nenhum cliente veio do site ainda'
+                          : 'Nenhum cliente cadastrado manualmente'
+                    }
+                    description="Os contatos do formulário do site aparecem aqui automaticamente."
+                    action={
+                      !isRealtor && (
+                        <Button onClick={handleCreate}>
+                          <UserPlus className="size-4" /> Novo cliente
+                        </Button>
+                      )
+                    }
+                  />
+                </TableMessageRow>
+              )}
+            </TableBody>
+          </Table>
+        </DataCard>
 
-          <ClientDialog
-            open={isDialogOpen}
-            onOpenChange={setIsDialogOpen}
-            clientToEdit={selectedClient}
-          />
+        <ClientDialog
+          open={isDialogOpen}
+          onOpenChange={setIsDialogOpen}
+          clientToEdit={selectedClient}
+        />
 
-          <DeleteClientDialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen} id={deleteId} />
-        </main>
-      </div>
+        <DeleteClientDialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen} id={deleteId} />
+      </AdminPage>
     </FeatureGate>
   )
 }

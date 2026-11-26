@@ -2,13 +2,12 @@
 
 import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { Loader2, Trash2, Pencil, Building2 } from 'lucide-react'
+import { Building2, Plus } from 'lucide-react'
 
 import api from '@/services/api'
 
 // Componentes UI
 import { Button } from '@/components/ui/button'
-import { Card } from '@/components/ui/card'
 import {
   Table,
   TableBody,
@@ -17,8 +16,13 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { Badge } from '@/components/ui/badge'
-import { BackLink } from '@/components/back-link'
+import { AdminPage, DataCard, PageHeader } from '@/components/admin/page'
+import {
+  EmptyState,
+  RowActions,
+  TableMessageRow,
+  TableSkeletonRows,
+} from '@/components/admin/states'
 import { FeatureGate } from '@/components/feature-gate'
 
 // Modais
@@ -67,122 +71,95 @@ export default function EmpreendimentosPage() {
     setIsDeleteOpen(true)
   }
 
-  // Função auxiliar para cor do Badge de status
-  const getStatusColor = (status?: string) => {
-    switch (status) {
-      case 'Lançamento':
-        return 'bg-blue-500 hover:bg-blue-600'
-      case 'Em Construção':
-        return 'bg-yellow-500 hover:bg-yellow-600'
-      case 'Pronto para Morar':
-        return 'bg-green-500 hover:bg-green-600'
-      default:
-        return 'bg-gray-500 hover:bg-gray-600'
-    }
-  }
-
   return (
     <FeatureGate feature="enterprises">
-      <div className="flex min-h-screen flex-col bg-gray-50">
-        <main className="mx-auto w-full max-w-[1200px] flex-1 p-4 md:p-8">
-          {/* Cabeçalho */}
-          <div className="mb-6 flex flex-col gap-4">
-            <BackLink href="/admin" />
+      <AdminPage>
+        <PageHeader
+          title="Empreendimentos"
+          description="Lançamentos e prédios com várias unidades."
+          actions={
+            <Button onClick={handleCreate}>
+              <Plus className="size-4" /> Novo empreendimento
+            </Button>
+          }
+        />
 
-            <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
-              <div>
-                <h1 className="text-primary text-2xl font-bold">Empreendimentos</h1>
-                <p className="text-gray-500">Gerencie os lançamentos e prédios.</p>
-              </div>
-
-              <Button onClick={handleCreate} className="bg-primary hover:bg-primary/90">
-                <Building2 className="mr-2 h-4 w-4" /> Novo Empreendimento
-              </Button>
-            </div>
-          </div>
-
-          {/* Tabela */}
-          <Card className="border-none shadow-sm">
-            <div className="rounded-md border bg-white">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Nome</TableHead>
-                    <TableHead className="text-center">Imóveis Vinculados</TableHead>
-                    <TableHead className="text-right">Ações</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {isLoading ? (
-                    <TableRow>
-                      <TableCell colSpan={4} className="h-32 text-center">
-                        <div className="text-muted-foreground flex items-center justify-center gap-2">
-                          <Loader2 className="h-5 w-5 animate-spin" />
-                          Carregando empreendimentos...
+        <DataCard
+          toolbar={
+            <p className="text-muted-foreground text-sm">
+              {enterprises
+                ? `${enterprises.length} ${enterprises.length === 1 ? 'empreendimento' : 'empreendimentos'}`
+                : '\u00a0'}
+            </p>
+          }
+        >
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="pl-4">Nome</TableHead>
+                <TableHead className="w-40">Imóveis vinculados</TableHead>
+                <TableHead className="w-16 pr-4 text-right">
+                  <span className="sr-only">Ações</span>
+                </TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {isLoading ? (
+                <TableSkeletonRows columns={3} />
+              ) : enterprises && enterprises.length > 0 ? (
+                enterprises.map((item) => {
+                  const count = item._count?.properties ?? 0
+                  return (
+                    <TableRow key={item.id}>
+                      <TableCell className="pl-4">
+                        <div className="flex items-center gap-3">
+                          <span className="bg-primary/10 text-primary flex size-8 shrink-0 items-center justify-center rounded-lg">
+                            <Building2 className="size-4" />
+                          </span>
+                          <span className="font-medium">{item.name}</span>
                         </div>
                       </TableCell>
-                    </TableRow>
-                  ) : enterprises && enterprises.length > 0 ? (
-                    enterprises.map((item) => (
-                      <TableRow key={item.id}>
-                        <TableCell className="text-base font-medium">{item.name}</TableCell>
-
-                        <TableCell className="text-center">
-                          <Badge variant="outline" className="text-sm">
-                            {item._count?.properties || 0}
-                          </Badge>
-                        </TableCell>
-
-                        <TableCell className="text-right">
-                          <div className="flex justify-end gap-2">
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              className="text-blue-600 hover:bg-blue-50 hover:text-blue-700"
-                              onClick={() => handleEdit(item)}
-                              title="Editar"
-                            >
-                              <Pencil className="h-4 w-4" />
-                            </Button>
-
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              className="text-red-500 hover:bg-red-50 hover:text-red-600"
-                              onClick={() => handleDelete(item.id)}
-                              title="Excluir"
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    ))
-                  ) : (
-                    <TableRow>
-                      <TableCell colSpan={4} className="text-muted-foreground h-32 text-center">
-                        Nenhum empreendimento cadastrado.
+                      <TableCell>
+                        <span className="bg-muted text-muted-foreground inline-flex h-6 items-center rounded-full px-2.5 text-xs font-medium tabular-nums">
+                          {count} {count === 1 ? 'imóvel' : 'imóveis'}
+                        </span>
+                      </TableCell>
+                      <TableCell className="pr-4 text-right">
+                        <RowActions
+                          label={item.name}
+                          onEdit={() => handleEdit(item)}
+                          onDelete={() => handleDelete(item.id)}
+                        />
                       </TableCell>
                     </TableRow>
-                  )}
-                </TableBody>
-              </Table>
-            </div>
-          </Card>
+                  )
+                })
+              ) : (
+                <TableMessageRow colSpan={3}>
+                  <EmptyState
+                    icon={Building2}
+                    title="Nenhum empreendimento cadastrado"
+                    description="Cadastre lançamentos e prédios para agrupar as unidades e ter uma página própria no site."
+                    action={
+                      <Button onClick={handleCreate}>
+                        <Plus className="size-4" /> Novo empreendimento
+                      </Button>
+                    }
+                  />
+                </TableMessageRow>
+              )}
+            </TableBody>
+          </Table>
+        </DataCard>
 
-          <EnterpriseDialog
-            open={isDialogOpen}
-            onOpenChange={setIsDialogOpen}
-            itemToEdit={selectedItem}
-          />
+        <EnterpriseDialog
+          open={isDialogOpen}
+          onOpenChange={setIsDialogOpen}
+          itemToEdit={selectedItem}
+        />
 
-          <DeleteEnterpriseDialog
-            open={isDeleteOpen}
-            onOpenChange={setIsDeleteOpen}
-            id={deleteId}
-          />
-        </main>
-      </div>
+        <DeleteEnterpriseDialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen} id={deleteId} />
+      </AdminPage>
     </FeatureGate>
   )
 }
