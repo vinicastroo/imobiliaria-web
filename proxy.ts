@@ -54,10 +54,18 @@ function isLocalDev(hostname: string): boolean {
   )
 }
 
+// Landing page da Scala (plataforma) — servida no domínio da plataforma.
+const PLATFORM_LANDING_PATH = '/scala'
+
+function isPlatformHost(hostname: string): boolean {
+  return hostname === PLATFORM_DOMAIN || hostname === `www.${PLATFORM_DOMAIN}`
+}
+
 function isPublicSitePage(pathname: string): boolean {
   return (
     !pathname.startsWith('/admin') &&
     !pathname.startsWith('/login') &&
+    !pathname.startsWith(PLATFORM_LANDING_PATH) &&
     !pathname.startsWith('/api') &&
     pathname !== '/sitemap.xml' &&
     pathname !== '/robots.txt' &&
@@ -244,6 +252,19 @@ export async function proxy(req: NextRequest) {
     /\.(ico|png|jpg|jpeg|svg|webp|avif|gif|css|js|map|woff2?|ttf|eot)$/.test(pathname)
   ) {
     return NextResponse.next()
+  }
+
+  // ── 1b. Domínio da plataforma (scalamob.com.br) — landing page da Scala ──
+  // Antes isso caía no "tenant não encontrado" e redirecionava para o próprio
+  // domínio. Agora "/" vira a landing; outros caminhos voltam para ela.
+  if (isPlatformHost(hostname)) {
+    if (pathname === '/') {
+      return NextResponse.rewrite(new URL(PLATFORM_LANDING_PATH, req.url))
+    }
+    if (pathname.startsWith(PLATFORM_LANDING_PATH) || pathname.startsWith('/api')) {
+      return NextResponse.next()
+    }
+    return NextResponse.redirect(new URL('/', req.url))
   }
 
   // ── 2. Super admin panel — require SUPER_ADMIN role ─────────────────────

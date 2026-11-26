@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Scala · Fundações da marca </title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<style>
+  * { box-sizing: border-box; margin: 0; }
+  body {
+    font-family: var(--font-sans); color: var(--color-text); background: var(--color-bg);
+    font-size: var(--text-body); line-height: var(--leading-body);
+    -webkit-font-smoothing: antialiased;
+  }
+  .page { max-width: var(--width-content); margin: 0 auto; padding: var(--space-16) var(--space-6); }
+  header.top { display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-16); }
+  .eyebrow { font-family: var(--font-mono); font-size: var(--text-caption); line-height: var(--leading-caption); letter-spacing: .06em; text-transform: uppercase; color: var(--color-text-muted); }
+  h1 { font-size: var(--text-display); line-height: var(--leading-display); letter-spacing: var(--tracking-display); font-weight: var(--weight-semibold); max-width: 14ch; }
+  h2 { font-size: var(--text-headline); line-height: var(--leading-headline); letter-spacing: var(--tracking-tight); font-weight: var(--weight-semibold); }
+  h3 { font-size: var(--text-lead); line-height: var(--leading-lead); font-weight: var(--weight-semibold); letter-spacing: -0.01em; }
+  .lead { font-size: var(--text-lead); line-height: var(--leading-lead); color: var(--color-text-muted); max-width: 60ch; }
+  .muted { color: var(--color-text-muted); }
+  .small { font-size: var(--text-small); line-height: var(--leading-small); }
+  section { padding-top: var(--space-16); margin-top: var(--space-16); border-top: 1px solid var(--color-divider); }
+  section > .head { display: grid; grid-template-columns: 280px 1fr; gap: var(--space-8); margin-bottom: var(--space-8); }
+  section > .head p { color: var(--color-text-muted); max-width: 62ch; }
+  .card { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-lg); }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-4); }
+  .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-4); }
+
+  /* Logo */
+  .wordmark { font-weight: var(--weight-semibold); letter-spacing: -0.045em; line-height: 1; }
+  .concept { padding: var(--space-6); display: flex; flex-direction: column; gap: var(--space-6); }
+  .concept .stage { height: 180px; display: grid; place-items: center; background: var(--color-bg); border-radius: var(--radius-md); }
+  .lockup { display: flex; align-items: center; gap: 10px; color: var(--color-text); }
+  .lockup .wordmark { font-size: 34px; }
+  .row-icons { display: flex; align-items: end; gap: var(--space-4); }
+  .appicon { width: 56px; height: 56px; border-radius: 14px; background: var(--color-inverse); display: grid; place-items: center; color: #fff; }
+  .appicon.light { background: var(--color-surface); border: 1px solid var(--color-border); color: var(--color-text); }
+  .fav { display: grid; place-items: center; width: 24px; height: 24px; }
+  .tag { display: inline-flex; align-items: center; height: 22px; padding: 0 8px; border-radius: var(--radius-full); background: var(--color-fill-1); font-size: var(--text-caption); color: var(--color-text-muted); font-family: var(--font-mono); }
+  .tag.pick { background: var(--color-primary-soft); color: var(--color-primary); }
+
+  /* Accent compare */
+  .accent { padding: var(--space-6); display: flex; flex-direction: column; gap: var(--space-5); }
+  .swatches { display: flex; gap: var(--space-2); }
+  .sw { flex: 1; height: 56px; border-radius: var(--radius-sm); display: flex; align-items: end; padding: 6px 8px; font-family: var(--font-mono); font-size: 11px; color: #fff; }
+  .mini { display: grid; grid-template-columns: 150px 1fr; border: 1px solid var(--color-border); border-radius: var(--radius-md); overflow: hidden; background: var(--color-surface); }
+  .mini nav { background: var(--color-bg); padding: var(--space-3); display: flex; flex-direction: column; gap: 2px; border-right: 1px solid var(--color-divider); }
+  .mini nav .brand { padding: 6px 8px 12px; }
+  .navi { padding: 6px 8px; border-radius: var(--radius-sm); font-size: var(--text-small); color: var(--color-text-muted); }
+  .navi.sel { background: var(--color-tint-selected); color: var(--color-text); }
+  .mini main { padding: var(--space-4); display: flex; flex-direction: column; gap: var(--space-3); }
+  .prop { display: grid; grid-template-columns: 64px 1fr; gap: var(--space-3); align-items: center; }
+  .photo { height: 48px; border-radius: var(--radius-sm); background: linear-gradient(135deg, #c9cfd6, #8d97a3); }
+  .price { font-weight: var(--weight-semibold); font-variant-numeric: tabular-nums; }
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; height: 36px; padding: 0 14px; border-radius: var(--radius-md); font: inherit; font-size: var(--text-small); font-weight: var(--weight-medium); border: 0; cursor: pointer; transition: background var(--duration-quick) var(--ease), border-color var(--duration-quick) var(--ease); }
+  .btn-primary { background: var(--color-primary); color: var(--color-on-dark); }
+  .btn-primary:hover { background: var(--color-primary-hover); }
+  .btn-primary:active { background: var(--color-primary-pressed); }
+  .btn-secondary { background: var(--color-surface); color: var(--color-text); border: 1px solid var(--color-border); }
+  .btn-secondary:hover { border-color: var(--color-border-hover); }
+  .btn-ghost { background: transparent; color: var(--color-text); }
+  .btn-ghost:hover { background: var(--color-tint-hover); }
+  .btn:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }
+  .btn[disabled] { background: var(--color-fill-1); color: var(--color-text-disabled); border-color: transparent; cursor: not-allowed; }
+  .link { color: var(--color-primary); font-weight: var(--weight-medium); text-decoration: none; font-size: var(--text-small); }
+  .badge { display: inline-flex; height: 22px; align-items: center; padding: 0 8px; border-radius: var(--radius-full); font-size: var(--text-caption); font-weight: var(--weight-medium); background: var(--color-primary-soft); color: var(--color-primary); }
+
+  /* Palette */
+  .chips { display: grid; grid-template-columns: repeat(5, 1fr); gap: var(--space-3); }
+  .chip { border: 1px solid var(--color-border); border-radius: var(--radius-md); overflow: hidden; background: var(--color-surface); }
+  .chip .c { height: 64px; }
+  .chip .t { padding: 8px 10px; }
+  .chip .t b { display: block; font-size: var(--text-small); font-weight: var(--weight-medium); }
+  .chip .t code { font-family: var(--font-mono); font-size: 11px; color: var(--color-text-muted); }
+
+  /* Type */
+  .type-row { display: grid; grid-template-columns: 180px 1fr; gap: var(--space-6); align-items: baseline; padding: var(--space-4) 0; border-bottom: 1px solid var(--color-divider); }
+  .type-row:last-child { border-bottom: 0; }
+  .type-row .meta { font-family: var(--font-mono); font-size: var(--text-caption); color: var(--color-text-muted); }
+
+  /* Scales */
+  .scale { display: flex; align-items: end; gap: var(--space-4); flex-wrap: wrap; }
+  .space-bar { background: var(--color-primary); height: 12px; border-radius: 2px; }
+  .radius-box { width: 72px; height: 72px; background: var(--color-surface); border: 1px solid var(--color-border-hover); }
+  .shadow-box { width: 180px; height: 96px; background: var(--color-surface); border-radius: var(--radius-lg); display: grid; place-items: center; font-size: var(--text-small); color: var(--color-text-muted); }
+
+  table.rules { width: 100%; border-collapse: collapse; font-size: var(--text-small); line-height: var(--leading-small); }
+  table.rules th, table.rules td { text-align: left; vertical-align: top; padding: 12px 14px; border-bottom: 1px solid var(--color-divider); }
+  table.rules th { font-weight: var(--weight-medium); color: var(--color-text-muted); font-size: var(--text-caption); text-transform: uppercase; letter-spacing: .05em; font-family: var(--font-mono); }
+  table.rules td:first-child { font-weight: var(--weight-medium); white-space: nowrap; }
+
+  .voice { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); }
+  .voice .card { padding: var(--space-5); }
+  .voice ul { padding-left: 18px; display: grid; gap: 6px; margin-top: var(--space-3); }
+  .do { color: var(--color-success-text); } .dont { color: var(--color-danger-text); }
+
+  .tagline { padding: var(--space-12); background: var(--color-inverse); color: var(--color-on-dark); border-radius: var(--radius-xl); display: flex; justify-content: space-between; align-items: end; gap: var(--space-8); }
+  .tagline p.big { font-size: 44px; line-height: 48px; letter-spacing: var(--tracking-display); font-weight: var(--weight-semibold); max-width: 16ch; }
+  .tagline .alts { color: var(--color-on-dark-muted); font-size: var(--text-small); display: grid; gap: 4px; text-align: right; }
+
+  @media (max-width: 760px) {
+    section > .head, .grid-3, .grid-2, .voice, .type-row { grid-template-columns: 1fr; }
+    .chips { grid-template-columns: repeat(2, 1fr); }
+    h1 { font-size: 40px; line-height: 44px; }
+    .tagline { flex-direction: column; align-items: start; padding: var(--space-8); }
+    .tagline .alts { text-align: left; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Símbolos reutilizáveis -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <!-- Símbolo: Duas torres -->
+    <symbol id="mark-degrau" viewBox="7 4 34 40"><path d="M7 44V20L21 14V44Z" fill="currentColor" opacity=".4"/><path d="M24 44V10L41 4V44Z" fill="currentColor"/></symbol>
+  </defs>
+</svg>
+
+<div class="page">
+  <header class="top">
+    <img src="brand/scala-logo.svg" alt="Scala" height="30">
+    <span class="eyebrow">Fundações · aprovado · 25/11/2026 · 25/11/2026</span>
+  </header>
+
+  <span class="eyebrow">Identidade da plataforma</span>
+  <h1 style="margin-top:12px">Sua imobiliária em outra escala.</h1>
+  <p class="lead" style="margin-top:20px">Proposta de marca e de fundações visuais para a Scala. Moderna e precisa como Linear, confiável como Stripe, com a foto do imóvel como protagonista, como no Airbnb. Sem casinha, sem neon, sem dourado.</p>
+
+  <!-- 1. Símbolo -->
+  <section>
+    <div class="head">
+      <div><span class="eyebrow">01</span><h2 style="margin-top:8px">Logo</h2></div>
+      <p>Símbolo <b>Duas torres</b> (dois prédios com topos inclinados) + "scala" em <b>Sora SemiBold</b>, espaçamento −3%, convertido em curvas. Em fundo claro: azul royal, com a torre baixa em azul claro. Em fundo escuro: <code>#6E93FF</code>, com o texto em <code>#C9D7FF</code>. Sobre azul: branco. Arquivos em <code>design/brand/</code>.</p>
+    </div>
+    <div class="grid-2">
+      <div class="card concept"><div class="stage" style="background:var(--color-surface)"><img src="brand/scala-logo.svg" alt="Scala" height="64"></div></div>
+      <div class="card concept" style="background:var(--color-inverse)"><div class="stage" style="background:var(--color-inverse)"><img src="brand/scala-logo-dark.svg" alt="Scala" height="64"></div></div>
+    </div>
+    <div class="card" style="margin-top:16px;padding:24px;display:flex;gap:24px;align-items:end;flex-wrap:wrap">
+      <div class="appicon" style="background:var(--color-primary);width:64px;height:64px;border-radius:16px"><svg width="36" height="36" style="color:#fff"><use href="#mark-degrau"/></svg></div>
+      <div class="appicon" style="width:64px;height:64px;border-radius:16px"><svg width="36" height="36" style="color:var(--color-primary-on-dark)"><use href="#mark-degrau"/></svg></div>
+      <div class="appicon light" style="width:64px;height:64px;border-radius:16px"><svg width="36" height="36" style="color:var(--color-primary)"><use href="#mark-degrau"/></svg></div>
+      <div class="fav" style="color:var(--color-primary)"><svg width="24" height="24"><use href="#mark-degrau"/></svg></div>
+      <div class="fav" style="color:var(--color-primary)"><svg width="16" height="16"><use href="#mark-degrau"/></svg></div>
+      <p class="small muted" style="max-width:46ch">Ícone do app: torres brancas sobre azul royal (padrão), azul 400 sobre tinta (modo escuro) e azul sobre branco. Área de respiro mínima: metade da largura da torre alta, em volta.</p>
+    </div>
+  </section>
+
+  <!-- 2. Cor de destaque -->
+  <section>
+    <div class="head">
+      <div><span class="eyebrow">02</span><h2 style="margin-top:8px">Azul royal</h2></div>
+      <p>A marca é quase toda tinta sobre papel. O azul royal aparece na ação principal, em links, em selos e no logo. Em fundo escuro, use o tom 400.</p>
+    </div>
+    <div class="card accent">
+      <div class="swatches">
+        <div class="sw" style="background:var(--royal-600)">600 · #1F4FD1 · primary</div><div class="sw" style="background:var(--royal-700)">700 · hover</div><div class="sw" style="background:var(--royal-800)">800 · pressed</div><div class="sw" style="background:var(--royal-200);color:var(--ink-950)">200 · torre baixa</div><div class="sw" style="background:var(--royal-400);color:var(--ink-950)">400 · on-dark</div><div class="sw" style="background:var(--royal-50);color:var(--royal-700)">50 · soft</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. Neutros e status -->
+  <section>
+    <div class="head">
+      <div><span class="eyebrow">03</span><h2 style="margin-top:8px">Neutros e status</h2></div>
+      <p>Os neutros têm um leve tom azulado, nunca o cinza puro de sistema antigo. Bordas e estados (hover, selecionado) são transparências da tinta, então funcionam sobre qualquer fundo.</p>
+    </div>
+    <div class="chips">
+      <div class="chip"><div class="c" style="background:var(--ink-950)"></div><div class="t"><b>Tinta</b><code>inverse · #0D1117</code></div></div>
+      <div class="chip"><div class="c" style="background:var(--ink-900)"></div><div class="t"><b>Texto</b><code>text · #141A22</code></div></div>
+      <div class="chip"><div class="c" style="background:var(--ink-500)"></div><div class="t"><b>Texto suave</b><code>text-muted · #5D6673</code></div></div>
+      <div class="chip"><div class="c" style="background:var(--ink-400)"></div><div class="t"><b>Placeholder</b><code>#8A929D</code></div></div>
+      <div class="chip"><div class="c" style="background:var(--paper-50)"></div><div class="t"><b>Papel</b><code>bg · #F7F7F5</code></div></div>
+      <div class="chip"><div class="c" style="background:var(--paper-0)"></div><div class="t"><b>Superfície</b><code>surface · #FFFFFF</code></div></div>
+      <div class="chip"><div class="c" style="background:var(--color-border)"></div><div class="t"><b>Borda</b><code>tinta 12%</code></div></div>
+      <div class="chip"><div class="c" style="background:var(--color-success)"></div><div class="t"><b>Sucesso</b><code>#1F7A4A</code></div></div>
+      <div class="chip"><div class="c" style="background:var(--color-warn)"></div><div class="t"><b>Atenção</b><code>#B26B00</code></div></div>
+      <div class="chip"><div class="c" style="background:var(--color-danger)"></div><div class="t"><b>Erro</b><code>#C4352B</code></div></div>
+    </div>
+  </section>
+
+  <!-- 4. Tipografia -->
+  <section>
+    <div class="head">
+      <div><span class="eyebrow">04</span><h2 style="margin-top:8px">Tipografia</h2></div>
+      <p><b>Geist</b> para tudo (interface, marca, marketing) e <b>Geist Mono</b> para rótulos técnicos e códigos de imóvel. É precisa, moderna e gratuita, e já está prevista nos tokens do projeto. Números tabulares em preços e áreas.</p>
+    </div>
+    <div class="card" style="padding: 8px 24px">
+      <div class="type-row"><span class="meta">display · 52/56 · 600</span><span style="font-size:var(--text-display);line-height:var(--leading-display);letter-spacing:var(--tracking-display);font-weight:600">Venda mais, com menos.</span></div>
+      <div class="type-row"><span class="meta">headline · 32/38 · 600</span><span style="font-size:var(--text-headline);line-height:var(--leading-headline);letter-spacing:var(--tracking-tight);font-weight:600">Imóveis em destaque</span></div>
+      <div class="type-row"><span class="meta">title · 22/28 · 600</span><span style="font-size:var(--text-title);line-height:var(--leading-title);font-weight:600;letter-spacing:-0.015em">Apartamento 3 quartos no Centro</span></div>
+      <div class="type-row"><span class="meta">lead · 17/26 · 400</span><span style="font-size:var(--text-lead);line-height:var(--leading-lead)">Cadastre, publique e acompanhe cada negociação num só lugar.</span></div>
+      <div class="type-row"><span class="meta">body · 15/22 · 400</span><span>O cliente visitou o imóvel em 14/11/2026 e pediu proposta de R$ 1.180.000,00.</span></div>
+      <div class="type-row"><span class="meta">small · 13/18 · 500</span><span class="small" style="font-weight:500">120 m² · 3 quartos · 2 vagas</span></div>
+      <div class="type-row"><span class="meta">caption · mono · 12/16</span><span class="eyebrow">Cód. AP-0412 · Atualizado há 2 dias</span></div>
+    </div>
+  </section>
+
+  <!-- 5. Espaço, raio, sombra, movimento -->
+  <section>
+    <div class="head">
+      <div><span class="eyebrow">05</span><h2 style="margin-top:8px">Espaço, forma e movimento</h2></div>
+      <p>Base de 4 px. Cantos suaves, como no Airbnb, mas contidos: 10 px em botões e campos, 14 px em cards. Sombra só no que flutua (menus, diálogos, toasts), em duas intensidades.</p>
+    </div>
+    <div class="grid-2">
+      <div class="card" style="padding:24px">
+        <h3>Espaçamento</h3>
+        <div style="display:grid;gap:8px;margin-top:16px">
+          <div style="display:flex;gap:12px;align-items:center"><code class="eyebrow" style="width:72px">4</code><div class="space-bar" style="width:4px"></div></div>
+          <div style="display:flex;gap:12px;align-items:center"><code class="eyebrow" style="width:72px">8</code><div class="space-bar" style="width:8px"></div></div>
+          <div style="display:flex;gap:12px;align-items:center"><code class="eyebrow" style="width:72px">12</code><div class="space-bar" style="width:12px"></div></div>
+          <div style="display:flex;gap:12px;align-items:center"><code class="eyebrow" style="width:72px">16</code><div class="space-bar" style="width:16px"></div></div>
+          <div style="display:flex;gap:12px;align-items:center"><code class="eyebrow" style="width:72px">24</code><div class="space-bar" style="width:24px"></div></div>
+          <div style="display:flex;gap:12px;align-items:center"><code class="eyebrow" style="width:72px">32</code><div class="space-bar" style="width:32px"></div></div>
+          <div style="display:flex;gap:12px;align-items:center"><code class="eyebrow" style="width:72px">48</code><div class="space-bar" style="width:48px"></div></div>
+          <div style="display:flex;gap:12px;align-items:center"><code class="eyebrow" style="width:72px">64</code><div class="space-bar" style="width:64px"></div></div>
+        </div>
+      </div>
+      <div class="card" style="padding:24px;display:grid;gap:24px">
+        <div><h3>Raio</h3>
+          <div class="scale" style="margin-top:16px">
+            <div style="text-align:center"><div class="radius-box" style="border-radius:var(--radius-sm)"></div><code class="eyebrow">6 · tag</code></div>
+            <div style="text-align:center"><div class="radius-box" style="border-radius:var(--radius-md)"></div><code class="eyebrow">10 · campo</code></div>
+            <div style="text-align:center"><div class="radius-box" style="border-radius:var(--radius-lg)"></div><code class="eyebrow">14 · card</code></div>
+            <div style="text-align:center"><div class="radius-box" style="border-radius:var(--radius-xl)"></div><code class="eyebrow">20 · modal</code></div>
+          </div>
+        </div>
+        <div><h3>Sombra</h3>
+          <div class="scale" style="margin-top:16px">
+            <div class="shadow-box" style="box-shadow:var(--shadow)">shadow · menu</div>
+            <div class="shadow-box" style="box-shadow:var(--shadow-strong)">shadow-strong · diálogo</div>
+          </div>
+        </div>
+        <div><h3>Movimento</h3><p class="small muted" style="margin-top:6px">120 ms em hover e press · 200 ms em menus e toasts · 320 ms em diálogos e painéis. Uma curva só: <code>cubic-bezier(.2,0,0,1)</code>. Abrir é mais lento que fechar. Nada de bounce.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. Regras de interação -->
+  <section>
+    <div class="head">
+      <div><span class="eyebrow">06</span><h2 style="margin-top:8px">Regras de interação</h2></div>
+      <p>Valem para todo componente. Definidas uma vez, para que nenhum componente invente os próprios estados. Passe o mouse e use o Tab nos botões ao lado.</p>
+    </div>
+    <div class="card" style="padding:8px 8px 0">
+      <table class="rules">
+        <thead><tr><th>Peça</th><th>Hover</th><th>Pressionado</th><th>Foco (teclado)</th><th>Desabilitado</th><th>Carregando</th><th>Selecionado</th></tr></thead>
+        <tbody>
+          <tr><td>Com borda<br><span class="muted" style="font-weight:400">card, campo, botão secundário</span></td><td>Só a borda escurece (tinta 24%)</td><td>Fundo tinta 12%</td><td>Anel de 2 px na cor de destaque, 2 px afastado</td><td>Fundo fill-1, texto disabled, sem borda</td><td>Spinner no lugar do ícone, mesma largura</td><td>Borda na cor de destaque + fundo soft</td></tr>
+          <tr><td>Sem borda<br><span class="muted" style="font-weight:400">item de menu, ghost, aba</span></td><td>Tinta 5%</td><td>Tinta 12%</td><td>Mesmo anel</td><td>Texto disabled</td><td>Spinner, mesma largura</td><td>Tinta 8%, texto forte, sem mudar o peso</td></tr>
+          <tr><td>Ação principal<br><span class="muted" style="font-weight:400">uma por tela</span></td><td>Destaque um passo mais escuro</td><td>Dois passos mais escuro</td><td>Mesmo anel</td><td>Fundo fill-1, texto disabled</td><td>Spinner branco, rótulo some, mesma largura</td><td>—</td></tr>
+        </tbody>
+      </table>
+      <div style="display:flex;gap:8px;padding:20px 14px;flex-wrap:wrap;align-items:center">
+        <button class="btn btn-primary">Principal</button>
+        <button class="btn btn-secondary">Secundário</button>
+        <button class="btn btn-ghost">Ghost</button>
+        <button class="btn btn-primary" disabled>Desabilitado</button>
+        <span class="small muted">Os sites públicos dos clientes continuam usando as cores de cada imobiliária. Estas regras valem para o painel e para a marca Scala.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. Voz -->
+  <section>
+    <div class="head">
+      <div><span class="eyebrow">07</span><h2 style="margin-top:8px">Como escrevemos</h2></div>
+      <p>Profissional e confiável. Frases curtas, verbo no começo, números no formato brasileiro.</p>
+    </div>
+    <div class="voice">
+      <div class="card"><h3 class="do">Assim</h3><ul class="small"><li>"Cadastrar imóvel"</li><li>"Imóvel publicado no site."</li><li>"Não foi possível salvar as fotos. Tente de novo."</li><li>R$ 1.250.000,00 · 120 m² · 14/11/2026</li></ul></div>
+      <div class="card"><h3 class="dont">Não assim</h3><ul class="small"><li>"Bora cadastrar esse imóvel top! 🚀"</li><li>"Operação realizada com sucesso."</li><li>"Erro 500: falha na requisição."</li><li>"Exclusivo, sofisticado, alto padrão" como enfeite</li></ul></div>
+    </div>
+  </section>
+
+  <!-- 8. Slogan -->
+  <section>
+    <div class="tagline">
+      <div><span class="eyebrow" style="color:var(--color-on-dark-muted)">Slogan proposto</span><p class="big" style="margin-top:12px">Sua imobiliária em outra escala.</p></div>
+      <div class="alts"><span>Alternativas</span><span>"Gestão imobiliária, na medida certa."</span><span>"Cada imóvel, cada cliente, no lugar."</span><span>"Escale suas vendas."</span></div>
+    </div>
+  </section>
+</div>
+</body>
+</html>

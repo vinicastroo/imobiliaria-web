@@ -3,7 +3,7 @@ import { headers } from 'next/headers'
 import { apiUrl } from '@/lib/api-url'
 
 const API_URL = apiUrl('http://localhost:3333')
-const FALLBACK_NAME = 'Portal Imobiliário'
+export const FALLBACK_NAME = 'Portal Imobiliário'
 
 export interface TenantIdentity {
   name: string

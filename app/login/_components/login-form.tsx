@@ -14,6 +14,7 @@ import { Loader2, Building2, Eye, EyeOff } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import scalaLogo from '@/public/brand/scala-logo.svg'
 
 const loginSchema = z.object({
   email: z.string().min(1, 'Email é obrigatório').email('Formato de email inválido'),
@@ -69,33 +70,34 @@ export function LoginForm({ logoUrl, agencyName }: LoginFormProps) {
       {/* ── Left panel: form (2/5) ─────────────────────────────────────── */}
       <div className="flex items-center justify-center bg-white py-12 lg:col-span-2">
         <div className="mx-auto w-[350px] space-y-6">
-          {/* Logo / fallback */}
-          <div className="flex flex-col items-center space-y-2 text-center">
-            <div className="relative mb-2 flex h-20 w-40 items-center justify-center">
-              {logoUrl ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={logoUrl}
-                  alt={agencyName ?? 'Logo'}
-                  className="h-full w-full object-contain"
-                />
-              ) : (
-                <div className="text-primary flex flex-col items-center gap-1">
-                  <Building2 size={40} strokeWidth={1.5} />
-                  {agencyName && (
-                    <span className="text-xs font-semibold tracking-wide uppercase opacity-70">
-                      {agencyName}
-                    </span>
+          {/* Logo Scala + imobiliária */}
+          <div className="flex flex-col items-center space-y-4 text-center">
+            <Image src={scalaLogo} alt="Scala" className="h-9 w-auto" priority />
+
+            {(logoUrl || agencyName) && (
+              <div className="flex items-center gap-2 rounded-full border border-gray-200 py-1 pr-3 pl-1">
+                <div className="flex h-7 w-7 items-center justify-center overflow-hidden rounded-full bg-gray-50">
+                  {logoUrl ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={logoUrl}
+                      alt={agencyName ?? 'Logo da imobiliária'}
+                      className="h-full w-full object-contain"
+                    />
+                  ) : (
+                    <Building2 size={14} className="text-muted-foreground" />
                   )}
                 </div>
-              )}
+                <span className="text-muted-foreground text-xs font-medium">
+                  {agencyName ?? 'Sua imobiliária'}
+                </span>
+              </div>
+            )}
+
+            <div className="space-y-1 pt-2">
+              <h1 className="text-2xl font-semibold tracking-tight">Entrar no painel</h1>
+              <p className="text-muted-foreground text-sm">Use o e-mail e a senha da sua conta.</p>
             </div>
-            <h1 className="text-primary text-2xl font-bold tracking-tight">
-              Acesso Administrativo
-            </h1>
-            <p className="text-muted-foreground text-sm">
-              Entre com suas credenciais para continuar
-            </p>
           </div>
 
           {/* Form */}
