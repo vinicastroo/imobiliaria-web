@@ -13,12 +13,9 @@ import {
   ImageIcon,
   ShieldAlert,
   Building2,
-  CreditCard,
   Palette,
   Layout,
-  LayoutDashboard,
   X,
-  ChevronRight,
   Globe,
   BarChart3,
 } from 'lucide-react'
@@ -27,7 +24,6 @@ import { toast } from 'sonner'
 
 import api from '@/services/api'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import {
@@ -38,7 +34,8 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { BackLink } from '@/components/back-link'
+import { AdminPage, FormSection, PageHeader } from '@/components/admin/page'
+import { Skeleton } from '@/components/ui/skeleton'
 import { revalidateVisualConfig } from '@/app/actions/revalidate-visual-config'
 
 const FONT_OPTIONS = ['Montserrat', 'Inter', 'Roboto', 'Lato', 'Poppins', 'Raleway', 'Open Sans']
@@ -365,9 +362,23 @@ export default function ConfiguracoesPage() {
 
   if (isLoadingInfo || isLoadingSettings) {
     return (
-      <div className="flex h-[60vh] items-center justify-center">
-        <Loader2 className="text-primary h-10 w-10 animate-spin" />
-      </div>
+      <AdminPage>
+        <PageHeader
+          title="Configurações"
+          description="Dados, plano e identidade visual da sua imobiliária."
+        />
+        <div className="grid gap-8 lg:grid-cols-[220px_1fr]">
+          <div className="hidden flex-col gap-2 lg:flex">
+            {Array.from({ length: 3 }).map((_, i) => (
+              <Skeleton key={i} className="h-9 w-full" />
+            ))}
+          </div>
+          <div className="flex flex-col gap-6">
+            <Skeleton className="h-72 w-full rounded-xl" />
+            <Skeleton className="h-40 w-full rounded-xl" />
+          </div>
+        </div>
+      </AdminPage>
     )
   }
 
@@ -377,34 +388,43 @@ export default function ConfiguracoesPage() {
   const currentFavicon = faviconPreview ?? visualConfig?.faviconUrl ?? null
 
   return (
-    <div className="mx-auto flex min-h-screen max-w-[1200px] flex-col gap-6 bg-gray-50 p-8">
-      <div className="flex flex-col">
-        <BackLink href="/admin/imoveis" />
-        <h1 className="text-primary text-2xl font-bold">Configurações</h1>
-        <p className="text-sm text-gray-500">
-          Gerencie os dados, plano e identidade visual da sua imobiliária.
-        </p>
-      </div>
+    <AdminPage>
+      <PageHeader
+        title="Configurações"
+        description="Dados, plano e identidade visual da sua imobiliária."
+      />
 
-      <Tabs defaultValue="dados-gerais">
-        <TabsList className="mb-4">
-          <TabsTrigger value="dados-gerais">Dados Gerais</TabsTrigger>
-          <TabsTrigger value="visual-do-site">Visual do Site</TabsTrigger>
-          <TabsTrigger value="integracoes">Integrações</TabsTrigger>
+      <Tabs
+        defaultValue="dados-gerais"
+        orientation="vertical"
+        className="flex flex-col gap-6 lg:grid lg:grid-cols-[220px_1fr] lg:items-start lg:gap-8"
+      >
+        {/* Navegação de seções: vertical e fixa no desktop, rolável no celular */}
+        <TabsList className="thin-scrollbar h-auto w-full justify-start gap-1 overflow-x-auto rounded-lg bg-transparent p-0 lg:sticky lg:top-8 lg:flex-col lg:items-stretch">
+          {[
+            { value: 'dados-gerais', label: 'Dados gerais', icon: Building2 },
+            { value: 'visual-do-site', label: 'Visual do site', icon: Palette },
+            { value: 'integracoes', label: 'Integrações', icon: BarChart3 },
+          ].map(({ value, label, icon: Icon }) => (
+            <TabsTrigger
+              key={value}
+              value={value}
+              className="text-muted-foreground hover:text-foreground data-[state=active]:bg-primary/10 data-[state=active]:text-primary h-9 shrink-0 justify-start gap-2.5 rounded-lg border-0 px-3 font-normal shadow-none transition-colors hover:bg-[#141a2208] data-[state=active]:font-medium data-[state=active]:shadow-none lg:w-full"
+            >
+              <Icon className="size-4" />
+              {label}
+            </TabsTrigger>
+          ))}
         </TabsList>
 
         {/* ── Aba: Dados Gerais ─────────────────────────────────────────── */}
-        <TabsContent value="dados-gerais" className="space-y-6">
+        <TabsContent value="dados-gerais" className="mt-0 min-w-0 space-y-6">
           {/* Dados da Imobiliária */}
-          <Card className="py-6">
-            <CardHeader>
-              <div className="flex items-center gap-2">
-                <Building2 className="text-primary h-5 w-5" />
-                <CardTitle>Dados da Imobiliária</CardTitle>
-              </div>
-              <CardDescription>Informações cadastrais e de contato.</CardDescription>
-            </CardHeader>
-            <CardContent>
+          <FormSection
+            title="Dados da Imobiliária"
+            description="Informações cadastrais e de contato."
+          >
+            <div>
               <form
                 onSubmit={handleSubmit((data) => infoMutation.mutate(data))}
                 className="space-y-4"
@@ -483,20 +503,13 @@ export default function ConfiguracoesPage() {
                   </Button>
                 </div>
               </form>
-            </CardContent>
-          </Card>
+            </div>
+          </FormSection>
 
           {/* Plano Atual */}
           {agencyInfo?.plan && (
-            <Card className="py-6">
-              <CardHeader>
-                <div className="flex items-center gap-2">
-                  <CreditCard className="text-primary h-5 w-5" />
-                  <CardTitle>Plano Atual</CardTitle>
-                </div>
-                <CardDescription>Detalhes do plano contratado.</CardDescription>
-              </CardHeader>
-              <CardContent>
+            <FormSection title="Plano Atual" description="Detalhes do plano contratado.">
+              <div>
                 <div className="space-y-4">
                   <span className="text-primary text-lg font-semibold">{agencyInfo.plan.name}</span>
                   <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
@@ -524,13 +537,13 @@ export default function ConfiguracoesPage() {
                     </div>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </FormSection>
           )}
         </TabsContent>
 
         {/* ── Aba: Visual do Site ───────────────────────────────────────── */}
-        <TabsContent value="visual-do-site" className="space-y-6">
+        <TabsContent value="visual-do-site" className="mt-0 min-w-0 space-y-6">
           {/* Logo do Sistema Interno */}
           <LogoSistemaCard
             currentIcon={currentIcon}
@@ -554,15 +567,11 @@ export default function ConfiguracoesPage() {
           />
 
           {/* Aparência */}
-          <Card className="py-6">
-            <CardHeader>
-              <div className="flex items-center gap-2">
-                <Palette className="text-primary h-5 w-5" />
-                <CardTitle>Aparência do Site</CardTitle>
-              </div>
-              <CardDescription>Cores, tipografia e layout do seu site público.</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
+          <FormSection
+            title="Aparência do Site"
+            description="Cores, tipografia e layout do seu site público."
+          >
+            <div className="space-y-6">
               {/* Layout do Site */}
               <div className="space-y-3">
                 <div className="flex items-center gap-2">
@@ -700,16 +709,15 @@ export default function ConfiguracoesPage() {
                   )}
                 </Button>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </FormSection>
 
           {/* Identidade Visual */}
-          <Card className="py-6">
-            <CardHeader>
-              <CardTitle>Identidade Visual</CardTitle>
-              <CardDescription>Logo e marca d&apos;água da sua imobiliária.</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
+          <FormSection
+            title="Identidade Visual"
+            description="Logo e marca d'água da sua imobiliária."
+          >
+            <div className="space-y-6">
               <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                 {/* Logo */}
                 <div className="space-y-3">
@@ -825,24 +833,17 @@ export default function ConfiguracoesPage() {
                   )}
                 </Button>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </FormSection>
         </TabsContent>
 
         {/* ── Aba: Integrações ──────────────────────────────────────────── */}
-        <TabsContent value="integracoes" className="space-y-6">
-          <Card className="py-6">
-            <CardHeader>
-              <div className="flex items-center gap-2">
-                <BarChart3 className="text-primary h-5 w-5" />
-                <CardTitle>Rastreamento e Anúncios</CardTitle>
-              </div>
-              <CardDescription>
-                Conecte ferramentas de marketing ao seu site público. Os scripts são adicionados
-                automaticamente em todas as páginas do site.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
+        <TabsContent value="integracoes" className="mt-0 min-w-0 space-y-6">
+          <FormSection
+            title="Rastreamento e Anúncios"
+            description="Conecte ferramentas de marketing ao seu site público. Os scripts são adicionados automaticamente em todas as páginas do site."
+          >
+            <div className="space-y-6">
               <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                 <div className="space-y-2">
                   <Label htmlFor="metaPixelId">Meta Pixel ID</Label>
@@ -898,11 +899,11 @@ export default function ConfiguracoesPage() {
                   )}
                 </Button>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </FormSection>
         </TabsContent>
       </Tabs>
-    </div>
+    </AdminPage>
   )
 }
 
@@ -950,18 +951,11 @@ function LogoSistemaCard({
   }
 
   return (
-    <Card className="py-6">
-      <CardHeader>
-        <div className="flex items-center gap-2">
-          <LayoutDashboard className="text-primary h-5 w-5" />
-          <CardTitle>Logo do Sistema Interno</CardTitle>
-        </div>
-        <CardDescription>
-          Exibida na barra lateral do painel administrativo. Use uma versão minimalista — ícone,
-          símbolo ou monograma.
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
+    <FormSection
+      title="Logo do Sistema Interno"
+      description="Exibida na barra lateral do painel administrativo. Use uma versão minimalista — ícone, símbolo ou monograma."
+    >
+      <div>
         <div className="flex flex-col items-start gap-8 md:flex-row">
           {/* Dropzone + ações */}
           <div className="flex-1 space-y-4">
@@ -1076,8 +1070,8 @@ function LogoSistemaCard({
             </p>
           </div>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </FormSection>
   )
 }
 
@@ -1131,18 +1125,11 @@ function FaviconCard({
   }
 
   return (
-    <Card className="py-6">
-      <CardHeader>
-        <div className="flex items-center gap-2">
-          <Globe className="text-primary h-5 w-5" />
-          <CardTitle>Favicon do Site</CardTitle>
-        </div>
-        <CardDescription>
-          Ícone exibido na aba do navegador do seu site público. Use uma imagem quadrada de pelo
-          menos 32x32px.
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
+    <FormSection
+      title="Favicon do Site"
+      description="Ícone exibido na aba do navegador do seu site público. Use uma imagem quadrada de pelo menos 32x32px."
+    >
+      <div>
         <div className="flex flex-col items-start gap-8 md:flex-row">
           {/* Dropzone + ações */}
           <div className="flex-1 space-y-4">
@@ -1239,7 +1226,7 @@ function FaviconCard({
             <p className="mt-2 text-[10px] leading-tight text-gray-400">Aba do navegador</p>
           </div>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </FormSection>
   )
 }

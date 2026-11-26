@@ -2,13 +2,13 @@
 
 import { useState } from 'react'
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { Inbox, MessageCircle, RefreshCw } from 'lucide-react'
+import { AlertTriangle, Inbox, MessageCircle, RefreshCw } from 'lucide-react'
 import { toast } from 'sonner'
 
 import api from '@/services/api'
-import { BackLink } from '@/components/back-link'
+import { AdminPage, DataCard, PageHeader } from '@/components/admin/page'
+import { EmptyState, TableSkeletonRows } from '@/components/admin/states'
 import { Button } from '@/components/ui/button'
-import { Skeleton } from '@/components/ui/skeleton'
 import {
   Table,
   TableBody,
@@ -131,204 +131,194 @@ export default function DemoRequestsPage() {
   const totalAll = counts ? Object.values(counts).reduce((a, b) => a + b, 0) : undefined
 
   return (
-    <div className="flex min-h-screen flex-col bg-gray-50">
-      <main className="mx-auto w-full max-w-[1280px] flex-1 p-4 md:p-8">
-        <div className="mb-6 flex flex-col gap-4">
-          <BackLink href="/admin" />
-          <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
-            <div>
-              <h1 className="text-primary text-2xl font-bold">Pedidos de demonstração</h1>
-              <p className="text-gray-500">
-                Pedidos enviados pela landing page da Scala. Chame no WhatsApp e atualize o status.
-              </p>
+    <AdminPage width="wide">
+      <PageHeader
+        title="Pedidos de demonstração"
+        description="Pedidos enviados pela landing page da Scala. Chame no WhatsApp e atualize o status."
+        actions={
+          <Button variant="outline" onClick={() => refetch()} disabled={isFetching}>
+            <RefreshCw className={cn('h-4 w-4', isFetching && 'animate-spin')} />
+            Atualizar
+          </Button>
+        }
+      />
+
+      <DataCard
+        toolbar={
+          <>
+            {/* Filtros por status */}
+            <div className="flex flex-wrap gap-2" role="tablist" aria-label="Filtrar por status">
+              {FILTERS.map((f) => {
+                const count = f.value === 'ALL' ? totalAll : counts?.[f.value]
+                const active = filter === f.value
+                return (
+                  <button
+                    key={f.value}
+                    role="tab"
+                    aria-selected={active}
+                    onClick={() => {
+                      setFilter(f.value)
+                      setPage(1)
+                    }}
+                    className={cn(
+                      'inline-flex h-9 items-center gap-2 rounded-lg border px-3 text-sm transition-colors',
+                      active
+                        ? 'border-primary bg-primary/10 text-primary font-medium'
+                        : 'text-muted-foreground hover:text-foreground border-[var(--scala-border)] bg-white hover:border-[#141a223d]',
+                    )}
+                  >
+                    {f.label}
+                    {count !== undefined && (
+                      <span className="text-muted-foreground rounded-full bg-[var(--scala-paper)] px-1.5 text-xs tabular-nums">
+                        {count}
+                      </span>
+                    )}
+                  </button>
+                )
+              })}
             </div>
-            <Button variant="outline" size="sm" onClick={() => refetch()} disabled={isFetching}>
-              <RefreshCw className={cn('mr-2 h-4 w-4', isFetching && 'animate-spin')} />
-              Atualizar
-            </Button>
-          </div>
-        </div>
-
-        {/* Filtros por status */}
-        <div className="mb-4 flex flex-wrap gap-2" role="tablist" aria-label="Filtrar por status">
-          {FILTERS.map((f) => {
-            const count = f.value === 'ALL' ? totalAll : counts?.[f.value]
-            const active = filter === f.value
-            return (
-              <button
-                key={f.value}
-                role="tab"
-                aria-selected={active}
-                onClick={() => {
-                  setFilter(f.value)
-                  setPage(1)
-                }}
-                className={cn(
-                  'inline-flex h-9 items-center gap-2 rounded-lg border px-3 text-sm transition-colors',
-                  active
-                    ? 'border-primary bg-primary/10 text-primary font-medium'
-                    : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300',
-                )}
-              >
-                {f.label}
-                {count !== undefined && (
-                  <span className="rounded-full bg-gray-100 px-1.5 text-xs text-gray-600 tabular-nums">
-                    {count}
-                  </span>
-                )}
-              </button>
-            )
-          })}
-        </div>
-
-        <div className="rounded-md border bg-white px-4 py-3">
-          {isError ? (
-            <div className="flex flex-col items-center gap-3 py-16 text-center">
-              <p className="text-gray-700">Não foi possível carregar os pedidos.</p>
+          </>
+        }
+        footer={
+          data && data.totalPages > 1 ? (
+            <div className="text-muted-foreground flex items-center justify-between text-sm">
+              <span className="tabular-nums">
+                Página {data.page} de {data.totalPages} · {data.total} pedidos
+              </span>
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  disabled={page <= 1}
+                  onClick={() => setPage((p) => p - 1)}
+                >
+                  Anterior
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  disabled={page >= data.totalPages}
+                  onClick={() => setPage((p) => p + 1)}
+                >
+                  Próxima
+                </Button>
+              </div>
+            </div>
+          ) : undefined
+        }
+      >
+        {isError ? (
+          <EmptyState
+            icon={AlertTriangle}
+            title="Não foi possível carregar os pedidos"
+            description="Verifique a conexão e tente de novo."
+            action={
               <Button variant="outline" onClick={() => refetch()}>
                 Tentar de novo
               </Button>
-            </div>
-          ) : !isLoading && data && data.items.length === 0 ? (
-            <div className="flex flex-col items-center gap-3 py-16 text-center">
-              <Inbox className="h-10 w-10 text-gray-300" strokeWidth={1.5} />
-              <p className="font-medium text-gray-700">
-                {filter === 'ALL' ? 'Nenhum pedido ainda' : 'Nenhum pedido com esse status'}
-              </p>
-              <p className="max-w-sm text-sm text-gray-500">
-                Os pedidos aparecem aqui assim que alguém preenche o formulário da landing page.
-              </p>
-            </div>
-          ) : (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="w-[120px]">Recebido</TableHead>
-                  <TableHead>Pessoa</TableHead>
-                  <TableHead>Imobiliária</TableHead>
-                  <TableHead>Contato</TableHead>
-                  <TableHead>Equipe</TableHead>
-                  <TableHead className="min-w-[200px]">Mensagem</TableHead>
-                  <TableHead className="w-[150px]">Status</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {isLoading
-                  ? Array.from({ length: 5 }).map((_, i) => (
-                      <TableRow key={i}>
-                        {Array.from({ length: 7 }).map((__, j) => (
-                          <TableCell key={j}>
-                            <Skeleton className="h-4 w-full" />
-                          </TableCell>
+            }
+          />
+        ) : !isLoading && data && data.items.length === 0 ? (
+          <EmptyState
+            icon={Inbox}
+            title={filter === 'ALL' ? 'Nenhum pedido ainda' : 'Nenhum pedido com esse status'}
+            description="Os pedidos aparecem aqui assim que alguém preenche o formulário da landing page."
+          />
+        ) : (
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-[120px]">Recebido</TableHead>
+                <TableHead>Pessoa</TableHead>
+                <TableHead>Imobiliária</TableHead>
+                <TableHead>Contato</TableHead>
+                <TableHead>Equipe</TableHead>
+                <TableHead className="min-w-[200px]">Mensagem</TableHead>
+                <TableHead className="w-[150px]">Status</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {isLoading ? (
+                <TableSkeletonRows columns={7} rows={5} />
+              ) : (
+                data?.items.map((r) => (
+                  <TableRow key={r.id}>
+                    <TableCell className="text-sm whitespace-nowrap text-gray-600 tabular-nums">
+                      {new Date(r.createdAt).toLocaleDateString('pt-BR')}
+                      <span className="block text-xs text-gray-400">
+                        {new Date(r.createdAt).toLocaleTimeString('pt-BR', {
+                          hour: '2-digit',
+                          minute: '2-digit',
+                        })}
+                      </span>
+                    </TableCell>
+                    <TableCell className="max-w-[180px]">
+                      <span className="block truncate font-medium" title={r.name}>
+                        {r.name}
+                      </span>
+                    </TableCell>
+                    <TableCell className="max-w-[200px]">
+                      <span className="block truncate" title={r.agencyName}>
+                        {r.agencyName}
+                      </span>
+                    </TableCell>
+                    <TableCell className="text-sm">
+                      <a
+                        href={whatsappLink(r.phone, r.name)}
+                        target="_blank"
+                        rel="noopener"
+                        className="text-primary inline-flex items-center gap-1 whitespace-nowrap hover:underline"
+                      >
+                        <MessageCircle className="h-3.5 w-3.5" />
+                        {formatPhone(r.phone)}
+                      </a>
+                      {r.email && (
+                        <a
+                          href={`mailto:${r.email}`}
+                          className="block max-w-[200px] truncate text-xs text-gray-500 hover:underline"
+                          title={r.email}
+                        >
+                          {r.email}
+                        </a>
+                      )}
+                    </TableCell>
+                    <TableCell className="text-sm whitespace-nowrap text-gray-600">
+                      {r.realtorsRange ? (TEAM_LABELS[r.realtorsRange] ?? r.realtorsRange) : '—'}
+                    </TableCell>
+                    <TableCell className="max-w-[260px] text-sm text-gray-600">
+                      <span className="line-clamp-2" title={r.message ?? undefined}>
+                        {r.message || '—'}
+                      </span>
+                    </TableCell>
+                    <TableCell>
+                      <select
+                        aria-label={`Status do pedido de ${r.name}`}
+                        value={r.status}
+                        onChange={(e) =>
+                          updateStatus.mutate({
+                            id: r.id,
+                            status: e.target.value as DemoStatus,
+                          })
+                        }
+                        className={cn(
+                          'focus-visible:ring-primary h-8 w-full cursor-pointer rounded-md border-0 px-2 text-xs font-medium outline-none focus-visible:ring-2',
+                          STATUS_STYLES[r.status],
+                        )}
+                      >
+                        {(Object.keys(STATUS_LABELS) as DemoStatus[]).map((s) => (
+                          <option key={s} value={s}>
+                            {STATUS_LABELS[s]}
+                          </option>
                         ))}
-                      </TableRow>
-                    ))
-                  : data?.items.map((r) => (
-                      <TableRow key={r.id}>
-                        <TableCell className="text-sm whitespace-nowrap text-gray-600 tabular-nums">
-                          {new Date(r.createdAt).toLocaleDateString('pt-BR')}
-                          <span className="block text-xs text-gray-400">
-                            {new Date(r.createdAt).toLocaleTimeString('pt-BR', {
-                              hour: '2-digit',
-                              minute: '2-digit',
-                            })}
-                          </span>
-                        </TableCell>
-                        <TableCell className="max-w-[180px]">
-                          <span className="block truncate font-medium" title={r.name}>
-                            {r.name}
-                          </span>
-                        </TableCell>
-                        <TableCell className="max-w-[200px]">
-                          <span className="block truncate" title={r.agencyName}>
-                            {r.agencyName}
-                          </span>
-                        </TableCell>
-                        <TableCell className="text-sm">
-                          <a
-                            href={whatsappLink(r.phone, r.name)}
-                            target="_blank"
-                            rel="noopener"
-                            className="text-primary inline-flex items-center gap-1 whitespace-nowrap hover:underline"
-                          >
-                            <MessageCircle className="h-3.5 w-3.5" />
-                            {formatPhone(r.phone)}
-                          </a>
-                          {r.email && (
-                            <a
-                              href={`mailto:${r.email}`}
-                              className="block max-w-[200px] truncate text-xs text-gray-500 hover:underline"
-                              title={r.email}
-                            >
-                              {r.email}
-                            </a>
-                          )}
-                        </TableCell>
-                        <TableCell className="text-sm whitespace-nowrap text-gray-600">
-                          {r.realtorsRange
-                            ? (TEAM_LABELS[r.realtorsRange] ?? r.realtorsRange)
-                            : '—'}
-                        </TableCell>
-                        <TableCell className="max-w-[260px] text-sm text-gray-600">
-                          <span className="line-clamp-2" title={r.message ?? undefined}>
-                            {r.message || '—'}
-                          </span>
-                        </TableCell>
-                        <TableCell>
-                          <select
-                            aria-label={`Status do pedido de ${r.name}`}
-                            value={r.status}
-                            onChange={(e) =>
-                              updateStatus.mutate({
-                                id: r.id,
-                                status: e.target.value as DemoStatus,
-                              })
-                            }
-                            className={cn(
-                              'focus-visible:ring-primary h-8 w-full cursor-pointer rounded-md border-0 px-2 text-xs font-medium outline-none focus-visible:ring-2',
-                              STATUS_STYLES[r.status],
-                            )}
-                          >
-                            {(Object.keys(STATUS_LABELS) as DemoStatus[]).map((s) => (
-                              <option key={s} value={s}>
-                                {STATUS_LABELS[s]}
-                              </option>
-                            ))}
-                          </select>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-              </TableBody>
-            </Table>
-          )}
-        </div>
-
-        {data && data.totalPages > 1 && (
-          <div className="mt-4 flex items-center justify-between text-sm text-gray-600">
-            <span className="tabular-nums">
-              Página {data.page} de {data.totalPages} · {data.total} pedidos
-            </span>
-            <div className="flex gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                disabled={page <= 1}
-                onClick={() => setPage((p) => p - 1)}
-              >
-                Anterior
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                disabled={page >= data.totalPages}
-                onClick={() => setPage((p) => p + 1)}
-              >
-                Próxima
-              </Button>
-            </div>
-          </div>
+                      </select>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
+            </TableBody>
+          </Table>
         )}
-      </main>
-    </div>
+      </DataCard>
+    </AdminPage>
   )
 }

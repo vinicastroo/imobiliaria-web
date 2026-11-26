@@ -88,23 +88,26 @@ const KanbanCard = memo(function KanbanCard({
       {...listeners}
       {...attributes}
       className={cn(
-        'group relative rounded-xl border border-gray-200/80 bg-white p-3.5 shadow-[0_1px_2px_rgba(16,24,40,0.05)]',
-        'cursor-grab touch-none transition-all duration-150 select-none',
-        'hover:-translate-y-px hover:border-gray-300 hover:shadow-[0_4px_12px_rgba(16,24,40,0.08)]',
+        'group relative rounded-lg border border-[var(--scala-border)] bg-white p-3 shadow-[0_1px_2px_#0d11170a]',
+        'cursor-grab touch-none transition-[transform,box-shadow,border-color] duration-200 ease-[cubic-bezier(.2,0,0,1)] select-none',
+        'hover:-translate-y-0.5 hover:border-[#141a223d] hover:shadow-[0_8px_20px_-8px_#0d111733]',
         'active:cursor-grabbing',
         isDragging && 'opacity-0',
-        isOverdue && 'border-orange-200 bg-orange-50/30',
       )}
     >
       <div className="flex items-start justify-between gap-1">
-        <p className="min-w-0 flex-1 truncate text-sm font-semibold text-gray-900">
+        <p
+          className="min-w-0 flex-1 truncate pr-1 text-sm font-medium text-[var(--scala-ink)]"
+          title={contact.name}
+        >
           {contact.name}
         </p>
-        <div className="absolute top-2 right-2 flex gap-0.5 rounded-lg bg-white/95 opacity-0 shadow-sm ring-1 ring-gray-100 transition-opacity group-hover:opacity-100">
+        <div className="absolute top-2 right-2 flex gap-0.5 rounded-md bg-white opacity-0 shadow-sm ring-1 ring-[var(--scala-border)] transition-opacity group-hover:opacity-100 focus-within:opacity-100">
           <Button
             variant="ghost"
             size="icon"
-            className="hover:text-primary h-6 w-6 text-gray-400 hover:bg-gray-50"
+            className="hover:text-primary text-muted-foreground h-6 w-6"
+            aria-label={`Editar ${contact.name}`}
             onClick={(e) => {
               e.stopPropagation()
               onEdit(contact)
@@ -116,7 +119,8 @@ const KanbanCard = memo(function KanbanCard({
           <Button
             variant="ghost"
             size="icon"
-            className="h-6 w-6 text-gray-400 hover:bg-red-50 hover:text-red-500"
+            className="text-muted-foreground h-6 w-6 hover:bg-red-50 hover:text-red-600"
+            aria-label={`Excluir ${contact.name}`}
             onClick={(e) => {
               e.stopPropagation()
               onDelete(contact.id)
@@ -128,21 +132,21 @@ const KanbanCard = memo(function KanbanCard({
         </div>
       </div>
 
-      <p className="mt-1 flex items-center gap-1.5 text-xs text-gray-500">
-        <Phone size={11} className="text-gray-300" />
+      <p className="text-muted-foreground mt-1 flex items-center gap-1.5 text-xs tabular-nums">
+        <Phone size={11} className="opacity-60" />
         {contact.phone}
       </p>
 
       {contact.description && (
-        <p className="mt-1.5 line-clamp-2 text-xs leading-relaxed text-gray-400">
+        <p className="text-muted-foreground mt-2 line-clamp-2 text-xs leading-relaxed">
           {contact.description}
         </p>
       )}
 
       {(contact.realtor || contact.followUpAt) && (
-        <div className="mt-3 flex flex-wrap items-center justify-between gap-2 border-t border-gray-50 pt-2.5">
+        <div className="mt-3 flex flex-wrap items-center justify-between gap-2 border-t border-[var(--scala-border)] pt-2.5">
           {contact.realtor && (
-            <div className="flex min-w-0 items-center gap-1.5 rounded-full bg-gray-50 py-0.5 pr-2 pl-0.5 ring-1 ring-gray-100">
+            <div className="flex min-w-0 items-center gap-1.5">
               {contact.realtor.avatar ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
@@ -157,7 +161,7 @@ const KanbanCard = memo(function KanbanCard({
                   </span>
                 </div>
               )}
-              <span className="max-w-[110px] truncate text-[11px] font-medium text-gray-600">
+              <span className="text-muted-foreground max-w-[120px] truncate text-[11px] font-medium">
                 {contact.realtor.name}
               </span>
             </div>
@@ -165,13 +169,12 @@ const KanbanCard = memo(function KanbanCard({
           {contact.followUpAt && (
             <div
               className={cn(
-                'ml-auto flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px]',
-                isOverdue
-                  ? 'bg-orange-50 font-medium text-orange-600'
-                  : 'bg-amber-50/70 text-amber-600',
+                'ml-auto flex items-center gap-1 text-[11px] tabular-nums',
+                isOverdue ? 'font-medium text-orange-600' : 'text-muted-foreground',
               )}
             >
               {isOverdue ? <BellRing size={11} /> : <Clock size={11} />}
+              {isOverdue && <span className="sr-only">Atrasado:</span>}
               {new Date(contact.followUpAt).toLocaleDateString('pt-BR')}
             </div>
           )}
@@ -207,31 +210,27 @@ function KanbanColumn({
   const now = new Date()
 
   return (
-    <div className="flex min-w-0 flex-col overflow-hidden rounded-2xl border border-gray-200/80 bg-white shadow-[0_1px_3px_rgba(16,24,40,0.06)] md:h-full md:w-[300px] md:shrink-0">
-      <div className={cn('h-1 shrink-0', colors.dot)} />
-
-      <div className="group flex shrink-0 items-center gap-2 px-3.5 py-3">
-        <h3 className="truncate text-sm font-semibold text-gray-800">{stage.name}</h3>
-        <span
-          className={cn(
-            'rounded-full px-2 py-0.5 text-[11px] font-semibold tabular-nums',
-            colors.pill,
-          )}
-        >
+    <div className="flex min-w-0 flex-col overflow-hidden rounded-xl border border-[var(--scala-border)] bg-[var(--scala-paper)] md:h-full md:w-[300px] md:shrink-0">
+      <div className="group flex shrink-0 items-center gap-2 px-3.5 pt-3 pb-2">
+        <span className={cn('size-2 shrink-0 rounded-full', colors.dot)} aria-hidden="true" />
+        <h3 className="truncate text-sm font-medium text-[var(--scala-ink)]">{stage.name}</h3>
+        <span className="text-muted-foreground rounded-full bg-white px-1.5 py-0.5 text-[11px] font-medium tabular-nums ring-1 ring-[var(--scala-border)]">
           {contacts.length}
         </span>
         {canManage && (
           <Button
             variant="ghost"
             size="icon"
-            className="h-5 w-5 shrink-0 text-gray-300 opacity-0 transition-opacity group-hover:opacity-100 hover:text-gray-600"
+            className="text-muted-foreground hover:text-foreground h-6 w-6 shrink-0 opacity-0 transition-opacity group-hover:opacity-100 focus-visible:opacity-100"
             onClick={() => onEditStage(stage)}
+            aria-label={`Editar etapa ${stage.name}`}
           >
             <Settings2 size={12} />
           </Button>
         )}
         {overdueCount > 0 && (
-          <span className="ml-auto rounded-full bg-orange-50 px-2 py-0.5 text-[11px] font-semibold whitespace-nowrap text-orange-600 ring-1 ring-orange-100">
+          <span className="ml-auto flex items-center gap-1 text-[11px] font-medium whitespace-nowrap text-orange-600">
+            <BellRing size={11} />
             {overdueCount} atrasado{overdueCount > 1 ? 's' : ''}
           </span>
         )}
@@ -240,8 +239,8 @@ function KanbanColumn({
       <div
         ref={setNodeRef}
         className={cn(
-          'thin-scrollbar mx-1.5 mb-1.5 flex min-h-[280px] flex-1 flex-col gap-2 overflow-y-auto rounded-xl p-2 transition-all',
-          isOver ? cn(colors.hoverBg, 'ring-2 ring-inset', colors.hoverRing) : 'bg-gray-50/80',
+          'thin-scrollbar mx-1.5 mb-1.5 flex min-h-[280px] flex-1 flex-col gap-2 overflow-y-auto rounded-lg p-1.5 transition-colors duration-200',
+          isOver && cn(colors.hoverBg, 'ring-2 ring-inset', colors.hoverRing),
         )}
       >
         {contacts.map((contact) => {
@@ -258,15 +257,23 @@ function KanbanColumn({
           )
         })}
 
-        {dragActive && (
+        {dragActive ? (
           <div
             className={cn(
               'flex flex-1 items-center justify-center rounded-lg border border-dashed py-6 transition-colors',
-              isOver ? cn('border-transparent', colors.header) : 'border-gray-200 text-gray-400',
+              isOver
+                ? cn('border-transparent', colors.header)
+                : 'text-muted-foreground border-[var(--scala-border)]',
             )}
           >
-            <p className="text-xs">Arraste aqui</p>
+            <p className="text-xs">Solte aqui</p>
           </div>
+        ) : (
+          contacts.length === 0 && (
+            <p className="text-muted-foreground px-2 py-8 text-center text-xs">
+              Nenhum contato nesta etapa
+            </p>
+          )
         )}
       </div>
     </div>
@@ -403,7 +410,7 @@ export function CrmKanbanBoard({
             <Button
               variant="ghost"
               onClick={handleCreateStage}
-              className="h-7 rounded-full px-2.5 text-xs text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+              className="text-muted-foreground hover:text-foreground h-9 rounded-lg border border-dashed border-[var(--scala-border)] px-3 text-xs hover:bg-white"
             >
               <Plus size={15} className="mr-1" /> Nova coluna
             </Button>
@@ -411,17 +418,19 @@ export function CrmKanbanBoard({
         )}
       </div>
 
-      <DragOverlay dropAnimation={{ duration: 150, easing: 'ease' }}>
+      <DragOverlay dropAnimation={{ duration: 200, easing: 'cubic-bezier(.2,0,0,1)' }}>
         {activeContact && (
           <div className="scale-[1.03] rotate-2">
-            <div className="w-64 cursor-grabbing rounded-xl border border-gray-200 bg-white p-3.5 shadow-2xl ring-1 ring-black/5 select-none">
-              <p className="truncate text-sm font-semibold text-gray-900">{activeContact.name}</p>
-              <p className="mt-1 flex items-center gap-1.5 text-xs text-gray-500">
-                <Phone size={11} className="text-gray-300" />
+            <div className="w-64 cursor-grabbing rounded-lg border border-[var(--scala-border)] bg-white p-3 shadow-[0_16px_40px_-8px_#0d111740] select-none">
+              <p className="truncate text-sm font-medium text-[var(--scala-ink)]">
+                {activeContact.name}
+              </p>
+              <p className="text-muted-foreground mt-1 flex items-center gap-1.5 text-xs">
+                <Phone size={11} className="opacity-60" />
                 {activeContact.phone}
               </p>
               {activeContact.description && (
-                <p className="mt-1.5 line-clamp-2 text-xs leading-relaxed text-gray-400">
+                <p className="text-muted-foreground mt-2 line-clamp-2 text-xs leading-relaxed">
                   {activeContact.description}
                 </p>
               )}

@@ -2,12 +2,11 @@
 
 import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { Loader2, Trash2, Pencil } from 'lucide-react' // Adicione Pencil
+import { Tag } from 'lucide-react'
 
 import api from '@/services/api'
 
 // Componentes UI
-import { Button } from '@/components/ui/button'
 import {
   Table,
   TableBody,
@@ -16,7 +15,13 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { BackLink } from '@/components/back-link'
+import { AdminPage, DataCard, PageHeader } from '@/components/admin/page'
+import {
+  EmptyState,
+  RowActions,
+  TableMessageRow,
+  TableSkeletonRows,
+} from '@/components/admin/states'
 
 // Modais
 import { TypeDialog } from './type-dialog'
@@ -56,93 +61,63 @@ export default function TipoImovelPage() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-gray-50">
-      <main className="mx-auto w-full max-w-[1200px] flex-1 p-4 md:p-8">
-        {/* Cabeçalho */}
-        <div className="mb-6 flex flex-col gap-4">
-          <BackLink href="/admin" />
+    <AdminPage>
+      <PageHeader
+        title="Tipos de imóvel"
+        description="Cadastre e gerencie as categorias dos imóveis."
+        actions={<TypeDialog />}
+      />
 
-          <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
-            <div>
-              <h1 className="text-primary text-2xl font-bold">Gerenciamento de Tipos</h1>
-              <p className="text-gray-500">Cadastre e gerencie as categorias dos imóveis.</p>
-            </div>
-
-            {/* Modal de Criação (Sem props, usa botão interno) */}
-            <TypeDialog />
-          </div>
-        </div>
-
-        <div className="rounded-md border bg-white px-4 py-3">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="w-[100px]">ID</TableHead>
-                <TableHead>Descrição</TableHead>
-                <TableHead className="text-right">Ações</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {isLoading ? (
-                <TableRow>
-                  <TableCell colSpan={3} className="h-24 text-center">
-                    <div className="text-muted-foreground flex items-center justify-center gap-2">
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                      Carregando...
-                    </div>
+      <DataCard
+        toolbar={
+          <p className="text-muted-foreground text-sm">
+            {types ? `${types.length} ${types.length === 1 ? 'tipo' : 'tipos'}` : '\u00a0'}
+          </p>
+        }
+      >
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="pl-4">Descrição</TableHead>
+              <TableHead className="w-16 pr-4 text-right">
+                <span className="sr-only">Ações</span>
+              </TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {isLoading ? (
+              <TableSkeletonRows columns={2} />
+            ) : types && types.length > 0 ? (
+              types.map((type) => (
+                <TableRow key={type.id}>
+                  <TableCell className="pl-4 font-medium">{type.description}</TableCell>
+                  <TableCell className="pr-4 text-right">
+                    <RowActions
+                      label={type.description}
+                      onEdit={() => handleOpenEdit(type)}
+                      onDelete={() => handleOpenDelete(type.id)}
+                    />
                   </TableCell>
                 </TableRow>
-              ) : types && types.length > 0 ? (
-                types.map((type) => (
-                  <TableRow key={type.id}>
-                    <TableCell className="text-muted-foreground font-mono text-xs">
-                      {type.id.substring(0, 8)}...
-                    </TableCell>
-                    <TableCell className="font-medium">{type.description}</TableCell>
-                    <TableCell className="text-right">
-                      <div className="flex justify-end gap-2">
-                        {/* Botão Editar */}
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-8 w-8 text-blue-900 hover:bg-blue-50 hover:text-blue-700"
-                          onClick={() => handleOpenEdit(type)}
-                          title="Editar"
-                        >
-                          <Pencil className="h-4 w-4" />
-                        </Button>
+              ))
+            ) : (
+              <TableMessageRow colSpan={2}>
+                <EmptyState
+                  icon={Tag}
+                  title="Nenhum tipo cadastrado"
+                  description="Crie categorias como Casa, Apartamento ou Terreno para organizar os imóveis."
+                />
+              </TableMessageRow>
+            )}
+          </TableBody>
+        </Table>
+      </DataCard>
 
-                        {/* Botão Excluir */}
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-8 w-8 text-red-500 hover:bg-red-50 hover:text-red-600"
-                          onClick={() => handleOpenDelete(type.id)}
-                          title="Excluir"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell colSpan={3} className="text-muted-foreground h-24 text-center">
-                    Nenhum tipo cadastrado.
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </div>
+      {/* Modal de Exclusão */}
+      <DeleteTypeDialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen} id={deleteId} />
 
-        {/* Modal de Exclusão */}
-        <DeleteTypeDialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen} id={deleteId} />
-
-        {/* Modal de Edição (Controlado pelo Pai) */}
-        <TypeDialog open={isEditOpen} onOpenChange={setIsEditOpen} typeToEdit={editType} />
-      </main>
-    </div>
+      {/* Modal de Edição (Controlado pelo Pai) */}
+      <TypeDialog open={isEditOpen} onOpenChange={setIsEditOpen} typeToEdit={editType} />
+    </AdminPage>
   )
 }

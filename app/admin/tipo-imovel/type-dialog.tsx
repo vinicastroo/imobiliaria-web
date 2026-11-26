@@ -102,8 +102,8 @@ export function TypeDialog({
       */}
       {externalOpen === undefined && (
         <DialogTrigger asChild>
-          <Button className="bg-primary hover:bg-primary/90">
-            <Plus className="mr-2 h-4 w-4" /> Novo Tipo
+          <Button>
+            <Plus className="size-4" /> Novo tipo
           </Button>
         </DialogTrigger>
       )}

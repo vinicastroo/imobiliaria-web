@@ -12,7 +12,7 @@ export function BackLink({ href = '/', className }: BackLinkProps) {
     <Link
       href={href}
       className={cn(
-        'text-muted-foreground mb-2 flex w-fit items-center gap-2 text-sm transition-colors hover:text-[#17375F]',
+        'text-muted-foreground hover:text-primary mb-2 flex w-fit items-center gap-2 text-sm transition-colors',
         className,
       )}
     >

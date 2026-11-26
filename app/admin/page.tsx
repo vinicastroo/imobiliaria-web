@@ -9,6 +9,7 @@ import { Eye, Flame, Globe } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import api from '@/services/api'
 import { PeriodSelector } from '@/components/metrics/period-selector'
+import { AdminPage, PageHeader } from '@/components/admin/page'
 import { StatCard } from '@/components/metrics/stat-card'
 import { SourceChart } from '@/components/metrics/source-chart'
 import { TopPropertiesList } from '@/components/metrics/top-properties-list'
@@ -53,81 +54,71 @@ export default function AdminDashboard() {
   const topSource = data?.sourceBreakdown[0]
 
   return (
-    <div className="min-h-screen bg-gray-50 [background-image:radial-gradient(70rem_22rem_at_50%_-8rem,color-mix(in_oklab,var(--primary)_7%,transparent),transparent)]">
-      <main className="mx-auto w-full max-w-6xl space-y-6 p-4 md:p-8">
+    <AdminPage>
+      <PageHeader
+        className={sectionReveal}
+        title="Métricas do site"
+        badge={
+          <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs font-semibold text-amber-700">
+            Beta
+          </span>
+        }
+        description="Visualizações dos imóveis e origem do tráfego."
+        actions={<PeriodSelector value={period} onChange={setPeriod} />}
+      />
+
+      <div
+        className={cn(
+          'space-y-6 transition-opacity duration-200',
+          isFetching && !isLoading && 'opacity-60',
+        )}
+      >
         <div
           className={cn(
-            'flex flex-col justify-between gap-4 sm:flex-row sm:items-center',
+            'grid grid-cols-1 gap-4 [animation-delay:75ms] sm:grid-cols-3',
             sectionReveal,
           )}
         >
-          <div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-2xl font-bold tracking-tight text-gray-900">Métricas do Site</h1>
-              <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs font-semibold text-amber-700">
-                Beta
-              </span>
-            </div>
-            <p className="mt-0.5 text-sm text-gray-500">
-              Visualizações dos imóveis e origem do tráfego
-            </p>
-          </div>
-          <PeriodSelector value={period} onChange={setPeriod} />
+          <StatCard
+            title="Total de Visualizações"
+            value={data?.totalViews ?? 0}
+            icon={Eye}
+            loading={isLoading}
+          />
+          <StatCard
+            title="Imóvel Mais Visto"
+            value={topProperty?.views ?? 0}
+            subtitle={topProperty?.name}
+            icon={Flame}
+            loading={isLoading}
+          />
+          <StatCard
+            title="Fonte Principal"
+            value={topSource ? (SOURCE_LABELS[topSource.source] ?? topSource.source) : '—'}
+            subtitle={
+              topSource
+                ? `${topSource.count.toLocaleString('pt-BR')} visita${topSource.count !== 1 ? 's' : ''}`
+                : undefined
+            }
+            icon={Globe}
+            loading={isLoading}
+          />
+        </div>
+
+        <div className={cn('[animation-delay:150ms]', sectionReveal)}>
+          <ViewsChart data={data?.dailyViews ?? []} loading={isLoading} />
         </div>
 
         <div
           className={cn(
-            'space-y-6 transition-opacity duration-200',
-            isFetching && !isLoading && 'opacity-60',
+            'grid grid-cols-1 gap-4 [animation-delay:225ms] lg:grid-cols-2',
+            sectionReveal,
           )}
         >
-          <div
-            className={cn(
-              'grid grid-cols-1 gap-4 [animation-delay:75ms] sm:grid-cols-3',
-              sectionReveal,
-            )}
-          >
-            <StatCard
-              title="Total de Visualizações"
-              value={data?.totalViews ?? 0}
-              icon={Eye}
-              loading={isLoading}
-            />
-            <StatCard
-              title="Imóvel Mais Visto"
-              value={topProperty?.views ?? 0}
-              subtitle={topProperty?.name}
-              icon={Flame}
-              loading={isLoading}
-            />
-            <StatCard
-              title="Fonte Principal"
-              value={topSource ? (SOURCE_LABELS[topSource.source] ?? topSource.source) : '—'}
-              subtitle={
-                topSource
-                  ? `${topSource.count.toLocaleString('pt-BR')} visita${topSource.count !== 1 ? 's' : ''}`
-                  : undefined
-              }
-              icon={Globe}
-              loading={isLoading}
-            />
-          </div>
-
-          <div className={cn('[animation-delay:150ms]', sectionReveal)}>
-            <ViewsChart data={data?.dailyViews ?? []} loading={isLoading} />
-          </div>
-
-          <div
-            className={cn(
-              'grid grid-cols-1 gap-4 [animation-delay:225ms] lg:grid-cols-2',
-              sectionReveal,
-            )}
-          >
-            <SourceChart data={data?.sourceBreakdown ?? []} loading={isLoading} />
-            <TopPropertiesList data={data?.topProperties ?? []} loading={isLoading} />
-          </div>
+          <SourceChart data={data?.sourceBreakdown ?? []} loading={isLoading} />
+          <TopPropertiesList data={data?.topProperties ?? []} loading={isLoading} />
         </div>
-      </main>
-    </div>
+      </div>
+    </AdminPage>
   )
 }

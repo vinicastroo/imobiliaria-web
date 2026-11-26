@@ -207,7 +207,7 @@ export function usePropertyForm({ mode, propertyId, defaultValues }: UseProperty
   // Submit
   const onSubmit = async (data: PropertyFormData) => {
     if (mode === 'create' && images.length === 0) {
-      toast.error('Adicione pelo menos uma imagem na aba "Imagens"')
+      toast.error('Adicione pelo menos uma foto na seção "Fotos"')
       return
     }
 

@@ -2,15 +2,20 @@
 
 import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { Trash2, Pencil, UserPlus, Shield, Users2 } from 'lucide-react'
+import { UserPlus, Shield, Users2 } from 'lucide-react'
 import { toast } from 'sonner'
 
 import api from '@/services/api'
-import { BackLink } from '@/components/back-link'
+import { AdminPage, DataCard, PageHeader } from '@/components/admin/page'
+import {
+  EmptyState,
+  RowActions,
+  TableMessageRow,
+  TableSkeletonRows,
+} from '@/components/admin/states'
 import { UserDialog, User } from '@/components/user-dialog'
 import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
-import { Badge } from '@/components/ui/badge'
 import {
   Table,
   TableBody,
@@ -19,7 +24,6 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { Card, CardContent } from '@/components/ui/card'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -30,7 +34,6 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
-import { Skeleton } from '@/components/ui/skeleton'
 
 const roleLabels = {
   OWNER: 'Proprietário',
@@ -38,10 +41,11 @@ const roleLabels = {
   REALTOR: 'Corretor',
 }
 
+// Cores suaves e consistentes por perfil
 const roleColors = {
-  OWNER: 'bg-purple-100 text-purple-800 border-purple-200',
-  MANAGER: 'bg-blue-100 text-blue-800 border-blue-200',
-  REALTOR: 'bg-green-100 text-green-800 border-green-200',
+  OWNER: 'bg-violet-50 text-violet-700 ring-violet-200',
+  MANAGER: 'bg-sky-50 text-sky-700 ring-sky-200',
+  REALTOR: 'bg-emerald-50 text-emerald-700 ring-emerald-200',
 }
 
 export default function UsuariosPage() {
@@ -108,127 +112,105 @@ export default function UsuariosPage() {
   }
 
   return (
-    <div className="mx-auto flex min-h-screen max-w-[1200px] flex-col bg-gray-50 p-8">
-      <div className="mb-6 flex flex-col gap-4">
-        <BackLink href="/admin" />
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-primary flex items-center gap-2 text-2xl font-bold">
-              <Users2 className="h-7 w-7" />
-              Usuários
-            </h1>
-            <p className="text-gray-500">Gerencie os usuários com acesso ao sistema.</p>
-          </div>
-
-          <Button onClick={handleCreate} className="bg-primary hover:bg-primary/90">
-            <UserPlus className="mr-2 h-4 w-4" /> Novo Usuário
+    <AdminPage>
+      <PageHeader
+        title="Usuários"
+        description="Quem tem acesso ao painel e com qual perfil."
+        actions={
+          <Button onClick={handleCreate}>
+            <UserPlus className="size-4" /> Novo usuário
           </Button>
-        </div>
-      </div>
+        }
+      />
 
-      <Card className="py-6">
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="w-[50px]"></TableHead>
-                <TableHead>Nome</TableHead>
-                <TableHead>Email</TableHead>
-                <TableHead>Perfil</TableHead>
-                <TableHead>Corretor Vinculado</TableHead>
-                <TableHead className="text-right">Ações</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {/* Loading State */}
-              {isLoading &&
-                Array.from({ length: 3 }).map((_, i) => (
-                  <TableRow key={i}>
-                    <TableCell>
-                      <Skeleton className="h-10 w-10 rounded-full" />
-                    </TableCell>
-                    <TableCell>
-                      <Skeleton className="h-4 w-32" />
-                    </TableCell>
-                    <TableCell>
-                      <Skeleton className="h-4 w-40" />
-                    </TableCell>
-                    <TableCell>
-                      <Skeleton className="h-6 w-20" />
-                    </TableCell>
-                    <TableCell>
-                      <Skeleton className="h-4 w-24" />
-                    </TableCell>
-                    <TableCell>
-                      <Skeleton className="ml-auto h-8 w-20" />
-                    </TableCell>
-                  </TableRow>
-                ))}
-
-              {/* Data */}
-              {users?.map((user) => (
+      <DataCard
+        toolbar={
+          <p className="text-muted-foreground text-sm">
+            {users ? `${users.length} ${users.length === 1 ? 'usuário' : 'usuários'}` : '\u00a0'}
+          </p>
+        }
+      >
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="pl-4">Nome</TableHead>
+              <TableHead>E-mail</TableHead>
+              <TableHead>Perfil</TableHead>
+              <TableHead>Corretor vinculado</TableHead>
+              <TableHead className="w-16 pr-4 text-right">
+                <span className="sr-only">Ações</span>
+              </TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {isLoading ? (
+              <TableSkeletonRows columns={5} rows={4} />
+            ) : users && users.length > 0 ? (
+              users.map((user) => (
                 <TableRow key={user.id}>
-                  <TableCell>
-                    <Avatar className="h-10 w-10">
-                      <AvatarFallback className="bg-primary text-sm text-white">
-                        {getInitials(user.name)}
-                      </AvatarFallback>
-                    </Avatar>
+                  <TableCell className="pl-4">
+                    <div className="flex items-center gap-3">
+                      <Avatar className="size-9">
+                        <AvatarFallback className="bg-primary/10 text-primary text-xs font-semibold">
+                          {getInitials(user.name)}
+                        </AvatarFallback>
+                      </Avatar>
+                      <span className="max-w-[220px] truncate font-medium" title={user.name}>
+                        {user.name}
+                      </span>
+                    </div>
                   </TableCell>
-                  <TableCell className="font-medium">{user.name}</TableCell>
-                  <TableCell className="text-gray-600">{user.email}</TableCell>
+                  <TableCell className="text-muted-foreground">
+                    <span className="block max-w-[240px] truncate" title={user.email}>
+                      {user.email}
+                    </span>
+                  </TableCell>
                   <TableCell>
-                    <Badge variant="outline" className={`${roleColors[user.role]} font-medium`}>
-                      <Shield className="mr-1 h-3 w-3" />
+                    <span
+                      className={`inline-flex h-6 items-center gap-1 rounded-full px-2.5 text-xs font-medium ring-1 ring-inset ${roleColors[user.role]}`}
+                    >
+                      <Shield className="size-3" />
                       {roleLabels[user.role]}
-                    </Badge>
+                    </span>
                   </TableCell>
                   <TableCell>
                     {user.realtorProfile ? (
                       <span className="text-sm">
                         {user.realtorProfile.name}
-                        <span className="ml-1 text-gray-400">({user.realtorProfile.creci})</span>
+                        <span className="text-muted-foreground ml-1">
+                          ({user.realtorProfile.creci})
+                        </span>
                       </span>
                     ) : (
-                      <span className="text-sm text-gray-400">-</span>
+                      <span className="text-muted-foreground text-sm">—</span>
                     )}
                   </TableCell>
-                  <TableCell className="text-right">
-                    <div className="flex justify-end gap-2">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="text-blue-600 hover:bg-blue-50"
-                        onClick={() => handleEdit(user)}
-                      >
-                        <Pencil size={16} />
-                      </Button>
-
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="text-red-500 hover:bg-red-50"
-                        onClick={() => handleDelete(user)}
-                      >
-                        <Trash2 size={16} />
-                      </Button>
-                    </div>
+                  <TableCell className="pr-4 text-right">
+                    <RowActions
+                      label={user.name}
+                      onEdit={() => handleEdit(user)}
+                      onDelete={() => handleDelete(user)}
+                    />
                   </TableCell>
                 </TableRow>
-              ))}
-
-              {/* Empty State */}
-              {!isLoading && users?.length === 0 && (
-                <TableRow>
-                  <TableCell colSpan={6} className="py-8 text-center text-gray-500">
-                    Nenhum usuário cadastrado.
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+              ))
+            ) : (
+              <TableMessageRow colSpan={5}>
+                <EmptyState
+                  icon={Users2}
+                  title="Nenhum usuário cadastrado"
+                  description="Convide gerentes e corretores para trabalhar no painel."
+                  action={
+                    <Button onClick={handleCreate}>
+                      <UserPlus className="size-4" /> Novo usuário
+                    </Button>
+                  }
+                />
+              </TableMessageRow>
+            )}
+          </TableBody>
+        </Table>
+      </DataCard>
 
       {/* Dialog de Criar/Editar */}
       <UserDialog open={isDialogOpen} onOpenChange={setIsDialogOpen} userToEdit={selectedUser} />
@@ -245,12 +227,12 @@ export default function UsuariosPage() {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancelar</AlertDialogCancel>
-            <AlertDialogAction onClick={confirmDelete} className="bg-red-500 hover:bg-red-600">
+            <AlertDialogAction onClick={confirmDelete} className="bg-red-600 hover:bg-red-700">
               Excluir
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </div>
+    </AdminPage>
   )
 }
