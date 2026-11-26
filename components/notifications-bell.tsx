@@ -116,7 +116,7 @@ export function NotificationsBell({ isExpanded }: { isExpanded: boolean }) {
       <button
         type="button"
         className={cn(
-          'flex h-10 w-full items-center rounded-lg text-sm text-white/65 transition-all duration-150 select-none hover:bg-white/10 hover:text-white',
+          'flex h-9 w-full items-center rounded-lg text-sm text-[var(--scala-muted)] transition-colors duration-150 select-none hover:bg-[#141a220d] hover:text-[var(--scala-ink)]',
           isExpanded ? 'gap-3 px-3' : 'justify-center px-0',
         )}
       >
@@ -130,7 +130,7 @@ export function NotificationsBell({ isExpanded }: { isExpanded: boolean }) {
         </span>
         <span
           className={cn(
-            'overflow-hidden whitespace-nowrap transition-all duration-300',
+            'overflow-hidden whitespace-nowrap transition-[max-width,opacity] duration-300 ease-[cubic-bezier(.2,0,0,1)]',
             isExpanded ? 'max-w-xs opacity-100' : 'max-w-0 opacity-0',
           )}
         >
@@ -164,7 +164,7 @@ export function NotificationsBell({ isExpanded }: { isExpanded: boolean }) {
           </DialogHeader>
           <DialogFooter className="flex-col gap-2 sm:flex-col">
             <Button
-              className="w-full bg-[#17375F] hover:bg-[#122b4a]"
+              className="bg-primary hover:bg-primary/90 w-full"
               onClick={handleViewNotifications}
             >
               Ver notificações

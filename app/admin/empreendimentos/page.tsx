@@ -91,11 +91,11 @@ export default function EmpreendimentosPage() {
 
             <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
               <div>
-                <h1 className="text-2xl font-bold text-[#17375F]">Empreendimentos</h1>
+                <h1 className="text-primary text-2xl font-bold">Empreendimentos</h1>
                 <p className="text-gray-500">Gerencie os lançamentos e prédios.</p>
               </div>
 
-              <Button onClick={handleCreate} className="bg-[#17375F] hover:bg-[#122b4a]">
+              <Button onClick={handleCreate} className="bg-primary hover:bg-primary/90">
                 <Building2 className="mr-2 h-4 w-4" /> Novo Empreendimento
               </Button>
             </div>

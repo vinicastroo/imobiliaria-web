@@ -113,14 +113,14 @@ export default function UsuariosPage() {
         <BackLink href="/admin" />
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="flex items-center gap-2 text-2xl font-bold text-[#17375F]">
+            <h1 className="text-primary flex items-center gap-2 text-2xl font-bold">
               <Users2 className="h-7 w-7" />
               Usuários
             </h1>
             <p className="text-gray-500">Gerencie os usuários com acesso ao sistema.</p>
           </div>
 
-          <Button onClick={handleCreate} className="bg-[#17375F] hover:bg-[#122b4a]">
+          <Button onClick={handleCreate} className="bg-primary hover:bg-primary/90">
             <UserPlus className="mr-2 h-4 w-4" /> Novo Usuário
           </Button>
         </div>
@@ -170,7 +170,7 @@ export default function UsuariosPage() {
                 <TableRow key={user.id}>
                   <TableCell>
                     <Avatar className="h-10 w-10">
-                      <AvatarFallback className="bg-[#17375F] text-sm text-white">
+                      <AvatarFallback className="bg-primary text-sm text-white">
                         {getInitials(user.name)}
                       </AvatarFallback>
                     </Avatar>

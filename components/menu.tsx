@@ -1,18 +1,17 @@
 'use client'
 
-import { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { signOut, useSession } from 'next-auth/react'
-import { usePlanFeature } from '@/hooks/use-plan-feature'
+import { motion } from 'motion/react'
 import {
   Home,
   Tag,
   Layers,
   LogOut,
-  ChevronRight,
-  ChevronLeft,
+  PanelLeftClose,
+  PanelLeftOpen,
   type LucideIcon,
   UserRound,
   Building,
@@ -23,14 +22,17 @@ import {
   Settings,
   ContactRound,
   Inbox,
+  LayoutDashboard,
 } from 'lucide-react'
 
+import { usePlanFeature } from '@/hooks/use-plan-feature'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { cn } from '@/lib/utils'
 import { NotificationsBell } from '@/components/notifications-bell'
+import { DURATION, EASE } from '@/components/motion'
 
-import scalaLogo from '@/public/brand/scala-logo-dark.svg'
-import scalaMark from '@/public/brand/scala-mark-dark.svg'
+import scalaLogo from '@/public/brand/scala-logo.svg'
+import scalaMark from '@/public/brand/scala-mark.svg'
 
 const ROLE_LABELS: Record<string, string> = {
   OWNER: 'Proprietário',
@@ -39,17 +41,38 @@ const ROLE_LABELS: Record<string, string> = {
   SUPER_ADMIN: 'Super Admin',
 }
 
-interface MenubarProps {
+export interface MenubarProps {
   /** Ícone da imobiliária (VisualConfig.iconUrl). */
   tenantLogoUrl?: string | null
   /** Nome da imobiliária; null no painel de plataforma (super admin). */
   tenantName?: string | null
-  /** Cor da imobiliária: fundo do ícone (os ícones costumam ser brancos, feitos para ela). */
+  /** Cor da imobiliária: fundo do ícone (os ícones costumam ser brancos). */
   tenantColor?: string | null
+  isExpanded: boolean
+  onToggle?: () => void
+  /** Na gaveta do celular o menu é sempre expandido e não tem botão de recolher. */
+  variant?: 'desktop' | 'drawer'
+  onNavigate?: () => void
 }
 
-export function Menubar({ tenantLogoUrl, tenantName, tenantColor }: MenubarProps) {
-  const [isExpanded, setIsExpanded] = useState(false)
+type NavDef = {
+  href: string
+  icon: LucideIcon
+  label: string
+  match?: 'exact' | 'prefix'
+  badge?: string
+  show: boolean
+}
+
+export function Menubar({
+  tenantLogoUrl,
+  tenantName,
+  tenantColor,
+  isExpanded,
+  onToggle,
+  variant = 'desktop',
+  onNavigate,
+}: MenubarProps) {
   const pathname = usePathname()
   const { data: session } = useSession()
 
@@ -69,269 +92,250 @@ export function Menubar({ tenantLogoUrl, tenantName, tenantColor }: MenubarProps
     .join('')
     .toUpperCase()
 
+  const groups: Array<{ label: string; items: NavDef[] }> = [
+    {
+      label: 'Plataforma',
+      items: [
+        { href: '/admin/agencies', icon: Building2, label: 'Imobiliárias', show: isSuperAdmin },
+        { href: '/admin/plans', icon: CreditCard, label: 'Planos', show: isSuperAdmin },
+        { href: '/admin/demo-requests', icon: Inbox, label: 'Pedidos de demo', show: isSuperAdmin },
+      ],
+    },
+    {
+      label: 'Gestão',
+      items: [
+        { href: '/admin', icon: LayoutDashboard, label: 'Início', show: !isSuperAdminPanel },
+        { href: '/admin/imoveis', icon: Home, label: 'Imóveis', show: !isSuperAdminPanel },
+        {
+          href: '/admin/crm',
+          icon: ContactRound,
+          label: 'CRM',
+          match: 'prefix',
+          badge: 'Beta',
+          show: !isSuperAdminPanel && hasClients,
+        },
+        {
+          href: '/admin/corretores',
+          icon: UserRound,
+          label: 'Corretores',
+          show: !isSuperAdminPanel && !isRealtor,
+        },
+        {
+          href: '/admin/clientes',
+          icon: UserCheck,
+          label: 'Clientes',
+          show: !isSuperAdminPanel && !isRealtor && hasClients,
+        },
+        {
+          href: '/admin/empreendimentos',
+          icon: Building,
+          label: 'Empreendimentos',
+          show: !isSuperAdminPanel && !isRealtor && hasEnterprises,
+        },
+      ],
+    },
+    {
+      label: 'Cadastros',
+      items: [
+        {
+          href: '/admin/tipo-imovel',
+          icon: Tag,
+          label: 'Tipos de imóvel',
+          show: !isSuperAdminPanel && !isRealtor,
+        },
+        {
+          href: '/admin/infraestruturas',
+          icon: Layers,
+          label: 'Infraestrutura',
+          show: !isSuperAdminPanel && !isRealtor,
+        },
+        {
+          href: '/admin/usuarios',
+          icon: Users,
+          label: 'Usuários',
+          show: !isSuperAdminPanel && !isRealtor,
+        },
+      ],
+    },
+    {
+      label: 'Sistema',
+      items: [
+        {
+          href: '/admin/configuracoes',
+          icon: Settings,
+          label: 'Configurações',
+          show: !isSuperAdminPanel && isOwnerOrAdmin,
+        },
+      ],
+    },
+  ]
+
+  const isActive = (item: NavDef) =>
+    item.match === 'prefix' ? pathname.startsWith(item.href) : pathname === item.href
+
   return (
     <aside
+      aria-label="Menu do painel"
       className={cn(
-        'fixed top-0 left-0 z-50 flex h-screen flex-col bg-[var(--scala-sidebar)] shadow-xl transition-all duration-300 ease-in-out',
-        isExpanded ? 'w-60' : 'w-[72px]',
+        'flex h-full flex-col border-r border-[var(--scala-border)] bg-white',
+        variant === 'desktop' && 'transition-[width] duration-300 ease-[cubic-bezier(.2,0,0,1)]',
+        variant === 'desktop' ? (isExpanded ? 'w-[248px]' : 'w-[72px]') : 'w-[280px]',
       )}
     >
-      {/* Expand / collapse toggle */}
-      <button
-        type="button"
-        onClick={() => setIsExpanded((v) => !v)}
-        className="hover:text-primary absolute top-8 -right-3 z-50 flex h-6 w-6 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-500 shadow-sm transition-colors"
-        aria-label={isExpanded ? 'Recolher menu' : 'Expandir menu'}
-      >
-        {isExpanded ? <ChevronLeft size={13} /> : <ChevronRight size={13} />}
-      </button>
-
-      {/* ── Logo Scala + imobiliária ─────────────────────────────────── */}
+      {/* ── Logo + recolher ─────────────────────────────────────────── */}
       <div
         className={cn(
-          'flex shrink-0 flex-col gap-3 border-b border-white/10 py-5',
-          isExpanded ? 'px-4' : 'items-center px-0',
+          'flex h-16 shrink-0 items-center',
+          isExpanded ? 'justify-between px-4' : 'justify-center px-0',
         )}
       >
-        <Link href="/admin" className="flex h-8 items-center" aria-label="Scala — início">
+        <Link
+          href="/admin"
+          aria-label="Scala — início"
+          onClick={onNavigate}
+          className="flex items-center"
+        >
           {isExpanded ? (
-            <Image src={scalaLogo} alt="Scala" className="h-7 w-auto" priority />
+            <Image src={scalaLogo} alt="Scala" className="h-6 w-auto" priority />
           ) : (
-            <Image src={scalaMark} alt="Scala" className="h-7 w-auto" priority />
+            <Image src={scalaMark} alt="Scala" className="h-6 w-auto" priority />
           )}
         </Link>
+        {variant === 'desktop' && isExpanded && (
+          <button
+            type="button"
+            onClick={onToggle}
+            aria-label="Recolher menu"
+            className="flex size-8 items-center justify-center rounded-lg text-[var(--scala-muted)] transition-colors hover:bg-[#141a220d] hover:text-[var(--scala-ink)]"
+          >
+            <PanelLeftClose className="size-4" />
+          </button>
+        )}
+      </div>
 
-        {tenantName && (
+      {/* ── Imobiliária ─────────────────────────────────────────────── */}
+      {tenantName && (
+        <div className={cn('shrink-0 pb-3', isExpanded ? 'px-3' : 'flex justify-center px-0')}>
           <div
-            className={cn(
-              'flex min-w-0 items-center gap-2 rounded-lg bg-white/5',
-              isExpanded ? 'px-2 py-1.5' : 'p-1',
-            )}
             title={tenantName}
+            className={cn(
+              'flex items-center gap-2.5 rounded-xl border border-[var(--scala-border)] bg-[var(--scala-paper)]',
+              isExpanded ? 'px-2.5 py-2' : 'p-1.5',
+            )}
           >
             <div
-              className="flex h-7 w-7 shrink-0 items-center justify-center overflow-hidden rounded-md bg-white/15 p-0.5"
+              className="flex size-7 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-[var(--scala-night)] p-0.5"
               style={tenantColor ? { backgroundColor: tenantColor } : undefined}
             >
               {tenantLogoUrl ? (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={tenantLogoUrl}
-                  alt={tenantName}
-                  className="h-full w-full object-contain"
-                />
+                <img src={tenantLogoUrl} alt="" className="h-full w-full object-contain" />
               ) : (
                 <span className="text-[11px] font-bold text-white">
                   {tenantName.slice(0, 1).toUpperCase()}
                 </span>
               )}
             </div>
-            <span
-              className={cn(
-                'truncate text-xs font-medium text-white/80 transition-all duration-300',
-                isExpanded ? 'max-w-[10rem] opacity-100' : 'hidden',
-              )}
-            >
-              {tenantName}
-            </span>
+            {isExpanded && (
+              <div className="min-w-0">
+                <p className="truncate text-[13px] font-medium text-[var(--scala-ink)]">
+                  {tenantName}
+                </p>
+                <p className="text-[11px] text-[var(--scala-muted)]">Imobiliária</p>
+              </div>
+            )}
           </div>
-        )}
-      </div>
-
-      {/* ── Navigation ───────────────────────────────────────────────── */}
-      <nav className="flex flex-1 flex-col justify-between gap-4 overflow-y-auto px-3 py-3">
-        <div className="flex flex-col gap-0.5">
-          {/* Super admin — platform routes */}
-          {isSuperAdmin && (
-            <>
-              <SectionLabel label="Plataforma" isExpanded={isExpanded} />
-              <NavItem
-                href="/admin/agencies"
-                icon={Building2}
-                label="Imobiliárias"
-                isActive={pathname === '/admin/agencies'}
-                isExpanded={isExpanded}
-              />
-              <NavItem
-                href="/admin/plans"
-                icon={CreditCard}
-                label="Planos"
-                isActive={pathname === '/admin/plans'}
-                isExpanded={isExpanded}
-              />
-              <NavItem
-                href="/admin/demo-requests"
-                icon={Inbox}
-                label="Pedidos de demo"
-                isActive={pathname === '/admin/demo-requests'}
-                isExpanded={isExpanded}
-              />
-            </>
-          )}
-
-          {/* Tenant routes */}
-          {!isSuperAdminPanel && (
-            <>
-              <SectionLabel label="Gestão" isExpanded={isExpanded} />
-
-              <NavItem
-                href="/admin/imoveis"
-                icon={Home}
-                label="Imóveis"
-                isActive={pathname === '/admin/imoveis'}
-                isExpanded={isExpanded}
-              />
-
-              {hasClients && (
-                <NavItem
-                  href="/admin/crm"
-                  icon={ContactRound}
-                  label="CRM"
-                  isActive={pathname.startsWith('/admin/crm')}
-                  isExpanded={isExpanded}
-                  badge="Beta"
-                />
-              )}
-
-              {!isRealtor && (
-                <>
-                  <NavItem
-                    href="/admin/corretores"
-                    icon={UserRound}
-                    label="Corretores"
-                    isActive={pathname === '/admin/corretores'}
-                    isExpanded={isExpanded}
-                  />
-
-                  {hasClients && (
-                    <NavItem
-                      href="/admin/clientes"
-                      icon={UserCheck}
-                      label="Clientes"
-                      isActive={pathname === '/admin/clientes'}
-                      isExpanded={isExpanded}
-                    />
-                  )}
-
-                  {hasEnterprises && (
-                    <NavItem
-                      href="/admin/empreendimentos"
-                      icon={Building}
-                      label="Empreendimentos"
-                      isActive={pathname === '/admin/empreendimentos'}
-                      isExpanded={isExpanded}
-                    />
-                  )}
-
-                  <SectionLabel label="Cadastros" isExpanded={isExpanded} />
-
-                  <NavItem
-                    href="/admin/tipo-imovel"
-                    icon={Tag}
-                    label="Tipos de Imóvel"
-                    isActive={pathname === '/admin/tipo-imovel'}
-                    isExpanded={isExpanded}
-                  />
-
-                  <NavItem
-                    href="/admin/infraestruturas"
-                    icon={Layers}
-                    label="Infraestrutura"
-                    isActive={pathname === '/admin/infraestruturas'}
-                    isExpanded={isExpanded}
-                  />
-
-                  <NavItem
-                    href="/admin/usuarios"
-                    icon={Users}
-                    label="Usuários"
-                    isActive={pathname === '/admin/usuarios'}
-                    isExpanded={isExpanded}
-                  />
-                </>
-              )}
-
-              {isOwnerOrAdmin && (
-                <>
-                  <SectionLabel label="Sistema" isExpanded={isExpanded} />
-                  <NavItem
-                    href="/admin/configuracoes"
-                    icon={Settings}
-                    label="Configurações"
-                    isActive={pathname === '/admin/configuracoes'}
-                    isExpanded={isExpanded}
-                  />
-                </>
-              )}
-            </>
-          )}
         </div>
+      )}
 
-        <NotificationsBell isExpanded={isExpanded} />
+      {/* ── Navegação ───────────────────────────────────────────────── */}
+      <nav className="thin-scrollbar flex flex-1 flex-col gap-1 overflow-y-auto px-3 pb-3">
+        {groups.map((group) => {
+          const visible = group.items.filter((i) => i.show)
+          if (!visible.length) return null
+          return (
+            <div key={group.label} className="flex flex-col gap-0.5">
+              {isExpanded ? (
+                <p className="px-3 pt-4 pb-1.5 text-[11px] font-medium tracking-[0.08em] text-[var(--scala-muted)] uppercase select-none">
+                  {group.label}
+                </p>
+              ) : (
+                <div className="mx-auto my-2.5 h-px w-6 bg-[var(--scala-border)]" />
+              )}
+              {visible.map((item) => (
+                <NavItem
+                  key={item.href}
+                  href={item.href}
+                  icon={item.icon}
+                  label={item.label}
+                  badge={item.badge}
+                  isActive={isActive(item)}
+                  isExpanded={isExpanded}
+                  layoutGroup={variant}
+                  onNavigate={onNavigate}
+                />
+              ))}
+            </div>
+          )
+        })}
       </nav>
 
-      {/* ── User info + sign out ─────────────────────────────────────── */}
-      <div className="flex shrink-0 flex-col gap-1 border-t border-white/10 px-3 pt-3 pb-4">
-        {/* User info */}
+      {/* ── Rodapé: notificações, usuário, sair ─────────────────────── */}
+      <div className="flex shrink-0 flex-col gap-1 border-t border-[var(--scala-border)] p-3">
+        <NotificationsBell isExpanded={isExpanded} />
+
+        {variant === 'desktop' && !isExpanded && (
+          <WithTooltip label="Expandir menu" show>
+            <button
+              type="button"
+              onClick={onToggle}
+              aria-label="Expandir menu"
+              className="flex h-9 w-full items-center justify-center rounded-lg text-[var(--scala-muted)] transition-colors hover:bg-[#141a220d] hover:text-[var(--scala-ink)]"
+            >
+              <PanelLeftOpen className="size-[18px]" />
+            </button>
+          </WithTooltip>
+        )}
+
         <div
           className={cn(
-            'flex items-center rounded-lg py-2',
-            isExpanded ? 'gap-3 px-2' : 'justify-center px-0',
+            'mt-1 flex items-center rounded-xl',
+            isExpanded ? 'gap-2.5 bg-[var(--scala-paper)] px-2.5 py-2' : 'flex-col gap-1',
           )}
         >
-          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white/20 ring-2 ring-white/10">
-            <span className="text-[11px] leading-none font-bold text-white">{initials}</span>
-          </div>
-          <div
-            className={cn(
-              'min-w-0 overflow-hidden transition-all duration-300',
-              isExpanded ? 'max-w-xs opacity-100' : 'max-w-0 opacity-0',
-            )}
-          >
-            <p className="truncate text-sm leading-tight font-medium text-white">{userName}</p>
-            <p className="text-xs leading-tight text-white/50">
-              {ROLE_LABELS[userRole] ?? userRole}
-            </p>
-          </div>
+          <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-[var(--scala-royal-soft)] text-[11px] font-semibold text-[var(--scala-royal)]">
+            {initials || '·'}
+          </span>
+          {isExpanded && (
+            <div className="min-w-0 flex-1">
+              <p
+                className="truncate text-[13px] font-medium text-[var(--scala-ink)]"
+                title={userName}
+              >
+                {userName}
+              </p>
+              <p className="text-[11px] text-[var(--scala-muted)]">
+                {ROLE_LABELS[userRole] ?? userRole}
+              </p>
+            </div>
+          )}
+          <WithTooltip label="Sair" show={!isExpanded}>
+            <button
+              type="button"
+              onClick={() => signOut({ callbackUrl: '/login' })}
+              aria-label="Sair"
+              className="flex size-8 shrink-0 items-center justify-center rounded-lg text-[var(--scala-muted)] transition-colors hover:bg-red-50 hover:text-red-600"
+            >
+              <LogOut className="size-4" />
+            </button>
+          </WithTooltip>
         </div>
-
-        <NavItem
-          onClick={() => signOut({ callbackUrl: '/login' })}
-          icon={LogOut}
-          label="Sair"
-          isExpanded={isExpanded}
-          variant="danger"
-        />
       </div>
     </aside>
   )
 }
 
-// ─── Section label ────────────────────────────────────────────────────────────
-
-function SectionLabel({ label, isExpanded }: { label: string; isExpanded: boolean }) {
-  if (isExpanded) {
-    return (
-      <p className="px-2 pt-4 pb-1 text-[10px] font-semibold tracking-widest text-white/35 uppercase select-none">
-        {label}
-      </p>
-    )
-  }
-  return <div className="mx-2 my-2 border-t border-white/10" />
-}
-
-// ─── Nav item ─────────────────────────────────────────────────────────────────
-
-interface NavItemProps {
-  href?: string
-  icon: LucideIcon
-  label: string
-  isExpanded: boolean
-  isActive?: boolean
-  onClick?: () => void
-  variant?: 'default' | 'danger'
-  badge?: string
-}
+// ─── Item de navegação ────────────────────────────────────────────────────────
 
 function NavItem({
   href,
@@ -339,54 +343,74 @@ function NavItem({
   label,
   isExpanded,
   isActive,
-  onClick,
-  variant = 'default',
   badge,
-}: NavItemProps) {
-  const itemClass = cn(
-    'flex items-center rounded-lg h-10 w-full text-sm transition-all duration-150 select-none',
-    isExpanded ? 'gap-3 px-3' : 'justify-center px-0',
-    variant === 'danger'
-      ? 'text-white/40 hover:text-red-300 hover:bg-red-500/20 cursor-pointer'
-      : isActive
-        ? 'bg-white/15 text-white font-medium shadow-sm'
-        : 'text-white/65 hover:text-white hover:bg-white/10 cursor-pointer',
-  )
-
-  const labelEl = (
-    <span
+  layoutGroup,
+  onNavigate,
+}: {
+  href: string
+  icon: LucideIcon
+  label: string
+  isExpanded: boolean
+  isActive: boolean
+  badge?: string
+  layoutGroup: string
+  onNavigate?: () => void
+}) {
+  const link = (
+    <Link
+      href={href}
+      onClick={onNavigate}
+      aria-current={isActive ? 'page' : undefined}
       className={cn(
-        'flex items-center gap-2 overflow-hidden whitespace-nowrap transition-all duration-300',
-        isExpanded ? 'max-w-xs opacity-100' : 'max-w-0 opacity-0',
+        'relative flex h-9 w-full items-center rounded-lg text-sm transition-colors duration-150 select-none',
+        isExpanded ? 'gap-3 px-3' : 'justify-center px-0',
+        isActive
+          ? 'bg-[var(--scala-royal-soft)] font-medium text-[var(--scala-royal)]'
+          : 'text-[var(--scala-muted)] hover:bg-[#141a2208] hover:text-[var(--scala-ink)]',
       )}
     >
-      {label}
-      {badge && (
-        <span className="rounded-full bg-amber-400/25 px-1.5 py-0.5 text-[10px] leading-none font-semibold text-amber-300">
-          {badge}
+      {isActive && (
+        <motion.span
+          layoutId={`nav-indicator-${layoutGroup}`}
+          className="absolute top-1.5 bottom-1.5 -left-3 w-[3px] rounded-r-full bg-[var(--scala-royal)]"
+          transition={{ duration: DURATION.medium, ease: EASE }}
+        />
+      )}
+      <Icon size={18} className="shrink-0" />
+      {isExpanded && (
+        <span className="flex min-w-0 items-center gap-2 truncate">
+          {label}
+          {badge && (
+            <span className="rounded-full bg-amber-100 px-1.5 py-0.5 text-[10px] leading-none font-semibold text-amber-800">
+              {badge}
+            </span>
+          )}
         </span>
       )}
-    </span>
-  )
-
-  const element = href ? (
-    <Link href={href} className={itemClass}>
-      <Icon size={18} className="shrink-0" />
-      {labelEl}
     </Link>
-  ) : (
-    <button type="button" className={itemClass} onClick={onClick}>
-      <Icon size={18} className="shrink-0" />
-      {labelEl}
-    </button>
   )
 
-  if (isExpanded) return element
+  return (
+    <WithTooltip label={label} show={!isExpanded}>
+      {link}
+    </WithTooltip>
+  )
+}
 
+function WithTooltip({
+  label,
+  show,
+  children,
+}: {
+  label: string
+  show: boolean
+  children: React.ReactElement
+}) {
+  if (!show) return children
   return (
     <TooltipProvider>
       <Tooltip delayDuration={200}>
-        <TooltipTrigger asChild>{element}</TooltipTrigger>
+        <TooltipTrigger asChild>{children}</TooltipTrigger>
         <TooltipContent side="right" className="text-xs">
           {label}
         </TooltipContent>

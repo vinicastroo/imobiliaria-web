@@ -90,7 +90,7 @@ export default function InfraestruturaPage() {
 
           <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
             <div>
-              <h1 className="text-2xl font-bold text-[#17375F]">Infraestrutura</h1>
+              <h1 className="text-primary text-2xl font-bold">Infraestrutura</h1>
               <p className="text-gray-500">
                 Gerencie os itens de infraestrutura disponíveis para os imóveis.
               </p>
@@ -110,7 +110,7 @@ export default function InfraestruturaPage() {
           <Button
             onClick={handleAdd}
             disabled={isAdding || !newName.trim()}
-            className="bg-[#17375F] hover:bg-[#122b4a]"
+            className="bg-primary hover:bg-primary/90"
           >
             {isAdding ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
             Adicionar

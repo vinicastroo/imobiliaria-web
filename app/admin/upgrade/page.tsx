@@ -139,13 +139,13 @@ export default function UpgradePage() {
                 isCurrent
                   ? 'border-2 border-blue-500'
                   : isProfessional
-                    ? 'border-2 border-[#17375F]'
+                    ? 'border-primary border-2'
                     : ''
               }`}
             >
               {isProfessional && !isCurrent && (
                 <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                  <Badge className="gap-1 bg-[#17375F] text-white">
+                  <Badge className="bg-primary gap-1 text-white">
                     <Crown size={12} />
                     Mais popular
                   </Badge>
@@ -160,7 +160,7 @@ export default function UpgradePage() {
 
               <CardHeader className="pb-2 text-center">
                 <CardTitle className="text-xl">{plan.name}</CardTitle>
-                <p className="mt-2 text-3xl font-bold text-[#17375F]">
+                <p className="text-primary mt-2 text-3xl font-bold">
                   {formatPrice(plan.defaultPrice)}
                   <span className="text-sm font-normal text-gray-500">/mes</span>
                 </p>

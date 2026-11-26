@@ -3,7 +3,7 @@ import Link from 'next/link'
 import scalaLogo from '@/public/brand/scala-logo.svg'
 
 const NAV = [
-  { href: '#recursos', label: 'Recursos' },
+  { href: '#solucoes', label: 'Soluções' },
   { href: '#clientes', label: 'Clientes' },
   { href: '#precos', label: 'Preços' },
   { href: '#perguntas', label: 'Dúvidas' },
@@ -29,7 +29,7 @@ export function SiteHeader() {
         </nav>
         <a
           href="#demonstracao"
-          className="inline-flex h-10 items-center rounded-[10px] bg-[var(--scala-royal)] px-4 text-sm font-semibold text-white transition-colors hover:bg-[var(--scala-royal-hover)]"
+          className="inline-flex h-10 items-center rounded-[10px] bg-[var(--scala-royal)] px-4 text-sm font-semibold text-white transition-[background-color,transform] duration-200 hover:bg-[var(--scala-royal-hover)] active:scale-[0.98]"
         >
           Agendar demonstração
         </a>

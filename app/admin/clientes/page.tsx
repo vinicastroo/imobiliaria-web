@@ -123,12 +123,12 @@ export default function ClientesPage() {
 
             <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
               <div>
-                <h1 className="text-2xl font-bold text-[#17375F]">Clientes</h1>
+                <h1 className="text-primary text-2xl font-bold">Clientes</h1>
                 <p className="text-gray-500">Gerencie seus clientes e seus interesses.</p>
               </div>
 
               {!isRealtor && (
-                <Button onClick={handleCreate} className="bg-[#17375F] hover:bg-[#122b4a]">
+                <Button onClick={handleCreate} className="bg-primary hover:bg-primary/90">
                   <Users className="mr-2 h-4 w-4" /> Novo Cliente
                 </Button>
               )}
@@ -188,7 +188,7 @@ export default function ClientesPage() {
                         </TableCell>
                         <TableCell>
                           {client.realtor ? (
-                            <span className="text-sm font-medium text-[#17375F]">
+                            <span className="text-primary text-sm font-medium">
                               {client.realtor.name}
                             </span>
                           ) : client.origin === 'WEBSITE' ? (

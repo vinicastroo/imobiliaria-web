@@ -29,7 +29,7 @@ Nunca parecer:
 
 Nome: **Scala** (de _escala_: crescer, subir de nível, proporção). Escolhido em 2026-11-25.
 Domínio: **scalamob.com.br** (e `scalamob.com` para proteger a marca), escolhido em 2026-11-25. A marca continua **Scala**; só o endereço é "scalamob". Os dois domínios estavam livres na data e ainda não foram registrados. Estrutura planejada: `scalamob.com.br` para o site da Scala, `admin.scalamob.com.br` para o super admin (no lugar de `admin.codelabz.com.br`) e `<imobiliaria>.scalamob.com.br` para os sites de clientes sem domínio próprio.
-Logo: símbolo **Duas torres** (dois prédios de alturas diferentes, topos inclinados; a torre alta em azul royal e a baixa em azul claro) + a palavra **"scala" em Sora SemiBold (600)**, em azul royal, com espaçamento −3% e convertida em curvas. O símbolo tem a altura do "l". Ícone do app e favicon: só as Duas torres. Arquivos em `design/brand/` (logo claro, escuro, branco e mono; símbolo; ícones; favicon; prévia em `index.html`).
+Logo: símbolo **Duas torres** (dois prédios de alturas diferentes, topos inclinados; a torre alta em azul royal e a baixa em azul claro) + a palavra **"scala" em Sora SemiBold (600)**, em azul royal, com espaçamento −3% e convertida em curvas. O símbolo tem a altura do "l". Ícone do app e favicon: só as Duas torres. O favicon é o ícone do app (torres claras sobre o quadrado azul royal). Arquivos em `design/brand/` (logo claro, escuro, branco e mono; símbolo; ícones; favicon; prévia em `index.html`).
 Cores: base tinta `#141A22` sobre papel `#F7F7F5`. Destaque **Azul royal** `#1F4FD1` (hover `#1A43B3`, pressed `#163A99`, soft `#EAF0FE`, torre baixa `#B9CBF8`; em fundo escuro `#6E93FF`, com o texto do logo em `#C9D7FF`).
 Tipografia: **Sora** no logo e em toda a interface do painel e do login (Google Fonts, licença SIL OFL, livre para uso comercial). Carregada via `next/font` com `preload: false`, para não pesar nos sites públicos.
 Fonte da verdade: `design/tokens.css` e `design/guide-foundations.html`. Não herdamos a exploração "ZUNO" de `docs/branding/`.
@@ -59,6 +59,13 @@ Código atual: tema neutro padrão do shadcn (`app/globals.css`, oklch cinza), f
 - 2026-11-25: **landing page** da Scala em `app/scala`, servida no domínio da plataforma (rewrite em `proxy.ts`). Botão principal: "Agendar demonstração". Mostra os 3 planos (lidos de `GET /platform/plans`) e a Auros e a Gilli como clientes (autorizado).
 - 2026-11-25: pedidos de demonstração ficam **salvos no sistema**: tabela `demo_requests` na API e tela "Pedidos de demo" no super admin. A entrega por WhatsApp e por e-mail foi descartada.
 - 2026-11-25: na sidebar, o ícone da imobiliária fica sobre a cor dela, porque muitos ícones de tenant são brancos e foram feitos para a sidebar colorida antiga.
+- 2026-11-26: **sem tracejados/hachuras** na landing (o Vini não gostou). Fundos lisos.
+- 2026-11-26: favicon = ícone do app (torres claras sobre azul royal), a pedido do Vini.
+- 2026-11-26: **landing page refeita** com referência em Valeti, Arco e Valid: selos em pílula, hero com pessoa recortada sobre bloco azul-claro e prévia do painel com cards flutuando, faixa de clientes em cinza, abas de soluções com indicador deslizante, cards arredondados com traço de cor e bloco final em azul royal.
+- 2026-11-26: **pessoas nas composições**. Fotos geradas na Higgsfield (gpt_image_2_6) em `public/scala/`: corretora (recortada), corretor com casal, gestora e equipe.
+- 2026-11-26: **animações** com a lib `motion` e as peças em `components/motion` (Reveal, Stagger, Float, CountUp, Typewriter), nos tokens de 120/200/320 ms, curva (.2,0,0,1) e respeitando `prefers-reduced-motion`.
+- 2026-11-26: **menu lateral claro**, com barra azul deslizante na página ativa. Ele empurra o conteúdo, lembra o estado num cookie (`scala_sidebar`) e vira gaveta no celular. Ganhou o item "Início".
+- 2026-11-26: cores fixas da Auros (`#17375F`) trocadas por `primary` em todo o `app/admin`. Nos sites públicos, as cores fixas continuam.
 - 2026-11-25: marca da plataforma separada da marca dos tenants, que continuam white-label.
 - 2026-11-25: painel admin e login usam a **marca Scala** (azul royal, Sora, logo Scala), com o logo e o nome da imobiliária junto (sidebar e selo no login). Implementado por `components/scala-theme.tsx`, que sobrescreve as cores do tenant só nessas telas. Os sites públicos seguem 100% do cliente. A sidebar passou a ser azul-noite (`#0D1530`).
 
@@ -69,4 +76,5 @@ Código atual: tema neutro padrão do shadcn (`app/globals.css`, oklch cinza), f
 - O super admin continua em `admin.codelabz.com.br` ou migra para o domínio Scala?
 - Landing: os textos das perguntas frequentes e do "Como funciona" são rascunho (por exemplo, "ajudamos a apontar o domínio"). Confirmar que descrevem o serviço real.
 - Landing: falta um "Entrar" para clientes. Hoje o login fica no domínio de cada imobiliária (`/admin`).
+- Sites públicos ainda têm ~60 cores fixas `#17375F` em componentes compartilhados (busca, listas, galeria). Elas deveriam usar `--primary` do tenant.
 - Slogan: a proposta é "Sua imobiliária em outra escala." (não confirmada).

@@ -179,13 +179,13 @@ export default function AdminImoveisPage() {
         <div className="mb-4 flex flex-col gap-4">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-2xl font-bold text-[#17375F]">Gerenciamento de Imóveis</h1>
+              <h1 className="text-primary text-2xl font-bold">Gerenciamento de Imóveis</h1>
               <p className="text-gray-500">Listagem e controle dos imóveis cadastrados</p>
             </div>
 
             <Button
               onClick={() => router.push('/admin/imoveis/criar')}
-              className="bg-[#17375F] hover:bg-[#122b4a]"
+              className="bg-primary hover:bg-primary/90"
             >
               <Plus className="mr-2 h-4 w-4" /> Criar Imóvel
             </Button>

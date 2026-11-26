@@ -58,12 +58,12 @@ export default function CorretoresPage() {
         <BackLink href="/admin" />
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-[#17375F]">Corretores</h1>
+            <h1 className="text-primary text-2xl font-bold">Corretores</h1>
             <p className="text-gray-500">Gerencie sua equipe de vendas.</p>
           </div>
 
           {/* Botão de Criar agora chama a função handleCreate */}
-          <Button onClick={handleCreate} className="bg-[#17375F] hover:bg-[#122b4a]">
+          <Button onClick={handleCreate} className="bg-primary hover:bg-primary/90">
             <Plus className="mr-2 h-4 w-4" /> Novo Corretor
           </Button>
         </div>

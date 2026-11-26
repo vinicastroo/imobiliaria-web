@@ -89,13 +89,13 @@ export default function AdminDashboard() {
           >
             <StatCard
               title="Total de Visualizações"
-              value={(data?.totalViews ?? 0).toLocaleString('pt-BR')}
+              value={data?.totalViews ?? 0}
               icon={Eye}
               loading={isLoading}
             />
             <StatCard
               title="Imóvel Mais Visto"
-              value={(topProperty?.views ?? 0).toLocaleString('pt-BR')}
+              value={topProperty?.views ?? 0}
               subtitle={topProperty?.name}
               icon={Flame}
               loading={isLoading}

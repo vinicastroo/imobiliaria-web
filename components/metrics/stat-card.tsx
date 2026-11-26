@@ -1,6 +1,9 @@
+'use client'
+
 import type { LucideIcon } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
+import { CountUp } from '@/components/motion'
 
 interface StatCardProps {
   title: string
@@ -22,8 +25,8 @@ export function StatCard({ title, value, subtitle, icon: Icon, loading }: StatCa
             {loading ? (
               <Skeleton className="mt-2 h-8 w-24" />
             ) : (
-              <p className="mt-1.5 truncate text-3xl font-bold tracking-tight text-gray-900">
-                {value}
+              <p className="mt-1.5 truncate text-3xl font-bold tracking-tight text-gray-900 tabular-nums">
+                {typeof value === 'number' ? <CountUp value={value} /> : value}
               </p>
             )}
             {subtitle && !loading && (
