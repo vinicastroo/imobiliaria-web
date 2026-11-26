@@ -3,7 +3,9 @@
 import { useEffect } from 'react'
 import { EditorContent } from '@tiptap/react'
 import { NumericFormat } from 'react-number-format'
-import { Bed, Bath, CarFront, Ruler, Loader2, ExternalLink } from 'lucide-react'
+import { Bed, Bath, CarFront, Ruler, Loader2, ExternalLink, Check, X } from 'lucide-react'
+import { motion } from 'motion/react'
+import { DURATION, EASE } from '@/components/motion'
 import Link from 'next/link'
 
 import { Button } from '@/components/ui/button'
@@ -73,7 +75,6 @@ export function PropertyForm({ mode, propertyId, defaultValues }: PropertyFormPr
 
   const isEdit = mode === 'edit'
   const title = isEdit ? 'Editar imóvel' : 'Novo imóvel'
-  const submitLabel = isEdit ? 'Salvar alterações' : 'Salvar imóvel'
   const isDirty = form.formState.isDirty
 
   const fieldError = (msg?: string) =>
@@ -519,32 +520,40 @@ export function PropertyForm({ mode, propertyId, defaultValues }: PropertyFormPr
           </div>
         </div>
 
-        {/* ── Barra de ações fixa ────────────────────────────────────── */}
-        <div className="border-border/70 sticky bottom-0 z-20 -mx-4 mt-8 flex items-center justify-between gap-3 border-t bg-white/90 px-4 py-3 backdrop-blur md:-mx-8 md:px-8">
-          <p
-            className={`flex items-center gap-2 text-sm ${
-              isDirty ? 'text-amber-700' : 'text-muted-foreground'
-            }`}
-            aria-live="polite"
+        {/* ── Barra de ações flutuante (pílula centralizada) ─────────── */}
+        <div className="pointer-events-none sticky bottom-6 z-30 mt-10 flex justify-center">
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: DURATION.medium, ease: EASE, delay: 0.2 }}
+            className="pointer-events-auto flex items-center gap-1 rounded-full border border-[var(--scala-border)] bg-white/95 p-1.5 shadow-[0_2px_4px_#0d111714,0_16px_40px_-8px_#0d111740] backdrop-blur"
           >
+            <p
+              className={`hidden items-center gap-2 pr-3 pl-3 text-sm sm:flex ${
+                isDirty ? 'text-amber-700' : 'text-muted-foreground'
+              }`}
+              aria-live="polite"
+            >
+              <span
+                className={`size-2 rounded-full ${isDirty ? 'bg-amber-500' : 'bg-emerald-500'}`}
+                aria-hidden="true"
+              />
+              {isDirty ? 'Alterações não salvas' : isEdit ? 'Tudo salvo' : 'Novo imóvel'}
+            </p>
             <span
-              className={`size-2 rounded-full ${isDirty ? 'bg-amber-500' : 'bg-emerald-500'}`}
+              className="mx-1 hidden h-5 w-px bg-[var(--scala-border)] sm:block"
               aria-hidden="true"
             />
-            {isDirty
-              ? 'Alterações não salvas'
-              : isEdit
-                ? 'Tudo salvo'
-                : 'Preencha e salve o imóvel'}
-          </p>
-          <div className="flex items-center gap-2">
-            <Button type="button" variant="ghost" asChild>
-              <Link href="/admin/imoveis">Cancelar</Link>
+            <Button type="button" variant="ghost" className="h-9 rounded-full px-4" asChild>
+              <Link href="/admin/imoveis">
+                <X className="size-4" />
+                Cancelar
+              </Link>
             </Button>
             <Button
               type="submit"
               disabled={isSubmitting}
-              className="bg-primary hover:bg-primary/90 min-w-[160px]"
+              className="bg-primary hover:bg-primary/90 h-9 min-w-[124px] rounded-full px-5"
             >
               {isSubmitting ? (
                 <>
@@ -552,10 +561,13 @@ export function PropertyForm({ mode, propertyId, defaultValues }: PropertyFormPr
                   Salvando…
                 </>
               ) : (
-                submitLabel
+                <>
+                  <Check className="size-4" />
+                  Salvar
+                </>
               )}
             </Button>
-          </div>
+          </motion.div>
         </div>
       </form>
     </>
