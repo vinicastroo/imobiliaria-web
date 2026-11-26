@@ -16,6 +16,7 @@ import {
 
 import { Reveal, Stagger, StaggerItem } from '@/components/motion'
 import scalaLogoWhite from '@/public/brand/scala-logo-white.svg'
+import codelabzLogo from '@/public/codelabz.svg'
 import aurosLogo from '@/public/logo-auros.svg'
 import corretorCasal from '@/public/scala/corretor-casal.webp'
 import gestora from '@/public/scala/gestora.webp'
@@ -424,6 +425,23 @@ export function SiteFooter() {
           </a>
           <p>© {new Date().getFullYear()} Scala · scalamob.com.br</p>
         </div>
+      </div>
+      <div
+        className={`${container} mt-10 flex justify-center border-t border-white/10 pt-6 sm:justify-end`}
+      >
+        <a
+          href="https://codelabz.com.br"
+          target="_blank"
+          rel="noopener"
+          className="group inline-flex items-center gap-2 text-xs text-white/50 transition-colors hover:text-white/80"
+        >
+          by
+          <Image
+            src={codelabzLogo}
+            alt="Codelabz"
+            className="h-3.5 w-auto opacity-60 transition-opacity group-hover:opacity-100"
+          />
+        </a>
       </div>
     </footer>
   )
