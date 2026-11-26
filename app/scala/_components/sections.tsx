@@ -1,96 +1,73 @@
 import Image from 'next/image'
 import {
-  Globe,
-  Home,
-  KanbanSquare,
-  BarChart3,
-  Users,
-  Building,
-  Check,
   ArrowUpRight,
+  Check,
+  Globe,
+  Layers,
+  MessagesSquare,
+  Sparkles,
+  CalendarCheck,
+  Settings2,
+  Rocket,
+  HelpCircle,
+  Tag,
+  Users,
 } from 'lucide-react'
 
+import { Reveal, Stagger, StaggerItem } from '@/components/motion'
 import scalaLogoWhite from '@/public/brand/scala-logo-white.svg'
-import aurosPhoto from '@/public/auros-secao.png'
-import gilliPhoto from '@/public/gilli-secao.png'
+import aurosLogo from '@/public/logo-auros.svg'
+import corretorCasal from '@/public/scala/corretor-casal.webp'
+import gestora from '@/public/scala/gestora.webp'
 import { FEATURE_LABELS, formatLimit, formatPlanPrice, type PublicPlan } from '../_lib/plans'
+import { Hatch, PrimaryButton, SectionHead } from './ui'
 
-// ─── Cabeçalho de seção ──────────────────────────────────────────────────────
+const container = 'mx-auto max-w-6xl px-5 sm:px-8'
 
-function SectionHead({ eyebrow, title, text }: { eyebrow: string; title: string; text?: string }) {
-  return (
-    <div className="mx-auto mb-12 max-w-2xl text-center">
-      <p className="mb-3 text-xs font-semibold tracking-[0.12em] text-[var(--scala-royal)] uppercase">
-        {eyebrow}
-      </p>
-      <h2 className="text-3xl font-semibold tracking-tight text-balance text-[var(--scala-ink)] sm:text-4xl">
-        {title}
-      </h2>
-      {text && (
-        <p className="mt-4 text-[17px] leading-relaxed text-pretty text-[var(--scala-muted)]">
-          {text}
-        </p>
-      )}
-    </div>
-  )
-}
-
-// ─── Clientes ────────────────────────────────────────────────────────────────
+// ─── Clientes (faixa de logos — Arco) ────────────────────────────────────────
 
 const CLIENTS = [
   {
     name: 'Auros Imobiliária',
-    place: 'Rio do Sul e Balneário Camboriú',
     url: 'https://aurosimobiliaria.com.br',
-    domain: 'aurosimobiliaria.com.br',
-    photo: aurosPhoto,
+    logo: aurosLogo,
+    w: 104,
+    h: 52,
   },
   {
     name: 'Imóveis Gilli',
-    place: 'Site e gestão na Scala',
     url: 'https://imoveisgilli.com.br',
-    domain: 'imoveisgilli.com.br',
-    photo: gilliPhoto,
+    logo: 'https://d2wss3tmei5yh1.cloudfront.net/visual-icon-1771943558283-Group-1000005975.png',
+    w: 64,
+    h: 54,
   },
 ]
 
-export function ClientsSection() {
+export function ClientsStrip() {
   return (
-    <section id="clientes" className="scroll-mt-20 py-24">
-      <div className="mx-auto max-w-6xl px-5 sm:px-8">
-        <SectionHead
-          eyebrow="Clientes"
-          title="Imobiliárias que já vendem com a Scala"
-          text="Cada uma com o próprio site, no próprio domínio, e a equipe trabalhando no mesmo painel."
-        />
-        <div className="grid gap-5 md:grid-cols-2">
+    <section id="clientes" className="scroll-mt-20 border-b border-[var(--scala-border)] bg-white">
+      <div
+        className={`${container} flex flex-col items-center gap-6 py-10 sm:flex-row sm:justify-between`}
+      >
+        <p className="text-sm text-[var(--scala-muted)]">Imobiliárias que já vendem com a Scala</p>
+        <div className="flex items-center gap-10">
           {CLIENTS.map((c) => (
             <a
               key={c.name}
               href={c.url}
               target="_blank"
               rel="noopener"
-              className="group overflow-hidden rounded-2xl border border-[var(--scala-border)] bg-white transition-colors hover:border-[#141a223d]"
+              title={c.name}
+              className="flex items-center gap-3 opacity-60 grayscale transition-[opacity,filter] duration-300 hover:opacity-100 hover:grayscale-0"
             >
-              <div className="relative aspect-[16/9] overflow-hidden bg-[var(--scala-paper)]">
-                <Image
-                  src={c.photo}
-                  alt={`Imagem do site da ${c.name}`}
-                  fill
-                  sizes="(min-width: 768px) 560px, 100vw"
-                  className="object-cover transition-transform duration-500 group-hover:scale-[1.02]"
-                />
-              </div>
-              <div className="flex items-center justify-between gap-4 p-5">
-                <div className="min-w-0">
-                  <p className="font-semibold text-[var(--scala-ink)]">{c.name}</p>
-                  <p className="truncate text-sm text-[var(--scala-muted)]">{c.place}</p>
-                </div>
-                <span className="inline-flex shrink-0 items-center gap-1 text-sm font-medium text-[var(--scala-royal)]">
-                  {c.domain}
-                  <ArrowUpRight className="size-4" />
-                </span>
-              </div>
+              <Image
+                src={c.logo}
+                alt={c.name}
+                width={c.w}
+                height={c.h}
+                className="h-10 w-auto object-contain"
+              />
+              <span className="text-sm font-medium text-[var(--scala-ink)]">{c.name}</span>
             </a>
           ))}
         </div>
@@ -99,83 +76,137 @@ export function ClientsSection() {
   )
 }
 
-// ─── Recursos ────────────────────────────────────────────────────────────────
+// ─── Benefícios (células com borda e faixas hachuradas — Valeti) ─────────────
 
-const FEATURES = [
+const BENEFITS = [
+  {
+    icon: MessagesSquare,
+    title: 'Mais leads, menos perdidos',
+    text: 'Todo contato do site cai no CRM e a equipe é avisada na hora.',
+  },
+  {
+    icon: Layers,
+    title: 'Tudo num lugar só',
+    text: 'Site, imóveis, clientes e equipe no mesmo painel. Sem planilha.',
+  },
   {
     icon: Globe,
-    title: 'Site com o seu domínio',
-    text: 'Um site rápido e pronto para o Google, com a sua marca, as suas cores e o endereço da sua imobiliária.',
-  },
-  {
-    icon: Home,
-    title: 'Gestão de imóveis',
-    text: 'Cadastre com até 20 fotos, destaque os melhores e publique no site na hora, sem depender de ninguém.',
-  },
-  {
-    icon: KanbanSquare,
-    title: 'CRM em kanban',
-    text: 'Cada lead que chega pelo site vira um card no funil. Você vê quem atender, em que etapa e com qual corretor.',
-  },
-  {
-    icon: BarChart3,
-    title: 'Métricas do site',
-    text: 'Saiba quais imóveis são mais vistos, quantas visitas o site recebe por dia e de onde elas vêm.',
-  },
-  {
-    icon: Users,
-    title: 'Equipe e corretores',
-    text: 'Proprietário, gerente e corretor, cada um com o acesso certo. Cada imóvel com o seu corretor responsável.',
-  },
-  {
-    icon: Building,
-    title: 'Empreendimentos',
-    text: 'Organize lançamentos e prédios com várias unidades num lugar só, com página própria no site.',
+    title: 'Site no seu domínio',
+    text: 'Sua marca, suas cores e o endereço da sua imobiliária.',
   },
 ]
 
-export function FeaturesSection() {
+export function BenefitsStrip() {
   return (
-    <section
-      id="recursos"
-      className="scroll-mt-20 border-y border-[var(--scala-border)] bg-white py-24"
-    >
-      <div className="mx-auto max-w-6xl px-5 sm:px-8">
-        <SectionHead
-          eyebrow="Recursos"
-          title="Tudo o que a imobiliária usa no dia a dia, num só lugar"
-          text="Chega de planilha, de anúncio desatualizado e de lead perdido no WhatsApp."
-        />
-        <div className="grid gap-px overflow-hidden rounded-2xl border border-[var(--scala-border)] bg-[var(--scala-border)] sm:grid-cols-2 lg:grid-cols-3">
-          {FEATURES.map(({ icon: Icon, title, text }) => (
-            <div key={title} className="flex flex-col gap-3 bg-white p-7">
-              <span className="flex size-10 items-center justify-center rounded-[10px] bg-[var(--scala-royal-soft)] text-[var(--scala-royal)]">
-                <Icon className="size-5" strokeWidth={1.75} />
-              </span>
-              <h3 className="text-lg font-semibold tracking-tight text-[var(--scala-ink)]">
-                {title}
-              </h3>
-              <p className="text-[15px] leading-relaxed text-[var(--scala-muted)]">{text}</p>
+    <section className="relative border-b border-[var(--scala-border)]">
+      <Hatch className="absolute inset-y-0 left-0 hidden w-[max(0px,calc((100vw-72rem)/2-1rem))] xl:block" />
+      <Hatch className="absolute inset-y-0 right-0 hidden w-[max(0px,calc((100vw-72rem)/2-1rem))] xl:block" />
+      <Stagger className={`${container} grid sm:grid-cols-3`}>
+        {BENEFITS.map(({ icon: Icon, title, text }, i) => (
+          <StaggerItem
+            key={title}
+            className={`flex gap-4 border-[var(--scala-border)] py-8 sm:px-6 ${i > 0 ? 'max-sm:border-t sm:border-l' : ''}`}
+          >
+            <span className="flex size-10 shrink-0 items-center justify-center rounded-[10px] bg-[var(--scala-night)] text-white">
+              <Icon className="size-5" strokeWidth={1.75} />
+            </span>
+            <div>
+              <h3 className="font-semibold text-[var(--scala-ink)]">{title}</h3>
+              <p className="mt-1 text-sm leading-relaxed text-[var(--scala-muted)]">{text}</p>
             </div>
-          ))}
+          </StaggerItem>
+        ))}
+      </Stagger>
+    </section>
+  )
+}
+
+// ─── Para quem (foto da gestora + pilares — Arco) ────────────────────────────
+
+const PILLARS = [
+  {
+    title: 'Para a imobiliária',
+    text: 'Visão de todos os imóveis, leads e corretores. Decisões com números, não com achismo.',
+  },
+  {
+    title: 'Para o corretor',
+    text: 'Cadastra imóvel do celular, recebe o lead na hora e acompanha cada cliente no funil.',
+  },
+  {
+    title: 'Para o seu cliente',
+    text: 'Um site rápido, bonito e fácil de buscar, que passa confiança desde o primeiro clique.',
+  },
+]
+
+export function ForWhoSection() {
+  return (
+    <section className="py-24">
+      <div className={`${container} grid items-center gap-12 lg:grid-cols-[0.9fr_1.1fr]`}>
+        <Reveal className="relative">
+          <div className="relative aspect-[4/5] overflow-hidden rounded-[28px]">
+            <Image
+              src={gestora}
+              alt="Gestora de imobiliária sorrindo no escritório"
+              fill
+              sizes="(min-width: 1024px) 460px, 100vw"
+              className="object-cover"
+            />
+          </div>
+          <div className="absolute -right-4 bottom-8 max-w-[240px] rounded-2xl border border-[var(--scala-border)] bg-white p-4 shadow-[0_16px_40px_-12px_#0d111740] sm:-right-8">
+            <p className="text-xs font-medium text-[var(--scala-muted)]">Hoje no painel</p>
+            <p className="mt-1 text-2xl font-semibold tracking-tight text-[var(--scala-ink)] tabular-nums">
+              12 leads
+            </p>
+            <p className="text-xs text-[var(--scala-royal)]">3 visitas agendadas</p>
+          </div>
+        </Reveal>
+        <div>
+          <SectionHead
+            align="left"
+            icon={Users}
+            eyebrow="Para quem é"
+            title="Feita para quem vive o dia a dia da imobiliária"
+            text="Da dona da imobiliária ao corretor na rua: cada um trabalha melhor, e o cliente percebe."
+          />
+          <Stagger className="flex flex-col gap-4">
+            {PILLARS.map((p, i) => (
+              <StaggerItem
+                key={p.title}
+                className="rounded-2xl border border-[var(--scala-border)] bg-white p-6 shadow-[0_1px_2px_#0d11170a]"
+              >
+                <span
+                  className={`mb-4 block h-1 w-8 rounded-full ${['bg-[var(--scala-royal)]', 'bg-[var(--scala-royal-400)]', 'bg-[var(--scala-night)]'][i]}`}
+                />
+                <h3 className="text-lg font-semibold tracking-tight text-[var(--scala-ink)]">
+                  {p.title}
+                </h3>
+                <p className="mt-1.5 text-[15px] leading-relaxed text-[var(--scala-muted)]">
+                  {p.text}
+                </p>
+              </StaggerItem>
+            ))}
+          </Stagger>
         </div>
       </div>
     </section>
   )
 }
 
-// ─── Como funciona ───────────────────────────────────────────────────────────
+// ─── Como funciona (foto do corretor com o casal) ────────────────────────────
 
 const STEPS = [
   {
+    icon: CalendarCheck,
     title: 'Demonstração',
     text: 'Uma conversa rápida em que mostramos o painel e o site funcionando, com as dúvidas da sua equipe.',
   },
   {
+    icon: Settings2,
     title: 'Configuração',
     text: 'Colocamos a sua marca, as suas cores e o seu domínio, e deixamos tudo pronto para a equipe entrar.',
   },
   {
+    icon: Rocket,
     title: 'Site no ar',
     text: 'Os imóveis aparecem no site, os contatos caem no CRM e você acompanha tudo pelo painel.',
   },
@@ -183,25 +214,55 @@ const STEPS = [
 
 export function HowItWorksSection() {
   return (
-    <section className="py-24">
-      <div className="mx-auto max-w-6xl px-5 sm:px-8">
-        <SectionHead eyebrow="Como funciona" title="Do primeiro contato ao site no ar" />
-        <ol className="grid gap-5 md:grid-cols-3">
-          {STEPS.map((step, i) => (
-            <li
-              key={step.title}
-              className="flex flex-col gap-3 rounded-2xl border border-[var(--scala-border)] bg-white p-7"
-            >
-              <span className="text-sm font-semibold text-[var(--scala-royal)] tabular-nums">
-                {String(i + 1).padStart(2, '0')}
-              </span>
-              <h3 className="text-lg font-semibold tracking-tight text-[var(--scala-ink)]">
-                {step.title}
-              </h3>
-              <p className="text-[15px] leading-relaxed text-[var(--scala-muted)]">{step.text}</p>
-            </li>
-          ))}
-        </ol>
+    <section className="border-y border-[var(--scala-border)] bg-white py-24">
+      <div className={container}>
+        <SectionHead
+          icon={Sparkles}
+          eyebrow="Como funciona"
+          title="Do primeiro contato ao site no ar"
+        />
+        <div className="grid items-stretch gap-6 lg:grid-cols-2">
+          <Reveal className="relative min-h-[320px] overflow-hidden rounded-[28px]">
+            <Image
+              src={corretorCasal}
+              alt="Corretor mostrando um apartamento a um casal"
+              fill
+              sizes="(min-width: 1024px) 560px, 100vw"
+              className="object-cover"
+            />
+            <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#0d1530cc] to-transparent p-6 pt-20">
+              <p className="max-w-sm text-lg font-medium text-white">
+                Mais tempo com o cliente, menos tempo com planilha.
+              </p>
+            </div>
+          </Reveal>
+          <Stagger as="ol" className="flex flex-col gap-4">
+            {STEPS.map(({ icon: Icon, title, text }, i) => (
+              <StaggerItem
+                as="li"
+                key={title}
+                className="flex flex-1 gap-5 rounded-2xl border border-[var(--scala-border)] p-6"
+              >
+                <div className="flex flex-col items-center gap-2">
+                  <span className="flex size-11 items-center justify-center rounded-xl bg-[var(--scala-royal-soft)] text-[var(--scala-royal)]">
+                    <Icon className="size-5" />
+                  </span>
+                  <span className="text-xs font-semibold text-[var(--scala-muted)] tabular-nums">
+                    {String(i + 1).padStart(2, '0')}
+                  </span>
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold tracking-tight text-[var(--scala-ink)]">
+                    {title}
+                  </h3>
+                  <p className="mt-1 text-[15px] leading-relaxed text-[var(--scala-muted)]">
+                    {text}
+                  </p>
+                </div>
+              </StaggerItem>
+            ))}
+          </Stagger>
+        </div>
       </div>
     </section>
   )
@@ -213,25 +274,22 @@ const RECOMMENDED_PLAN = 'Professional'
 
 export function PricingSection({ plans }: { plans: PublicPlan[] | null }) {
   return (
-    <section
-      id="precos"
-      className="scroll-mt-20 border-y border-[var(--scala-border)] bg-white py-24"
-    >
-      <div className="mx-auto max-w-6xl px-5 sm:px-8">
+    <section id="precos" className="scroll-mt-20 py-24">
+      <div className={container}>
         <SectionHead
+          icon={Tag}
           eyebrow="Preços"
           title="Planos que crescem com a sua imobiliária"
           text="Todos com site no seu domínio. Valores mensais."
         />
-
         {plans ? (
-          <div className="grid gap-5 lg:grid-cols-3">
+          <Stagger className="grid gap-5 lg:grid-cols-3">
             {plans.map((plan) => {
               const recommended = plan.name === RECOMMENDED_PLAN
               return (
-                <div
+                <StaggerItem
                   key={plan.id}
-                  className={`relative flex flex-col rounded-2xl border bg-white p-7 ${
+                  className={`relative flex flex-col rounded-2xl border bg-white p-7 transition-[transform,box-shadow] duration-300 hover:-translate-y-1 hover:shadow-[0_20px_40px_-20px_#0d111740] ${
                     recommended
                       ? 'border-[var(--scala-royal)] shadow-[0_0_0_1px_var(--scala-royal)]'
                       : 'border-[var(--scala-border)]'
@@ -260,31 +318,23 @@ export function PricingSection({ plans }: { plans: PublicPlan[] | null }) {
                       FEATURE_LABELS[f] ? <PlanItem key={f}>{FEATURE_LABELS[f]}</PlanItem> : null,
                     )}
                   </ul>
-                  <a
+                  <PrimaryButton
                     href="#demonstracao"
-                    className={`mt-7 inline-flex h-11 items-center justify-center rounded-[10px] text-[15px] font-semibold transition-colors ${
-                      recommended
-                        ? 'bg-[var(--scala-royal)] text-white hover:bg-[var(--scala-royal-hover)]'
-                        : 'border border-[var(--scala-border)] text-[var(--scala-ink)] hover:border-[#141a223d]'
-                    }`}
+                    variant={recommended ? 'primary' : 'secondary'}
+                    className="mt-7 h-11"
                   >
                     Agendar demonstração
-                  </a>
-                </div>
+                  </PrimaryButton>
+                </StaggerItem>
               )
             })}
-          </div>
+          </Stagger>
         ) : (
-          <div className="mx-auto flex max-w-xl flex-col items-center gap-4 rounded-2xl border border-[var(--scala-border)] bg-[var(--scala-paper)] p-8 text-center">
+          <div className="mx-auto flex max-w-xl flex-col items-center gap-4 rounded-2xl border border-[var(--scala-border)] bg-white p-8 text-center">
             <p className="text-[15px] text-[var(--scala-muted)]">
               Não conseguimos carregar os planos agora. Fale com a gente e enviamos os valores.
             </p>
-            <a
-              href="#demonstracao"
-              className="inline-flex h-11 items-center rounded-[10px] bg-[var(--scala-royal)] px-5 text-[15px] font-semibold text-white hover:bg-[var(--scala-royal-hover)]"
-            >
-              Fale com a gente
-            </a>
+            <PrimaryButton href="#demonstracao">Fale com a gente</PrimaryButton>
           </div>
         )}
       </div>
@@ -328,10 +378,13 @@ const FAQ = [
 
 export function FaqSection() {
   return (
-    <section id="perguntas" className="scroll-mt-20 py-24">
+    <section
+      id="perguntas"
+      className="scroll-mt-20 border-t border-[var(--scala-border)] bg-white py-24"
+    >
       <div className="mx-auto max-w-3xl px-5 sm:px-8">
-        <SectionHead eyebrow="Dúvidas" title="Perguntas frequentes" />
-        <div className="divide-y divide-[var(--scala-border)] rounded-2xl border border-[var(--scala-border)] bg-white">
+        <SectionHead icon={HelpCircle} eyebrow="Dúvidas" title="Perguntas frequentes" />
+        <Reveal className="divide-y divide-[var(--scala-border)] rounded-2xl border border-[var(--scala-border)] bg-white">
           {FAQ.map((item) => (
             <details
               key={item.q}
@@ -339,14 +392,14 @@ export function FaqSection() {
             >
               <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-[16px] font-medium text-[var(--scala-ink)]">
                 {item.q}
-                <span className="text-xl leading-none text-[var(--scala-muted)] transition-transform group-open:rotate-45">
+                <span className="flex size-7 shrink-0 items-center justify-center rounded-full border border-[var(--scala-border)] text-[var(--scala-muted)] transition-transform duration-300 ease-[cubic-bezier(.2,0,0,1)] group-open:rotate-45">
                   +
                 </span>
               </summary>
               <p className="mt-3 text-[15px] leading-relaxed text-[var(--scala-muted)]">{item.a}</p>
             </details>
           ))}
-        </div>
+        </Reveal>
       </div>
     </section>
   )
@@ -357,14 +410,19 @@ export function FaqSection() {
 export function SiteFooter() {
   return (
     <footer className="bg-[var(--scala-night)] py-12 text-white/70">
-      <div className="mx-auto flex max-w-6xl flex-col gap-6 px-5 sm:flex-row sm:items-center sm:justify-between sm:px-8">
+      <div
+        className={`${container} flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between`}
+      >
         <div className="flex flex-col gap-3">
           <Image src={scalaLogoWhite} alt="Scala" className="h-6 w-auto self-start" />
           <p className="text-sm">Sua imobiliária em outra escala.</p>
         </div>
-        <div className="flex flex-col gap-1 text-sm sm:text-right">
-          <a href="#demonstracao" className="text-white hover:underline">
-            Agendar demonstração
+        <div className="flex flex-col gap-1 text-sm sm:items-end">
+          <a
+            href="#demonstracao"
+            className="inline-flex items-center gap-1 text-white hover:underline"
+          >
+            Agendar demonstração <ArrowUpRight className="size-3.5" />
           </a>
           <p>© {new Date().getFullYear()} Scala · scalamob.com.br</p>
         </div>

@@ -366,7 +366,7 @@ export default function ConfiguracoesPage() {
   if (isLoadingInfo || isLoadingSettings) {
     return (
       <div className="flex h-[60vh] items-center justify-center">
-        <Loader2 className="h-10 w-10 animate-spin text-[#17375F]" />
+        <Loader2 className="text-primary h-10 w-10 animate-spin" />
       </div>
     )
   }
@@ -380,7 +380,7 @@ export default function ConfiguracoesPage() {
     <div className="mx-auto flex min-h-screen max-w-[1200px] flex-col gap-6 bg-gray-50 p-8">
       <div className="flex flex-col">
         <BackLink href="/admin/imoveis" />
-        <h1 className="text-2xl font-bold text-[#17375F]">Configurações</h1>
+        <h1 className="text-primary text-2xl font-bold">Configurações</h1>
         <p className="text-sm text-gray-500">
           Gerencie os dados, plano e identidade visual da sua imobiliária.
         </p>
@@ -399,7 +399,7 @@ export default function ConfiguracoesPage() {
           <Card className="py-6">
             <CardHeader>
               <div className="flex items-center gap-2">
-                <Building2 className="h-5 w-5 text-[#17375F]" />
+                <Building2 className="text-primary h-5 w-5" />
                 <CardTitle>Dados da Imobiliária</CardTitle>
               </div>
               <CardDescription>Informações cadastrais e de contato.</CardDescription>
@@ -469,7 +469,7 @@ export default function ConfiguracoesPage() {
                 <div className="flex justify-end pt-2">
                   <Button
                     type="submit"
-                    className="bg-[#17375F] hover:bg-[#122b4a]"
+                    className="bg-primary hover:bg-primary/90"
                     disabled={infoMutation.isPending || !isDirty}
                   >
                     {infoMutation.isPending ? (
@@ -491,26 +491,24 @@ export default function ConfiguracoesPage() {
             <Card className="py-6">
               <CardHeader>
                 <div className="flex items-center gap-2">
-                  <CreditCard className="h-5 w-5 text-[#17375F]" />
+                  <CreditCard className="text-primary h-5 w-5" />
                   <CardTitle>Plano Atual</CardTitle>
                 </div>
                 <CardDescription>Detalhes do plano contratado.</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  <span className="text-lg font-semibold text-[#17375F]">
-                    {agencyInfo.plan.name}
-                  </span>
+                  <span className="text-primary text-lg font-semibold">{agencyInfo.plan.name}</span>
                   <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
                     <div className="rounded-lg border border-blue-100 bg-blue-50/50 p-4">
                       <p className="text-sm text-gray-500">Usuários</p>
-                      <p className="text-xl font-bold text-[#17375F]">
+                      <p className="text-primary text-xl font-bold">
                         {agencyInfo.plan.maxUsers < 0 ? 'Sem limite' : agencyInfo.plan.maxUsers}
                       </p>
                     </div>
                     <div className="rounded-lg border border-blue-100 bg-blue-50/50 p-4">
                       <p className="text-sm text-gray-500">Corretores</p>
-                      <p className="text-xl font-bold text-[#17375F]">
+                      <p className="text-primary text-xl font-bold">
                         {agencyInfo.plan.maxRealtors < 0
                           ? 'Sem limite'
                           : agencyInfo.plan.maxRealtors}
@@ -518,7 +516,7 @@ export default function ConfiguracoesPage() {
                     </div>
                     <div className="rounded-lg border border-blue-100 bg-blue-50/50 p-4">
                       <p className="text-sm text-gray-500">Imóveis</p>
-                      <p className="text-xl font-bold text-[#17375F]">
+                      <p className="text-primary text-xl font-bold">
                         {agencyInfo.plan.maxProperties < 0
                           ? 'Sem limite'
                           : agencyInfo.plan.maxProperties}
@@ -559,7 +557,7 @@ export default function ConfiguracoesPage() {
           <Card className="py-6">
             <CardHeader>
               <div className="flex items-center gap-2">
-                <Palette className="h-5 w-5 text-[#17375F]" />
+                <Palette className="text-primary h-5 w-5" />
                 <CardTitle>Aparência do Site</CardTitle>
               </div>
               <CardDescription>Cores, tipografia e layout do seu site público.</CardDescription>
@@ -568,7 +566,7 @@ export default function ConfiguracoesPage() {
               {/* Layout do Site */}
               <div className="space-y-3">
                 <div className="flex items-center gap-2">
-                  <Layout className="h-4 w-4 text-[#17375F]" />
+                  <Layout className="text-primary h-4 w-4" />
                   <Label className="text-sm font-semibold">Layout do Site</Label>
                 </div>
                 <p className="text-xs text-gray-500">
@@ -583,7 +581,7 @@ export default function ConfiguracoesPage() {
                       onClick={() => setLayoutType(option.value)}
                       className={`rounded-lg border-2 p-4 text-left transition-all ${
                         layoutType === option.value
-                          ? 'border-[#17375F] bg-blue-50/50'
+                          ? 'border-primary bg-blue-50/50'
                           : 'border-gray-200 hover:border-gray-300'
                       }`}
                     >
@@ -688,7 +686,7 @@ export default function ConfiguracoesPage() {
 
               <div className="flex justify-end">
                 <Button
-                  className="bg-[#17375F] hover:bg-[#122b4a]"
+                  className="bg-primary hover:bg-primary/90"
                   onClick={() => visualConfigMutation.mutate()}
                   disabled={visualConfigMutation.isPending}
                 >
@@ -813,7 +811,7 @@ export default function ConfiguracoesPage() {
 
               <div className="flex justify-end">
                 <Button
-                  className="bg-[#17375F] hover:bg-[#122b4a]"
+                  className="bg-primary hover:bg-primary/90"
                   onClick={handleSaveSettings}
                   disabled={settingsMutation.isPending || (!logoFile && !watermarkFile)}
                 >
@@ -836,7 +834,7 @@ export default function ConfiguracoesPage() {
           <Card className="py-6">
             <CardHeader>
               <div className="flex items-center gap-2">
-                <BarChart3 className="h-5 w-5 text-[#17375F]" />
+                <BarChart3 className="text-primary h-5 w-5" />
                 <CardTitle>Rastreamento e Anúncios</CardTitle>
               </div>
               <CardDescription>
@@ -886,7 +884,7 @@ export default function ConfiguracoesPage() {
 
               <div className="flex justify-end">
                 <Button
-                  className="bg-[#17375F] hover:bg-[#122b4a]"
+                  className="bg-primary hover:bg-primary/90"
                   onClick={handleSaveTracking}
                   disabled={trackingMutation.isPending || !trackingEdits}
                 >
@@ -955,7 +953,7 @@ function LogoSistemaCard({
     <Card className="py-6">
       <CardHeader>
         <div className="flex items-center gap-2">
-          <LayoutDashboard className="h-5 w-5 text-[#17375F]" />
+          <LayoutDashboard className="text-primary h-5 w-5" />
           <CardTitle>Logo do Sistema Interno</CardTitle>
         </div>
         <CardDescription>
@@ -971,7 +969,7 @@ function LogoSistemaCard({
               {...getRootProps()}
               className={`relative flex h-44 cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed transition-colors select-none ${
                 isDragActive
-                  ? 'border-[#17375F] bg-blue-50/60'
+                  ? 'border-primary bg-blue-50/60'
                   : 'border-gray-200 bg-gray-50 hover:border-gray-300 hover:bg-gray-100/60'
               }`}
             >
@@ -1023,7 +1021,7 @@ function LogoSistemaCard({
 
             <Button
               type="button"
-              className="w-full bg-[#17375F] hover:bg-[#122b4a]"
+              className="bg-primary hover:bg-primary/90 w-full"
               disabled={isPending || !iconFile}
               onClick={onSave}
             >
@@ -1136,7 +1134,7 @@ function FaviconCard({
     <Card className="py-6">
       <CardHeader>
         <div className="flex items-center gap-2">
-          <Globe className="h-5 w-5 text-[#17375F]" />
+          <Globe className="text-primary h-5 w-5" />
           <CardTitle>Favicon do Site</CardTitle>
         </div>
         <CardDescription>
@@ -1152,7 +1150,7 @@ function FaviconCard({
               {...getRootProps()}
               className={`relative flex h-44 cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed transition-colors select-none ${
                 isDragActive
-                  ? 'border-[#17375F] bg-blue-50/60'
+                  ? 'border-primary bg-blue-50/60'
                   : 'border-gray-200 bg-gray-50 hover:border-gray-300 hover:bg-gray-100/60'
               }`}
             >
@@ -1205,7 +1203,7 @@ function FaviconCard({
 
             <Button
               type="button"
-              className="w-full bg-[#17375F] hover:bg-[#122b4a]"
+              className="bg-primary hover:bg-primary/90 w-full"
               disabled={isPending || !faviconFile}
               onClick={onSave}
             >

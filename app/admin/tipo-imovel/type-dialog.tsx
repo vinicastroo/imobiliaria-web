@@ -102,7 +102,7 @@ export function TypeDialog({
       */}
       {externalOpen === undefined && (
         <DialogTrigger asChild>
-          <Button className="bg-[#17375F] hover:bg-[#122b4a]">
+          <Button className="bg-primary hover:bg-primary/90">
             <Plus className="mr-2 h-4 w-4" /> Novo Tipo
           </Button>
         </DialogTrigger>
@@ -130,7 +130,7 @@ export function TypeDialog({
             <Button type="button" variant="outline" onClick={() => setIsOpen(false)}>
               Cancelar
             </Button>
-            <Button type="submit" disabled={mutation.isPending} className="bg-[#17375F]">
+            <Button type="submit" disabled={mutation.isPending} className="bg-primary">
               {mutation.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Salvar'}
             </Button>
           </DialogFooter>

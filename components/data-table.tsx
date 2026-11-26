@@ -228,7 +228,7 @@ export function DataTable<TData, TValue>({
               <TableRow>
                 <TableCell colSpan={columns.length} className="h-24 text-center">
                   <div className="flex items-center justify-center gap-2">
-                    <Loader2 className="h-5 w-5 animate-spin text-[#17375F]" />
+                    <Loader2 className="text-primary h-5 w-5 animate-spin" />
                     Carregando dados...
                   </div>
                 </TableCell>

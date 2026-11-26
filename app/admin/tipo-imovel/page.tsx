@@ -64,7 +64,7 @@ export default function TipoImovelPage() {
 
           <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
             <div>
-              <h1 className="text-2xl font-bold text-[#17375F]">Gerenciamento de Tipos</h1>
+              <h1 className="text-primary text-2xl font-bold">Gerenciamento de Tipos</h1>
               <p className="text-gray-500">Cadastre e gerencie as categorias dos imóveis.</p>
             </div>
 
