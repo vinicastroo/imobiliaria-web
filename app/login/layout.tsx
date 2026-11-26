@@ -1,8 +1,10 @@
 import { Metadata } from 'next'
+import { ScalaTheme } from '@/components/scala-theme'
 
 export const metadata: Metadata = {
-  title: 'Auros | Login',
-  description: 'Acesso administrativo',
+  title: 'Entrar | Scala',
+  description: 'Acesso ao painel Scala',
+  icons: { icon: '/brand/favicon.svg', apple: '/brand/scala-app-icon.svg' },
   robots: {
     index: false,
     follow: false,
@@ -10,5 +12,10 @@ export const metadata: Metadata = {
 }
 
 export default function LoginLayout({ children }: { children: React.ReactNode }) {
-  return <>{children}</>
+  return (
+    <>
+      <ScalaTheme />
+      {children}
+    </>
+  )
 }

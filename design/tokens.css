@@ -1,0 +1,126 @@
+/* Scala — tokens da marca da plataforma (aprovado em 2026-11-25: Duas torres + "scala" em Sora SemiBold, azul royal).
+   Componentes usam só papéis (--color-text-muted), nunca valores crus. */
+
+:root {
+  /* ---------- Paleta crua (não usar direto em componentes) ---------- */
+  --ink-950: #0d1117;
+  --ink-900: #141a22;
+  --ink-700: #3a4350;
+  --ink-500: #5d6673;
+  --ink-400: #8a929d;
+  --ink-300: #b4bac2;
+  --paper-0: #ffffff;
+  --paper-50: #f7f7f5;
+  --paper-100: #efefec;
+
+  --royal-600: #1f4fd1;
+  --royal-700: #1a43b3;
+  --royal-800: #163a99;
+  --royal-200: #b9cbf8;
+  --royal-50: #eaf0fe;
+  --royal-400: #6e93ff;
+
+  /* ---------- Cor: papéis ---------- */
+  --color-text: var(--ink-900);
+  --color-text-muted: var(--ink-500);
+  --color-text-placeholder: var(--ink-400);
+  --color-text-disabled: var(--ink-300);
+  --color-on-dark: #ffffff;
+  --color-on-dark-muted: #ffffffb3;
+
+  --color-bg: var(--paper-50);
+  --color-surface: var(--paper-0);
+  --color-fill-1: #141a220a;
+  --color-fill-2: #141a2214;
+  --color-inverse: var(--ink-950);
+
+  --color-border: #141a221f;
+  --color-border-hover: #141a223d;
+  --color-divider: #141a2214;
+
+  --color-tint-hover-soft: #141a2208;
+  --color-tint-hover: #141a220d;
+  --color-tint-selected: #141a2214;
+  --color-tint-pressed: #141a221f;
+
+  /* Destaque — Azul royal (aprovado em 2026-11-25) */
+  --color-primary: var(--royal-600);
+  --color-primary-hover: var(--royal-700);
+  --color-primary-pressed: var(--royal-800);
+  --color-primary-soft: var(--royal-50);
+  --color-primary-muted: var(--royal-200); /* torre baixa do símbolo, ilustrações */
+  --color-focus: var(--royal-600);
+  --color-primary-on-dark: var(--royal-400); /* destaque sobre fundo escuro */
+
+  --color-overlay: #0d111766;
+
+  --color-success: #1f7a4a;
+  --color-success-bg: #e9f5ee;
+  --color-success-text: #17603a;
+  --color-warn: #b26b00;
+  --color-warn-bg: #fdf3e2;
+  --color-warn-text: #8a5300;
+  --color-danger: #c4352b;
+  --color-danger-bg: #fcecea;
+  --color-danger-text: #9f2a22;
+
+  /* ---------- Tipografia ---------- */
+  --font-brand: 'Sora', system-ui, sans-serif; /* logo (SemiBold 600) e títulos de marketing */
+  --font-sans: 'Geist', system-ui, sans-serif; /* interface: em aberto (Geist ou Sora) */
+  --font-mono: 'Geist Mono', ui-monospace, monospace;
+
+  --text-caption: 12px;
+  --leading-caption: 16px;
+  --text-small: 13px;
+  --leading-small: 18px;
+  --text-body: 15px;
+  --leading-body: 22px;
+  --text-lead: 17px;
+  --leading-lead: 26px;
+  --text-title: 22px;
+  --leading-title: 28px;
+  --text-headline: 32px;
+  --leading-headline: 38px;
+  --text-display: 52px;
+  --leading-display: 56px;
+
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --tracking-tight: -0.025em;
+  --tracking-display: -0.035em;
+
+  /* ---------- Espaçamento (base 4) ---------- */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+  --space-16: 64px;
+
+  /* ---------- Raio ---------- */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+  --radius-full: 999px;
+
+  /* ---------- Sombras (só em elementos flutuantes) ---------- */
+  --shadow: 0 1px 2px #0d11170f, 0 4px 12px #0d11170f;
+  --shadow-strong: 0 2px 4px #0d111714, 0 16px 40px #0d11171f;
+
+  /* ---------- Layout ---------- */
+  --width-sidebar: 248px;
+  --width-content: 1120px;
+  --width-panel: 400px;
+  --width-reading: 680px;
+
+  /* ---------- Movimento ---------- */
+  --duration-quick: 120ms;
+  --duration-fast: 200ms;
+  --duration-medium: 320ms;
+  --ease: cubic-bezier(0.2, 0, 0, 1);
+}

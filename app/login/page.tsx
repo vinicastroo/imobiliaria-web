@@ -1,11 +1,14 @@
-import { headers } from 'next/headers'
 import { getTenantVisualConfig } from '@/lib/visual-config'
+import { getTenantIdentity, FALLBACK_NAME } from '@/lib/tenant-info'
 import { LoginForm } from './_components/login-form'
 
 export default async function LoginPage() {
-  const [visualConfig, headersList] = await Promise.all([getTenantVisualConfig(), headers()])
+  const [visualConfig, identity] = await Promise.all([getTenantVisualConfig(), getTenantIdentity()])
 
-  const agencyName = headersList.get('x-tenant-slug') ?? null
+  const agencyName = identity.name === FALLBACK_NAME ? null : identity.name
 
-  return <LoginForm logoUrl={visualConfig.logoUrl} agencyName={agencyName} />
+  // Ícone quadrado da imobiliária (cabe no selo ao lado do nome); cai para o logo.
+  return (
+    <LoginForm logoUrl={visualConfig.iconUrl ?? visualConfig.logoUrl} agencyName={agencyName} />
+  )
 }

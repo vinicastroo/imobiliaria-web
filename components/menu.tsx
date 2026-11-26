@@ -22,13 +22,15 @@ import {
   Building2,
   Settings,
   ContactRound,
+  Inbox,
 } from 'lucide-react'
 
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { cn } from '@/lib/utils'
 import { NotificationsBell } from '@/components/notifications-bell'
 
-import staticLogo from '@/public/logo-auros.svg'
+import scalaLogo from '@/public/brand/scala-logo-dark.svg'
+import scalaMark from '@/public/brand/scala-mark-dark.svg'
 
 const ROLE_LABELS: Record<string, string> = {
   OWNER: 'Proprietário',
@@ -38,10 +40,15 @@ const ROLE_LABELS: Record<string, string> = {
 }
 
 interface MenubarProps {
-  logoUrl?: string | null
+  /** Ícone da imobiliária (VisualConfig.iconUrl). */
+  tenantLogoUrl?: string | null
+  /** Nome da imobiliária; null no painel de plataforma (super admin). */
+  tenantName?: string | null
+  /** Cor da imobiliária: fundo do ícone (os ícones costumam ser brancos, feitos para ela). */
+  tenantColor?: string | null
 }
 
-export function Menubar({ logoUrl }: MenubarProps) {
+export function Menubar({ tenantLogoUrl, tenantName, tenantColor }: MenubarProps) {
   const [isExpanded, setIsExpanded] = useState(false)
   const pathname = usePathname()
   const { data: session } = useSession()
@@ -65,7 +72,7 @@ export function Menubar({ logoUrl }: MenubarProps) {
   return (
     <aside
       className={cn(
-        'bg-primary fixed top-0 left-0 z-50 flex h-screen flex-col shadow-xl transition-all duration-300 ease-in-out',
+        'fixed top-0 left-0 z-50 flex h-screen flex-col bg-[var(--scala-sidebar)] shadow-xl transition-all duration-300 ease-in-out',
         isExpanded ? 'w-60' : 'w-[72px]',
       )}
     >
@@ -79,31 +86,56 @@ export function Menubar({ logoUrl }: MenubarProps) {
         {isExpanded ? <ChevronLeft size={13} /> : <ChevronRight size={13} />}
       </button>
 
-      {/* ── Logo ─────────────────────────────────────────────────────── */}
+      {/* ── Logo Scala + imobiliária ─────────────────────────────────── */}
       <div
         className={cn(
-          'flex shrink-0 items-center gap-3 border-b border-white/10 py-5',
-          isExpanded ? 'px-4' : 'justify-center px-0',
+          'flex shrink-0 flex-col gap-3 border-b border-white/10 py-5',
+          isExpanded ? 'px-4' : 'items-center px-0',
         )}
       >
-        <Link href="/admin" className="flex min-w-0 items-center gap-3">
-          <div className="relative h-9 w-9 shrink-0">
-            {logoUrl ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={logoUrl} alt="Logo" className="h-full w-full object-contain" />
-            ) : (
-              <Image src={staticLogo} alt="Logo" fill className="object-contain" />
-            )}
-          </div>
-          <span
-            className={cn(
-              'overflow-hidden text-base font-semibold whitespace-nowrap text-white transition-all duration-300',
-              isExpanded ? 'max-w-xs opacity-100' : 'max-w-0 opacity-0',
-            )}
-          >
-            Backoffice
-          </span>
+        <Link href="/admin" className="flex h-8 items-center" aria-label="Scala — início">
+          {isExpanded ? (
+            <Image src={scalaLogo} alt="Scala" className="h-7 w-auto" priority />
+          ) : (
+            <Image src={scalaMark} alt="Scala" className="h-7 w-auto" priority />
+          )}
         </Link>
+
+        {tenantName && (
+          <div
+            className={cn(
+              'flex min-w-0 items-center gap-2 rounded-lg bg-white/5',
+              isExpanded ? 'px-2 py-1.5' : 'p-1',
+            )}
+            title={tenantName}
+          >
+            <div
+              className="flex h-7 w-7 shrink-0 items-center justify-center overflow-hidden rounded-md bg-white/15 p-0.5"
+              style={tenantColor ? { backgroundColor: tenantColor } : undefined}
+            >
+              {tenantLogoUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={tenantLogoUrl}
+                  alt={tenantName}
+                  className="h-full w-full object-contain"
+                />
+              ) : (
+                <span className="text-[11px] font-bold text-white">
+                  {tenantName.slice(0, 1).toUpperCase()}
+                </span>
+              )}
+            </div>
+            <span
+              className={cn(
+                'truncate text-xs font-medium text-white/80 transition-all duration-300',
+                isExpanded ? 'max-w-[10rem] opacity-100' : 'hidden',
+              )}
+            >
+              {tenantName}
+            </span>
+          </div>
+        )}
       </div>
 
       {/* ── Navigation ───────────────────────────────────────────────── */}
@@ -125,6 +157,13 @@ export function Menubar({ logoUrl }: MenubarProps) {
                 icon={CreditCard}
                 label="Planos"
                 isActive={pathname === '/admin/plans'}
+                isExpanded={isExpanded}
+              />
+              <NavItem
+                href="/admin/demo-requests"
+                icon={Inbox}
+                label="Pedidos de demo"
+                isActive={pathname === '/admin/demo-requests'}
                 isExpanded={isExpanded}
               />
             </>

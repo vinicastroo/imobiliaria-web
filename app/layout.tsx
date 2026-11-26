@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Montserrat } from 'next/font/google'
+import { Montserrat, Sora } from 'next/font/google'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { getTenantVisualConfig, getGoogleFontsUrl } from '@/lib/visual-config'
@@ -17,12 +17,30 @@ const montserrat = Montserrat({
   display: 'swap',
 })
 
-export const metadata: Metadata = {
-  title: {
-    template: '%s',
-    default: 'Portal Imobiliário',
-  },
-  description: 'Portal imobiliário.',
+// Sora is the Scala platform font (admin + login, applied by <ScalaTheme />).
+// preload: false so tenant public sites don't download it.
+const sora = Sora({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-sora',
+  display: 'swap',
+  preload: false,
+})
+
+// Tenant favicon goes through metadata (not a raw <link>) so the admin and
+// login layouts can override it with the Scala icon.
+export async function generateMetadata(): Promise<Metadata> {
+  const visualConfig = await getTenantVisualConfig()
+  const icon = visualConfig.faviconUrl ?? visualConfig.iconUrl
+
+  return {
+    title: {
+      template: '%s',
+      default: 'Portal Imobiliário',
+    },
+    description: 'Portal imobiliário.',
+    ...(icon ? { icons: { icon } } : {}),
+  }
 }
 
 export default async function RootLayout({
@@ -52,11 +70,8 @@ export default async function RootLayout({
   return (
     // montserrat.variable registers --font-montserrat without forcing it on body,
     // letting globals.css font-family fallback chain work correctly.
-    <html lang="pt-BR" className={montserrat.variable}>
+    <html lang="pt-BR" className={`${montserrat.variable} ${sora.variable}`}>
       <head>
-        {(visualConfig.faviconUrl ?? visualConfig.iconUrl) && (
-          <link rel="icon" href={visualConfig.faviconUrl ?? visualConfig.iconUrl ?? undefined} />
-        )}
         {fontLink && <link rel="preconnect" href="https://fonts.googleapis.com" />}
         {fontLink && (
           <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
