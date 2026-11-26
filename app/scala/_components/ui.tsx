@@ -1,19 +1,6 @@
 import { cn } from '@/lib/utils'
 import { Reveal } from '@/components/motion'
 
-/** Faixa hachurada (referência Valeti) — decorativa. */
-export function Hatch({ className }: { className?: string }) {
-  return (
-    <div
-      aria-hidden="true"
-      className={cn(
-        'bg-[repeating-linear-gradient(135deg,var(--scala-border)_0_1px,transparent_1px_9px)]',
-        className,
-      )}
-    />
-  )
-}
-
 /** Selo em pílula acima dos títulos (Valeti/Arco). */
 export function Eyebrow({
   icon: Icon,

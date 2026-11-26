@@ -6,7 +6,7 @@ import { ArrowRight, Building2, CheckCircle2, TrendingUp } from 'lucide-react'
 
 import { DURATION, EASE, Float } from '@/components/motion'
 import { ProductPreview } from './product-preview'
-import { Eyebrow, Hatch, PrimaryButton } from './ui'
+import { Eyebrow, PrimaryButton } from './ui'
 import corretora from '@/public/scala/corretora-recorte.webp'
 
 const enter = (delay: number) => ({
@@ -18,10 +18,6 @@ const enter = (delay: number) => ({
 export function Hero() {
   return (
     <section className="relative overflow-hidden border-b border-[var(--scala-border)]">
-      {/* Faixas hachuradas laterais (Valeti) */}
-      <Hatch className="absolute inset-y-0 left-0 hidden w-[max(0px,calc((100vw-72rem)/2-1rem))] border-r border-[var(--scala-border)] xl:block" />
-      <Hatch className="absolute inset-y-0 right-0 hidden w-[max(0px,calc((100vw-72rem)/2-1rem))] border-l border-[var(--scala-border)] xl:block" />
-
       <div className="relative mx-auto grid max-w-6xl items-center gap-14 px-5 pt-14 pb-20 sm:px-8 sm:pt-20 lg:grid-cols-[1fr_1.1fr] lg:pb-24">
         <div className="flex flex-col items-start gap-6">
           <motion.div {...enter(0)}>
@@ -59,7 +55,6 @@ export function Hero() {
         >
           {/* Bloco de cor com a pessoa (Arco) */}
           <div className="relative ml-auto aspect-[5/5.2] w-full max-w-[560px] overflow-hidden rounded-[28px] bg-[linear-gradient(160deg,var(--scala-royal-soft),var(--scala-royal-200))]">
-            <Hatch className="absolute inset-0 opacity-50" />
             <div
               aria-hidden="true"
               className="absolute -top-24 -right-24 size-72 rounded-full bg-white/50 blur-2xl"

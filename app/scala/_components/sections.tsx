@@ -20,7 +20,7 @@ import aurosLogo from '@/public/logo-auros.svg'
 import corretorCasal from '@/public/scala/corretor-casal.webp'
 import gestora from '@/public/scala/gestora.webp'
 import { FEATURE_LABELS, formatLimit, formatPlanPrice, type PublicPlan } from '../_lib/plans'
-import { Hatch, PrimaryButton, SectionHead } from './ui'
+import { PrimaryButton, SectionHead } from './ui'
 
 const container = 'mx-auto max-w-6xl px-5 sm:px-8'
 
@@ -99,8 +99,6 @@ const BENEFITS = [
 export function BenefitsStrip() {
   return (
     <section className="relative border-b border-[var(--scala-border)]">
-      <Hatch className="absolute inset-y-0 left-0 hidden w-[max(0px,calc((100vw-72rem)/2-1rem))] xl:block" />
-      <Hatch className="absolute inset-y-0 right-0 hidden w-[max(0px,calc((100vw-72rem)/2-1rem))] xl:block" />
       <Stagger className={`${container} grid sm:grid-cols-3`}>
         {BENEFITS.map(({ icon: Icon, title, text }, i) => (
           <StaggerItem

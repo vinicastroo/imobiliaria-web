@@ -59,8 +59,9 @@ Código atual: tema neutro padrão do shadcn (`app/globals.css`, oklch cinza), f
 - 2026-11-25: **landing page** da Scala em `app/scala`, servida no domínio da plataforma (rewrite em `proxy.ts`). Botão principal: "Agendar demonstração". Mostra os 3 planos (lidos de `GET /platform/plans`) e a Auros e a Gilli como clientes (autorizado).
 - 2026-11-25: pedidos de demonstração ficam **salvos no sistema**: tabela `demo_requests` na API e tela "Pedidos de demo" no super admin. A entrega por WhatsApp e por e-mail foi descartada.
 - 2026-11-25: na sidebar, o ícone da imobiliária fica sobre a cor dela, porque muitos ícones de tenant são brancos e foram feitos para a sidebar colorida antiga.
+- 2026-11-26: **sem tracejados/hachuras** na landing (o Vini não gostou). Fundos lisos.
 - 2026-11-26: favicon = ícone do app (torres claras sobre azul royal), a pedido do Vini.
-- 2026-11-26: **landing page refeita** com referência em Valeti, Arco e Valid: selos em pílula, faixas hachuradas, hero com pessoa recortada sobre bloco azul-claro e prévia do painel com cards flutuando, faixa de clientes em cinza, abas de soluções com indicador deslizante, cards arredondados com traço de cor e bloco final em azul royal.
+- 2026-11-26: **landing page refeita** com referência em Valeti, Arco e Valid: selos em pílula, hero com pessoa recortada sobre bloco azul-claro e prévia do painel com cards flutuando, faixa de clientes em cinza, abas de soluções com indicador deslizante, cards arredondados com traço de cor e bloco final em azul royal.
 - 2026-11-26: **pessoas nas composições**. Fotos geradas na Higgsfield (gpt_image_2_6) em `public/scala/`: corretora (recortada), corretor com casal, gestora e equipe.
 - 2026-11-26: **animações** com a lib `motion` e as peças em `components/motion` (Reveal, Stagger, Float, CountUp, Typewriter), nos tokens de 120/200/320 ms, curva (.2,0,0,1) e respeitando `prefers-reduced-motion`.
 - 2026-11-26: **menu lateral claro**, com barra azul deslizante na página ativa. Ele empurra o conteúdo, lembra o estado num cookie (`scala_sidebar`) e vira gaveta no celular. Ganhou o item "Início".

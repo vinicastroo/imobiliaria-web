@@ -139,10 +139,6 @@ export function Solutions() {
 
       {/* Tela */}
       <div className="relative flex min-h-[320px] items-center justify-center overflow-hidden border-b border-[var(--scala-border)] bg-[var(--scala-paper)] p-6 lg:border-r lg:border-b-0">
-        <div
-          aria-hidden="true"
-          className="absolute inset-0 bg-[repeating-linear-gradient(135deg,var(--scala-border)_0_1px,transparent_1px_9px)] opacity-60"
-        />
         <AnimatePresence mode="wait">
           <motion.div
             key={tab.id}
